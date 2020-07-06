@@ -1,5 +1,5 @@
 
-package com.example.demo;
+package com.example.demo.domain;
 
 import org.neo4j.ogm.annotation.GeneratedValue;
 import org.neo4j.ogm.annotation.Id;

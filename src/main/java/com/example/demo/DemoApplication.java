@@ -1,5 +1,9 @@
 package com.example.demo;
 
+import com.example.demo.domain.GameLevel;
+import com.example.demo.domain.Person;
+import com.example.demo.repository.GameLevelRepository;
+import com.example.demo.repository.PersonRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -9,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -54,6 +59,24 @@ public class DemoApplication {
 			log.info("Lookup each person by name...");
 			team.stream().forEach(person -> log.info(
 					"\t" + personRepository.findByName(person.getName()).toString()));
+		};
+	}
+
+	@Bean
+	CommandLineRunner anotherDemo(GameLevelRepository gameLevelRepository) {
+		return args -> {
+
+			gameLevelRepository.deleteAll();
+
+			GameLevel gameLevel = new GameLevel();
+			gameLevel.setTitle("Title");
+
+
+			GameLevel savedGameLevel = gameLevelRepository.save(gameLevel);
+			log.info("Saved game level: {}", savedGameLevel);
+
+			Optional<GameLevel> foundGameLevel = gameLevelRepository.findById(savedGameLevel.getId());
+			log.info("Saved game level: {}", foundGameLevel);
 		};
 	}
 }

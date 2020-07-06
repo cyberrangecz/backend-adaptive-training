@@ -1,9 +1,9 @@
-package com.example.demo.domain;
+package com.example.demo.dto;
 
-import org.neo4j.ogm.annotation.NodeEntity;
+import java.io.Serializable;
 
-@NodeEntity
-public abstract class BaseLevel {
+public class BaseLevelDto implements Serializable {
+
     private String title;
     private String estimatedDuration;
     private Long maxScore;

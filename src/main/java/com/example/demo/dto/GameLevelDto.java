@@ -1,20 +1,12 @@
-package com.example.demo.domain;
+package com.example.demo.dto;
 
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+public class GameLevelDto extends BaseLevelDto implements Serializable {
 
-@NodeEntity
-public class GameLevel extends BaseLevel {
-
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String content;
@@ -24,8 +16,7 @@ public class GameLevel extends BaseLevel {
     private String attachments;
     private String incorrectFlagLimit;
 
-    @Relationship(type = "GAME_LEVEL_HINTS", direction = Relationship.UNDIRECTED)
-    private List<Hint> hints;
+    private List<HintDto> hints;
 
     public Long getId() {
         return id;
@@ -83,14 +74,14 @@ public class GameLevel extends BaseLevel {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 
-    public List<Hint> getHints() {
+    public List<HintDto> getHints() {
         if (Objects.isNull(hints)) {
             hints = new ArrayList<>();
         }
         return hints;
     }
 
-    public void setHints(List<Hint> hints) {
+    public void setHints(List<HintDto> hints) {
         this.hints = hints;
     }
 }

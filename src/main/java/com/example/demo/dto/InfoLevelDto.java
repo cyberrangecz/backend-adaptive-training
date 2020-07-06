@@ -1,14 +1,9 @@
-package com.example.demo.domain;
+package com.example.demo.dto;
 
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
+import java.io.Serializable;
 
-@NodeEntity
-public class InfoLevel extends BaseLevel {
+public class InfoLevelDto extends BaseLevelDto implements Serializable {
 
-    @Id
-    @GeneratedValue
     private Long id;
 
     private String content;

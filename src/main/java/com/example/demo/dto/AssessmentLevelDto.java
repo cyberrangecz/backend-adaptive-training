@@ -24,4 +24,12 @@ public class AssessmentLevelDto extends BaseLevelDto implements Serializable {
     public void setAssessmentType(String assessmentType) {
         this.assessmentType = assessmentType;
     }
+
+    @Override
+    public String toString() {
+        return "AssessmentLevelDto{" +
+            "id=" + id +
+            ", assessmentType='" + assessmentType + '\'' +
+            "} " + super.toString();
+    }
 }

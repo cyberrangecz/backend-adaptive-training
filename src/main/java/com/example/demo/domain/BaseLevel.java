@@ -31,4 +31,13 @@ public abstract class BaseLevel {
     public void setMaxScore(Long maxScore) {
         this.maxScore = maxScore;
     }
+
+    @Override
+    public String toString() {
+        return "BaseLevel{" +
+            "title='" + title + '\'' +
+            ", estimatedDuration='" + estimatedDuration + '\'' +
+            ", maxScore=" + maxScore +
+            '}';
+    }
 }

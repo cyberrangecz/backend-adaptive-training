@@ -55,4 +55,15 @@ public class Hint {
     public void setOrderInLevel(String orderInLevel) {
         this.orderInLevel = orderInLevel;
     }
+
+    @Override
+    public String toString() {
+        return "Hint{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", content='" + content + '\'' +
+            ", hintPenalty='" + hintPenalty + '\'' +
+            ", orderInLevel='" + orderInLevel + '\'' +
+            '}';
+    }
 }

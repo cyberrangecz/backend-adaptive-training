@@ -50,4 +50,15 @@ public class HintDto implements Serializable {
     public void setOrderInLevel(String orderInLevel) {
         this.orderInLevel = orderInLevel;
     }
+
+    @Override
+    public String toString() {
+        return "HintDto{" +
+            "id=" + id +
+            ", title='" + title + '\'' +
+            ", content='" + content + '\'' +
+            ", hintPenalty='" + hintPenalty + '\'' +
+            ", orderInLevel='" + orderInLevel + '\'' +
+            '}';
+    }
 }

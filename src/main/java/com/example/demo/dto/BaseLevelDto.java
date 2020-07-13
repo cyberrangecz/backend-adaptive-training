@@ -31,4 +31,13 @@ public class BaseLevelDto implements Serializable {
     public void setMaxScore(Long maxScore) {
         this.maxScore = maxScore;
     }
+
+    @Override
+    public String toString() {
+        return "BaseLevelDto{" +
+            "title='" + title + '\'' +
+            ", estimatedDuration='" + estimatedDuration + '\'' +
+            ", maxScore=" + maxScore +
+            '}';
+    }
 }

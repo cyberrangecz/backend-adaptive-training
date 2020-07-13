@@ -93,4 +93,18 @@ public class GameLevel extends BaseLevel {
     public void setHints(List<Hint> hints) {
         this.hints = hints;
     }
+
+    @Override
+    public String toString() {
+        return "GameLevel{" +
+            "id=" + id +
+            ", content='" + content + '\'' +
+            ", solutionPenalized='" + solutionPenalized + '\'' +
+            ", flag='" + flag + '\'' +
+            ", solution='" + solution + '\'' +
+            ", attachments='" + attachments + '\'' +
+            ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
+            ", hints=" + hints +
+            "} " + super.toString();
+    }
 }

@@ -84,4 +84,18 @@ public class GameLevelDto extends BaseLevelDto implements Serializable {
     public void setHints(List<HintDto> hints) {
         this.hints = hints;
     }
+
+    @Override
+    public String toString() {
+        return "GameLevelDto{" +
+            "id=" + id +
+            ", content='" + content + '\'' +
+            ", solutionPenalized='" + solutionPenalized + '\'' +
+            ", flag='" + flag + '\'' +
+            ", solution='" + solution + '\'' +
+            ", attachments='" + attachments + '\'' +
+            ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
+            ", hints=" + hints +
+            "} " + super.toString();
+    }
 }

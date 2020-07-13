@@ -23,4 +23,12 @@ public class InfoLevelDto extends BaseLevelDto implements Serializable {
     public void setContent(String content) {
         this.content = content;
     }
+
+    @Override
+    public String toString() {
+        return "InfoLevelDto{" +
+            "id=" + id +
+            ", content='" + content + '\'' +
+            "} " + super.toString();
+    }
 }

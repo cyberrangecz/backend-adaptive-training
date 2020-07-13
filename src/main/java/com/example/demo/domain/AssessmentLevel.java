@@ -29,4 +29,12 @@ public class AssessmentLevel extends BaseLevel {
     public void setAssessmentType(String assessmentType) {
         this.assessmentType = assessmentType;
     }
+
+    @Override
+    public String toString() {
+        return "AssessmentLevel{" +
+            "id=" + id +
+            ", assessmentType='" + assessmentType + '\'' +
+            "} " + super.toString();
+    }
 }

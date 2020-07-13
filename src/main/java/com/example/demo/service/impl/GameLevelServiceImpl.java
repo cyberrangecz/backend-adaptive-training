@@ -37,4 +37,13 @@ public class GameLevelServiceImpl implements GameLevelService {
 
         return result;
     }
+
+    @Override
+    public Long updateGameLevel(Long id, GameLevelDto gameLevelDto) {
+        GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelDto);
+
+        GameLevel savedEntity = gameLevelRepository.save(gameLevel);
+
+        return savedEntity.getId();
+    }
 }

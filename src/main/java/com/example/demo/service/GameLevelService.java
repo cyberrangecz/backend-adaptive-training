@@ -7,4 +7,6 @@ import java.util.List;
 public interface GameLevelService {
 
     List<GameLevelDto> findAllGameLevels();
+
+    Long updateGameLevel(Long id, GameLevelDto gameLevelDto);
 }

@@ -2,13 +2,12 @@ package com.example.demo.service.impl;
 
 import com.example.demo.domain.GameLevel;
 import com.example.demo.dto.GameLevelDto;
-import com.example.demo.mapper.ObjectMapper;
+import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.GameLevelRepository;
 import com.example.demo.service.GameLevelService;
 import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +31,7 @@ public class GameLevelServiceImpl implements GameLevelService {
 
         if (!IterableUtils.isEmpty(allGameLevels)) {
             for (GameLevel gameLevel : allGameLevels) {
-                result.add(ObjectMapper.INSTANCE.toDto(gameLevel));
+                result.add(BeanMapper.INSTANCE.toDto(gameLevel));
             }
         }
 

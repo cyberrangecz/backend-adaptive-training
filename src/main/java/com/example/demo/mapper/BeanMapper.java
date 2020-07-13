@@ -1,7 +1,6 @@
 package com.example.demo.mapper;
 
 import com.example.demo.domain.AssessmentLevel;
-import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
@@ -14,9 +13,9 @@ import org.mapstruct.factory.Mappers;
 
 
 @Mapper
-public interface ObjectMapper {
+public interface BeanMapper {
 
-    ObjectMapper INSTANCE = Mappers.getMapper(ObjectMapper.class);
+    BeanMapper INSTANCE = Mappers.getMapper(BeanMapper.class);
 
     AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
 

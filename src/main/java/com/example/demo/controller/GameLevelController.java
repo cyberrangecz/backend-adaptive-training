@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,12 +45,12 @@ public class GameLevelController {
         return gameLevelService.findAllGameLevels();
     }
 
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Return game levels")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Return game levels"),
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update game level")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated game level"),
         @ApiResponse(code = 500, message = "Unexpected application error")})
-    public List<GameLevelDto> updateGameLevel(@ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id,
+    public GameLevelDto updateGameLevel(@ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id,
         @ApiParam(value = "Update data", required = true) @RequestBody(required = true) GameLevelDto gameLevelDto) {
-        return gameLevelService.findAllGameLevels();
+        return gameLevelService.updateGameLevel(id, gameLevelDto);
     }
 }

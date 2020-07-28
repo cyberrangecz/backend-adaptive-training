@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.GameLevelDto;
+import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.service.GameLevelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,7 +51,7 @@ public class GameLevelController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated game level"),
         @ApiResponse(code = 500, message = "Unexpected application error")})
     public GameLevelDto updateGameLevel(@ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id,
-        @ApiParam(value = "Update data", required = true) @RequestBody(required = true) GameLevelDto gameLevelDto) {
-        return gameLevelService.updateGameLevel(id, gameLevelDto);
+        @ApiParam(value = "Update data", required = true) @RequestBody(required = true) GameLevelUpdateDto gameLevelUpdateDto) {
+        return gameLevelService.updateGameLevel(id, gameLevelUpdateDto);
     }
 }

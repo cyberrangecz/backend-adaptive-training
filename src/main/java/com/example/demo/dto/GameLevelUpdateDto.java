@@ -7,7 +7,7 @@ import java.util.Objects;
 public class GameLevelUpdateDto extends BaseLevelDto {
 
     private String content;
-    private Boolean solutionPenalized;
+    private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
@@ -23,11 +23,11 @@ public class GameLevelUpdateDto extends BaseLevelDto {
         this.content = content;
     }
 
-    public Boolean getSolutionPenalized() {
+    public boolean getSolutionPenalized() {
         return solutionPenalized;
     }
 
-    public void setSolutionPenalized(Boolean solutionPenalized) {
+    public void setSolutionPenalized(boolean solutionPenalized) {
         this.solutionPenalized = solutionPenalized;
     }
 

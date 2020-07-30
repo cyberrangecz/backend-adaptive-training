@@ -13,8 +13,8 @@ public class Hint {
 
     private String title;
     private String content;
-    private String hintPenalty;
-    private String orderInLevel;
+    private Long hintPenalty;
+    private Long orderInLevel;
 
     public Long getId() {
         return id;
@@ -40,19 +40,19 @@ public class Hint {
         this.content = content;
     }
 
-    public String getHintPenalty() {
+    public Long getHintPenalty() {
         return hintPenalty;
     }
 
-    public void setHintPenalty(String hintPenalty) {
+    public void setHintPenalty(Long hintPenalty) {
         this.hintPenalty = hintPenalty;
     }
 
-    public String getOrderInLevel() {
+    public Long getOrderInLevel() {
         return orderInLevel;
     }
 
-    public void setOrderInLevel(String orderInLevel) {
+    public void setOrderInLevel(Long orderInLevel) {
         this.orderInLevel = orderInLevel;
     }
 

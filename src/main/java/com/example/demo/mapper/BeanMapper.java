@@ -1,10 +1,12 @@
 package com.example.demo.mapper;
 
 import com.example.demo.domain.AssessmentLevel;
+import com.example.demo.domain.Attachment;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.AssessmentLevelDto;
+import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.HintDto;
@@ -35,4 +37,8 @@ public interface BeanMapper {
     HintDto toDto(Hint hint);
 
     Hint toEntity(HintDto hint);
+
+    AttachmentDto toDto(Attachment hint);
+
+    Attachment toEntity(AttachmentDto hint);
 }

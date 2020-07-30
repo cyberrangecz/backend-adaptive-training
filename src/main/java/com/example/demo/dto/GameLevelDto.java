@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
-public class GameLevelDto extends BaseLevelDto implements Serializable {
+public class GameLevelDto extends GameLevelUpdateDto implements Serializable {
 
     private Long id;
 

@@ -7,12 +7,12 @@ import java.util.Objects;
 public class GameLevelUpdateDto extends BaseLevelDto {
 
     private String content;
-    private String solutionPenalized;
+    private Boolean solutionPenalized;
     private String flag;
     private String solution;
-    private String attachments;
-    private String incorrectFlagLimit;
+    private Long incorrectFlagLimit;
 
+    private List<AttachmentDto> attachments;
     private List<HintDto> hints;
 
     public String getContent() {
@@ -23,11 +23,11 @@ public class GameLevelUpdateDto extends BaseLevelDto {
         this.content = content;
     }
 
-    public String getSolutionPenalized() {
+    public Boolean getSolutionPenalized() {
         return solutionPenalized;
     }
 
-    public void setSolutionPenalized(String solutionPenalized) {
+    public void setSolutionPenalized(Boolean solutionPenalized) {
         this.solutionPenalized = solutionPenalized;
     }
 
@@ -47,19 +47,19 @@ public class GameLevelUpdateDto extends BaseLevelDto {
         this.solution = solution;
     }
 
-    public String getAttachments() {
+    public List<AttachmentDto> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(String attachments) {
+    public void setAttachments(List<AttachmentDto> attachments) {
         this.attachments = attachments;
     }
 
-    public String getIncorrectFlagLimit() {
+    public Long getIncorrectFlagLimit() {
         return incorrectFlagLimit;
     }
 
-    public void setIncorrectFlagLimit(String incorrectFlagLimit) {
+    public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 

@@ -11,7 +11,9 @@ import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.HintDto;
+import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -36,6 +38,10 @@ public interface BeanMapper {
     InfoLevelDto toDto(InfoLevel infoLevel);
 
     InfoLevel toEntity(InfoLevelDto infoLevel);
+
+    InfoLevel toEntity(InfoLevelCreateDto gameLevel);
+
+    InfoLevel toEntity(InfoLevelUpdateDto gameLevel);
 
     HintDto toDto(Hint hint);
 

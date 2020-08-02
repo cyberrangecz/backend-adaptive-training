@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.GameLevel;
+import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
@@ -27,6 +28,14 @@ public class GameLevelService {
         this.gameLevelRepository = gameLevelRepository;
     }
 
+    public GameLevelDto createGameLevel(GameLevelCreateDto gameLevelCreateDto) {
+        GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelCreateDto);
+
+        GameLevel persistedEntity = gameLevelRepository.save(gameLevel);
+
+        return BeanMapper.INSTANCE.toDto(persistedEntity);
+    }
+
     public List<GameLevelDto> findAllGameLevels() {
 
         Iterable<GameLevel> allGameLevels = gameLevelRepository.findAll();
@@ -42,11 +51,22 @@ public class GameLevelService {
         return result;
     }
 
+    public GameLevelDto getGameLevel(Long id) {
+        Optional<GameLevel> gameLevel = gameLevelRepository.findById(id);
+
+        if (gameLevel.isEmpty()) {
+            LOG.error("No game level found with ID {}.", id);
+            return new GameLevelDto();
+        }
+
+        return BeanMapper.INSTANCE.toDto(gameLevel.get());
+    }
+
     public GameLevelDto updateGameLevel(Long id, GameLevelUpdateDto gameLevelUpdateDto) {
         Optional<GameLevel> persistedGameLevel = gameLevelRepository.findById(id);
 
         if (persistedGameLevel.isEmpty()) {
-            LOG.error("No game level found with attribute {}.", id);
+            LOG.error("No game level found with ID {}.", id);
             return new GameLevelDto();
         }
 
@@ -56,5 +76,9 @@ public class GameLevelService {
         GameLevel savedEntity = gameLevelRepository.save(gameLevel);
 
         return BeanMapper.INSTANCE.toDto(savedEntity);
+    }
+
+    public void removeGameLevel(Long id) {
+        gameLevelRepository.deleteById(id);
     }
 }

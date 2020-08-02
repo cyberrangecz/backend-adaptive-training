@@ -7,6 +7,7 @@ import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
+import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.HintDto;
@@ -27,6 +28,8 @@ public interface BeanMapper {
     GameLevelDto toDto(GameLevel gameLevel);
 
     GameLevel toEntity(GameLevelDto gameLevel);
+
+    GameLevel toEntity(GameLevelCreateDto gameLevel);
 
     GameLevel toEntity(GameLevelUpdateDto gameLevel);
 

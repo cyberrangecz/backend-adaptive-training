@@ -55,7 +55,7 @@ public class InfoLevelController {
         return infoLevelService.findAllInfoLevels();
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get info level detail")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Game level detail"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})

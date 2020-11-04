@@ -59,7 +59,7 @@ public class GameLevelController {
         return gameLevelService.findAllGameLevels();
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get game level detail")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Game level detail"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})

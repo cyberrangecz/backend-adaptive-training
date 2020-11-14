@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/game-definition")
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
@@ -39,7 +41,7 @@ public class GameDefinitionController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "New game definition created"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
     public GameDefinitionCreateDto createGameLevel(@ApiParam(value = "Game definition", required = true) @RequestBody(required = true)
-                                            GameDefinitionCreateDto gameLevelCreateDto) {
-        return gameDefinitionService.createGameDefinition(gameLevelCreateDto);
+                                                       List<GameDefinitionCreateDto> gameDefinition) {
+        return gameDefinitionService.createGameDefinition(gameDefinition);
     }
 }

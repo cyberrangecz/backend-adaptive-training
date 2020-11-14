@@ -5,6 +5,7 @@ import com.example.demo.domain.Attachment;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
+import com.example.demo.domain.UnityLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.GameLevelCreateDto;
@@ -14,6 +15,7 @@ import com.example.demo.dto.HintDto;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
+import com.example.demo.dto.UnityLevelDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -50,4 +52,8 @@ public interface BeanMapper {
     AttachmentDto toDto(Attachment hint);
 
     Attachment toEntity(AttachmentDto hint);
+
+    UnityLevelDto toDto(UnityLevel unityLevel);
+
+    UnityLevel toEntity(UnityLevelDto unityLevel);
 }

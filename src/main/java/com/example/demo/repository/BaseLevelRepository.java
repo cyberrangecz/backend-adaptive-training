@@ -1,7 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.BaseLevel;
-import org.springframework.data.neo4j.repository.Neo4jRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface BaseLevelRepository  extends Neo4jRepository<BaseLevel, Long> {
+public interface BaseLevelRepository  extends JpaRepository<BaseLevel, Long> {
 }

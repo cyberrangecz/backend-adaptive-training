@@ -1,13 +1,12 @@
 package com.example.demo.domain;
 
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-@NodeEntity
+@Entity
 public class TrainingDefinition {
 
     @Id

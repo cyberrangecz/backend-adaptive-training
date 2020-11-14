@@ -1,8 +1,9 @@
 package com.example.demo.domain;
 
-import org.neo4j.ogm.annotation.NodeEntity;
 
-@NodeEntity
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class BaseLevel {
     private String title;
     private String estimatedDuration;

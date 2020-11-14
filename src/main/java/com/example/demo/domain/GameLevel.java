@@ -1,16 +1,14 @@
 package com.example.demo.domain;
 
-import org.neo4j.ogm.annotation.GeneratedValue;
-import org.neo4j.ogm.annotation.Id;
-import org.neo4j.ogm.annotation.NodeEntity;
-import org.neo4j.ogm.annotation.Relationship;
-
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 
-@NodeEntity
+@Entity
 public class GameLevel extends BaseLevel {
 
     @Id
@@ -23,10 +21,8 @@ public class GameLevel extends BaseLevel {
     private String solution;
     private Long incorrectFlagLimit;
 
-    @Relationship(type = "GAME_LEVEL_ATTACHMENTS", direction = Relationship.UNDIRECTED)
     private List<Attachment> attachments;
 
-    @Relationship(type = "GAME_LEVEL_HINTS", direction = Relationship.UNDIRECTED)
     private List<Hint> hints;
 
     public Long getId() {

@@ -2,11 +2,21 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
-public class BaseLevelDto implements Serializable {
+public abstract class BaseLevelDto implements Serializable {
 
+    private Long id;
     private String title;
+    private Integer order;
     private String estimatedDuration;
     private Long maxScore;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -14,6 +24,14 @@ public class BaseLevelDto implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public String getEstimatedDuration() {
@@ -34,10 +52,7 @@ public class BaseLevelDto implements Serializable {
 
     @Override
     public String toString() {
-        return "BaseLevelDto{" +
-            "title='" + title + '\'' +
-            ", estimatedDuration='" + estimatedDuration + '\'' +
-            ", maxScore=" + maxScore +
-            '}';
+        return "BaseLevelDto{" + "id=" + id + ", title='" + title + '\'' + ", order=" + order +
+               ", estimatedDuration='" + estimatedDuration + '\'' + ", maxScore=" + maxScore + '}';
     }
 }

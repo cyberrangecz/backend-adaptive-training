@@ -2,8 +2,10 @@ package com.example.demo.domain;
 
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Hint {
@@ -16,6 +18,9 @@ public class Hint {
     private String content;
     private Long hintPenalty;
     private Long orderInLevel;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GameLevel gameLevel;
 
     public Long getId() {
         return id;
@@ -55,6 +60,14 @@ public class Hint {
 
     public void setOrderInLevel(Long orderInLevel) {
         this.orderInLevel = orderInLevel;
+    }
+
+    public GameLevel getGameLevel() {
+        return gameLevel;
+    }
+
+    public void setGameLevel(GameLevel gameLevel) {
+        this.gameLevel = gameLevel;
     }
 
     @Override

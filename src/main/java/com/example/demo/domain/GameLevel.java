@@ -1,8 +1,10 @@
 package com.example.demo.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,27 +13,19 @@ import java.util.Objects;
 @Entity
 public class GameLevel extends BaseLevel {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
     private String content;
     private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
 
+    @OrderBy
+    @OneToMany(mappedBy = "gameLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Attachment> attachments;
 
+    @OrderBy
+    @OneToMany(mappedBy = "gameLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Hint> hints;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getContent() {
         return content;
@@ -94,15 +88,8 @@ public class GameLevel extends BaseLevel {
 
     @Override
     public String toString() {
-        return "GameLevel{" +
-            "id=" + id +
-            ", content='" + content + '\'' +
-            ", solutionPenalized='" + solutionPenalized + '\'' +
-            ", flag='" + flag + '\'' +
-            ", solution='" + solution + '\'' +
-            ", attachments='" + attachments + '\'' +
-            ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
-            ", hints=" + hints +
-            "} " + super.toString();
+        return "GameLevel{" + ", content='" + content + '\'' + ", solutionPenalized='" + solutionPenalized + '\'' +
+               ", flag='" + flag + '\'' + ", solution='" + solution + '\'' + ", attachments='" + attachments + '\'' +
+               ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' + ", hints=" + hints + "} " + super.toString();
     }
 }

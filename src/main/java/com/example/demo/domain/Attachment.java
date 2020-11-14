@@ -1,8 +1,10 @@
 package com.example.demo.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,6 +16,9 @@ public class Attachment {
 
     private String content;
     private LocalDateTime creationTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private GameLevel gameLevel;
 
     public Long getId() {
         return id;
@@ -37,6 +42,14 @@ public class Attachment {
 
     public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public GameLevel getGameLevel() {
+        return gameLevel;
+    }
+
+    public void setGameLevel(GameLevel gameLevel) {
+        this.gameLevel = gameLevel;
     }
 
     @Override

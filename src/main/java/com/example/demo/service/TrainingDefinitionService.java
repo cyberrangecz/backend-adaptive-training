@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.AssessmentLevel;
-import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.TrainingDefinition;
@@ -15,15 +14,15 @@ import com.example.demo.repository.GameLevelRepository;
 import com.example.demo.repository.InfoLevelRepository;
 import com.example.demo.repository.TrainingDefinitionRepository;
 import com.example.demo.repository.UnityLevelRepository;
+import com.example.demo.util.TrainingMapperHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class GameDefinitionService {
+public class TrainingDefinitionService {
 
     @Autowired
     private AssessmentLevelRepository assessmentLevelRepository;
@@ -39,6 +38,9 @@ public class GameDefinitionService {
 
     @Autowired
     private TrainingDefinitionRepository trainingDefinitionRepository;
+
+    @Autowired
+    private TrainingMapperHelper trainingMapperHelper;
 
     public GameDefinitionCreateDto createGameDefinition(TrainingDefinitionDto trainingDefinitionDto) {
 
@@ -75,5 +77,19 @@ public class GameDefinitionService {
         }
 
         return null;
+    }
+
+    public TrainingDefinitionDto getTrainingDefinition(Long id) {
+        Optional<TrainingDefinition> trainingDefinition = trainingDefinitionRepository.findById(id);
+
+        if (trainingDefinition.isEmpty()) {
+            // TODO throw 404
+            return new TrainingDefinitionDto();
+        }
+
+        TrainingDefinitionDto trainingDefinitionDto = BeanMapper.INSTANCE.toDto(trainingDefinition.get());
+        trainingDefinitionDto.setLevels(trainingMapperHelper.getLevelsFrom(trainingDefinition.get()));
+
+        return trainingDefinitionDto;
     }
 }

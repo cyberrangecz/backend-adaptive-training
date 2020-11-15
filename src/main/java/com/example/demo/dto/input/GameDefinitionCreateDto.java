@@ -28,7 +28,7 @@ public class GameDefinitionCreateDto {
     // currently none special
 
     // unity level fields
-    private List<? extends GameDefinitionCreateDto> subLevels;
+    private List<GameDefinitionCreateDto> subLevels;
 
     public Long getId() {
         return id;
@@ -126,11 +126,11 @@ public class GameDefinitionCreateDto {
         this.hints = hints;
     }
 
-    public List<? extends GameDefinitionCreateDto> getSubLevels() {
+    public List<GameDefinitionCreateDto> getSubLevels() {
         return subLevels;
     }
 
-    public void setSubLevels(List<? extends GameDefinitionCreateDto> subLevels) {
+    public void setSubLevels(List<GameDefinitionCreateDto> subLevels) {
         this.subLevels = subLevels;
     }
 }

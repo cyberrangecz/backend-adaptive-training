@@ -81,8 +81,21 @@ public interface BeanMapper {
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     UnityLevel toUnityLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
+    @Mapping(target = "type", constant = "assessment")
+    GameDefinitionCreateDto toLevelDefinitionDto(AssessmentLevel assessmentLevel);
+
+    @Mapping(target = "type", constant = "game")
+    GameDefinitionCreateDto toLevelDefinitionDto(GameLevel gaLevel);
+
+    @Mapping(target = "type", constant = "info")
+    GameDefinitionCreateDto toLevelDefinitionDto(InfoLevel infoLevel);
+
+    @Mapping(target = "type", constant = "unity")
+    GameDefinitionCreateDto toLevelDefinitionDto(UnityLevel unityLevel);
+
     @Mapping(target = "levels", ignore = true)
     TrainingDefinition toEntity(TrainingDefinitionDto trainingDefinition);
 
+    @Mapping(target = "levels", ignore = true)
     TrainingDefinitionDto toDto(TrainingDefinition trainingDefinition);
 }

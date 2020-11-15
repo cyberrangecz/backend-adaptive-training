@@ -1,5 +1,8 @@
 package com.example.demo.dto.input;
 
+import com.example.demo.dto.AttachmentDto;
+import com.example.demo.dto.HintDto;
+
 import java.util.List;
 
 public class GameDefinitionCreateDto {
@@ -7,6 +10,24 @@ public class GameDefinitionCreateDto {
     private String title;
     private Integer order;
     private LevelType type;
+
+    // assessment level fields
+    private String assessmentType;
+
+    // game level fields
+    private String content;
+    private boolean solutionPenalized;
+    private String flag;
+    private String solution;
+    private Long incorrectFlagLimit;
+
+    private List<AttachmentDto> attachments;
+    private List<HintDto> hints;
+
+    // info level fields
+    // currently none special
+
+    // unity level fields
     private List<? extends GameDefinitionCreateDto> subLevels;
 
     public Long getId() {
@@ -39,6 +60,70 @@ public class GameDefinitionCreateDto {
 
     public void setType(LevelType type) {
         this.type = type;
+    }
+
+    public String getAssessmentType() {
+        return assessmentType;
+    }
+
+    public void setAssessmentType(String assessmentType) {
+        this.assessmentType = assessmentType;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public boolean isSolutionPenalized() {
+        return solutionPenalized;
+    }
+
+    public void setSolutionPenalized(boolean solutionPenalized) {
+        this.solutionPenalized = solutionPenalized;
+    }
+
+    public String getFlag() {
+        return flag;
+    }
+
+    public void setFlag(String flag) {
+        this.flag = flag;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public Long getIncorrectFlagLimit() {
+        return incorrectFlagLimit;
+    }
+
+    public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
+        this.incorrectFlagLimit = incorrectFlagLimit;
+    }
+
+    public List<AttachmentDto> getAttachments() {
+        return attachments;
+    }
+
+    public void setAttachments(List<AttachmentDto> attachments) {
+        this.attachments = attachments;
+    }
+
+    public List<HintDto> getHints() {
+        return hints;
+    }
+
+    public void setHints(List<HintDto> hints) {
+        this.hints = hints;
     }
 
     public List<? extends GameDefinitionCreateDto> getSubLevels() {

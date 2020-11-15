@@ -1,5 +1,7 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.input.LevelType;
+
 import java.io.Serializable;
 
 public abstract class BaseLevelDto implements Serializable {
@@ -9,6 +11,7 @@ public abstract class BaseLevelDto implements Serializable {
     private Integer order;
     private String estimatedDuration;
     private Long maxScore;
+    private LevelType type;
 
     public Long getId() {
         return id;
@@ -48,6 +51,14 @@ public abstract class BaseLevelDto implements Serializable {
 
     public void setMaxScore(Long maxScore) {
         this.maxScore = maxScore;
+    }
+
+    public LevelType getType() {
+        return type;
+    }
+
+    public void setType(LevelType type) {
+        this.type = type;
     }
 
     @Override

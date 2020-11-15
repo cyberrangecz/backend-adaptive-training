@@ -12,13 +12,13 @@ public class UnityLevel extends BaseLevel {
 
     @OrderBy
     @OneToMany(mappedBy = "unityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<BaseLevel> subLevels;
+    private List<GameLevel> subLevels;
 
-    public List<BaseLevel> getSubLevels() {
+    public List<GameLevel> getSubLevels() {
         return subLevels;
     }
 
-    public void setSubLevels(List<BaseLevel> subLevels) {
+    public void setSubLevels(List<GameLevel> subLevels) {
         this.subLevels = subLevels;
     }
 }

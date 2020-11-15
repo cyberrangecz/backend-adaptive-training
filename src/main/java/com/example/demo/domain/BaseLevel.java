@@ -28,6 +28,9 @@ public abstract class BaseLevel {
     @ManyToOne(fetch = FetchType.LAZY)
     private UnityLevel unityLevel;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TrainingDefinition trainingDefinition;
+
     public String getTitle() {
         return title;
     }
@@ -74,6 +77,14 @@ public abstract class BaseLevel {
 
     public void setUnityLevel(UnityLevel unityLevel) {
         this.unityLevel = unityLevel;
+    }
+
+    public TrainingDefinition getTrainingDefinition() {
+        return trainingDefinition;
+    }
+
+    public void setTrainingDefinition(TrainingDefinition trainingDefinition) {
+        this.trainingDefinition = trainingDefinition;
     }
 
     @Override

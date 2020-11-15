@@ -1,8 +1,11 @@
 package com.example.demo.dto;
 
+import com.example.demo.dto.input.GameDefinitionCreateDto;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
 public class TrainingDefinitionDto implements Serializable {
 
@@ -16,6 +19,8 @@ public class TrainingDefinitionDto implements Serializable {
     private Long estimatedDuration;
     private byte[] outcomes;
     private byte[] prerequisites;
+
+    private List<GameDefinitionCreateDto> levels;
 
     public Long getId() {
         return id;
@@ -95,6 +100,14 @@ public class TrainingDefinitionDto implements Serializable {
 
     public void setPrerequisites(byte[] prerequisites) {
         this.prerequisites = prerequisites;
+    }
+
+    public List<GameDefinitionCreateDto> getLevels() {
+        return levels;
+    }
+
+    public void setLevels(List<GameDefinitionCreateDto> levels) {
+        this.levels = levels;
     }
 
     @Override

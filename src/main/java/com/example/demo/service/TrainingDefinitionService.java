@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,5 +92,11 @@ public class TrainingDefinitionService {
         trainingDefinitionDto.setLevels(trainingMapperHelper.getLevelsFrom(trainingDefinition.get()));
 
         return trainingDefinitionDto;
+    }
+
+    public List<TrainingDefinitionDto> getAllTrainingDefinitions() {
+        List<TrainingDefinition> trainingDefinitions = trainingDefinitionRepository.findAll();
+
+        return BeanMapper.INSTANCE.toDto(trainingDefinitions);
     }
 }

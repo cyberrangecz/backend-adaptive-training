@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/training-definition")
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
@@ -55,5 +57,13 @@ public class TrainingDefinitionController {
     public TrainingDefinitionDto getTrainingDefinition(
         @ApiParam(value = "Game definition", required = true) @PathVariable(required = true) Long id) {
         return trainingDefinitionService.getTrainingDefinition(id);
+    }
+
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Return all training definitions")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Training definitions returned"),
+                           @ApiResponse(code = 500, message = "Unexpected application error")})
+    public List<TrainingDefinitionDto> getAllTrainingDefinitions() {
+        return trainingDefinitionService.getAllTrainingDefinitions();
     }
 }

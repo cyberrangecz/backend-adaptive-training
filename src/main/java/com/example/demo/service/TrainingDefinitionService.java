@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.AssessmentLevel;
+import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.TrainingDefinition;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,11 +45,10 @@ public class TrainingDefinitionService {
     @Autowired
     private TrainingMapperHelper trainingMapperHelper;
 
-    public GameDefinitionCreateDto createGameDefinition(TrainingDefinitionDto trainingDefinitionDto) {
+    public GameDefinitionCreateDto createTrainingDefinition(TrainingDefinitionDto trainingDefinitionDto) {
 
         TrainingDefinition trainingDefinition = BeanMapper.INSTANCE.toEntity(trainingDefinitionDto);
         trainingDefinitionRepository.save(trainingDefinition);
-
 
         // TODO refactor this, it's really ugly
         for (GameDefinitionCreateDto gameDefinitionCreateDto : trainingDefinitionDto.getLevels()) {
@@ -98,5 +99,57 @@ public class TrainingDefinitionService {
         List<TrainingDefinition> trainingDefinitions = trainingDefinitionRepository.findAll();
 
         return BeanMapper.INSTANCE.toDto(trainingDefinitions);
+    }
+
+    public GameDefinitionCreateDto updateTrainingDefinition(Long id, TrainingDefinitionDto trainingDefinitionDto) {
+        Optional<TrainingDefinition> trainingDefinition = trainingDefinitionRepository.findById(id);
+
+        if (trainingDefinition.isEmpty()) {
+            // TODO throw 404
+            return new GameDefinitionCreateDto();
+        }
+        TrainingDefinition trainingDefinitionEntity = trainingDefinition.get();
+
+        TrainingDefinition convertedEntity = BeanMapper.INSTANCE.toEntity(trainingDefinitionDto);
+        convertedEntity.setId(trainingDefinitionEntity.getId());
+
+
+        for (BaseLevel originalLevel : trainingDefinitionEntity.getLevels()) {
+            for (GameDefinitionCreateDto updatedLevel : trainingDefinitionDto.getLevels()) {
+                if (Objects.equals(originalLevel.getId(), updatedLevel.getId())) {
+                    originalLevel = updateTrainingLevel(originalLevel, updatedLevel);
+                    originalLevel.setTrainingDefinition(convertedEntity);
+                }
+            }
+        }
+
+        convertedEntity.setLevels(trainingDefinitionEntity.getLevels());
+
+        trainingDefinitionRepository.save(convertedEntity);
+
+        return null;
+    }
+
+    private <T extends BaseLevel> BaseLevel updateTrainingLevel(T originalLevel, GameDefinitionCreateDto updatedLevel) {
+        BaseLevel updatedEntity = null;
+        if (updatedLevel.getType() == LevelType.assessment) {
+            updatedEntity = BeanMapper.INSTANCE.updateAssessmentLevel((AssessmentLevel) originalLevel, updatedLevel);
+        } else if (updatedLevel.getType() == LevelType.unity) {
+            updatedEntity = BeanMapper.INSTANCE.updateUnityLevel((UnityLevel) originalLevel, updatedLevel);
+
+            for (GameLevel originalSubLevel : ((UnityLevel) originalLevel).getSubLevels()) {
+                for (GameDefinitionCreateDto updatedSubLevel : updatedLevel.getSubLevels()) {
+                    if (Objects.equals(originalSubLevel.getId(), updatedSubLevel.getId())) {
+                        originalSubLevel = BeanMapper.INSTANCE.updateGameLevel(originalSubLevel, updatedSubLevel);
+                    }
+                }
+            }
+        } else if (updatedLevel.getType() == LevelType.game) {
+            updatedEntity = BeanMapper.INSTANCE.updateGameLevel((GameLevel) originalLevel, updatedLevel);
+        } else if (updatedLevel.getType() == LevelType.info) {
+            updatedEntity = BeanMapper.INSTANCE.updateInfoLevel((InfoLevel) originalLevel, updatedLevel);
+        }
+
+        return updatedEntity;
     }
 }

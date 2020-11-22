@@ -2,6 +2,7 @@ package com.example.demo.mapper;
 
 import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
+import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
@@ -21,6 +22,7 @@ import com.example.demo.dto.UnityLevelDto;
 import com.example.demo.dto.input.GameDefinitionCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import java.util.List;
@@ -82,6 +84,26 @@ public interface BeanMapper {
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     UnityLevel toUnityLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
+
+    @Mapping(target = "orderInTrainingDefinition", source = "order")
+    @Mapping(target = "trainingDefinition", ignore = true)
+    AssessmentLevel updateAssessmentLevel(@MappingTarget AssessmentLevel assessmentLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
+
+    @Mapping(target = "orderInTrainingDefinition", source = "order")
+    @Mapping(target = "trainingDefinition", ignore = true)
+    InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
+
+    @Mapping(target = "orderInTrainingDefinition", source = "order")
+    @Mapping(target = "trainingDefinition", ignore = true)
+    @Mapping(target = "unityLevel", ignore = true)
+    @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
+    @Mapping(target = "hints", ignore = true) // TODO not really sure about this
+    GameLevel updateGameLevel(@MappingTarget GameLevel gameLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
+
+    @Mapping(target = "orderInTrainingDefinition", source = "order")
+    @Mapping(target = "trainingDefinition", ignore = true)
+    @Mapping(target = "subLevels", ignore = true)
+    UnityLevel updateUnityLevel(@MappingTarget UnityLevel unityLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "type", constant = "assessment")
     GameDefinitionCreateDto toLevelDefinitionDto(AssessmentLevel assessmentLevel);

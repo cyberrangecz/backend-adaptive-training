@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -44,10 +44,10 @@ public class TrainingDefinitionController {
     @ApiOperation(value = "Create a new training definition")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "New training definition created"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
-    public GameDefinitionCreateDto createGameLevel(
+    public GameDefinitionCreateDto createTrainingDefinition(
         @ApiParam(value = "Training definition", required = true) @RequestBody(required = true)
             TrainingDefinitionDto trainingDefinitionDto) {
-        return trainingDefinitionService.createGameDefinition(trainingDefinitionDto);
+        return trainingDefinitionService.createTrainingDefinition(trainingDefinitionDto);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -59,11 +59,22 @@ public class TrainingDefinitionController {
         return trainingDefinitionService.getTrainingDefinition(id);
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Return all training definitions")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Training definitions returned"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
     public List<TrainingDefinitionDto> getAllTrainingDefinitions() {
         return trainingDefinitionService.getAllTrainingDefinitions();
+    }
+
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update specified training definition")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Training definition was updated"),
+                           @ApiResponse(code = 500, message = "Unexpected application error")})
+    public GameDefinitionCreateDto updateTrainingDefinition(
+        @ApiParam(value = "Game definition", required = true) @PathVariable(required = true) Long id,
+        @ApiParam(value = "Training definition", required = true) @RequestBody(required = true)
+            TrainingDefinitionDto trainingDefinitionDto) {
+        return trainingDefinitionService.updateTrainingDefinition(id, trainingDefinitionDto);
     }
 }

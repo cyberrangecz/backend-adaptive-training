@@ -31,4 +31,17 @@ public class LevelOperationsService {
         baseLevelRepository.save(levelFrom.get());
         baseLevelRepository.save(levelTo.get());
     }
+
+    public void deleteLevel(Long trainingDefinitionId, Long levelId) {
+        Optional<BaseLevel> levelEntity = baseLevelRepository.findById(levelId);
+
+        if (levelEntity.isEmpty()) {
+            // TODO throw a proper exception
+            return;
+        }
+
+        // TODO get all the levels in training definition and decrease their order attribute if needed
+
+        baseLevelRepository.delete(levelEntity.get());
+    }
 }

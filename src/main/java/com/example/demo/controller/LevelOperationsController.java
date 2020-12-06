@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/{definitionId}/levels")
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Api(value = "/{}/levels", tags = {"Level operations"})
+@Api(value = "/{definitionId}/levels", tags = {"Level operations"})
 public class LevelOperationsController {
 
     private final LevelOperationsService levelOperationsService;
@@ -41,5 +42,16 @@ public class LevelOperationsController {
         @ApiParam(value = "Level ID - to", required = true) @PathVariable(name = "levelIdTo") Long levelIdTo) {
 
         levelOperationsService.swapLevelsOrder(definitionId, levelIdFrom, levelIdTo);
+    }
+
+    @DeleteMapping(value = "/{levelId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Delete a specified level")
+    @ApiResponses(value = {@ApiResponse(code = 200, message = "Level deleted"),
+                           @ApiResponse(code = 500, message = "Unexpected application error")})
+    public void deleteLevel(
+        @ApiParam(value = "Training definition ID", required = true) @PathVariable(name = "definitionId")
+            Long definitionId,
+        @ApiParam(value = "Level ID - from", required = true) @PathVariable(name = "levelId") Long levelId) {
+        levelOperationsService.deleteLevel(definitionId, levelId);
     }
 }

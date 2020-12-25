@@ -23,10 +23,6 @@ public class GameLevel extends BaseLevel {
     @OneToMany(mappedBy = "gameLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Attachment> attachments;
 
-    @OrderBy
-    @OneToMany(mappedBy = "gameLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Hint> hints;
-
     public String getContent() {
         return content;
     }
@@ -75,21 +71,10 @@ public class GameLevel extends BaseLevel {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 
-    public List<Hint> getHints() {
-        if (Objects.isNull(hints)) {
-            hints = new ArrayList<>();
-        }
-        return hints;
-    }
-
-    public void setHints(List<Hint> hints) {
-        this.hints = hints;
-    }
-
     @Override
     public String toString() {
-        return "GameLevel{" + ", content='" + content + '\'' + ", solutionPenalized='" + solutionPenalized + '\'' +
-               ", flag='" + flag + '\'' + ", solution='" + solution + '\'' + ", attachments='" + attachments + '\'' +
-               ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' + ", hints=" + hints + "} " + super.toString();
+        return "GameLevel{" + "content='" + content + '\'' + ", solutionPenalized=" + solutionPenalized + ", flag='" +
+               flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
+               ", attachments=" + attachments + "} " + super.toString();
     }
 }

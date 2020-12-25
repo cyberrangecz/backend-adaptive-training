@@ -1,7 +1,6 @@
 package com.example.demo.dto.input;
 
 import com.example.demo.dto.AttachmentDto;
-import com.example.demo.dto.HintDto;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ public class GameDefinitionCreateDto {
     private Long incorrectFlagLimit;
 
     private List<AttachmentDto> attachments;
-    private List<HintDto> hints;
 
     // info level fields
     // currently none special
@@ -116,14 +114,6 @@ public class GameDefinitionCreateDto {
 
     public void setAttachments(List<AttachmentDto> attachments) {
         this.attachments = attachments;
-    }
-
-    public List<HintDto> getHints() {
-        return hints;
-    }
-
-    public void setHints(List<HintDto> hints) {
-        this.hints = hints;
     }
 
     public List<GameDefinitionCreateDto> getSubLevels() {

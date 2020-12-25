@@ -13,7 +13,6 @@ public class GameLevelUpdateDto extends BaseLevelDto {
     private Long incorrectFlagLimit;
 
     private List<AttachmentDto> attachments;
-    private List<HintDto> hints;
 
     public String getContent() {
         return content;
@@ -63,17 +62,6 @@ public class GameLevelUpdateDto extends BaseLevelDto {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 
-    public List<HintDto> getHints() {
-        if (Objects.isNull(hints)) {
-            hints = new ArrayList<>();
-        }
-        return hints;
-    }
-
-    public void setHints(List<HintDto> hints) {
-        this.hints = hints;
-    }
-
     @Override
     public String toString() {
         return "GameLevelDto{" +
@@ -83,7 +71,6 @@ public class GameLevelUpdateDto extends BaseLevelDto {
                ", solution='" + solution + '\'' +
                ", attachments='" + attachments + '\'' +
                ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
-               ", hints=" + hints +
                "} " + super.toString();
     }
 }

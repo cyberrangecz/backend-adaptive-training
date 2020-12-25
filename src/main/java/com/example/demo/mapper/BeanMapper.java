@@ -2,9 +2,7 @@ package com.example.demo.mapper;
 
 import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
-import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
-import com.example.demo.domain.Hint;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.TrainingDefinition;
 import com.example.demo.domain.UnityLevel;
@@ -13,7 +11,6 @@ import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
-import com.example.demo.dto.HintDto;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
@@ -60,13 +57,9 @@ public interface BeanMapper {
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel toEntity(InfoLevelUpdateDto gameLevel);
 
-    HintDto toDto(Hint hint);
+    AttachmentDto toDto(Attachment attachment);
 
-    Hint toEntity(HintDto hint);
-
-    AttachmentDto toDto(Attachment hint);
-
-    Attachment toEntity(AttachmentDto hint);
+    Attachment toEntity(AttachmentDto attachment);
 
     UnityLevelDto toDto(UnityLevel unityLevel);
 
@@ -97,7 +90,6 @@ public interface BeanMapper {
     @Mapping(target = "trainingDefinition", ignore = true)
     @Mapping(target = "unityLevel", ignore = true)
     @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
-    @Mapping(target = "hints", ignore = true) // TODO not really sure about this
     GameLevel updateGameLevel(@MappingTarget GameLevel gameLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")

@@ -24,6 +24,9 @@ public class LevelOperationsService {
     @Autowired
     private PhaseLevelService phaseLevelService;
 
+    @Autowired
+    private GameLevelService gameLevelService;
+
     public void swapLevelsOrder(Long trainingDefinitionId, Long levelIdFrom, Long levelIdTo) {
         Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
         Optional<BaseLevel> levelTo = baseLevelRepository.findById(levelIdTo);
@@ -68,4 +71,9 @@ public class LevelOperationsService {
 
         return baseLevelDto;
     }
+
+    public BaseLevelDto createTask(Long phaseId) {
+        return gameLevelService.createDefaultGameLevel(phaseId);
+    }
+
 }

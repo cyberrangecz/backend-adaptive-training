@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.GameLevel;
+import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
@@ -27,6 +28,17 @@ public class GameLevelService {
     public GameLevelService(GameLevelRepository gameLevelRepository) {
         this.gameLevelRepository = gameLevelRepository;
     }
+
+    public GameLevelDto createDefaultGameLevel(Long phaseId) {
+        GameLevel gameLevel = new GameLevel();
+        gameLevel.setTitle("Title of game");
+        gameLevel.setOrderInTrainingDefinition(gameLevelRepository.getCurrentMaxOrder(phaseId) + 1);
+
+        GameLevel persistedEntity = gameLevelRepository.save(gameLevel);
+
+        return BeanMapper.INSTANCE.toDto(persistedEntity);
+    }
+
 
     public GameLevelDto createGameLevel(GameLevelCreateDto gameLevelCreateDto) {
         GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelCreateDto);

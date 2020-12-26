@@ -4,7 +4,6 @@ import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
-import com.example.demo.domain.TrainingDefinition;
 import com.example.demo.domain.UnityLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
@@ -14,7 +13,6 @@ import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.TrainingDefinitionDto;
 import com.example.demo.dto.UnityLevelDto;
 import com.example.demo.dto.input.GameDefinitionCreateDto;
 import org.mapstruct.Mapper;
@@ -79,21 +77,17 @@ public interface BeanMapper {
     UnityLevel toUnityLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    @Mapping(target = "trainingDefinition", ignore = true)
     AssessmentLevel updateAssessmentLevel(@MappingTarget AssessmentLevel assessmentLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    @Mapping(target = "trainingDefinition", ignore = true)
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    @Mapping(target = "trainingDefinition", ignore = true)
     @Mapping(target = "unityLevel", ignore = true)
     @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
     GameLevel updateGameLevel(@MappingTarget GameLevel gameLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    @Mapping(target = "trainingDefinition", ignore = true)
     @Mapping(target = "subLevels", ignore = true)
     UnityLevel updateUnityLevel(@MappingTarget UnityLevel unityLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
@@ -108,12 +102,4 @@ public interface BeanMapper {
 
     @Mapping(target = "type", constant = "unity")
     GameDefinitionCreateDto toLevelDefinitionDto(UnityLevel unityLevel);
-
-    @Mapping(target = "levels", ignore = true)
-    TrainingDefinition toEntity(TrainingDefinitionDto trainingDefinition);
-
-    @Mapping(target = "levels", ignore = true)
-    TrainingDefinitionDto toDto(TrainingDefinition trainingDefinition);
-
-    List<TrainingDefinitionDto> toDto(List<TrainingDefinition> trainingDefinitions);
 }

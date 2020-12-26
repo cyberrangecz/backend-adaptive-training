@@ -4,6 +4,7 @@ import com.example.demo.dto.AttachmentDto;
 
 import java.util.List;
 
+// TODO make sure this class can be removed
 public class GameDefinitionCreateDto {
     private Long id;
     private String title;

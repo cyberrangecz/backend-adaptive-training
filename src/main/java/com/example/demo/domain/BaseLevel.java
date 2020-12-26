@@ -28,8 +28,7 @@ public abstract class BaseLevel {
     @ManyToOne(fetch = FetchType.LAZY)
     private UnityLevel unityLevel;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TrainingDefinition trainingDefinition;
+    private Long trainingDefinitionId;
 
     public String getTitle() {
         return title;
@@ -79,12 +78,12 @@ public abstract class BaseLevel {
         this.unityLevel = unityLevel;
     }
 
-    public TrainingDefinition getTrainingDefinition() {
-        return trainingDefinition;
+    public Long getTrainingDefinitionId() {
+        return trainingDefinitionId;
     }
 
-    public void setTrainingDefinition(TrainingDefinition trainingDefinition) {
-        this.trainingDefinition = trainingDefinition;
+    public void setTrainingDefinitionId(Long trainingDefinition) {
+        this.trainingDefinitionId = trainingDefinition;
     }
 
     @Override

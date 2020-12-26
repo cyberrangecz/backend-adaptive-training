@@ -26,7 +26,7 @@ public abstract class BaseLevel {
     private Integer orderInTrainingDefinition;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private UnityLevel unityLevel;
+    private PhaseLevel phaseLevel;
 
     private Long trainingDefinitionId;
 
@@ -70,12 +70,12 @@ public abstract class BaseLevel {
         this.id = id;
     }
 
-    public UnityLevel getUnityLevel() {
-        return unityLevel;
+    public PhaseLevel getPhaseLevel() {
+        return phaseLevel;
     }
 
-    public void setUnityLevel(UnityLevel unityLevel) {
-        this.unityLevel = unityLevel;
+    public void setPhaseLevel(PhaseLevel phaseLevel) {
+        this.phaseLevel = phaseLevel;
     }
 
     public Long getTrainingDefinitionId() {

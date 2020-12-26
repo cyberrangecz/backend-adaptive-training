@@ -4,7 +4,7 @@ import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
-import com.example.demo.domain.UnityLevel;
+import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.GameLevelCreateDto;
@@ -13,14 +13,12 @@ import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.UnityLevelDto;
+import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.input.GameDefinitionCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
-
-import java.util.List;
 
 
 @Mapper
@@ -59,10 +57,10 @@ public interface BeanMapper {
 
     Attachment toEntity(AttachmentDto attachment);
 
-    UnityLevelDto toDto(UnityLevel unityLevel);
+    PhaseLevelDto toDto(PhaseLevel phaseLevel);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    UnityLevel toEntity(UnityLevelDto unityLevel);
+    PhaseLevel toEntity(PhaseLevelDto phaseLevel);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     AssessmentLevel toAssessmentLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
@@ -74,7 +72,7 @@ public interface BeanMapper {
     GameLevel toGameLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    UnityLevel toUnityLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
+    PhaseLevel toPhaseLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     AssessmentLevel updateAssessmentLevel(@MappingTarget AssessmentLevel assessmentLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
@@ -83,13 +81,13 @@ public interface BeanMapper {
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
-    @Mapping(target = "unityLevel", ignore = true)
+    @Mapping(target = "phaseLevel", ignore = true)
     @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
     GameLevel updateGameLevel(@MappingTarget GameLevel gameLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "orderInTrainingDefinition", source = "order")
     @Mapping(target = "subLevels", ignore = true)
-    UnityLevel updateUnityLevel(@MappingTarget UnityLevel unityLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
+    PhaseLevel updatePhaseLevel(@MappingTarget PhaseLevel phaseLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "type", constant = "assessment")
     GameDefinitionCreateDto toLevelDefinitionDto(AssessmentLevel assessmentLevel);
@@ -101,5 +99,5 @@ public interface BeanMapper {
     GameDefinitionCreateDto toLevelDefinitionDto(InfoLevel infoLevel);
 
     @Mapping(target = "type", constant = "unity")
-    GameDefinitionCreateDto toLevelDefinitionDto(UnityLevel unityLevel);
+    GameDefinitionCreateDto toLevelDefinitionDto(PhaseLevel phaseLevel);
 }

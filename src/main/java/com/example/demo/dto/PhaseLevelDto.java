@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.util.List;
 
-public class UnityLevelDto extends BaseLevelDto {
+public class PhaseLevelDto extends BaseLevelDto {
 
     // TODO any class extending BaseLevel probable should be used here - this piece of art is here in order to make mapstruct happy
     private List<GameLevelDto> subLevels;

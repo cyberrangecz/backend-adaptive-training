@@ -5,6 +5,7 @@ import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
+import com.example.demo.repository.BaseLevelRepository;
 import com.example.demo.repository.InfoLevelRepository;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
@@ -22,10 +23,25 @@ public class InfoLevelService {
     private static final Logger LOG = LoggerFactory.getLogger(InfoLevelService.class);
 
     private final InfoLevelRepository infoLevelRepository;
+    private final BaseLevelRepository baseLevelRepository;
+
+
 
     @Autowired
-    public InfoLevelService(InfoLevelRepository infoLevelRepository) {
+    public InfoLevelService(InfoLevelRepository infoLevelRepository, BaseLevelRepository baseLevelRepository) {
         this.infoLevelRepository = infoLevelRepository;
+        this.baseLevelRepository = baseLevelRepository;
+    }
+
+    public InfoLevelDto createDefaultInfoLevel(Long trainingDefinitionId) {
+        InfoLevel infoLevel = new InfoLevel();
+        infoLevel.setContent("Content of info level");
+        infoLevel.setTitle("Title of info level");
+        infoLevel.setOrderInTrainingDefinition(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+
+        InfoLevel persistedEntity = infoLevelRepository.save(infoLevel);
+
+        return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
     public InfoLevelDto createInfoLevel(InfoLevelCreateDto infoLevelCreateDto) {

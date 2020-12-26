@@ -8,10 +8,10 @@ import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
-public class UnityLevel extends BaseLevel {
+public class PhaseLevel extends BaseLevel {
 
     @OrderBy
-    @OneToMany(mappedBy = "unityLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<GameLevel> subLevels;
 
     public List<GameLevel> getSubLevels() {

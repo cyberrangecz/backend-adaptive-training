@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.GameLevel;
-import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;

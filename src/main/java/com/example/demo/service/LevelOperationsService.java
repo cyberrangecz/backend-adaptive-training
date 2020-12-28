@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.BaseLevel;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.input.LevelType;
+import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,4 +77,14 @@ public class LevelOperationsService {
         return gameLevelService.createDefaultGameLevel(phaseId);
     }
 
+    public BaseLevelDto getLevel(Long levelId) {
+        Optional<BaseLevel> level = baseLevelRepository.findById(levelId);
+
+        if (level.isEmpty()) {
+            // TODO throw 404
+            return null;
+        }
+
+        return BeanMapper.INSTANCE.toDto(level.get());
+    }
 }

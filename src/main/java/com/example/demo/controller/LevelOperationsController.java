@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -65,5 +66,15 @@ public class LevelOperationsController {
         @PathVariable("levelType") LevelType levelType) {
 
         return levelOperationsService.createLevel(definitionId, levelType);
+    }
+
+    // TODO definitionId is not needed here
+    @GetMapping(path = "/{levelId}")
+    public BaseLevelDto getLevel(
+        @ApiParam(value = "Training definition ID", required = true) @PathVariable(name = "definitionId")
+            Long definitionId,
+        @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
+
+        return levelOperationsService.getLevel(levelId);
     }
 }

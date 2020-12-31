@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,5 +78,15 @@ public class LevelOperationsController {
         @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
 
         return levelOperationsService.getLevel(levelId);
+    }
+
+    @PutMapping(path = "/info-levels/{levelId}")
+    public void updateInfoLevel(
+        @ApiParam(value = "Training definition ID", required = true) @PathVariable(name = "definitionId")
+            Long definitionId,
+        @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId,
+        @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
+
+        levelOperationsService.updateInfoLevel(levelId, infoLevelUpdateDto);
     }
 }

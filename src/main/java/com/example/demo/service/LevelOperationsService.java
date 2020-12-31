@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
@@ -86,5 +87,9 @@ public class LevelOperationsService {
         }
 
         return BeanMapper.INSTANCE.toDto(level.get());
+    }
+
+    public void updateInfoLevel(Long levelId, InfoLevelUpdateDto infoLevelUpdateDto) {
+        infoLevelService.updateInfoLevel(levelId, infoLevelUpdateDto);
     }
 }

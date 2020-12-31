@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
 import com.example.demo.service.LevelOperationsService;
@@ -88,5 +89,15 @@ public class LevelOperationsController {
         @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
 
         levelOperationsService.updateInfoLevel(levelId, infoLevelUpdateDto);
+    }
+
+    @PutMapping(path = "/tasks/{taskId}")
+    public void updateTask(
+        @ApiParam(value = "Training definition ID", required = true) @PathVariable(name = "definitionId")
+            Long definitionId,
+        @ApiParam(value = "Task ID", required = true) @PathVariable("taskId") Long taskId,
+        @RequestBody GameLevelUpdateDto gameLevelUpdateDto) {
+
+        levelOperationsService.updateTask(taskId, gameLevelUpdateDto);
     }
 }

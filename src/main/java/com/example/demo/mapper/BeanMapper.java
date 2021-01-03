@@ -85,6 +85,6 @@ public interface BeanMapper {
     @Mapping(target = "type", constant = "info")
     GameDefinitionCreateDto toLevelDefinitionDto(InfoLevel infoLevel);
 
-    @Mapping(target = "type", constant = "unity")
+    @Mapping(target = "type", constant = "phase")
     GameDefinitionCreateDto toLevelDefinitionDto(PhaseLevel phaseLevel);
 }

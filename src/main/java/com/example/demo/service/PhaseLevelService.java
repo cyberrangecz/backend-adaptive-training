@@ -20,7 +20,7 @@ public class PhaseLevelService {
     public PhaseLevelDto createDefaultPhaseLevel(Long trainingDefinitionId) {
 
         PhaseLevel phaseLevel = new PhaseLevel();
-        phaseLevel.setTitle("Title of assessment level");
+        phaseLevel.setTitle("Title of phase level");
         phaseLevel.setTrainingDefinitionId(trainingDefinitionId);
         phaseLevel.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 

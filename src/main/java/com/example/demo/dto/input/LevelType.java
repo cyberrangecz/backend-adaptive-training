@@ -4,5 +4,5 @@ public enum LevelType {
     assessment,
     game,
     info,
-    unity
+    phase
 }

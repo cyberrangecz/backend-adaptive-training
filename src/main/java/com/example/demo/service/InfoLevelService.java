@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import com.example.demo.repository.InfoLevelRepository;
@@ -79,18 +78,19 @@ public class InfoLevelService {
         return BeanMapper.INSTANCE.toDto(infoLevel.get());
     }
 
-    public InfoLevelDto updateInfoLevel(Long id, InfoLevelUpdateDto infoLevelUpdateDto) {
-        Optional<InfoLevel> persistedInfoLevel = infoLevelRepository.findById(id);
+    public InfoLevelDto updateInfoLevel(InfoLevel infoLevelUpdate) {
+        Optional<InfoLevel> persistedInfoLevel = infoLevelRepository.findById(infoLevelUpdate.getId());
 
         if (persistedInfoLevel.isEmpty()) {
-            LOG.error("No info level found with ID {}.", id);
+            // TODO return 404
+            LOG.error("No info level found with ID {}.", infoLevelUpdate.getId());
             return new InfoLevelDto();
         }
 
-        InfoLevel infoLevel = BeanMapper.INSTANCE.toEntity(infoLevelUpdateDto);
-        infoLevel.setId(persistedInfoLevel.get().getId());
+        infoLevelUpdate.setTrainingDefinitionId(persistedInfoLevel.get().getTrainingDefinitionId());
+        infoLevelUpdate.setOrder(persistedInfoLevel.get().getOrder());
 
-        InfoLevel savedEntity = infoLevelRepository.save(infoLevel);
+        InfoLevel savedEntity = infoLevelRepository.save(infoLevelUpdate);
 
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }

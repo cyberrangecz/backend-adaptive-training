@@ -120,12 +120,11 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiResponse(code = 200, message = "Info level updated"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PutMapping(path = "/info-levels/{levelId}")
+    @PutMapping(path = "/info-levels")
     public void updateInfoLevel(
-            @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId,
             @ApiParam(value = "Info level to be updated") @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
 
-        levelOperationsService.updateInfoLevel(levelId, infoLevelUpdateDto);
+        levelOperationsService.updateInfoLevel(infoLevelUpdateDto);
     }
 
     @ApiOperation(httpMethod = "PUT",

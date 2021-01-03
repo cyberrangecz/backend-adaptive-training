@@ -1,8 +1,26 @@
 package com.example.demo.dto;
 
-public class InfoLevelUpdateDto extends BaseLevelDto {
+public class InfoLevelUpdateDto {
 
+    private Long id;
+    private String title;
     private String content;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getContent() {
         return content;
@@ -14,6 +32,10 @@ public class InfoLevelUpdateDto extends BaseLevelDto {
 
     @Override
     public String toString() {
-        return "InfoLevelUpdateDto{" + "content='" + content + '\'' + '}';
+        return "InfoLevelUpdateDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                '}';
     }
 }

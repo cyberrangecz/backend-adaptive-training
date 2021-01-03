@@ -64,16 +64,17 @@ public class InfoLevelController {
         return infoLevelService.getInfoLevel(id);
     }
 
-    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Update info level")
-    @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated info level"),
-                           @ApiResponse(code = 500, message = "Unexpected application error")})
-    public InfoLevelDto updateInfoLevel(
-        @ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id,
-        @ApiParam(value = "Update data", required = true) @RequestBody(required = true)
-            InfoLevelUpdateDto infoLevelUpdateDto) {
-        return infoLevelService.updateInfoLevel(id, infoLevelUpdateDto);
-    }
+    // TODO this will be probably removed. This operation is implemented in AdaptiveTrainingDefinitionsRestController
+//    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @ApiOperation(value = "Update info level")
+//    @ApiResponses(value = {@ApiResponse(code = 200, message = "Updated info level"),
+//                           @ApiResponse(code = 500, message = "Unexpected application error")})
+//    public InfoLevelDto updateInfoLevel(
+//        @ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id,
+//        @ApiParam(value = "Update data", required = true) @RequestBody(required = true)
+//            InfoLevelUpdateDto infoLevelUpdateDto) {
+//        return infoLevelService.updateInfoLevel(id, infoLevelUpdateDto);
+//    }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Remove info level")

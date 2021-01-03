@@ -30,7 +30,7 @@ public class LevelOperationsService {
     @Autowired
     private GameLevelService gameLevelService;
 
-    public void swapLevelsOrder(Long trainingDefinitionId, Long levelIdFrom, Long levelIdTo) {
+    public void swapLevelsOrder(Long levelIdFrom, Long levelIdTo) {
         Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
         Optional<BaseLevel> levelTo = baseLevelRepository.findById(levelIdTo);
 
@@ -49,7 +49,7 @@ public class LevelOperationsService {
         baseLevelRepository.save(levelTo.get());
     }
 
-    public void deleteLevel(Long trainingDefinitionId, Long levelId) {
+    public void deleteLevel(Long levelId) {
         Optional<BaseLevel> levelEntity = baseLevelRepository.findById(levelId);
 
         if (levelEntity.isEmpty()) {

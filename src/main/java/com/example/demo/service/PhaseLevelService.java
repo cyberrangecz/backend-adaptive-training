@@ -21,7 +21,8 @@ public class PhaseLevelService {
 
         PhaseLevel phaseLevel = new PhaseLevel();
         phaseLevel.setTitle("Title of assessment level");
-        phaseLevel.setOrderInTrainingDefinition(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        phaseLevel.setTrainingDefinitionId(trainingDefinitionId);
+        phaseLevel.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         PhaseLevel persistedEntity = phaseLevelRepository.save(phaseLevel);
 

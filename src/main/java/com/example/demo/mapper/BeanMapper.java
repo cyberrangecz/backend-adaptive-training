@@ -31,29 +31,22 @@ public interface BeanMapper {
 
     AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     AssessmentLevel toEntity(AssessmentLevelDto assessmentLevel);
 
     GameLevelDto toDto(GameLevel gameLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     GameLevel toEntity(GameLevelDto gameLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     GameLevel toEntity(GameLevelCreateDto gameLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     GameLevel toEntity(GameLevelUpdateDto gameLevel);
 
     InfoLevelDto toDto(InfoLevel infoLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel toEntity(InfoLevelDto infoLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel toEntity(InfoLevelCreateDto gameLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel toEntity(InfoLevelUpdateDto gameLevel);
 
     AttachmentDto toDto(Attachment attachment);
@@ -62,33 +55,24 @@ public interface BeanMapper {
 
     PhaseLevelDto toDto(PhaseLevel phaseLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     PhaseLevel toEntity(PhaseLevelDto phaseLevel);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     AssessmentLevel toAssessmentLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel toInfoLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     GameLevel toGameLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     PhaseLevel toPhaseLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     AssessmentLevel updateAssessmentLevel(@MappingTarget AssessmentLevel assessmentLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     @Mapping(target = "phaseLevel", ignore = true)
     @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
     GameLevel updateGameLevel(@MappingTarget GameLevel gameLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "orderInTrainingDefinition", source = "order")
     @Mapping(target = "subLevels", ignore = true)
     PhaseLevel updatePhaseLevel(@MappingTarget PhaseLevel phaseLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 

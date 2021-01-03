@@ -37,7 +37,8 @@ public class InfoLevelService {
         InfoLevel infoLevel = new InfoLevel();
         infoLevel.setContent("Content of info level");
         infoLevel.setTitle("Title of info level");
-        infoLevel.setOrderInTrainingDefinition(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        infoLevel.setTrainingDefinitionId(trainingDefinitionId);
+        infoLevel.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         InfoLevel persistedEntity = infoLevelRepository.save(infoLevel);
 

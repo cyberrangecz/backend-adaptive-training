@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface GameLevelRepository extends JpaRepository<GameLevel, Long> {
 
-    @Query("SELECT COALESCE(MAX(g.orderInTrainingDefinition), -1) FROM GameLevel g WHERE g.phaseLevel.id = :phaseId")
+    @Query("SELECT COALESCE(MAX(g.order), -1) FROM GameLevel g WHERE g.phaseLevel.id = :phaseId")
     Integer getCurrentMaxOrder(@Param("phaseId") Long phaseId);
 }

@@ -1,6 +1,7 @@
 package com.example.demo.domain;
 
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -23,7 +24,9 @@ public abstract class BaseLevel {
     private String title;
     private String estimatedDuration;
     private Long maxScore;
-    private Integer orderInTrainingDefinition;
+
+    @Column(name = "order_in_training_definition", nullable = false)
+    private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private PhaseLevel phaseLevel;
@@ -54,12 +57,12 @@ public abstract class BaseLevel {
         this.maxScore = maxScore;
     }
 
-    public Integer getOrderInTrainingDefinition() {
-        return orderInTrainingDefinition;
+    public Integer getOrder() {
+        return order;
     }
 
-    public void setOrderInTrainingDefinition(Integer orderInTrainingDefinition) {
-        this.orderInTrainingDefinition = orderInTrainingDefinition;
+    public void setOrder(Integer order) {
+        this.order = order;
     }
 
     public Long getId() {

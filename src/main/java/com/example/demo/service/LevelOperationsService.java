@@ -39,11 +39,11 @@ public class LevelOperationsService {
             return;
         }
 
-        int fromOrder = levelFrom.get().getOrderInTrainingDefinition();
-        int toOrder = levelTo.get().getOrderInTrainingDefinition();
+        int fromOrder = levelFrom.get().getOrder();
+        int toOrder = levelTo.get().getOrder();
 
-        levelFrom.get().setOrderInTrainingDefinition(toOrder);
-        levelTo.get().setOrderInTrainingDefinition(fromOrder);
+        levelFrom.get().setOrder(toOrder);
+        levelTo.get().setOrder(fromOrder);
 
         baseLevelRepository.save(levelFrom.get());
         baseLevelRepository.save(levelTo.get());

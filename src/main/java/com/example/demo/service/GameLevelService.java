@@ -31,7 +31,7 @@ public class GameLevelService {
     public GameLevelDto createDefaultGameLevel(Long phaseId) {
         GameLevel gameLevel = new GameLevel();
         gameLevel.setTitle("Title of game");
-        gameLevel.setOrderInTrainingDefinition(gameLevelRepository.getCurrentMaxOrder(phaseId) + 1);
+        gameLevel.setOrder(gameLevelRepository.getCurrentMaxOrder(phaseId) + 1);
 
         GameLevel persistedEntity = gameLevelRepository.save(gameLevel);
 

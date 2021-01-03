@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/adaptive-training-definitions", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Api(value = "/adaptive-training-definitions",
+@Api(value = "/",
         tags = "Adaptive training definitions",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         authorizations = @Authorization(value = "bearerAuth"))

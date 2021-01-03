@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.GameLevel;
+import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.GameLevelCreateDto;
 import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.GameLevelRepository;
+import com.example.demo.repository.PhaseLevelRepository;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +24,24 @@ public class GameLevelService {
     private static final Logger LOG = LoggerFactory.getLogger(GameLevelService.class);
 
     private final GameLevelRepository gameLevelRepository;
+    private final PhaseLevelRepository phaseLevelRepository;
 
     @Autowired
-    public GameLevelService(GameLevelRepository gameLevelRepository) {
+    public GameLevelService(GameLevelRepository gameLevelRepository, PhaseLevelRepository phaseLevelRepository) {
         this.gameLevelRepository = gameLevelRepository;
+        this.phaseLevelRepository = phaseLevelRepository;
     }
 
     public GameLevelDto createDefaultGameLevel(Long phaseId) {
+        Optional<PhaseLevel> phaseLevel = phaseLevelRepository.findById(phaseId);
+        if (phaseLevel.isEmpty()) {
+            // TODO return 404
+            return null;
+        }
+
         GameLevel gameLevel = new GameLevel();
-        gameLevel.setTitle("Title of game");
+        gameLevel.setTitle("Title of task");
+        gameLevel.setPhaseLevel(phaseLevel.get());
         gameLevel.setOrder(gameLevelRepository.getCurrentMaxOrder(phaseId) + 1);
 
         GameLevel persistedEntity = gameLevelRepository.save(gameLevel);

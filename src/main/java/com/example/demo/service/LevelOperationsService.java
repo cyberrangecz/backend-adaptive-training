@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
+import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
@@ -96,7 +97,8 @@ public class LevelOperationsService {
         infoLevelService.updateInfoLevel(infoLevel);
     }
 
-    public void updateTask(Long taskId, GameLevelUpdateDto gameLevelUpdateDto) {
-        gameLevelService.updateGameLevel(taskId, gameLevelUpdateDto);
+    public void updateTask(GameLevelUpdateDto gameLevelUpdateDto) {
+        GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelUpdateDto);
+        gameLevelService.updateGameLevel(gameLevel);
     }
 }

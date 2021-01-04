@@ -136,12 +136,11 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiResponse(code = 200, message = "Task updated"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PutMapping(path = "/tasks/{taskId}")
+    @PutMapping(path = "/tasks")
     public void updateTask(
-            @ApiParam(value = "Task ID", required = true) @PathVariable("taskId") Long taskId,
             @ApiParam(value = "Task to be updated") @RequestBody GameLevelUpdateDto gameLevelUpdateDto) {
 
-        levelOperationsService.updateTask(taskId, gameLevelUpdateDto);
+        levelOperationsService.updateTask(gameLevelUpdateDto);
     }
 
     @ApiOperation(httpMethod = "POST",

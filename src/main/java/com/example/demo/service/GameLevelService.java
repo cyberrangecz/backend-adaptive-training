@@ -84,18 +84,19 @@ public class GameLevelService {
         return BeanMapper.INSTANCE.toDto(gameLevel.get());
     }
 
-    public GameLevelDto updateGameLevel(Long id, GameLevelUpdateDto gameLevelUpdateDto) {
-        Optional<GameLevel> persistedGameLevel = gameLevelRepository.findById(id);
+    public GameLevelDto updateGameLevel(GameLevel gameLevelUpdate) {
+        Optional<GameLevel> persistedGameLevel = gameLevelRepository.findById(gameLevelUpdate.getId());
 
         if (persistedGameLevel.isEmpty()) {
-            LOG.error("No game level found with ID {}.", id);
+            // TODO return 404
+            LOG.error("No game level found with ID {}.", gameLevelUpdate.getId());
             return new GameLevelDto();
         }
 
-        GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelUpdateDto);
-        gameLevel.setId(persistedGameLevel.get().getId());
+        gameLevelUpdate.setPhaseLevel(persistedGameLevel.get().getPhaseLevel());
+        gameLevelUpdate.setTrainingDefinitionId(persistedGameLevel.get().getTrainingDefinitionId());
 
-        GameLevel savedEntity = gameLevelRepository.save(gameLevel);
+        GameLevel savedEntity = gameLevelRepository.save(gameLevelUpdate);
 
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }

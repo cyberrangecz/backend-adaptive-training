@@ -4,6 +4,7 @@ import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.GameLevel;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.GameLevelDto;
 import com.example.demo.dto.GameLevelUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
@@ -74,11 +75,16 @@ public class LevelOperationsService {
             baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
         }
 
+        baseLevelDto.setType(levelType);
+
         return baseLevelDto;
     }
 
     public BaseLevelDto createTask(Long phaseId) {
-        return gameLevelService.createDefaultGameLevel(phaseId);
+        GameLevelDto createdTask = gameLevelService.createDefaultGameLevel(phaseId);
+        createdTask.setType(LevelType.game);
+
+        return createdTask;
     }
 
     public BaseLevelDto getLevel(Long levelId) {

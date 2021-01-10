@@ -1,8 +1,15 @@
-package com.example.demo.dto;
+package com.example.demo.domain;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import java.util.List;
 
-public class GameLevelUpdateDto extends BaseLevelDto {
+
+@Entity
+public class Task extends BaseLevel {
 
     private String content;
     private boolean solutionPenalized;
@@ -10,7 +17,9 @@ public class GameLevelUpdateDto extends BaseLevelDto {
     private String solution;
     private Long incorrectFlagLimit;
 
-    private List<AttachmentDto> attachments;
+    @OrderBy
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Attachment> attachments;
 
     public String getContent() {
         return content;
@@ -44,11 +53,11 @@ public class GameLevelUpdateDto extends BaseLevelDto {
         this.solution = solution;
     }
 
-    public List<AttachmentDto> getAttachments() {
+    public List<Attachment> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<AttachmentDto> attachments) {
+    public void setAttachments(List<Attachment> attachments) {
         this.attachments = attachments;
     }
 
@@ -62,13 +71,8 @@ public class GameLevelUpdateDto extends BaseLevelDto {
 
     @Override
     public String toString() {
-        return "GameLevelDto{" +
-               "content='" + content + '\'' +
-               ", solutionPenalized='" + solutionPenalized + '\'' +
-               ", flag='" + flag + '\'' +
-               ", solution='" + solution + '\'' +
-               ", attachments='" + attachments + '\'' +
-               ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
-               "} " + super.toString();
+        return "Task{" + "content='" + content + '\'' + ", solutionPenalized=" + solutionPenalized + ", flag='" +
+               flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
+               ", attachments=" + attachments + "} " + super.toString();
     }
 }

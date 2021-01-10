@@ -18,7 +18,7 @@ public class Attachment {
     private LocalDateTime creationTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private GameLevel gameLevel;
+    private Task task;
 
     public Long getId() {
         return id;
@@ -44,12 +44,12 @@ public class Attachment {
         this.creationTime = creationTime;
     }
 
-    public GameLevel getGameLevel() {
-        return gameLevel;
+    public Task getTask() {
+        return task;
     }
 
-    public void setGameLevel(GameLevel gameLevel) {
-        this.gameLevel = gameLevel;
+    public void setTask(Task task) {
+        this.task = task;
     }
 
     @Override

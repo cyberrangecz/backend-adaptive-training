@@ -1,9 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.GameLevelCreateDto;
-import com.example.demo.dto.GameLevelDto;
-import com.example.demo.dto.GameLevelUpdateDto;
-import com.example.demo.service.GameLevelService;
+import com.example.demo.dto.TaskCreateDto;
+import com.example.demo.dto.TaskDto;
+import com.example.demo.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,45 +25,45 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/game-level")
+@RequestMapping("/task")
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
              methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Api(value = "/game-level", tags = {"Game Level"})
-public class GameLevelController {
+@Api(value = "/task", tags = {"Task"})
+public class TaskController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(GameLevelController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TaskController.class);
 
-    private final GameLevelService gameLevelService;
+    private final TaskService taskService;
 
     @Autowired
-    public GameLevelController(GameLevelService gameLevelService) {
-        this.gameLevelService = gameLevelService;
+    public TaskController(TaskService taskService) {
+        this.taskService = taskService;
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiOperation(value = "Create a new game level")
+    @ApiOperation(value = "Create a new task")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "New game level created"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
-    public GameLevelDto createGameLevel(@ApiParam(value = "Game level", required = true) @RequestBody(required = true)
-                                            GameLevelCreateDto gameLevelCreateDto) {
-        return gameLevelService.createGameLevel(gameLevelCreateDto);
+    public TaskDto createGameLevel(@ApiParam(value = "Game level", required = true) @RequestBody(required = true)
+                                           TaskCreateDto taskCreateDto) {
+        return taskService.createTask(taskCreateDto);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Return game levels")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Return game levels"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
-    public List<GameLevelDto> findGameLevels() {
-        return gameLevelService.findAllGameLevels();
+    public List<TaskDto> findGameLevels() {
+        return taskService.findAllTasks();
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get game level detail")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Game level detail"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
-    public GameLevelDto getGameLevel(
+    public TaskDto getGameLevel(
         @ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id) {
-        return gameLevelService.getGameLevel(id);
+        return taskService.getTask(id);
     }
 
     // TODO this will be probably removed. This operation is implemented in AdaptiveTrainingDefinitionsRestController
@@ -85,6 +83,6 @@ public class GameLevelController {
     @ApiResponses(value = {@ApiResponse(code = 200, message = "Game level removed"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
     public void removeGameLevel(@ApiParam(value = "Game Level ID", required = true) @PathVariable("id") final Long id) {
-        gameLevelService.removeGameLevel(id);
+        taskService.removeTaskLevel(id);
     }
 }

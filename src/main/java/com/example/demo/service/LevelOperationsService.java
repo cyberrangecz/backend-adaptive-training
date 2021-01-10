@@ -1,11 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
-import com.example.demo.domain.GameLevel;
+import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
-import com.example.demo.dto.GameLevelDto;
-import com.example.demo.dto.GameLevelUpdateDto;
+import com.example.demo.dto.TaskDto;
+import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
 import com.example.demo.mapper.BeanMapper;
@@ -31,7 +31,7 @@ public class LevelOperationsService {
     private PhaseLevelService phaseLevelService;
 
     @Autowired
-    private GameLevelService gameLevelService;
+    private TaskService taskService;
 
     public void swapLevelsOrder(Long levelIdFrom, Long levelIdTo) {
         Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
@@ -81,8 +81,8 @@ public class LevelOperationsService {
     }
 
     public BaseLevelDto createTask(Long phaseId) {
-        GameLevelDto createdTask = gameLevelService.createDefaultGameLevel(phaseId);
-        createdTask.setType(LevelType.game);
+        TaskDto createdTask = taskService.createDefaultTask(phaseId);
+        createdTask.setType(LevelType.task);
 
         return createdTask;
     }
@@ -103,8 +103,8 @@ public class LevelOperationsService {
         infoLevelService.updateInfoLevel(infoLevel);
     }
 
-    public void updateTask(GameLevelUpdateDto gameLevelUpdateDto) {
-        GameLevel gameLevel = BeanMapper.INSTANCE.toEntity(gameLevelUpdateDto);
-        gameLevelService.updateGameLevel(gameLevel);
+    public void updateTask(TaskUpdateDto taskUpdateDto) {
+        Task task = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
+        taskService.updateTask(task);
     }
 }

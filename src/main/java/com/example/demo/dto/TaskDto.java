@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
-public class GameLevelDto extends GameLevelUpdateDto implements Serializable {
+public class TaskDto extends TaskUpdateDto implements Serializable {
 
     private Long id;
 
@@ -17,7 +17,7 @@ public class GameLevelDto extends GameLevelUpdateDto implements Serializable {
 
     @Override
     public String toString() {
-        return "GameLevelDto{" +
+        return "TaskDto{" +
             "id=" + id +
             "} " + super.toString();
     }

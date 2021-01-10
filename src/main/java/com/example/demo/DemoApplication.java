@@ -1,18 +1,9 @@
 package com.example.demo;
 
-import com.example.demo.domain.GameLevel;
-import com.example.demo.dto.GameLevelDto;
-import com.example.demo.repository.GameLevelRepository;
-import com.example.demo.service.GameLevelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 public class DemoApplication {

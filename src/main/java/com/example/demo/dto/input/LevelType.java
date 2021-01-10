@@ -2,7 +2,7 @@ package com.example.demo.dto.input;
 
 public enum LevelType {
     assessment,
-    game,
+    task,
     info,
     phase
 }

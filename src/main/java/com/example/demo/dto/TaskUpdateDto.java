@@ -1,15 +1,8 @@
-package com.example.demo.domain;
+package com.example.demo.dto;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import java.util.List;
 
-
-@Entity
-public class GameLevel extends BaseLevel {
+public class TaskUpdateDto extends BaseLevelDto {
 
     private String content;
     private boolean solutionPenalized;
@@ -17,9 +10,7 @@ public class GameLevel extends BaseLevel {
     private String solution;
     private Long incorrectFlagLimit;
 
-    @OrderBy
-    @OneToMany(mappedBy = "gameLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Attachment> attachments;
+    private List<AttachmentDto> attachments;
 
     public String getContent() {
         return content;
@@ -53,11 +44,11 @@ public class GameLevel extends BaseLevel {
         this.solution = solution;
     }
 
-    public List<Attachment> getAttachments() {
+    public List<AttachmentDto> getAttachments() {
         return attachments;
     }
 
-    public void setAttachments(List<Attachment> attachments) {
+    public void setAttachments(List<AttachmentDto> attachments) {
         this.attachments = attachments;
     }
 
@@ -71,8 +62,13 @@ public class GameLevel extends BaseLevel {
 
     @Override
     public String toString() {
-        return "GameLevel{" + "content='" + content + '\'' + ", solutionPenalized=" + solutionPenalized + ", flag='" +
-               flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
-               ", attachments=" + attachments + "} " + super.toString();
+        return "TaskUpdateDto{" +
+               "content='" + content + '\'' +
+               ", solutionPenalized='" + solutionPenalized + '\'' +
+               ", flag='" + flag + '\'' +
+               ", solution='" + solution + '\'' +
+               ", attachments='" + attachments + '\'' +
+               ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
+               "} " + super.toString();
     }
 }

@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-public class GameLevelCreateDto extends GameLevelUpdateDto {
+public class TaskCreateDto extends TaskUpdateDto {
 
     @Override
     public String toString() {

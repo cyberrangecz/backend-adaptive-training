@@ -12,13 +12,13 @@ public class PhaseLevel extends BaseLevel {
 
     @OrderBy
     @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<GameLevel> subLevels;
+    private List<Task> subLevels;
 
-    public List<GameLevel> getSubLevels() {
+    public List<Task> getSubLevels() {
         return subLevels;
     }
 
-    public void setSubLevels(List<GameLevel> subLevels) {
+    public void setSubLevels(List<Task> subLevels) {
         this.subLevels = subLevels;
     }
 }

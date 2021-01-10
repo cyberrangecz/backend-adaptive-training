@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
-import com.example.demo.dto.GameLevelUpdateDto;
+import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.input.LevelType;
 import com.example.demo.service.LevelOperationsService;
@@ -88,7 +88,7 @@ public class AdaptiveTrainingDefinitionsRestController {
     @PostMapping(path = "/levels/{levelType}")
     public BaseLevelDto createLevel(
             @ApiParam(value = "Training definition ID", required = true) @RequestParam(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level type", allowableValues = "game, assessment, info, phase", required = true)
+            @ApiParam(value = "Level type", allowableValues = "task, assessment, info, phase", required = true)
             @PathVariable("levelType") LevelType levelType) {
 
         return levelOperationsService.createLevel(definitionId, levelType);
@@ -138,9 +138,9 @@ public class AdaptiveTrainingDefinitionsRestController {
     })
     @PutMapping(path = "/tasks")
     public void updateTask(
-            @ApiParam(value = "Task to be updated") @RequestBody GameLevelUpdateDto gameLevelUpdateDto) {
+            @ApiParam(value = "Task to be updated") @RequestBody TaskUpdateDto taskUpdateDto) {
 
-        levelOperationsService.updateTask(gameLevelUpdateDto);
+        levelOperationsService.updateTask(taskUpdateDto);
     }
 
     @ApiOperation(httpMethod = "POST",

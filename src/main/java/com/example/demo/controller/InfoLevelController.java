@@ -42,7 +42,7 @@ public class InfoLevelController {
     @ApiOperation(value = "Create a new info level")
     @ApiResponses(value = {@ApiResponse(code = 200, message = "New info level created"),
                            @ApiResponse(code = 500, message = "Unexpected application error")})
-    public InfoLevelDto createInfoLevel(@ApiParam(value = "Game level", required = true) @RequestBody(required = true)
+    public InfoLevelDto createInfoLevel(@ApiParam(value = "Info level", required = true) @RequestBody(required = true)
                                             InfoLevelCreateDto infoLevelCreateDto) {
         return infoLevelService.createInfoLevel(infoLevelCreateDto);
     }

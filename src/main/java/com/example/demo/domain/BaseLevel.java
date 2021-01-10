@@ -24,6 +24,8 @@ public abstract class BaseLevel {
     private String title;
     private String estimatedDuration;
     private Long maxScore;
+    private Integer maxCommands;
+    private Integer maxWrongFlags;
 
     @Column(name = "order_in_training_definition", nullable = false)
     private Integer order;
@@ -89,9 +91,33 @@ public abstract class BaseLevel {
         this.trainingDefinitionId = trainingDefinition;
     }
 
+    public Integer getMaxCommands() {
+        return maxCommands;
+    }
+
+    public void setMaxCommands(Integer maxCommands) {
+        this.maxCommands = maxCommands;
+    }
+
+    public Integer getMaxWrongFlags() {
+        return maxWrongFlags;
+    }
+
+    public void setMaxWrongFlags(Integer maxWrongFlags) {
+        this.maxWrongFlags = maxWrongFlags;
+    }
+
     @Override
     public String toString() {
-        return "BaseLevel{" + "title='" + title + '\'' + ", estimatedDuration='" + estimatedDuration + '\'' +
-               ", maxScore=" + maxScore + '}';
+        return "BaseLevel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", estimatedDuration='" + estimatedDuration + '\'' +
+                ", maxScore=" + maxScore +
+                ", maxCommands=" + maxCommands +
+                ", maxWrongFlags=" + maxWrongFlags +
+                ", order=" + order +
+                ", trainingDefinitionId=" + trainingDefinitionId +
+                '}';
     }
 }

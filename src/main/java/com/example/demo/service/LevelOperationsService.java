@@ -12,6 +12,7 @@ import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -52,6 +53,7 @@ public class LevelOperationsService {
         baseLevelRepository.save(levelTo.get());
     }
 
+    @Transactional
     public void deleteLevel(Long levelId) {
         Optional<BaseLevel> levelEntity = baseLevelRepository.findById(levelId);
 
@@ -60,7 +62,9 @@ public class LevelOperationsService {
             return;
         }
 
-        // TODO get all the levels in training definition and decrease their order attribute if needed
+        int levelOrder = levelEntity.get().getOrder();
+        Long phaseId = levelEntity.get().getPhaseLevel() == null ? null : levelEntity.get().getPhaseLevel().getId();
+        baseLevelRepository.decreaseOrderAfterLevelWasDeleted(levelEntity.get().getTrainingDefinitionId(), levelOrder, phaseId);
 
         baseLevelRepository.delete(levelEntity.get());
     }

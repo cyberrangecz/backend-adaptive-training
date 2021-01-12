@@ -12,8 +12,8 @@ public abstract class BaseLevelDto implements Serializable {
     private String estimatedDuration;
     private Long maxScore;
     private LevelType type;
-    private Integer maxCommands;
-    private Integer maxWrongFlags;
+    private Integer allowedCommands;
+    private Integer allowedWrongFlags;
 
     public Long getId() {
         return id;
@@ -63,25 +63,33 @@ public abstract class BaseLevelDto implements Serializable {
         this.type = type;
     }
 
-    public Integer getMaxCommands() {
-        return maxCommands;
+    public Integer getAllowedCommands() {
+        return allowedCommands;
     }
 
-    public void setMaxCommands(Integer maxCommands) {
-        this.maxCommands = maxCommands;
+    public void setAllowedCommands(Integer allowedCommands) {
+        this.allowedCommands = allowedCommands;
     }
 
-    public Integer getMaxWrongFlags() {
-        return maxWrongFlags;
+    public Integer getAllowedWrongFlags() {
+        return allowedWrongFlags;
     }
 
-    public void setMaxWrongFlags(Integer maxWrongFlags) {
-        this.maxWrongFlags = maxWrongFlags;
+    public void setAllowedWrongFlags(Integer allowedWrongFlags) {
+        this.allowedWrongFlags = allowedWrongFlags;
     }
 
     @Override
     public String toString() {
-        return "BaseLevelDto{" + "id=" + id + ", title='" + title + '\'' + ", order=" + order +
-               ", estimatedDuration='" + estimatedDuration + '\'' + ", maxScore=" + maxScore + '}';
+        return "BaseLevelDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", order=" + order +
+                ", estimatedDuration='" + estimatedDuration + '\'' +
+                ", maxScore=" + maxScore +
+                ", type=" + type +
+                ", allowedCommands=" + allowedCommands +
+                ", allowedWrongFlags=" + allowedWrongFlags +
+                '}';
     }
 }

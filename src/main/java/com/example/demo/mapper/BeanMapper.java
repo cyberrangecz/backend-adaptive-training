@@ -3,11 +3,13 @@ package com.example.demo.mapper;
 import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.BaseLevel;
+import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
+import com.example.demo.dto.DecisionMatrixRowDto;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
@@ -87,4 +89,8 @@ public interface BeanMapper {
 
     @Mapping(target = "type", constant = "phase")
     GameDefinitionCreateDto toLevelDefinitionDto(PhaseLevel phaseLevel);
+
+    DecisionMatrixRow toEntity(DecisionMatrixRowDto decisionMatrixRowDto);
+
+    DecisionMatrixRowDto toDto(DecisionMatrixRow decisionMatrixRow);
 }

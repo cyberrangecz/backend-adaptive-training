@@ -14,11 +14,23 @@ public class PhaseLevel extends BaseLevel {
     @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Task> subLevels;
 
+    @OrderBy
+    @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<DecisionMatrixRow> decisionMatrix;
+
     public List<Task> getSubLevels() {
         return subLevels;
     }
 
     public void setSubLevels(List<Task> subLevels) {
         this.subLevels = subLevels;
+    }
+
+    public List<DecisionMatrixRow> getDecisionMatrix() {
+        return decisionMatrix;
+    }
+
+    public void setDecisionMatrix(List<DecisionMatrixRow> decisionMatrix) {
+        this.decisionMatrix = decisionMatrix;
     }
 }

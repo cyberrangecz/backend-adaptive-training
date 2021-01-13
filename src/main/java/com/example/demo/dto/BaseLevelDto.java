@@ -11,7 +11,7 @@ public abstract class BaseLevelDto implements Serializable {
     private Integer order;
     private String estimatedDuration;
     private Long maxScore;
-    private LevelType type;
+    private LevelType levelType;
     private Integer allowedCommands;
     private Integer allowedWrongFlags;
 
@@ -55,12 +55,12 @@ public abstract class BaseLevelDto implements Serializable {
         this.maxScore = maxScore;
     }
 
-    public LevelType getType() {
-        return type;
+    public LevelType getLevelType() {
+        return levelType;
     }
 
-    public void setType(LevelType type) {
-        this.type = type;
+    public void setLevelType(LevelType levelType) {
+        this.levelType = levelType;
     }
 
     public Integer getAllowedCommands() {
@@ -87,7 +87,7 @@ public abstract class BaseLevelDto implements Serializable {
                 ", order=" + order +
                 ", estimatedDuration='" + estimatedDuration + '\'' +
                 ", maxScore=" + maxScore +
-                ", type=" + type +
+                ", levelType=" + levelType +
                 ", allowedCommands=" + allowedCommands +
                 ", allowedWrongFlags=" + allowedWrongFlags +
                 '}';

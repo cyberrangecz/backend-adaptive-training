@@ -9,6 +9,7 @@ import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
+import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
@@ -29,12 +30,29 @@ public interface BeanMapper {
 
     BeanMapper INSTANCE = Mappers.getMapper(BeanMapper.class);
 
-    AssessmentLevelDto toDto(BaseLevel baseLevel);
+    default BaseLevelDto toDto(BaseLevel baseLevel) {
+        BaseLevelDto baseLevelDto;
+        if (baseLevel instanceof AssessmentLevel) {
+            baseLevelDto = toDto((AssessmentLevel) baseLevel);
+        } else if (baseLevel instanceof PhaseLevel) {
+            baseLevelDto = toDto((PhaseLevel) baseLevel);
+        } else if (baseLevel instanceof InfoLevel) {
+            baseLevelDto = toDto((InfoLevel) baseLevel);
+        } else if (baseLevel instanceof Task) {
+            baseLevelDto = toDto((Task) baseLevel);
+        } else {
+            throw new RuntimeException("Unknown level type " + baseLevel.getClass().getName());
+        }
 
+        return baseLevelDto;
+    }
+
+    @Mapping(target = "levelType", constant = "assessment")
     AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
 
     AssessmentLevel toEntity(AssessmentLevelDto assessmentLevel);
 
+    @Mapping(target = "levelType", constant = "task")
     TaskDto toDto(Task task);
 
     Task toEntity(TaskDto taskDto);
@@ -43,6 +61,7 @@ public interface BeanMapper {
 
     Task toEntity(TaskUpdateDto taskUpdateDto);
 
+    @Mapping(target = "levelType", constant = "info")
     InfoLevelDto toDto(InfoLevel infoLevel);
 
     InfoLevel toEntity(InfoLevelDto infoLevel);
@@ -55,6 +74,7 @@ public interface BeanMapper {
 
     Attachment toEntity(AttachmentDto attachment);
 
+    @Mapping(target = "levelType", constant = "phase")
     PhaseLevelDto toDto(PhaseLevel phaseLevel);
 
     PhaseLevel toEntity(PhaseLevelDto phaseLevel);

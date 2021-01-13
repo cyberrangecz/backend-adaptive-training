@@ -79,14 +79,14 @@ public class LevelOperationsService {
             baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
         }
 
-        baseLevelDto.setType(levelType);
+        baseLevelDto.setLevelType(levelType);
 
         return baseLevelDto;
     }
 
     public BaseLevelDto createTask(Long phaseId) {
         TaskDto createdTask = taskService.createDefaultTask(phaseId);
-        createdTask.setType(LevelType.task);
+        createdTask.setLevelType(LevelType.task);
 
         return createdTask;
     }

@@ -1,9 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.QuestionChoiceDto;
+import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.input.LevelType;
+import com.example.demo.enums.LevelType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -88,7 +90,7 @@ public class AdaptiveTrainingDefinitionsRestController {
     @PostMapping(path = "/levels/{levelType}")
     public BaseLevelDto createLevel(
             @ApiParam(value = "Training definition ID", required = true) @RequestParam(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level type", allowableValues = "task, assessment, info, phase", required = true)
+            @ApiParam(value = "Level type", allowableValues = "questionnaire, assessment, info, phase", required = true)
             @PathVariable("levelType") LevelType levelType) {
 
         return levelOperationsService.createLevel(definitionId, levelType);
@@ -158,5 +160,39 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiParam(value = "Phase ID", required = true) @PathVariable(name = "phaseId") Long phaseId) {
 
         return levelOperationsService.createTask(phaseId);
+    }
+
+    @ApiOperation(httpMethod = "POST",
+            value = "Create a new question in questionnaire",
+            response = BaseLevelDto.class,
+            nickname = "createQuestion",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Question created"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PostMapping(path = "/questionnaires/{questionnaireId}")
+    public QuestionDto createQuestion(
+            @ApiParam(value = "Questionnaire ID", required = true) @PathVariable(name = "questionnaireId") Long questionnaireId) {
+
+        return levelOperationsService.createQuestion(questionnaireId);
+    }
+
+    @ApiOperation(httpMethod = "POST",
+            value = "Create a new choice in question",
+            response = BaseLevelDto.class,
+            nickname = "createQuestionChoice",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Question choice created"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PostMapping(path = "/questions/{questionId}")
+    public QuestionChoiceDto createQuestionChoice(
+            @ApiParam(value = "Question ID", required = true) @PathVariable(name = "questionId") Long questionId) {
+
+        return levelOperationsService.createQuestionChoice(questionId);
     }
 }

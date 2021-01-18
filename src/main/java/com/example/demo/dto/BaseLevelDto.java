@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.dto.input.LevelType;
+import com.example.demo.enums.LevelType;
 
 import java.io.Serializable;
 

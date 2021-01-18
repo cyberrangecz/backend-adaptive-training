@@ -4,20 +4,26 @@ import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.DecisionMatrixRow;
-import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.PhaseLevel;
+import com.example.demo.domain.Question;
+import com.example.demo.domain.QuestionChoice;
+import com.example.demo.domain.QuestionnaireLevel;
+import com.example.demo.domain.Task;
 import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
-import com.example.demo.dto.TaskCreateDto;
-import com.example.demo.dto.TaskDto;
-import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseLevelDto;
+import com.example.demo.dto.QuestionChoiceDto;
+import com.example.demo.dto.QuestionDto;
+import com.example.demo.dto.QuestionnaireLevelDto;
+import com.example.demo.dto.TaskCreateDto;
+import com.example.demo.dto.TaskDto;
+import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.input.GameDefinitionCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -40,6 +46,8 @@ public interface BeanMapper {
             baseLevelDto = toDto((InfoLevel) baseLevel);
         } else if (baseLevel instanceof Task) {
             baseLevelDto = toDto((Task) baseLevel);
+        } else if (baseLevel instanceof QuestionnaireLevel) {
+            baseLevelDto = toDto((QuestionnaireLevel) baseLevel);
         } else {
             throw new RuntimeException("Unknown level type " + baseLevel.getClass().getName());
         }
@@ -92,7 +100,8 @@ public interface BeanMapper {
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "phaseLevel", ignore = true)
-    @Mapping(target = "attachments", ignore = true) // TODO not really sure about this
+    @Mapping(target = "attachments", ignore = true)
+        // TODO not really sure about this
     Task updateTask(@MappingTarget Task task, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "subLevels", ignore = true)
@@ -113,4 +122,16 @@ public interface BeanMapper {
     DecisionMatrixRow toEntity(DecisionMatrixRowDto decisionMatrixRowDto);
 
     DecisionMatrixRowDto toDto(DecisionMatrixRow decisionMatrixRow);
+
+    QuestionChoice toEntity(QuestionChoiceDto questionChoiceDto);
+
+    QuestionChoiceDto toDto(QuestionChoice questionChoice);
+
+    Question toEntity(QuestionDto questionDto);
+
+    QuestionDto toDto(Question question);
+
+    QuestionnaireLevel toEntity(QuestionnaireLevelDto questionnaireLevelDto);
+
+    QuestionnaireLevelDto toDto(QuestionnaireLevel questionnaireLevel);
 }

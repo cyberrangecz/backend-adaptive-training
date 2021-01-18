@@ -4,12 +4,15 @@ import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.QuestionChoiceDto;
+import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.input.LevelType;
+import com.example.demo.enums.LevelType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.QuestionChoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +32,19 @@ public class LevelOperationsService {
     private AssessmentLevelService assessmentLevelService;
 
     @Autowired
+    private QuestionnaireLevelService questionnaireLevelService;
+
+    @Autowired
     private PhaseLevelService phaseLevelService;
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private QuestionService questionService;
+
+    @Autowired
+    private QuestionChoiceService questionChoiceService;
 
     public void swapLevelsOrder(Long levelIdFrom, Long levelIdTo) {
         Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
@@ -75,6 +87,8 @@ public class LevelOperationsService {
             baseLevelDto = infoLevelService.createDefaultInfoLevel(trainingDefinitionId);
         } else if (levelType.equals(LevelType.assessment)) {
             baseLevelDto = assessmentLevelService.createDefaultAssessmentLevel(trainingDefinitionId);
+        } else if (levelType.equals(LevelType.questionnaire)) {
+            baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
         } else {
             baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
         }
@@ -110,5 +124,17 @@ public class LevelOperationsService {
     public void updateTask(TaskUpdateDto taskUpdateDto) {
         Task task = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
         taskService.updateTask(task);
+    }
+
+    public QuestionDto createQuestion(Long questionnaireId) {
+        QuestionDto createdQuestion = questionService.createDefaultQuestion(questionnaireId);
+
+        return createdQuestion;
+    }
+
+    public QuestionChoiceDto createQuestionChoice(Long questionId) {
+        QuestionChoiceDto createdQuestionChoice = questionChoiceService.createDefaultQuestionChoice(questionId);
+
+        return createdQuestionChoice;
     }
 }

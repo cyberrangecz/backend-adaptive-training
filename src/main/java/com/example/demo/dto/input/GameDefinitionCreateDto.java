@@ -1,6 +1,7 @@
 package com.example.demo.dto.input;
 
 import com.example.demo.dto.AttachmentDto;
+import com.example.demo.enums.LevelType;
 
 import java.util.List;
 

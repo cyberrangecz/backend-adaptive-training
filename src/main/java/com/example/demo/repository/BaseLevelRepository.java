@@ -19,4 +19,23 @@ public interface BaseLevelRepository extends JpaRepository<BaseLevel, Long> {
     void decreaseOrderAfterLevelWasDeleted(@Param("trainingDefinitionId") Long trainingDefinitionId,
                                            @Param("order") int order,
                                            @Param("phaseLevelId") Long phaseLevelId);
+
+    @Modifying
+    @Query("UPDATE BaseLevel l SET l.order = l.order + 1 " +
+            "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
+            "AND l.order >= :lowerBound " +
+            "AND l.order < :upperBound ")
+    void increaseOrderOfLevelsOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
+                                         @Param("lowerBound") int lowerBound,
+                                         @Param("upperBound") int upperBound);
+
+    @Modifying
+    @Query("UPDATE BaseLevel l SET l.order = l.order - 1 " +
+            "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
+            "AND l.order > :lowerBound " +
+            "AND l.order <= :upperBound ")
+    void decreaseOrderOfLevelsOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
+                                         @Param("lowerBound") int lowerBound,
+                                         @Param("upperBound") int upperBound);
+
 }

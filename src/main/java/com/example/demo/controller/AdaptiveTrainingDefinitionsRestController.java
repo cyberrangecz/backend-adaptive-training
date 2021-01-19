@@ -45,20 +45,20 @@ public class AdaptiveTrainingDefinitionsRestController {
     }
 
     @ApiOperation(httpMethod = "PUT",
-            value = "Swap levels' order",
-            nickname = "swapLevelsOrder",
+            value = "Move level to specified order",
+            nickname = "moveLevelToSpecifiedOrder",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Level orders changed"),
+            @ApiResponse(code = 200, message = "Level moved to specified order"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PutMapping(value = "/levels/{levelIdFrom}/swap-with/{levelIdTo}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void swapLevelsOrder(
+    @PutMapping(value = "/levels/{levelIdFrom}/move-to/{newPosition}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void moveLevelToSpecifiedOrder(
             @ApiParam(value = "Level ID - from", required = true) @PathVariable(name = "levelIdFrom") Long levelIdFrom,
-            @ApiParam(value = "Level ID - to", required = true) @PathVariable(name = "levelIdTo") Long levelIdTo) {
+            @ApiParam(value = "Position (order) to which the level should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
 
-        levelOperationsService.swapLevelsOrder(levelIdFrom, levelIdTo);
+        levelOperationsService.moveLevelToSpecifiedOrder(levelIdFrom, newPosition);
     }
 
     @ApiOperation(httpMethod = "DELETE",

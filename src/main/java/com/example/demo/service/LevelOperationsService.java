@@ -12,7 +12,6 @@ import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.enums.LevelType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
-import com.example.demo.repository.QuestionChoiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,23 +45,31 @@ public class LevelOperationsService {
     @Autowired
     private QuestionChoiceService questionChoiceService;
 
-    public void swapLevelsOrder(Long levelIdFrom, Long levelIdTo) {
+    @Transactional
+    public void moveLevelToSpecifiedOrder(Long levelIdFrom, int newPosition) {
         Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
-        Optional<BaseLevel> levelTo = baseLevelRepository.findById(levelIdTo);
 
-        if (levelFrom.isEmpty() || levelTo.isEmpty()) {
+        if (levelFrom.isEmpty()) {
             // TODO throw a proper exception
             return;
         }
 
         int fromOrder = levelFrom.get().getOrder();
-        int toOrder = levelTo.get().getOrder();
 
-        levelFrom.get().setOrder(toOrder);
-        levelTo.get().setOrder(fromOrder);
+        if (fromOrder < newPosition) {
+            baseLevelRepository.decreaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), fromOrder, newPosition);
+        } else if (fromOrder > newPosition) {
+            baseLevelRepository.increaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), newPosition, fromOrder);
+        } else {
+            // nothing should be changed, no further actions needed
+            return;
+        }
+
+        // TODO change decision matrix
+
+        levelFrom.get().setOrder(newPosition);
 
         baseLevelRepository.save(levelFrom.get());
-        baseLevelRepository.save(levelTo.get());
     }
 
     @Transactional

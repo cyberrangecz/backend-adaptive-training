@@ -11,7 +11,7 @@ public class TaskUpdateDto {
     private String solution;
     private Long incorrectFlagLimit;
 
-    private List<AttachmentDto> attachments;
+//    private List<AttachmentDto> attachments;
 
     public Long getId() {
         return id;
@@ -54,13 +54,13 @@ public class TaskUpdateDto {
         this.solution = solution;
     }
 
-    public List<AttachmentDto> getAttachments() {
-        return attachments;
-    }
+//    public List<AttachmentDto> getAttachments() {
+//        return attachments;
+//    }
 
-    public void setAttachments(List<AttachmentDto> attachments) {
-        this.attachments = attachments;
-    }
+//    public void setAttachments(List<AttachmentDto> attachments) {
+//        this.attachments = attachments;
+//    }
 
     public Long getIncorrectFlagLimit() {
         return incorrectFlagLimit;
@@ -79,7 +79,7 @@ public class TaskUpdateDto {
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectFlagLimit=" + incorrectFlagLimit +
-                ", attachments=" + attachments +
+//                ", attachments=" + attachments +
                 '}';
     }
 }

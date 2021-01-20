@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.TaskUpdateDto;
@@ -127,6 +128,22 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiParam(value = "Info level to be updated") @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
 
         levelOperationsService.updateInfoLevel(infoLevelUpdateDto);
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Update phase",
+            nickname = "updatePhaseLevel",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Phase level"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping(path = "/phases")
+    public void updatePhaseLevel(
+            @ApiParam(value = "Info level to be updated") @RequestBody PhaseLevelUpdateDto phaseLevelUpdateDto) {
+
+        levelOperationsService.updatePhaseLevel(phaseLevelUpdateDto);
     }
 
     @ApiOperation(httpMethod = "PUT",

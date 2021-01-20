@@ -1,9 +1,11 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
+import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.TaskDto;
@@ -126,6 +128,11 @@ public class LevelOperationsService {
     public void updateInfoLevel(InfoLevelUpdateDto infoLevelUpdateDto) {
         InfoLevel infoLevel = BeanMapper.INSTANCE.toEntity(infoLevelUpdateDto);
         infoLevelService.updateInfoLevel(infoLevel);
+    }
+
+    public void updatePhaseLevel(PhaseLevelUpdateDto phaseLevelUpdateDto) {
+        PhaseLevel phaseLevel = BeanMapper.INSTANCE.toEntity(phaseLevelUpdateDto);
+        phaseLevelService.updatePhaseLevel(phaseLevel);
     }
 
     public void updateTask(TaskUpdateDto taskUpdateDto) {

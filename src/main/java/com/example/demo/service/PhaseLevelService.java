@@ -6,13 +6,19 @@ import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import com.example.demo.repository.PhaseLevelRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
+import java.util.Optional;
 
 @Service
 public class PhaseLevelService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PhaseLevelService.class);
 
     @Autowired
     private PhaseLevelRepository phaseLevelRepository;
@@ -41,5 +47,27 @@ public class PhaseLevelService {
         PhaseLevel persistedEntity = phaseLevelRepository.save(phaseLevel);
 
         return BeanMapper.INSTANCE.toDto(persistedEntity);
+    }
+
+    public PhaseLevelDto updatePhaseLevel(PhaseLevel phaseLevel) {
+        Optional<PhaseLevel> persistedPhaseLevel = phaseLevelRepository.findById(phaseLevel.getId());
+
+        if (persistedPhaseLevel.isEmpty()) {
+            // TODO return 404
+            LOG.error("No phase level found with ID {}.", phaseLevel.getId());
+            return new PhaseLevelDto();
+        }
+
+        phaseLevel.setTrainingDefinitionId(persistedPhaseLevel.get().getTrainingDefinitionId());
+        phaseLevel.setOrder(persistedPhaseLevel.get().getOrder());
+        phaseLevel.setSubLevels(persistedPhaseLevel.get().getSubLevels());
+
+        if (!CollectionUtils.isEmpty(phaseLevel.getDecisionMatrix())) {
+            phaseLevel.getDecisionMatrix().forEach(x -> x.setPhaseLevel(phaseLevel));
+        }
+
+        PhaseLevel savedEntity = phaseLevelRepository.save(phaseLevel);
+
+        return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 }

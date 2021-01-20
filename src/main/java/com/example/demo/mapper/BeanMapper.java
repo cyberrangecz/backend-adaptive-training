@@ -18,6 +18,7 @@ import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseLevelDto;
+import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionnaireLevelDto;
@@ -86,6 +87,8 @@ public interface BeanMapper {
     PhaseLevelDto toDto(PhaseLevel phaseLevel);
 
     PhaseLevel toEntity(PhaseLevelDto phaseLevel);
+
+    PhaseLevel toEntity(PhaseLevelUpdateDto phaseLevelUpdateDto);
 
     AssessmentLevel toAssessmentLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 

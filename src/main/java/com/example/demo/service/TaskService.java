@@ -94,6 +94,7 @@ public class TaskService {
 
         taskUpdate.setPhaseLevel(persistedTask.get().getPhaseLevel());
         taskUpdate.setTrainingDefinitionId(persistedTask.get().getTrainingDefinitionId());
+        taskUpdate.setOrder(persistedTask.get().getOrder());
 
         Task savedEntity = taskRepository.save(taskUpdate);
 

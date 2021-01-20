@@ -17,7 +17,6 @@ public class GameDefinitionCreateDto {
 
     // game level fields
     private String content;
-    private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
@@ -76,14 +75,6 @@ public class GameDefinitionCreateDto {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean isSolutionPenalized() {
-        return solutionPenalized;
-    }
-
-    public void setSolutionPenalized(boolean solutionPenalized) {
-        this.solutionPenalized = solutionPenalized;
     }
 
     public String getFlag() {

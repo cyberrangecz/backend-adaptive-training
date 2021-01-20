@@ -7,7 +7,6 @@ public class TaskUpdateDto {
     private Long id;
     private String title;
     private String content;
-    private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
@@ -30,9 +29,6 @@ public class TaskUpdateDto {
         this.title = title;
     }
 
-    public boolean isSolutionPenalized() {
-        return solutionPenalized;
-    }
 
     public String getContent() {
         return content;
@@ -40,14 +36,6 @@ public class TaskUpdateDto {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean getSolutionPenalized() {
-        return solutionPenalized;
-    }
-
-    public void setSolutionPenalized(boolean solutionPenalized) {
-        this.solutionPenalized = solutionPenalized;
     }
 
     public String getFlag() {
@@ -88,7 +76,6 @@ public class TaskUpdateDto {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", solutionPenalized=" + solutionPenalized +
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectFlagLimit=" + incorrectFlagLimit +

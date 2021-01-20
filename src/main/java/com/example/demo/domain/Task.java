@@ -12,7 +12,6 @@ import java.util.List;
 public class Task extends BaseLevel {
 
     private String content;
-    private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
@@ -27,14 +26,6 @@ public class Task extends BaseLevel {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean getSolutionPenalized() {
-        return solutionPenalized;
-    }
-
-    public void setSolutionPenalized(boolean solutionPenalized) {
-        this.solutionPenalized = solutionPenalized;
     }
 
     public String getFlag() {
@@ -71,8 +62,8 @@ public class Task extends BaseLevel {
 
     @Override
     public String toString() {
-        return "Task{" + "content='" + content + '\'' + ", solutionPenalized=" + solutionPenalized + ", flag='" +
-               flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
-               ", attachments=" + attachments + "} " + super.toString();
+        return "Task{" + "content='" + content + '\'' + ", flag='" +
+                flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
+                ", attachments=" + attachments + "} " + super.toString();
     }
 }

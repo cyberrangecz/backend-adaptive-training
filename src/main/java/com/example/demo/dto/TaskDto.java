@@ -6,7 +6,6 @@ import java.util.List;
 public class TaskDto extends BaseLevelDto implements Serializable {
 
     private String content;
-    private boolean solutionPenalized;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
@@ -20,14 +19,6 @@ public class TaskDto extends BaseLevelDto implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public boolean isSolutionPenalized() {
-        return solutionPenalized;
-    }
-
-    public void setSolutionPenalized(boolean solutionPenalized) {
-        this.solutionPenalized = solutionPenalized;
     }
 
     public String getFlag() {
@@ -66,7 +57,6 @@ public class TaskDto extends BaseLevelDto implements Serializable {
     public String toString() {
         return "TaskDto{" +
                 "content='" + content + '\'' +
-                ", solutionPenalized=" + solutionPenalized +
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +

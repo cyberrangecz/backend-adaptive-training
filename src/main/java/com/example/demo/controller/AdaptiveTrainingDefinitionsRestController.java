@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
+import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
@@ -211,5 +212,21 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiParam(value = "Question ID", required = true) @PathVariable(name = "questionId") Long questionId) {
 
         return levelOperationsService.createQuestionChoice(questionId);
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Update question choice",
+            nickname = "updateQuestionChoice",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Question choice updated"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping(path = "/question-choices")
+    public void updateQuestionChoice(
+            @ApiParam(value = "Question choice to be updated") @RequestBody QuestionChoiceUpdateDto questionChoiceUpdateDto) {
+
+        levelOperationsService.updateQuestionChoice(questionChoiceUpdateDto);
     }
 }

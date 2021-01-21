@@ -20,6 +20,7 @@ import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
+import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.TaskCreateDto;
@@ -127,6 +128,8 @@ public interface BeanMapper {
     DecisionMatrixRowDto toDto(DecisionMatrixRow decisionMatrixRow);
 
     QuestionChoice toEntity(QuestionChoiceDto questionChoiceDto);
+
+    QuestionChoice toEntity(QuestionChoiceUpdateDto questionChoiceDto);
 
     QuestionChoiceDto toDto(QuestionChoice questionChoice);
 

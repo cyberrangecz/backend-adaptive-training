@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
@@ -9,6 +10,7 @@ import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.enums.LevelType;
+import com.example.demo.enums.QuestionType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -191,11 +193,12 @@ public class AdaptiveTrainingDefinitionsRestController {
             @ApiResponse(code = 200, message = "Question created"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PostMapping(path = "/questionnaires/{questionnaireId}")
+    @PostMapping(path = "/questionnaires/{questionnaireId}/{questionType}")
     public QuestionDto createQuestion(
-            @ApiParam(value = "Questionnaire ID", required = true) @PathVariable(name = "questionnaireId") Long questionnaireId) {
+            @ApiParam(value = "Questionnaire ID", required = true) @PathVariable(name = "questionnaireId") Long questionnaireId,
+            @ApiParam(value = "Questionnaire Type", allowableValues = "FFQ, MCQ, EMI", required = true) @PathVariable(name = "questionType") QuestionType questionType) {
 
-        return levelOperationsService.createQuestion(questionnaireId);
+        return levelOperationsService.createQuestion(questionnaireId, questionType);
     }
 
     @ApiOperation(httpMethod = "POST",

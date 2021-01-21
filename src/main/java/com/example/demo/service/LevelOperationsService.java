@@ -16,6 +16,7 @@ import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.enums.LevelType;
+import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,8 +145,8 @@ public class LevelOperationsService {
         taskService.updateTask(task);
     }
 
-    public QuestionDto createQuestion(Long questionnaireId) {
-        QuestionDto createdQuestion = questionService.createDefaultQuestion(questionnaireId);
+    public QuestionDto createQuestion(Long questionnaireId, QuestionType questionType) {
+        QuestionDto createdQuestion = questionService.createDefaultQuestion(questionnaireId, questionType);
 
         return createdQuestion;
     }

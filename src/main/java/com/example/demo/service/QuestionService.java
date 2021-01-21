@@ -25,7 +25,7 @@ public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public QuestionDto createDefaultQuestion(Long questionnaireId) {
+    public QuestionDto createDefaultQuestion(Long questionnaireId, QuestionType questionType) {
         Optional<QuestionnaireLevel> questionnaireLevel = questionnaireLevelRepository.findById(questionnaireId);
         if (questionnaireLevel.isEmpty()) {
             // TODO return 404
@@ -34,7 +34,7 @@ public class QuestionService {
 
         Question question = new Question();
         question.setText("Title of question");
-        question.setQuestionType(QuestionType.MCQ);
+        question.setQuestionType(questionType);
         question.setQuestionnaireLevel(questionnaireLevel.get());
         question.setOrder(questionRepository.getCurrentMaxOrder(questionnaireId) + 1);
 

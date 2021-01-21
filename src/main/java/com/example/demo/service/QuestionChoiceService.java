@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.dto.QuestionChoiceDto;
@@ -58,4 +59,17 @@ public class QuestionChoiceService {
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
+    public void deleteQuestionChoice(Long questionChoiceId) {
+        Optional<QuestionChoice> questionChoice = questionChoiceRepository.findById(questionChoiceId);
+
+        if (questionChoice.isEmpty()) {
+            // TODO throw a proper exception
+            return;
+        }
+
+        int questionChoiceOrder = questionChoice.get().getOrder();
+        questionChoiceRepository.decreaseOrderAfterQuestionChoiceWasDeleted(questionChoiceOrder, questionChoice.get().getQuestion().getId());
+
+        questionChoiceRepository.delete(questionChoice.get());
+    }
 }

@@ -97,6 +97,11 @@ public class LevelOperationsService {
         baseLevelRepository.delete(levelEntity.get());
     }
 
+    @Transactional
+    public void deleteQuestionChoice(Long questionChoiceId) {
+        questionChoiceService.deleteQuestionChoice(questionChoiceId);
+    }
+
     public BaseLevelDto createLevel(Long trainingDefinitionId, LevelType levelType) {
         BaseLevelDto baseLevelDto;
         if (levelType.equals(LevelType.info)) {

@@ -16,6 +16,7 @@ public class QuestionDto implements Serializable {
     private boolean required;
     private Integer order;
     private List<QuestionChoiceDto> choices;
+    private List<Long> relatedPhasesId;
 
     public Long getId() {
         return id;
@@ -79,5 +80,13 @@ public class QuestionDto implements Serializable {
 
     public void setChoices(List<QuestionChoiceDto> choices) {
         this.choices = choices;
+    }
+
+    public List<Long> getRelatedPhasesId() {
+        return relatedPhasesId;
+    }
+
+    public void setRelatedPhasesId(List<Long> relatedPhasesId) {
+        this.relatedPhasesId = relatedPhasesId;
     }
 }

@@ -4,6 +4,7 @@ import com.example.demo.enums.QuestionType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -29,6 +30,10 @@ public class Question {
     private Integer points;
     private Integer penalty;
     private boolean required;
+
+    // TODO this is a Potemkin village before the consultation. Proper ManyToMany relation should be used here
+    @ElementCollection
+    private List<Long> relatedPhasesId;
 
     @Column(name = "order_in_questionnaire", nullable = false)
     private Integer order;
@@ -110,5 +115,13 @@ public class Question {
 
     public void setChoices(List<QuestionChoice> choices) {
         this.choices = choices;
+    }
+
+    public List<Long> getRelatedPhasesId() {
+        return relatedPhasesId;
+    }
+
+    public void setRelatedPhasesId(List<Long> relatedPhasesId) {
+        this.relatedPhasesId = relatedPhasesId;
     }
 }

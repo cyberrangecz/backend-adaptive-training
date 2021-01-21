@@ -2,6 +2,8 @@ package com.example.demo.dto;
 
 import com.example.demo.enums.QuestionType;
 
+import java.util.List;
+
 public class QuestionUpdateDto {
 
     private Long id;
@@ -10,6 +12,7 @@ public class QuestionUpdateDto {
     private Integer points;
     private Integer penalty;
     private boolean required;
+    private List<Long> relatedPhasesId;
 
     public Long getId() {
         return id;
@@ -59,6 +62,14 @@ public class QuestionUpdateDto {
         this.required = required;
     }
 
+    public List<Long> getRelatedPhasesId() {
+        return relatedPhasesId;
+    }
+
+    public void setRelatedPhasesId(List<Long> relatedPhasesId) {
+        this.relatedPhasesId = relatedPhasesId;
+    }
+
     @Override
     public String toString() {
         return "QuestionUpdateDto{" +
@@ -68,6 +79,7 @@ public class QuestionUpdateDto {
                 ", points=" + points +
                 ", penalty=" + penalty +
                 ", required=" + required +
+                ", relatedPhasesId=" + relatedPhasesId +
                 '}';
     }
 }

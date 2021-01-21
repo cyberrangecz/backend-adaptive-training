@@ -74,11 +74,10 @@ public class LevelOperationsService {
             return;
         }
 
-        // TODO change decision matrix
-
         levelFrom.get().setOrder(newPosition);
-
         baseLevelRepository.save(levelFrom.get());
+
+        phaseLevelService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.get().getTrainingDefinitionId());
     }
 
     @Transactional

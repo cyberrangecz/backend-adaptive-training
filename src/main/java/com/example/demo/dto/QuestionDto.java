@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.enums.QuestionType;
 
 import java.io.Serializable;

@@ -1,11 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionnaireLevel;
-import com.example.demo.domain.Task;
 import com.example.demo.dto.QuestionDto;
-import com.example.demo.dto.TaskDto;
+import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.QuestionRepository;
 import com.example.demo.repository.QuestionnaireLevelRepository;
@@ -32,6 +30,7 @@ public class QuestionService {
 
         Question question = new Question();
         question.setText("Title of question");
+        question.setQuestionType(QuestionType.MCQ);
         question.setQuestionnaireLevel(questionnaireLevel.get());
         question.setOrder(questionRepository.getCurrentMaxOrder(questionnaireId) + 1);
 

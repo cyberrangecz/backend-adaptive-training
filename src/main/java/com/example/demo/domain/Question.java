@@ -5,6 +5,8 @@ import com.example.demo.enums.QuestionType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,6 +23,7 @@ public class Question {
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     private QuestionType questionType;
     private String text;
     private Integer points;

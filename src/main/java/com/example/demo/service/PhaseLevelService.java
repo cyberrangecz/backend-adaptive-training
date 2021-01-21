@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -33,16 +34,7 @@ public class PhaseLevelService {
         phaseLevel.setTrainingDefinitionId(trainingDefinitionId);
         phaseLevel.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
-        DecisionMatrixRow matrixRow = new DecisionMatrixRow();
-        matrixRow.setAA(0.8);
-        matrixRow.setCiT(0.7);
-        matrixRow.setKU(0.6);
-        matrixRow.setSD(0.5);
-        matrixRow.setWF(0.4);
-        matrixRow.setOrder(0);
-        matrixRow.setPhaseLevel(phaseLevel);
-
-        phaseLevel.setDecisionMatrix(Collections.singletonList(matrixRow));
+        phaseLevel.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinitionId, phaseLevel));
 
         PhaseLevel persistedEntity = phaseLevelRepository.save(phaseLevel);
 
@@ -69,5 +61,22 @@ public class PhaseLevelService {
         PhaseLevel savedEntity = phaseLevelRepository.save(phaseLevel);
 
         return BeanMapper.INSTANCE.toDto(savedEntity);
+    }
+
+    private List<DecisionMatrixRow> prepareDefaultDecisionMatrix(Long trainingDefinitionId, PhaseLevel phaseLevel) {
+        List<DecisionMatrixRow> result = new ArrayList<>();
+
+        int numberOfExistingPhases = phaseLevelRepository.getNumberOfExistingPhases(trainingDefinitionId);
+
+        // number of rows should be equal to number of existing phases + 1
+        for (int i = 0; i <= numberOfExistingPhases; i++) {
+            DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
+            decisionMatrixRow.setPhaseLevel(phaseLevel);
+            decisionMatrixRow.setOrder(i);
+
+            result.add(decisionMatrixRow);
+        }
+
+        return result;
     }
 }

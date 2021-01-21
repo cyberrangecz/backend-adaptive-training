@@ -105,7 +105,7 @@ public interface BeanMapper {
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "phaseLevel", ignore = true)
-    @Mapping(target = "attachments", ignore = true)
+//    @Mapping(target = "attachments", ignore = true)
         // TODO not really sure about this
     Task updateTask(@MappingTarget Task task, GameDefinitionCreateDto gameDefinitionCreateDto);
 

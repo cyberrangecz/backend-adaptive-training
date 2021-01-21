@@ -17,8 +17,8 @@ public class Attachment {
     private String content;
     private LocalDateTime creationTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Task task;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Task task;
 
     public Long getId() {
         return id;
@@ -44,13 +44,13 @@ public class Attachment {
         this.creationTime = creationTime;
     }
 
-    public Task getTask() {
-        return task;
-    }
+//    public Task getTask() {
+//        return task;
+//    }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
+//    public void setTask(Task task) {
+//        this.task = task;
+//    }
 
     @Override
     public String toString() {

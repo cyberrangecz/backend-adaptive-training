@@ -16,9 +16,9 @@ public class Task extends BaseLevel {
     private String solution;
     private Long incorrectFlagLimit;
 
-    @OrderBy
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Attachment> attachments;
+//    @OrderBy
+//    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    private List<Attachment> attachments;
 
     public String getContent() {
         return content;
@@ -44,13 +44,13 @@ public class Task extends BaseLevel {
         this.solution = solution;
     }
 
-    public List<Attachment> getAttachments() {
-        return attachments;
-    }
+//    public List<Attachment> getAttachments() {
+//        return attachments;
+//    }
 
-    public void setAttachments(List<Attachment> attachments) {
-        this.attachments = attachments;
-    }
+//    public void setAttachments(List<Attachment> attachments) {
+//        this.attachments = attachments;
+//    }
 
     public Long getIncorrectFlagLimit() {
         return incorrectFlagLimit;
@@ -64,6 +64,6 @@ public class Task extends BaseLevel {
     public String toString() {
         return "Task{" + "content='" + content + '\'' + ", flag='" +
                 flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
-                ", attachments=" + attachments + "} " + super.toString();
+                super.toString();
     }
 }

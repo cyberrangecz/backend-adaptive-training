@@ -24,6 +24,7 @@ import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireLevelDto;
+import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
@@ -139,6 +140,8 @@ public interface BeanMapper {
     Question toEntity(QuestionUpdateDto questionUpdateDto);
 
     QuestionDto toDto(Question question);
+
+    QuestionnaireLevel toEntity(QuestionnaireUpdateDto questionnaireUpdateDto);
 
     QuestionnaireLevel toEntity(QuestionnaireLevelDto questionnaireLevelDto);
 

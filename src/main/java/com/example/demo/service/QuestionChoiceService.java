@@ -2,11 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
-import com.example.demo.domain.QuestionnaireLevel;
-import com.example.demo.domain.Task;
 import com.example.demo.dto.QuestionChoiceDto;
-import com.example.demo.dto.QuestionDto;
-import com.example.demo.dto.TaskDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.QuestionChoiceRepository;
 import com.example.demo.repository.QuestionRepository;
@@ -20,7 +16,7 @@ import java.util.Optional;
 @Service
 public class QuestionChoiceService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TaskService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(QuestionChoiceService.class);
 
     @Autowired
     private QuestionRepository questionRepository;

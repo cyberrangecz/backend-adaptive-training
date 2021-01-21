@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Question;
+import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.enums.QuestionType;
@@ -61,4 +62,17 @@ public class QuestionService {
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
+    public void deleteQuestion(Long questionId) {
+        Optional<Question> question = questionRepository.findById(questionId);
+
+        if (question.isEmpty()) {
+            // TODO throw a proper exception
+            return;
+        }
+
+        int questionOrder = question.get().getOrder();
+        questionRepository.decreaseOrderAfterQuestionWasDeleted(questionOrder, question.get().getQuestionnaireLevel().getId());
+
+        questionRepository.delete(question.get());
+    }
 }

@@ -250,6 +250,21 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.updateQuestion(questionUpdateDto);
     }
 
+    @ApiOperation(httpMethod = "DELETE",
+            value = "Delete a specified question",
+            nickname = "deleteQuestion",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Question deleted"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @DeleteMapping(value = "/questions/{questionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public void deleteQuestion(
+            @ApiParam(value = "Question ID", required = true) @PathVariable(name = "questionId") Long questionId) {
+        levelOperationsService.deleteQuestion(questionId);
+    }
+
     @ApiOperation(httpMethod = "PUT",
             value = "Update question choice",
             nickname = "updateQuestionChoice",

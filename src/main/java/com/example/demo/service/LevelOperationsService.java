@@ -98,6 +98,11 @@ public class LevelOperationsService {
     }
 
     @Transactional
+    public void deleteQuestion(Long questionId) {
+        questionService.deleteQuestion(questionId);
+    }
+
+    @Transactional
     public void deleteQuestionChoice(Long questionChoiceId) {
         questionChoiceService.deleteQuestionChoice(questionChoiceId);
     }

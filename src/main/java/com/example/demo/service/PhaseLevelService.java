@@ -69,8 +69,10 @@ public class PhaseLevelService {
     public void alignDecisionMatrixForPhasesInTrainingDefinition(Long trainingDefinitionId) {
         List<PhaseLevel> phaseLevels = phaseLevelRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
 
+        int currentPhaseOrder = 0;
         for (PhaseLevel phaseLevel : phaseLevels) {
-            alignDecisionMatrixForPhase(phaseLevel);
+            alignDecisionMatrixForPhase(phaseLevel, currentPhaseOrder);
+            currentPhaseOrder++;
         }
     }
 
@@ -91,7 +93,7 @@ public class PhaseLevelService {
         return result;
     }
 
-    private void alignDecisionMatrixForPhase(PhaseLevel phaseLevel) {
+    private void alignDecisionMatrixForPhase(PhaseLevel phaseLevel, int currentPhaseOrder) {
         if (Objects.isNull(phaseLevel)) {
             return;
         }
@@ -101,15 +103,15 @@ public class PhaseLevelService {
             numberOfRows = phaseLevel.getDecisionMatrix().size();
         }
 
-        final int expextedNumberOfRows = phaseLevel.getOrder() + 1;
+        final int expectedNumberOfRows = currentPhaseOrder + 1;
 
-        if (numberOfRows == expextedNumberOfRows) {
+        if (numberOfRows == expectedNumberOfRows) {
             return;
-        } else if (numberOfRows < expextedNumberOfRows) {
-            List<DecisionMatrixRow> newDecisionMatrixRows = getNewDecisionMatrixRows(numberOfRows, expextedNumberOfRows, phaseLevel);
+        } else if (numberOfRows < expectedNumberOfRows) {
+            List<DecisionMatrixRow> newDecisionMatrixRows = getNewDecisionMatrixRows(numberOfRows, expectedNumberOfRows, phaseLevel);
             phaseLevel.getDecisionMatrix().addAll(newDecisionMatrixRows);
         } else {
-            List<DecisionMatrixRow> neededDecisionMatrixRows = getOnlyNeededDecisionMatrixRows(expextedNumberOfRows, phaseLevel);
+            List<DecisionMatrixRow> neededDecisionMatrixRows = getOnlyNeededDecisionMatrixRows(expectedNumberOfRows, phaseLevel);
 
             phaseLevel.getDecisionMatrix().clear();
             phaseLevel.getDecisionMatrix().addAll(neededDecisionMatrixRows);

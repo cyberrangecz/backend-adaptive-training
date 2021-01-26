@@ -8,6 +8,7 @@ import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
@@ -17,7 +18,7 @@ import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.enums.LevelType;
+import com.example.demo.enums.PhaseType;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
@@ -106,26 +107,24 @@ public class LevelOperationsService {
         questionChoiceService.deleteQuestionChoice(questionChoiceId);
     }
 
-    public BaseLevelDto createLevel(Long trainingDefinitionId, LevelType levelType) {
+    public BaseLevelDto createLevel(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
         BaseLevelDto baseLevelDto;
-        if (levelType.equals(LevelType.info)) {
+        if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
             baseLevelDto = infoLevelService.createDefaultInfoLevel(trainingDefinitionId);
-        } else if (levelType.equals(LevelType.assessment)) {
-            baseLevelDto = assessmentLevelService.createDefaultAssessmentLevel(trainingDefinitionId);
-        } else if (levelType.equals(LevelType.questionnaire)) {
+        } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
             baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
         } else {
             baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
         }
 
-        baseLevelDto.setLevelType(levelType);
+        baseLevelDto.setPhaseType(phaseCreateDTO.getPhaseType());
 
         return baseLevelDto;
     }
 
     public BaseLevelDto createTask(Long phaseId) {
         TaskDto createdTask = taskService.createDefaultTask(phaseId);
-        createdTask.setLevelType(LevelType.task);
+        createdTask.setPhaseType(PhaseType.task);
 
         return createdTask;
     }

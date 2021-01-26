@@ -59,12 +59,11 @@ public interface BeanMapper {
         return baseLevelDto;
     }
 
-    @Mapping(target = "levelType", constant = "assessment")
     AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
 
     AssessmentLevel toEntity(AssessmentLevelDto assessmentLevel);
 
-    @Mapping(target = "levelType", constant = "task")
+    @Mapping(target = "phaseType", constant = "task")
     TaskDto toDto(Task task);
 
     Task toEntity(TaskDto taskDto);
@@ -73,7 +72,7 @@ public interface BeanMapper {
 
     Task toEntity(TaskUpdateDto taskUpdateDto);
 
-    @Mapping(target = "levelType", constant = "info")
+    @Mapping(target = "phaseType", constant = "INFO")
     InfoLevelDto toDto(InfoLevel infoLevel);
 
     InfoLevel toEntity(InfoLevelDto infoLevel);
@@ -86,7 +85,7 @@ public interface BeanMapper {
 
     Attachment toEntity(AttachmentDto attachment);
 
-    @Mapping(target = "levelType", constant = "phase")
+    @Mapping(target = "phaseType", constant = "GAME")
     PhaseLevelDto toDto(PhaseLevel phaseLevel);
 
     PhaseLevel toEntity(PhaseLevelDto phaseLevel);
@@ -113,16 +112,16 @@ public interface BeanMapper {
     @Mapping(target = "subLevels", ignore = true)
     PhaseLevel updatePhaseLevel(@MappingTarget PhaseLevel phaseLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
-    @Mapping(target = "type", constant = "assessment")
+//    @Mapping(target = "type", constant = "assessment")
     GameDefinitionCreateDto toLevelDefinitionDto(AssessmentLevel assessmentLevel);
 
-    @Mapping(target = "type", constant = "task")
+//    @Mapping(target = "type", constant = "task")
     GameDefinitionCreateDto toLevelDefinitionDto(Task task);
 
-    @Mapping(target = "type", constant = "info")
+//    @Mapping(target = "type", constant = "info")
     GameDefinitionCreateDto toLevelDefinitionDto(InfoLevel infoLevel);
 
-    @Mapping(target = "type", constant = "phase")
+//    @Mapping(target = "type", constant = "phase")
     GameDefinitionCreateDto toLevelDefinitionDto(PhaseLevel phaseLevel);
 
     DecisionMatrixRow toEntity(DecisionMatrixRowDto decisionMatrixRowDto);

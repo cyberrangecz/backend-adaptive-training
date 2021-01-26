@@ -1,7 +1,7 @@
 package com.example.demo.dto.input;
 
 import com.example.demo.dto.AttachmentDto;
-import com.example.demo.enums.LevelType;
+import com.example.demo.enums.PhaseType;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public class GameDefinitionCreateDto {
     private Long id;
     private String title;
     private Integer order;
-    private LevelType type;
+    private PhaseType type;
 
     // assessment level fields
     private String assessmentType;
@@ -53,11 +53,11 @@ public class GameDefinitionCreateDto {
         this.order = order;
     }
 
-    public LevelType getType() {
+    public PhaseType getType() {
         return type;
     }
 
-    public void setType(LevelType type) {
+    public void setType(PhaseType type) {
         this.type = type;
     }
 

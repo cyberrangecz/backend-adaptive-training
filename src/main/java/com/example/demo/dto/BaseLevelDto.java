@@ -1,6 +1,6 @@
 package com.example.demo.dto;
 
-import com.example.demo.enums.LevelType;
+import com.example.demo.enums.PhaseType;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ public abstract class BaseLevelDto implements Serializable {
     private Integer order;
     private String estimatedDuration;
     private Long maxScore;
-    private LevelType levelType;
+    private PhaseType phaseType;
     private Integer allowedCommands;
     private Integer allowedWrongFlags;
 
@@ -55,12 +55,12 @@ public abstract class BaseLevelDto implements Serializable {
         this.maxScore = maxScore;
     }
 
-    public LevelType getLevelType() {
-        return levelType;
+    public PhaseType getPhaseType() {
+        return phaseType;
     }
 
-    public void setLevelType(LevelType levelType) {
-        this.levelType = levelType;
+    public void setPhaseType(PhaseType phaseType) {
+        this.phaseType = phaseType;
     }
 
     public Integer getAllowedCommands() {
@@ -87,7 +87,7 @@ public abstract class BaseLevelDto implements Serializable {
                 ", order=" + order +
                 ", estimatedDuration='" + estimatedDuration + '\'' +
                 ", maxScore=" + maxScore +
-                ", levelType=" + levelType +
+                ", levelType=" + phaseType +
                 ", allowedCommands=" + allowedCommands +
                 ", allowedWrongFlags=" + allowedWrongFlags +
                 '}';

@@ -9,7 +9,6 @@ import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.enums.LevelType;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
@@ -29,7 +28,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -81,25 +79,25 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.deleteLevel(levelId);
     }
 
-    @ApiOperation(httpMethod = "POST",
-            value = "Create a new level",
-            notes = "Creates only default level with a specified type",
-            response = BaseLevelDto.class,
-            nickname = "createLevel",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Level created"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PostMapping(path = "/levels/{levelType}")
-    public BaseLevelDto createLevel(
-            @ApiParam(value = "Training definition ID", required = true) @RequestParam(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level type", allowableValues = "questionnaire, assessment, info, phase", required = true)
-            @PathVariable("levelType") LevelType levelType) {
-
-        return levelOperationsService.createLevel(definitionId, levelType);
-    }
+//    @ApiOperation(httpMethod = "POST",
+//            value = "Create a new level",
+//            notes = "Creates only default level with a specified type",
+//            response = BaseLevelDto.class,
+//            nickname = "createLevel",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Level created"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PostMapping(path = "/levels/{levelType}")
+//    public BaseLevelDto createLevel(
+//            @ApiParam(value = "Training definition ID", required = true) @RequestParam(name = "definitionId") Long definitionId,
+//            @ApiParam(value = "Level type", allowableValues = "questionnaire, assessment, info, phase", required = true)
+//            @PathVariable("levelType") LevelType levelType) {
+//
+//        return levelOperationsService.createLevel(definitionId, levelType);
+//    }
 
     @ApiOperation(httpMethod = "GET",
             value = "Get level by ID",

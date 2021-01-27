@@ -95,15 +95,14 @@ public class TaskService {
         return result;
     }
 
-    public TaskDto getTask(Long id) {
-        Optional<Task> task = taskRepository.findById(id);
+    public TaskDto getTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
 
-        if (task.isEmpty()) {
-            LOG.error("No task found with ID {}.", id);
-            return new TaskDto();
-        }
+        // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
 
-        return BeanMapper.INSTANCE.toDto(task.get());
+        return BeanMapper.INSTANCE.toDto(task);
     }
 
     public TaskDto updateTask(Task taskUpdate) {

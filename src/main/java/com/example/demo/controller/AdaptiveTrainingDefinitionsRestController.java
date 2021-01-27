@@ -164,22 +164,22 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.updateTask(taskUpdateDto);
     }
 
-    @ApiOperation(httpMethod = "POST",
-            value = "Create a new task",
-            response = BaseLevelDto.class,
-            nickname = "createTask",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Task created"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PostMapping(path = "/phases/{phaseId}")
-    public BaseLevelDto createTask(
-            @ApiParam(value = "Phase ID", required = true) @PathVariable(name = "phaseId") Long phaseId) {
-
-        return levelOperationsService.createTask(phaseId);
-    }
+//    @ApiOperation(httpMethod = "POST",
+//            value = "Create a new task",
+//            response = BaseLevelDto.class,
+//            nickname = "createTask",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Task created"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PostMapping(path = "/phases/{phaseId}")
+//    public BaseLevelDto createTask(
+//            @ApiParam(value = "Phase ID", required = true) @PathVariable(name = "phaseId") Long phaseId) {
+//
+//        return levelOperationsService.createTask(phaseId);
+//    }
 
     @ApiOperation(httpMethod = "POST",
             value = "Create a new question in questionnaire",

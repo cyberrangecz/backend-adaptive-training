@@ -1,15 +1,16 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Task;
 import com.example.demo.domain.PhaseLevel;
+import com.example.demo.domain.Task;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.PhaseLevelRepository;
+import com.example.demo.repository.TaskRepository;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,16 +32,38 @@ public class TaskService {
         this.phaseLevelRepository = phaseLevelRepository;
     }
 
-    public TaskDto createDefaultTask(Long phaseId) {
-        Optional<PhaseLevel> phaseLevel = phaseLevelRepository.findById(phaseId);
-        if (phaseLevel.isEmpty()) {
-            // TODO return 404
-            return null;
-        }
+    public TaskDto createDefaultTask(Long trainingDefinitionId, Long phaseId) {
+        PhaseLevel gamePhase = phaseLevelRepository.findById(phaseId)
+                .orElseThrow(() -> new RuntimeException("Game phase was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
+
+        // TODO add check to trainingDefinitionId (field structure will be probably changed)
 
         Task task = new Task();
         task.setTitle("Title of task");
-        task.setPhaseLevel(phaseLevel.get());
+        task.setPhaseLevel(gamePhase);
+        task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
+
+        Task persistedEntity = taskRepository.save(task);
+
+        return BeanMapper.INSTANCE.toDto(persistedEntity);
+    }
+
+    public TaskDto cloneTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
+        Task taskToBeCloned = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
+
+        PhaseLevel gamePhase = phaseLevelRepository.findById(phaseId)
+                .orElseThrow(() -> new RuntimeException("Game phase was not found"));
+
+        // TODO add check to trainingDefinitionId (field structure will be probably changed)
+
+        Task task = new Task();
+        BeanUtils.copyProperties(taskToBeCloned, task);
+
+        task.setId(null);
+        task.setPhaseLevel(gamePhase);
         task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
 
         Task persistedEntity = taskRepository.save(task);

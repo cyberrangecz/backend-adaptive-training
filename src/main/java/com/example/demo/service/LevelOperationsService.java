@@ -1,13 +1,14 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
+import com.example.demo.domain.InfoLevel;
 import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
-import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
@@ -15,9 +16,7 @@ import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
-import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.enums.PhaseType;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
@@ -122,12 +121,12 @@ public class LevelOperationsService {
         return baseLevelDto;
     }
 
-    public BaseLevelDto createTask(Long phaseId) {
-        TaskDto createdTask = taskService.createDefaultTask(phaseId);
-        createdTask.setPhaseType(PhaseType.task);
-
-        return createdTask;
-    }
+//    public BaseLevelDto createTask(Long phaseId) {
+//        TaskDto createdTask = taskService.createDefaultTask(phaseId);
+//        createdTask.setPhaseType(PhaseType.task);
+//
+//        return createdTask;
+//    }
 
     public BaseLevelDto getLevel(Long levelId) {
         Optional<BaseLevel> level = baseLevelRepository.findById(levelId);

@@ -34,6 +34,8 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 
 @Mapper
 public interface BeanMapper {
@@ -58,6 +60,8 @@ public interface BeanMapper {
 
         return baseLevelDto;
     }
+
+    List<BaseLevelDto> toDtoList(List<BaseLevel> baseLevel);
 
     AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
 

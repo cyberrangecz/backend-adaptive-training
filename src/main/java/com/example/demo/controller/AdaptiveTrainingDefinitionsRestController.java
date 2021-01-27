@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
@@ -8,7 +9,6 @@ import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskUpdateDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
@@ -21,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -99,22 +98,22 @@ public class AdaptiveTrainingDefinitionsRestController {
 //        return levelOperationsService.createLevel(definitionId, levelType);
 //    }
 
-    @ApiOperation(httpMethod = "GET",
-            value = "Get level by ID",
-            response = BaseLevelDto.class,
-            nickname = "getLevel",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Level returned"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @GetMapping(path = "/levels/{levelId}")
-    public BaseLevelDto getLevel(
-            @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
-
-        return levelOperationsService.getLevel(levelId);
-    }
+//    @ApiOperation(httpMethod = "GET",
+//            value = "Get level by ID",
+//            response = BaseLevelDto.class,
+//            nickname = "getLevel",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Level returned"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @GetMapping(path = "/levels/{levelId}")
+//    public BaseLevelDto getLevel(
+//            @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
+//
+//        return levelOperationsService.getLevel(levelId);
+//    }
 
     @ApiOperation(httpMethod = "PUT",
             value = "Update info level",

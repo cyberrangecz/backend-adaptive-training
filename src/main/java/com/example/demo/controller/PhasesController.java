@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/training-definitions/{definitionId}/phases", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -54,4 +56,45 @@ public class PhasesController {
 
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
     }
+
+    @ApiOperation(httpMethod = "GET",
+            value = "Get all phases",
+            notes = "Get all phases associated with specified training definition",
+            response = Object.class,
+            nickname = "getPhases",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Phases returned"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @GetMapping
+    public ResponseEntity<List<BaseLevelDto>> getPhases(
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId) {
+
+        List<BaseLevelDto> phases = levelOperationsService.getPhases(definitionId);
+
+        return new ResponseEntity<>(phases, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "GET",
+            value = "Get phase by ID",
+            response = BaseLevelDto.class,
+            nickname = "getPhase",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Phase returned"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @GetMapping(path = "/levels/{levelId}")
+    public ResponseEntity<BaseLevelDto> getPhase(
+            @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
+
+        BaseLevelDto phase = levelOperationsService.getLevel(levelId);
+
+        return new ResponseEntity<>(phase, HttpStatus.OK);
+    }
+
 }

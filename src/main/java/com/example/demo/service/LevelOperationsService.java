@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -127,6 +128,12 @@ public class LevelOperationsService {
 //
 //        return createdTask;
 //    }
+
+    public List<BaseLevelDto> getPhases(Long trainingDefinitionId) {
+        List<BaseLevel> phases = baseLevelRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
+
+        return BeanMapper.INSTANCE.toDtoList(phases);
+    }
 
     public BaseLevelDto getLevel(Long levelId) {
         Optional<BaseLevel> level = baseLevelRepository.findById(levelId);

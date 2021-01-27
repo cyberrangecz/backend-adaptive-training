@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface BaseLevelRepository extends JpaRepository<BaseLevel, Long> {
+
+    List<BaseLevel> findAllByTrainingDefinitionIdOrderByOrder(long trainingDefinitionId);
 
     @Query("SELECT COALESCE(MAX(l.order), -1) FROM BaseLevel l WHERE l.trainingDefinitionId = :trainingDefinitionId")
     Integer getCurrentMaxOrder(@Param("trainingDefinitionId") Long trainingDefinitionId);

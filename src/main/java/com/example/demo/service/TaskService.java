@@ -4,6 +4,7 @@ import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
+import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.PhaseLevelRepository;
 import com.example.demo.repository.TaskRepository;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaskService {
@@ -105,25 +105,33 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(task);
     }
 
-    public TaskDto updateTask(Task taskUpdate) {
-        Optional<Task> persistedTask = taskRepository.findById(taskUpdate.getId());
+    public TaskDto updateTask(Long trainingDefinitionId, Long phaseId, TaskUpdateDto taskUpdateDto) {
+        Task taskUpdate = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
 
-        if (persistedTask.isEmpty()) {
-            // TODO return 404
-            LOG.error("No task found with ID {}.", taskUpdate.getId());
-            return new TaskDto();
-        }
+        Task persistedTask = taskRepository.findById(taskUpdate.getId())
+                .orElseThrow(() -> new RuntimeException("Task was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
 
-        taskUpdate.setPhaseLevel(persistedTask.get().getPhaseLevel());
-        taskUpdate.setTrainingDefinitionId(persistedTask.get().getTrainingDefinitionId());
-        taskUpdate.setOrder(persistedTask.get().getOrder());
+        // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
+
+        taskUpdate.setPhaseLevel(persistedTask.getPhaseLevel());
+        taskUpdate.setTrainingDefinitionId(persistedTask.getTrainingDefinitionId());
+        taskUpdate.setOrder(persistedTask.getOrder());
 
         Task savedEntity = taskRepository.save(taskUpdate);
 
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
-    public void removeTaskLevel(Long id) {
-        taskRepository.deleteById(id);
+    public void removeTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
+        Task task = taskRepository.findById(taskId)
+                .orElseThrow(() -> new RuntimeException("Task was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
+
+        // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
+
+        taskRepository.decreaseOrderAfterTaskWasDeleted(phaseId, task.getOrder());
+
+        taskRepository.delete(task);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.TaskDto;
+import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -12,11 +13,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/training-definitions/{definitionId}/phases/{phaseId}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -101,5 +107,54 @@ public class TasksController {
         TaskDto createdTask = taskService.getTask(definitionId, phaseId, taskId);
 
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Update task",
+            notes = "Update the specified task",
+            nickname = "updateTask",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task updated"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping
+    public ResponseEntity<TaskDto> updateTask(
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Game phase ID", required = true)
+            @PathVariable(name = "phaseId") Long phaseId,
+            @ApiParam(value = "Task to be updated")
+            @RequestBody @Valid TaskUpdateDto taskUpdateDto) {
+
+        TaskDto updatedTask = taskService.updateTask(definitionId, phaseId, taskUpdateDto);
+
+        return new ResponseEntity<>(updatedTask, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE",
+            value = "Remove a task",
+            notes = "Remove the specified task",
+            response = TaskDto.class,
+            nickname = "removeTask",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task removed"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @DeleteMapping(path = "/{taskId}")
+    public ResponseEntity<Void> removeTask(
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Game phase ID", required = true)
+            @PathVariable(name = "phaseId") Long phaseId,
+            @ApiParam(value = "Task ID", required = true)
+            @PathVariable(name = "taskId") Long taskId) {
+
+        taskService.removeTask(definitionId, phaseId, taskId);
+
+        return ResponseEntity.ok().build();
     }
 }

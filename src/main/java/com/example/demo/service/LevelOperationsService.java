@@ -6,7 +6,6 @@ import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
-import com.example.demo.domain.Task;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
@@ -16,7 +15,6 @@ import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
-import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.enums.PhaseType;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
@@ -154,11 +152,6 @@ public class LevelOperationsService {
     public void updatePhaseLevel(PhaseLevelUpdateDto phaseLevelUpdateDto) {
         PhaseLevel phaseLevel = BeanMapper.INSTANCE.toEntity(phaseLevelUpdateDto);
         phaseLevelService.updatePhaseLevel(phaseLevel);
-    }
-
-    public void updateTask(TaskUpdateDto taskUpdateDto) {
-        Task task = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
-        taskService.updateTask(task);
     }
 
     public QuestionDto createQuestion(Long questionnaireId, QuestionType questionType) {

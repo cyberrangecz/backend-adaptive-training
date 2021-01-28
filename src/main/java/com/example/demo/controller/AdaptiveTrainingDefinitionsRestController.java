@@ -147,21 +147,21 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.updatePhaseLevel(phaseLevelUpdateDto);
     }
 
-    @ApiOperation(httpMethod = "PUT",
-            value = "Update task",
-            nickname = "updateTask",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Task updated"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PutMapping(path = "/tasks")
-    public void updateTask(
-            @ApiParam(value = "Task to be updated") @RequestBody TaskUpdateDto taskUpdateDto) {
-
-        levelOperationsService.updateTask(taskUpdateDto);
-    }
+//    @ApiOperation(httpMethod = "PUT",
+//            value = "Update task",
+//            nickname = "updateTask",
+//            consumes = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Task updated"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PutMapping(path = "/tasks")
+//    public void updateTask(
+//            @ApiParam(value = "Task to be updated") @RequestBody TaskUpdateDto taskUpdateDto) {
+//
+//        levelOperationsService.updateTask(taskUpdateDto);
+//    }
 
 //    @ApiOperation(httpMethod = "POST",
 //            value = "Create a new task",

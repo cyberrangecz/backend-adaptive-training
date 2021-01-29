@@ -63,20 +63,20 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.moveLevelToSpecifiedOrder(levelIdFrom, newPosition);
     }
 
-    @ApiOperation(httpMethod = "DELETE",
-            value = "Delete a specified level",
-            nickname = "deleteLevel",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Level deleted"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @DeleteMapping(value = "/levels/{levelId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteLevel(
-            @ApiParam(value = "Level ID", required = true) @PathVariable(name = "levelId") Long levelId) {
-        levelOperationsService.deleteLevel(levelId);
-    }
+//    @ApiOperation(httpMethod = "DELETE",
+//            value = "Delete a specified level",
+//            nickname = "deleteLevel",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Level deleted"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @DeleteMapping(value = "/levels/{levelId}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public void deleteLevel(
+//            @ApiParam(value = "Level ID", required = true) @PathVariable(name = "levelId") Long levelId) {
+//        levelOperationsService.deleteLevel(levelId);
+//    }
 
 //    @ApiOperation(httpMethod = "POST",
 //            value = "Create a new level",

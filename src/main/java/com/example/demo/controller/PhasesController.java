@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.PhaseCreateDTO;
-import com.example.demo.service.LevelOperationsService;
+import com.example.demo.facade.TrainingPhaseFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,7 +33,7 @@ import java.util.List;
 public class PhasesController {
 
     @Autowired
-    private LevelOperationsService levelOperationsService;
+    private TrainingPhaseFacade trainingPhaseFacade;
 
     @ApiOperation(httpMethod = "POST",
             value = "Create a new phase",
@@ -52,7 +53,7 @@ public class PhasesController {
             @ApiParam(value = "Level type", allowableValues = "questionnaire, info, game", required = true)
             @RequestBody @Valid PhaseCreateDTO phaseCreateDTO) {
 
-        BaseLevelDto createdPhase = levelOperationsService.createLevel(definitionId, phaseCreateDTO);
+        BaseLevelDto createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
 
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
     }
@@ -73,7 +74,7 @@ public class PhasesController {
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId) {
 
-        List<BaseLevelDto> phases = levelOperationsService.getPhases(definitionId);
+        List<BaseLevelDto> phases = trainingPhaseFacade.getPhases(definitionId);
 
         return new ResponseEntity<>(phases, HttpStatus.OK);
     }
@@ -88,13 +89,38 @@ public class PhasesController {
             @ApiResponse(code = 200, message = "Phase returned"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @GetMapping(path = "/levels/{levelId}")
+    @GetMapping(path = "/{phaseId}")
     public ResponseEntity<BaseLevelDto> getPhase(
-            @ApiParam(value = "Level ID", required = true) @PathVariable("levelId") Long levelId) {
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Level ID", required = true)
+            @PathVariable("phaseId") Long phaseId) {
 
-        BaseLevelDto phase = levelOperationsService.getLevel(levelId);
+        BaseLevelDto phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
 
         return new ResponseEntity<>(phase, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "DELETE",
+            value = "Remove phase by ID",
+            response = BaseLevelDto.class,
+            nickname = "getPhase",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Phase removed"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @DeleteMapping(path = "/{phaseId}")
+    public ResponseEntity<List<BaseLevelDto>> removePhase(
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Level ID", required = true)
+            @PathVariable("phaseId") Long phaseId) {
+
+        List<BaseLevelDto> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
+
+        return new ResponseEntity<>(remainingPhases, HttpStatus.OK);
     }
 
 }

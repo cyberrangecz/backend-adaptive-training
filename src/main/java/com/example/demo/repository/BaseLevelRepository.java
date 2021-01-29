@@ -18,11 +18,9 @@ public interface BaseLevelRepository extends JpaRepository<BaseLevel, Long> {
     @Modifying
     @Query("UPDATE BaseLevel l SET l.order = l.order - 1 " +
             "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
-            "AND l.order > :order " +
-            "AND ( (l.phaseLevel.id = :phaseLevelId) OR (:phaseLevelId IS NULL) )")
+            "AND l.order > :order ")
     void decreaseOrderAfterLevelWasDeleted(@Param("trainingDefinitionId") Long trainingDefinitionId,
-                                           @Param("order") int order,
-                                           @Param("phaseLevelId") Long phaseLevelId);
+                                           @Param("order") int order);
 
     @Modifying
     @Query("UPDATE BaseLevel l SET l.order = l.order + 1 " +

@@ -8,14 +8,12 @@ import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
-import com.example.demo.enums.PhaseType;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
@@ -23,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -79,21 +76,21 @@ public class LevelOperationsService {
         phaseLevelService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.get().getTrainingDefinitionId());
     }
 
-    @Transactional
-    public void deleteLevel(Long levelId) {
-        Optional<BaseLevel> levelEntity = baseLevelRepository.findById(levelId);
-
-        if (levelEntity.isEmpty()) {
-            // TODO throw a proper exception
-            return;
-        }
-
-        int levelOrder = levelEntity.get().getOrder();
-        Long phaseId = levelEntity.get().getPhaseLevel() == null ? null : levelEntity.get().getPhaseLevel().getId();
-        baseLevelRepository.decreaseOrderAfterLevelWasDeleted(levelEntity.get().getTrainingDefinitionId(), levelOrder, phaseId);
-
-        baseLevelRepository.delete(levelEntity.get());
-    }
+//    @Transactional
+//    public void deleteLevel(Long levelId) {
+//        Optional<BaseLevel> levelEntity = baseLevelRepository.findById(levelId);
+//
+//        if (levelEntity.isEmpty()) {
+//            // TODO throw a proper exception
+//            return;
+//        }
+//
+//        int levelOrder = levelEntity.get().getOrder();
+//        Long phaseId = levelEntity.get().getPhaseLevel() == null ? null : levelEntity.get().getPhaseLevel().getId();
+//        baseLevelRepository.decreaseOrderAfterLevelWasDeleted(levelEntity.get().getTrainingDefinitionId(), levelOrder, phaseId);
+//
+//        baseLevelRepository.delete(levelEntity.get());
+//    }
 
     @Transactional
     public void deleteQuestion(Long questionId) {
@@ -105,20 +102,20 @@ public class LevelOperationsService {
         questionChoiceService.deleteQuestionChoice(questionChoiceId);
     }
 
-    public BaseLevelDto createLevel(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
-        BaseLevelDto baseLevelDto;
-        if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
-            baseLevelDto = infoLevelService.createDefaultInfoLevel(trainingDefinitionId);
-        } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
-            baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
-        } else {
-            baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
-        }
-
-        baseLevelDto.setPhaseType(phaseCreateDTO.getPhaseType());
-
-        return baseLevelDto;
-    }
+//    public BaseLevelDto createLevel(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
+//        BaseLevelDto baseLevelDto;
+//        if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
+//            baseLevelDto = infoLevelService.createDefaultInfoLevel(trainingDefinitionId);
+//        } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
+//            baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
+//        } else {
+//            baseLevelDto = phaseLevelService.createDefaultPhaseLevel(trainingDefinitionId);
+//        }
+//
+//        baseLevelDto.setPhaseType(phaseCreateDTO.getPhaseType());
+//
+//        return baseLevelDto;
+//    }
 
 //    public BaseLevelDto createTask(Long phaseId) {
 //        TaskDto createdTask = taskService.createDefaultTask(phaseId);
@@ -127,11 +124,11 @@ public class LevelOperationsService {
 //        return createdTask;
 //    }
 
-    public List<BaseLevelDto> getPhases(Long trainingDefinitionId) {
-        List<BaseLevel> phases = baseLevelRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
-
-        return BeanMapper.INSTANCE.toDtoList(phases);
-    }
+//    public List<BaseLevelDto> getPhases(Long trainingDefinitionId) {
+//        List<BaseLevel> phases = baseLevelRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
+//
+//        return BeanMapper.INSTANCE.toDtoList(phases);
+//    }
 
     public BaseLevelDto getLevel(Long levelId) {
         Optional<BaseLevel> level = baseLevelRepository.findById(levelId);

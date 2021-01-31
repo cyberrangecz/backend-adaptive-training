@@ -1,8 +1,10 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.PhaseLevelDto;
+import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import com.example.demo.repository.PhaseLevelRepository;
@@ -10,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -44,18 +47,19 @@ public class PhaseLevelService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public PhaseLevelDto updatePhaseLevel(PhaseLevel phaseLevel) {
-        Optional<PhaseLevel> persistedPhaseLevel = phaseLevelRepository.findById(phaseLevel.getId());
+    public PhaseLevelDto updatePhaseLevel(Long definitionId, Long phaseId, PhaseLevelUpdateDto trainingPhaseUpdate) {
+        PhaseLevel phaseLevel = BeanMapper.INSTANCE.toEntity(trainingPhaseUpdate);
+        phaseLevel.setId(phaseId);
 
-        if (persistedPhaseLevel.isEmpty()) {
-            // TODO return 404
-            LOG.error("No phase level found with ID {}.", phaseLevel.getId());
-            return new PhaseLevelDto();
-        }
+        PhaseLevel persistedPhaseLevel = phaseLevelRepository.findById(phaseLevel.getId())
+                .orElseThrow(() -> new RuntimeException("Training phase was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
 
-        phaseLevel.setTrainingDefinitionId(persistedPhaseLevel.get().getTrainingDefinitionId());
-        phaseLevel.setOrder(persistedPhaseLevel.get().getOrder());
-        phaseLevel.setSubLevels(persistedPhaseLevel.get().getSubLevels());
+        // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed);
+
+        phaseLevel.setTrainingDefinitionId(persistedPhaseLevel.getTrainingDefinitionId());
+        phaseLevel.setOrder(persistedPhaseLevel.getOrder());
+        phaseLevel.setSubLevels(persistedPhaseLevel.getSubLevels());
 
         if (!CollectionUtils.isEmpty(phaseLevel.getDecisionMatrix())) {
             phaseLevel.getDecisionMatrix().forEach(x -> x.setPhaseLevel(phaseLevel));

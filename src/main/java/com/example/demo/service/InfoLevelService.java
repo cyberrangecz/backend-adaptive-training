@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.domain.InfoLevel;
 import com.example.demo.dto.InfoLevelCreateDto;
 import com.example.demo.dto.InfoLevelDto;
+import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
 import com.example.demo.repository.InfoLevelRepository;
@@ -23,8 +24,6 @@ public class InfoLevelService {
 
     private final InfoLevelRepository infoLevelRepository;
     private final BaseLevelRepository baseLevelRepository;
-
-
 
     @Autowired
     public InfoLevelService(InfoLevelRepository infoLevelRepository, BaseLevelRepository baseLevelRepository) {
@@ -78,17 +77,18 @@ public class InfoLevelService {
         return BeanMapper.INSTANCE.toDto(infoLevel.get());
     }
 
-    public InfoLevelDto updateInfoLevel(InfoLevel infoLevelUpdate) {
-        Optional<InfoLevel> persistedInfoLevel = infoLevelRepository.findById(infoLevelUpdate.getId());
+    public InfoLevelDto updateInfoLevel(Long definitionId, Long phaseId, InfoLevelUpdateDto infoLevelUpdateDto) {
+        InfoLevel infoLevelUpdate = BeanMapper.INSTANCE.toEntity(infoLevelUpdateDto);
+        infoLevelUpdate.setId(phaseId);
 
-        if (persistedInfoLevel.isEmpty()) {
-            // TODO return 404
-            LOG.error("No info level found with ID {}.", infoLevelUpdate.getId());
-            return new InfoLevelDto();
-        }
+        InfoLevel persistedInfoLevel = infoLevelRepository.findById(infoLevelUpdate.getId())
+                .orElseThrow(() -> new RuntimeException("Info phase was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
 
-        infoLevelUpdate.setTrainingDefinitionId(persistedInfoLevel.get().getTrainingDefinitionId());
-        infoLevelUpdate.setOrder(persistedInfoLevel.get().getOrder());
+        // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
+
+        infoLevelUpdate.setTrainingDefinitionId(persistedInfoLevel.getTrainingDefinitionId());
+        infoLevelUpdate.setOrder(persistedInfoLevel.getOrder());
 
         InfoLevel savedEntity = infoLevelRepository.save(infoLevelUpdate);
 

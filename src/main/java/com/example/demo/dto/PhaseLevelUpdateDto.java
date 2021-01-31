@@ -1,25 +1,35 @@
 package com.example.demo.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public class PhaseLevelUpdateDto {
 
-    private Long id;
+    @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
+    @NotEmpty(message = "Training phase title must not be blank")
     private String title;
-    private Integer order;
+
+    @ApiModelProperty(value = "Maximal number of allowed wrong flags provided by played", required = true, example = "10")
+    @NotNull(message = "Maximal number of allowed wrong flags must be set")
     private Integer allowedWrongFlags;
+
+    @ApiModelProperty(value = "Maximal number of allowed commands provided by played", required = true, example = "10")
+    @NotNull(message = "Maximal number of allowed commands must be set")
     private Integer allowedCommands;
+
+    @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
+    @NotNull(message = "Estimated duration of phase task must be set")
     private Integer estimatedDuration;
+
+    @ApiModelProperty(value = "Maximal score player can achieve in the training phase", example = "200")
+    @PositiveOrZero
     private Long maxScore;
+
     private List<DecisionMatrixRowDto> decisionMatrix;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -27,14 +37,6 @@ public class PhaseLevelUpdateDto {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Integer getOrder() {
-        return order;
-    }
-
-    public void setOrder(Integer order) {
-        this.order = order;
     }
 
     public Integer getAllowedWrongFlags() {

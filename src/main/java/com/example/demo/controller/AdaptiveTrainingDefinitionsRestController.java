@@ -1,14 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
-import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
-import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.service.LevelOperationsService;
 import io.swagger.annotations.Api;
@@ -46,22 +43,22 @@ public class AdaptiveTrainingDefinitionsRestController {
         this.levelOperationsService = levelOperationsService;
     }
 
-    @ApiOperation(httpMethod = "PUT",
-            value = "Move level to specified order",
-            nickname = "moveLevelToSpecifiedOrder",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Level moved to specified order"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PutMapping(value = "/levels/{levelIdFrom}/move-to/{newPosition}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void moveLevelToSpecifiedOrder(
-            @ApiParam(value = "Level ID - from", required = true) @PathVariable(name = "levelIdFrom") Long levelIdFrom,
-            @ApiParam(value = "Position (order) to which the level should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
-
-        levelOperationsService.moveLevelToSpecifiedOrder(levelIdFrom, newPosition);
-    }
+//    @ApiOperation(httpMethod = "PUT",
+//            value = "Move level to specified order",
+//            nickname = "moveLevelToSpecifiedOrder",
+//            produces = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Level moved to specified order"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PutMapping(value = "/levels/{levelIdFrom}/move-to/{newPosition}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public void moveLevelToSpecifiedOrder(
+//            @ApiParam(value = "Level ID - from", required = true) @PathVariable(name = "levelIdFrom") Long levelIdFrom,
+//            @ApiParam(value = "Position (order) to which the level should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
+//
+//        levelOperationsService.moveLevelToSpecifiedOrder(levelIdFrom, newPosition);
+//    }
 
 //    @ApiOperation(httpMethod = "DELETE",
 //            value = "Delete a specified level",
@@ -115,37 +112,37 @@ public class AdaptiveTrainingDefinitionsRestController {
 //        return levelOperationsService.getLevel(levelId);
 //    }
 
-    @ApiOperation(httpMethod = "PUT",
-            value = "Update info level",
-            nickname = "updateInfoLevel",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Info level updated"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PutMapping(path = "/info-levels")
-    public void updateInfoLevel(
-            @ApiParam(value = "Info level to be updated") @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
+//    @ApiOperation(httpMethod = "PUT",
+//            value = "Update info level",
+//            nickname = "updateInfoLevel",
+//            consumes = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Info level updated"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PutMapping(path = "/info-levels")
+//    public void updateInfoLevel(
+//            @ApiParam(value = "Info level to be updated") @RequestBody InfoLevelUpdateDto infoLevelUpdateDto) {
+//
+//        levelOperationsService.updateInfoLevel(infoLevelUpdateDto);
+//    }
 
-        levelOperationsService.updateInfoLevel(infoLevelUpdateDto);
-    }
-
-    @ApiOperation(httpMethod = "PUT",
-            value = "Update phase",
-            nickname = "updatePhaseLevel",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Phase level"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PutMapping(path = "/phases")
-    public void updatePhaseLevel(
-            @ApiParam(value = "Info level to be updated") @RequestBody PhaseLevelUpdateDto phaseLevelUpdateDto) {
-
-        levelOperationsService.updatePhaseLevel(phaseLevelUpdateDto);
-    }
+//    @ApiOperation(httpMethod = "PUT",
+//            value = "Update phase",
+//            nickname = "updatePhaseLevel",
+//            consumes = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Phase level"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PutMapping(path = "/phases")
+//    public void updatePhaseLevel(
+//            @ApiParam(value = "Info level to be updated") @RequestBody PhaseLevelUpdateDto phaseLevelUpdateDto) {
+//
+//        levelOperationsService.updatePhaseLevel(phaseLevelUpdateDto);
+//    }
 
 //    @ApiOperation(httpMethod = "PUT",
 //            value = "Update task",

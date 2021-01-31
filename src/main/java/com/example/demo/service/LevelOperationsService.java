@@ -50,31 +50,31 @@ public class LevelOperationsService {
     @Autowired
     private QuestionChoiceService questionChoiceService;
 
-    @Transactional
-    public void moveLevelToSpecifiedOrder(Long levelIdFrom, int newPosition) {
-        Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
-
-        if (levelFrom.isEmpty()) {
-            // TODO throw a proper exception
-            return;
-        }
-
-        int fromOrder = levelFrom.get().getOrder();
-
-        if (fromOrder < newPosition) {
-            baseLevelRepository.decreaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), fromOrder, newPosition);
-        } else if (fromOrder > newPosition) {
-            baseLevelRepository.increaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), newPosition, fromOrder);
-        } else {
-            // nothing should be changed, no further actions needed
-            return;
-        }
-
-        levelFrom.get().setOrder(newPosition);
-        baseLevelRepository.save(levelFrom.get());
-
-        phaseLevelService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.get().getTrainingDefinitionId());
-    }
+//    @Transactional
+//    public void moveLevelToSpecifiedOrder(Long levelIdFrom, int newPosition) {
+//        Optional<BaseLevel> levelFrom = baseLevelRepository.findById(levelIdFrom);
+//
+//        if (levelFrom.isEmpty()) {
+//            // TODO throw a proper exception
+//            return;
+//        }
+//
+//        int fromOrder = levelFrom.get().getOrder();
+//
+//        if (fromOrder < newPosition) {
+//            baseLevelRepository.decreaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), fromOrder, newPosition);
+//        } else if (fromOrder > newPosition) {
+//            baseLevelRepository.increaseOrderOfLevelsOnInterval(levelFrom.get().getTrainingDefinitionId(), newPosition, fromOrder);
+//        } else {
+//            // nothing should be changed, no further actions needed
+//            return;
+//        }
+//
+//        levelFrom.get().setOrder(newPosition);
+//        baseLevelRepository.save(levelFrom.get());
+//
+//        phaseLevelService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.get().getTrainingDefinitionId());
+//    }
 
 //    @Transactional
 //    public void deleteLevel(Long levelId) {
@@ -141,15 +141,15 @@ public class LevelOperationsService {
         return BeanMapper.INSTANCE.toDto(level.get());
     }
 
-    public void updateInfoLevel(InfoLevelUpdateDto infoLevelUpdateDto) {
-        InfoLevel infoLevel = BeanMapper.INSTANCE.toEntity(infoLevelUpdateDto);
-        infoLevelService.updateInfoLevel(infoLevel);
-    }
+//    public void updateInfoLevel(InfoLevelUpdateDto infoLevelUpdateDto) {
+//        InfoLevel infoLevel = BeanMapper.INSTANCE.toEntity(infoLevelUpdateDto);
+//        infoLevelService.updateInfoLevel(infoLevel);
+//    }
 
-    public void updatePhaseLevel(PhaseLevelUpdateDto phaseLevelUpdateDto) {
-        PhaseLevel phaseLevel = BeanMapper.INSTANCE.toEntity(phaseLevelUpdateDto);
-        phaseLevelService.updatePhaseLevel(phaseLevel);
-    }
+//    public void updatePhaseLevel(PhaseLevelUpdateDto phaseLevelUpdateDto) {
+//        PhaseLevel phaseLevel = BeanMapper.INSTANCE.toEntity(phaseLevelUpdateDto);
+//        phaseLevelService.updatePhaseLevel(phaseLevel);
+//    }
 
     public QuestionDto createQuestion(Long questionnaireId, QuestionType questionType) {
         QuestionDto createdQuestion = questionService.createDefaultQuestion(questionnaireId, questionType);

@@ -1,18 +1,18 @@
 package com.example.demo.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotEmpty;
+
 public class InfoLevelUpdateDto {
 
-    private Long id;
+    @ApiModelProperty(value = "Short description of info phase", required = true, example = "Info phase title")
+    @NotEmpty(message = "Info phase title must not be blank")
     private String title;
+
+    @ApiModelProperty(value = "The information of info phase that is displayed to a player", required = true, example = "Read the info")
+    @NotEmpty(message = "Info phase content must not be blank")
     private String content;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -33,8 +33,7 @@ public class InfoLevelUpdateDto {
     @Override
     public String toString() {
         return "InfoLevelUpdateDto{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 '}';
     }

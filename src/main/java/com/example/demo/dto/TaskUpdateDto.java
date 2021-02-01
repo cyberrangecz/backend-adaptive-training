@@ -34,8 +34,6 @@ public class TaskUpdateDto {
     @PositiveOrZero(message = "Limit of the number of provided incorrect flags must not be a negative number")
     private Integer incorrectFlagLimit;
 
-//    private List<AttachmentDto> attachments;
-
     public Long getId() {
         return id;
     }
@@ -77,14 +75,6 @@ public class TaskUpdateDto {
         this.solution = solution;
     }
 
-//    public List<AttachmentDto> getAttachments() {
-//        return attachments;
-//    }
-
-//    public void setAttachments(List<AttachmentDto> attachments) {
-//        this.attachments = attachments;
-//    }
-
     public Integer getIncorrectFlagLimit() {
         return incorrectFlagLimit;
     }
@@ -102,7 +92,6 @@ public class TaskUpdateDto {
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectFlagLimit=" + incorrectFlagLimit +
-//                ", attachments=" + attachments +
                 '}';
     }
 }

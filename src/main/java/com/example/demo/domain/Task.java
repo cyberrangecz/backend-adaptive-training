@@ -16,10 +16,6 @@ public class Task extends AbstractPhase {
     @ManyToOne(fetch = FetchType.LAZY)
     private TrainingPhase trainingPhase;
 
-//    @OrderBy
-//    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private List<Attachment> attachments;
-
     public String getContent() {
         return content;
     }
@@ -43,14 +39,6 @@ public class Task extends AbstractPhase {
     public void setSolution(String solution) {
         this.solution = solution;
     }
-
-//    public List<Attachment> getAttachments() {
-//        return attachments;
-//    }
-
-//    public void setAttachments(List<Attachment> attachments) {
-//        this.attachments = attachments;
-//    }
 
     public Long getIncorrectFlagLimit() {
         return incorrectFlagLimit;

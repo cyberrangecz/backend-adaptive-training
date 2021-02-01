@@ -9,9 +9,6 @@ public class TaskDto extends AbstractPhaseDto implements Serializable {
     private String solution;
     private Long incorrectFlagLimit;
 
-//    private List<AttachmentDto> attachments;
-
-
     public String getContent() {
         return content;
     }
@@ -36,14 +33,6 @@ public class TaskDto extends AbstractPhaseDto implements Serializable {
         this.solution = solution;
     }
 
-//    public List<AttachmentDto> getAttachments() {
-//        return attachments;
-//    }
-
-//    public void setAttachments(List<AttachmentDto> attachments) {
-//        this.attachments = attachments;
-//    }
-
     public Long getIncorrectFlagLimit() {
         return incorrectFlagLimit;
     }
@@ -59,7 +48,6 @@ public class TaskDto extends AbstractPhaseDto implements Serializable {
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectFlagLimit='" + incorrectFlagLimit + '\'' +
-//                ", attachments=" + attachments +
                 "} " + super.toString();
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.mapper;
 
 import com.example.demo.domain.AbstractPhase;
-import com.example.demo.domain.Attachment;
 import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.InfoPhase;
 import com.example.demo.domain.TrainingPhase;
@@ -10,7 +9,6 @@ import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.dto.AbstractPhaseDto;
-import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
@@ -70,10 +68,6 @@ public interface BeanMapper {
     InfoPhaseDto toDto(InfoPhase infoPhase);
 
     InfoPhase toEntity(InfoPhaseUpdateDto infoPhaseUpdateDto);
-
-    AttachmentDto toDto(Attachment attachment);
-
-    Attachment toEntity(AttachmentDto attachment);
 
     @Mapping(target = "phaseType", constant = "GAME")
     TrainingPhaseDto toDto(TrainingPhase trainingPhase);

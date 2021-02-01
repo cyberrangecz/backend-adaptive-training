@@ -1,6 +1,5 @@
 package com.example.demo.dto.input;
 
-import com.example.demo.dto.AttachmentDto;
 import com.example.demo.enums.PhaseType;
 
 import java.util.List;
@@ -17,8 +16,6 @@ public class GameDefinitionCreateDto {
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
-
-    private List<AttachmentDto> attachments;
 
     // info level fields
     // currently none special
@@ -88,14 +85,6 @@ public class GameDefinitionCreateDto {
 
     public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
         this.incorrectFlagLimit = incorrectFlagLimit;
-    }
-
-    public List<AttachmentDto> getAttachments() {
-        return attachments;
-    }
-
-    public void setAttachments(List<AttachmentDto> attachments) {
-        this.attachments = attachments;
     }
 
     public List<GameDefinitionCreateDto> getSubLevels() {

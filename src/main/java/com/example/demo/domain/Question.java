@@ -4,18 +4,21 @@ import com.example.demo.enums.QuestionType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 public class Question {
@@ -26,17 +29,11 @@ public class Question {
 
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
+
     private String text;
-    private Integer points;
-    private Integer penalty;
-    private boolean required;
 
-    // TODO this is a Potemkin village before the consultation. Proper ManyToMany relation should be used here
-    @ElementCollection
-    private List<Long> relatedPhasesId;
-
-    @Column(name = "order_in_questionnaire", nullable = false)
-    private Integer order;
+    @Column(name = "order_in_questionnaire")
+    private int order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private QuestionnaireLevel questionnaireLevel;
@@ -44,6 +41,9 @@ public class Question {
     @OrderBy
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionChoice> choices = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "questions", fetch = FetchType.LAZY)
+    private Set<QuestionnairePhaseRelation> questionnairePhaseRelations = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -69,35 +69,11 @@ public class Question {
         this.text = text;
     }
 
-    public Integer getPoints() {
-        return points;
-    }
-
-    public void setPoints(Integer points) {
-        this.points = points;
-    }
-
-    public Integer getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(Integer penalty) {
-        this.penalty = penalty;
-    }
-
-    public boolean isRequired() {
-        return required;
-    }
-
-    public void setRequired(boolean required) {
-        this.required = required;
-    }
-
-    public Integer getOrder() {
+    public int getOrder() {
         return order;
     }
 
-    public void setOrder(Integer order) {
+    public void setOrder(int order) {
         this.order = order;
     }
 
@@ -117,11 +93,15 @@ public class Question {
         this.choices = choices;
     }
 
-    public List<Long> getRelatedPhasesId() {
-        return relatedPhasesId;
+    public Set<QuestionnairePhaseRelation> getQuestionPhaseRelations() {
+        return Collections.unmodifiableSet(questionnairePhaseRelations);
     }
 
-    public void setRelatedPhasesId(List<Long> relatedPhasesId) {
-        this.relatedPhasesId = relatedPhasesId;
+    public void setQuestionPhaseRelations(Set<QuestionnairePhaseRelation> questionnairePhaseRelations) {
+        this.questionnairePhaseRelations = questionnairePhaseRelations;
+    }
+
+    public void addQuestionPhaseRelation(QuestionnairePhaseRelation questionnairePhaseRelation) {
+        this.questionnairePhaseRelations.add(questionnairePhaseRelation);
     }
 }

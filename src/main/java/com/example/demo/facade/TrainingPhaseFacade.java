@@ -6,6 +6,10 @@ import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
+import com.example.demo.dto.QuestionDto;
+import com.example.demo.dto.QuestionUpdateDto;
+import com.example.demo.dto.QuestionnaireLevelDto;
+import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.enums.PhaseType;
 import com.example.demo.service.InfoLevelService;
 import com.example.demo.service.PhaseLevelService;
@@ -71,6 +75,10 @@ public class TrainingPhaseFacade {
 
     public PhaseLevelDto updateTrainingPhase(Long definitionId, Long phaseId, PhaseLevelUpdateDto trainingPhaseUpdate) {
         return phaseLevelService.updatePhaseLevel(definitionId, phaseId, trainingPhaseUpdate);
+    }
+
+    public QuestionnaireLevelDto updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDto questionnaireUpdateDto) {
+        return questionnaireLevelService.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
     }
 
     public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {

@@ -6,6 +6,10 @@ import com.example.demo.dto.InfoLevelUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
+import com.example.demo.dto.QuestionDto;
+import com.example.demo.dto.QuestionUpdateDto;
+import com.example.demo.dto.QuestionnaireLevelDto;
+import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.facade.TrainingPhaseFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -178,6 +182,29 @@ public class PhasesController {
         PhaseLevelDto updatedTrainingPhase = trainingPhaseFacade.updateTrainingPhase(definitionId, phaseId, phaseLevelUpdateDto);
 
         return new ResponseEntity<>(updatedTrainingPhase, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Update questionnaire phase",
+            nickname = "updateQuestion",
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Questionnaire phase updated"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping(path = "/{phaseId}/questionnaire")
+    public ResponseEntity<QuestionnaireLevelDto> updateQuestionnairePhase(
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Phase ID", required = true)
+            @PathVariable("phaseId") Long phaseId,
+            @ApiParam(value = "Questionnaire to be updated")
+            @RequestBody @Valid QuestionnaireUpdateDto questionnaireUpdateDto) {
+
+        QuestionnaireLevelDto updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
+
+        return new ResponseEntity<>(updatedQuestionnairePhase, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "PUT",

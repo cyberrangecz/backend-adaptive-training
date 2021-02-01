@@ -228,21 +228,21 @@ public class AdaptiveTrainingDefinitionsRestController {
         levelOperationsService.updateQuestionnaire(questionUpdateDto);
     }
 
-    @ApiOperation(httpMethod = "PUT",
-            value = "Update question",
-            nickname = "updateQuestion",
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Question updated"),
-            @ApiResponse(code = 500, message = "Unexpected application error")
-    })
-    @PutMapping(path = "/questions")
-    public void updateQuestion(
-            @ApiParam(value = "Question to be updated") @RequestBody QuestionUpdateDto questionUpdateDto) {
-
-        levelOperationsService.updateQuestion(questionUpdateDto);
-    }
+//    @ApiOperation(httpMethod = "PUT",
+//            value = "Update question",
+//            nickname = "updateQuestion",
+//            consumes = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Question updated"),
+//            @ApiResponse(code = 500, message = "Unexpected application error")
+//    })
+//    @PutMapping(path = "/questions")
+//    public void updateQuestion(
+//            @ApiParam(value = "Question to be updated") @RequestBody QuestionUpdateDto questionUpdateDto) {
+//
+//        levelOperationsService.updateQuestion(questionUpdateDto);
+//    }
 
     @ApiOperation(httpMethod = "DELETE",
             value = "Delete a specified question",

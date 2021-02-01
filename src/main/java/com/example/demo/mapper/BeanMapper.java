@@ -23,7 +23,6 @@ import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
-import com.example.demo.dto.input.GameDefinitionCreateDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -75,17 +74,6 @@ public interface BeanMapper {
     TrainingPhase toEntity(TrainingPhaseDto trainingPhaseDto);
 
     TrainingPhase toEntity(TrainingPhaseUpdateDto trainingPhaseUpdateDto);
-
-    Task toGameLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
-
-//    @Mapping(target = "type", constant = "task")
-    GameDefinitionCreateDto toLevelDefinitionDto(Task task);
-
-//    @Mapping(target = "type", constant = "info")
-    GameDefinitionCreateDto toLevelDefinitionDto(InfoPhase infoPhase);
-
-//    @Mapping(target = "type", constant = "phase")
-    GameDefinitionCreateDto toLevelDefinitionDto(TrainingPhase trainingPhase);
 
     DecisionMatrixRow toEntity(DecisionMatrixRowDto decisionMatrixRowDto);
 

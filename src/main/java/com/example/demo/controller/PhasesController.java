@@ -1,13 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.BaseLevelDto;
-import com.example.demo.dto.InfoLevelDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
+import com.example.demo.dto.InfoPhaseDto;
+import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
-import com.example.demo.dto.QuestionDto;
-import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.facade.TrainingPhaseFacade;
@@ -139,7 +137,7 @@ public class PhasesController {
     @ApiOperation(httpMethod = "PUT",
             value = "Update info phase",
             nickname = "updateInfoPhase",
-            response = InfoLevelDto.class,
+            response = InfoPhaseDto.class,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
@@ -147,15 +145,15 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{phaseId}/info")
-    public ResponseEntity<InfoLevelDto> updateInfoPhase(
+    public ResponseEntity<InfoPhaseDto> updateInfoPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Level ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Info phase to be updated")
-            @RequestBody @Valid InfoLevelUpdateDto infoLevelUpdateDto) {
+            @RequestBody @Valid InfoPhaseUpdateDto infoPhaseUpdateDto) {
 
-        InfoLevelDto updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoLevelUpdateDto);
+        InfoPhaseDto updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
 
         return new ResponseEntity<>(updatedInfoPhase, HttpStatus.OK);
     }

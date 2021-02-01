@@ -3,7 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.DecisionMatrixRow;
-import com.example.demo.domain.InfoLevel;
+import com.example.demo.domain.InfoPhase;
 import com.example.demo.domain.PhaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
@@ -12,9 +12,8 @@ import com.example.demo.domain.Task;
 import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
-import com.example.demo.dto.InfoLevelCreateDto;
-import com.example.demo.dto.InfoLevelDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
+import com.example.demo.dto.InfoPhaseDto;
+import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
@@ -44,8 +43,8 @@ public interface BeanMapper {
         BaseLevelDto baseLevelDto;
         if (baseLevel instanceof PhaseLevel) {
             baseLevelDto = toDto((PhaseLevel) baseLevel);
-        } else if (baseLevel instanceof InfoLevel) {
-            baseLevelDto = toDto((InfoLevel) baseLevel);
+        } else if (baseLevel instanceof InfoPhase) {
+            baseLevelDto = toDto((InfoPhase) baseLevel);
         } else if (baseLevel instanceof Task) {
             baseLevelDto = toDto((Task) baseLevel);
         } else if (baseLevel instanceof QuestionnaireLevel) {
@@ -69,13 +68,9 @@ public interface BeanMapper {
     Task toEntity(TaskUpdateDto taskUpdateDto);
 
     @Mapping(target = "phaseType", constant = "INFO")
-    InfoLevelDto toDto(InfoLevel infoLevel);
+    InfoPhaseDto toDto(InfoPhase infoPhase);
 
-    InfoLevel toEntity(InfoLevelDto infoLevel);
-
-    InfoLevel toEntity(InfoLevelCreateDto infoLevelCreateDto);
-
-    InfoLevel toEntity(InfoLevelUpdateDto infoLevelUpdateDto);
+    InfoPhase toEntity(InfoPhaseUpdateDto infoPhaseUpdateDto);
 
     AttachmentDto toDto(Attachment attachment);
 
@@ -88,13 +83,9 @@ public interface BeanMapper {
 
     PhaseLevel toEntity(PhaseLevelUpdateDto phaseLevelUpdateDto);
 
-    InfoLevel toInfoLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
-
     Task toGameLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     PhaseLevel toPhaseLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
-
-    InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     @Mapping(target = "phaseLevel", ignore = true)
 //    @Mapping(target = "attachments", ignore = true)
@@ -108,7 +99,7 @@ public interface BeanMapper {
     GameDefinitionCreateDto toLevelDefinitionDto(Task task);
 
 //    @Mapping(target = "type", constant = "info")
-    GameDefinitionCreateDto toLevelDefinitionDto(InfoLevel infoLevel);
+    GameDefinitionCreateDto toLevelDefinitionDto(InfoPhase infoPhase);
 
 //    @Mapping(target = "type", constant = "phase")
     GameDefinitionCreateDto toLevelDefinitionDto(PhaseLevel phaseLevel);

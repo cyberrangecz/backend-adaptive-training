@@ -1,17 +1,15 @@
 package com.example.demo.facade;
 
 import com.example.demo.dto.BaseLevelDto;
-import com.example.demo.dto.InfoLevelDto;
-import com.example.demo.dto.InfoLevelUpdateDto;
+import com.example.demo.dto.InfoPhaseDto;
+import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.PhaseLevelDto;
 import com.example.demo.dto.PhaseLevelUpdateDto;
-import com.example.demo.dto.QuestionDto;
-import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.enums.PhaseType;
-import com.example.demo.service.InfoLevelService;
+import com.example.demo.service.InfoPhaseService;
 import com.example.demo.service.PhaseLevelService;
 import com.example.demo.service.PhaseService;
 import com.example.demo.service.QuestionnaireLevelService;
@@ -28,7 +26,7 @@ public class TrainingPhaseFacade {
     private PhaseService phaseService;
 
     @Autowired
-    private InfoLevelService infoLevelService;
+    private InfoPhaseService infoPhaseService;
 
     @Autowired
     private QuestionnaireLevelService questionnaireLevelService;
@@ -39,7 +37,7 @@ public class TrainingPhaseFacade {
     public BaseLevelDto createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
         BaseLevelDto baseLevelDto;
         if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
-            baseLevelDto = infoLevelService.createDefaultInfoLevel(trainingDefinitionId);
+            baseLevelDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
         } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
             baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
         } else {
@@ -69,8 +67,8 @@ public class TrainingPhaseFacade {
         return phaseService.getPhases(definitionId);
     }
 
-    public InfoLevelDto updateInfoPhase(Long definitionId, Long phaseId, InfoLevelUpdateDto infoLevelUpdateDto) {
-        return infoLevelService.updateInfoLevel(definitionId, phaseId, infoLevelUpdateDto);
+    public InfoPhaseDto updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDto infoPhaseUpdateDto) {
+        return infoPhaseService.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
     }
 
     public PhaseLevelDto updateTrainingPhase(Long definitionId, Long phaseId, PhaseLevelUpdateDto trainingPhaseUpdate) {

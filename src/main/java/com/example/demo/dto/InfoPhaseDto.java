@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
-public class InfoLevelDto extends BaseLevelDto implements Serializable {
+public class InfoPhaseDto extends BaseLevelDto implements Serializable {
 
     private String content;
 
@@ -17,7 +17,7 @@ public class InfoLevelDto extends BaseLevelDto implements Serializable {
 
     @Override
     public String toString() {
-        return "InfoLevelDto{" +
+        return "InfoPhaseDto{" +
                 "content='" + content + '\'' +
                 "} " + super.toString();
     }

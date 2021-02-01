@@ -3,7 +3,7 @@ package com.example.demo.domain;
 import javax.persistence.Entity;
 
 @Entity
-public class InfoLevel extends BaseLevel {
+public class InfoPhase extends BaseLevel {
 
     private String content;
 
@@ -17,6 +17,8 @@ public class InfoLevel extends BaseLevel {
 
     @Override
     public String toString() {
-        return "InfoLevel{" + ", content='" + content + '\'' + "} " + super.toString();
+        return "InfoPhase{" +
+                "content='" + content + '\'' +
+                "} " + super.toString();
     }
 }

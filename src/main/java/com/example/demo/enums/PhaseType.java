@@ -1,7 +1,8 @@
 package com.example.demo.enums;
 
 public enum PhaseType {
-    QUESTIONNAIRE,
+    QUESTIONNAIRE_ADAPTIVE,
+    QUESTIONNAIRE_GENERAL,
     INFO,
-    GAME,
+    TRAINING,
 }

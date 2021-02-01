@@ -5,14 +5,14 @@ import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.QuestionnairePhaseDto;
+import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
-import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.enums.PhaseType;
 import com.example.demo.service.InfoPhaseService;
-import com.example.demo.service.TrainingPhaseService;
 import com.example.demo.service.PhaseService;
 import com.example.demo.service.QuestionnairePhaseService;
+import com.example.demo.service.TrainingPhaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,10 +38,10 @@ public class TrainingPhaseFacade {
         AbstractPhaseDto abstractPhaseDto;
         if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
-        } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
-            abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId);
-        } else {
+        } else if (PhaseType.TRAINING.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
+        } else {
+            abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId);
         }
 
         abstractPhaseDto.setPhaseType(phaseCreateDTO.getPhaseType());

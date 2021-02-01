@@ -67,7 +67,7 @@ public interface BeanMapper {
 
     InfoPhase toEntity(InfoPhaseUpdateDto infoPhaseUpdateDto);
 
-    @Mapping(target = "phaseType", constant = "GAME")
+    @Mapping(target = "phaseType", constant = "TRAINING")
     TrainingPhaseDto toDto(TrainingPhase trainingPhase);
 
     TrainingPhase toEntity(TrainingPhaseDto trainingPhaseDto);

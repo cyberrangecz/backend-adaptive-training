@@ -8,12 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    @Query("SELECT COALESCE(MAX(q.order), -1) FROM Question q WHERE q.questionnaireLevel.id = :questionnaireId")
+    @Query("SELECT COALESCE(MAX(q.order), -1) FROM Question q WHERE q.questionnairePhase.id = :questionnaireId")
     Integer getCurrentMaxOrder(@Param("questionnaireId") Long questionnaireId);
 
     @Modifying
     @Query("UPDATE Question q SET q.order = q.order - 1 " +
-            "WHERE q.questionnaireLevel.id  = :questionnaireLevelId " +
+            "WHERE q.questionnairePhase.id  = :questionnairePhaseIdLevelId " +
             "AND q.order > :order ")
-    void decreaseOrderAfterQuestionWasDeleted(@Param("order") int order, @Param("questionnaireLevelId") Long questionnaireLevelId);
+    void decreaseOrderAfterQuestionWasDeleted(@Param("order") int order, @Param("questionnairePhaseIdLevelId") Long questionnairePhaseIdLevelId);
 }

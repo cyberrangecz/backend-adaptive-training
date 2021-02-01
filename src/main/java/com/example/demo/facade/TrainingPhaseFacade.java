@@ -4,15 +4,15 @@ import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
+import com.example.demo.dto.QuestionnairePhaseDto;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
-import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.enums.PhaseType;
 import com.example.demo.service.InfoPhaseService;
 import com.example.demo.service.TrainingPhaseService;
 import com.example.demo.service.PhaseService;
-import com.example.demo.service.QuestionnaireLevelService;
+import com.example.demo.service.QuestionnairePhaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +29,7 @@ public class TrainingPhaseFacade {
     private InfoPhaseService infoPhaseService;
 
     @Autowired
-    private QuestionnaireLevelService questionnaireLevelService;
+    private QuestionnairePhaseService questionnairePhaseService;
 
     @Autowired
     private TrainingPhaseService trainingPhaseService;
@@ -39,7 +39,7 @@ public class TrainingPhaseFacade {
         if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
         } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
-            abstractPhaseDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
+            abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId);
         } else {
             abstractPhaseDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
         }
@@ -75,8 +75,8 @@ public class TrainingPhaseFacade {
         return trainingPhaseService.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdate);
     }
 
-    public QuestionnaireLevelDto updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDto questionnaireUpdateDto) {
-        return questionnaireLevelService.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
+    public QuestionnairePhaseDto updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDto questionnaireUpdateDto) {
+        return questionnairePhaseService.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
     }
 
     public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {

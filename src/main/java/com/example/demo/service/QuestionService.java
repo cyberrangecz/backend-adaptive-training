@@ -1,13 +1,12 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Question;
-import com.example.demo.domain.QuestionChoice;
-import com.example.demo.domain.QuestionnaireLevel;
+import com.example.demo.domain.QuestionnairePhase;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.QuestionRepository;
-import com.example.demo.repository.QuestionnaireLevelRepository;
+import com.example.demo.repository.QuestionnairePhaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +20,14 @@ public class QuestionService {
     private static final Logger LOG = LoggerFactory.getLogger(QuestionService.class);
 
     @Autowired
-    private QuestionnaireLevelRepository questionnaireLevelRepository;
+    private QuestionnairePhaseRepository questionnairePhaseRepository;
 
     @Autowired
     private QuestionRepository questionRepository;
 
     public QuestionDto createDefaultQuestion(Long questionnaireId, QuestionType questionType) {
-        Optional<QuestionnaireLevel> questionnaireLevel = questionnaireLevelRepository.findById(questionnaireId);
-        if (questionnaireLevel.isEmpty()) {
+        Optional<QuestionnairePhase> questionnairePhase = questionnairePhaseRepository.findById(questionnaireId);
+        if (questionnairePhase.isEmpty()) {
             // TODO return 404
             return null;
         }
@@ -36,7 +35,7 @@ public class QuestionService {
         Question question = new Question();
         question.setText("Title of question");
         question.setQuestionType(questionType);
-        question.setQuestionnaireLevel(questionnaireLevel.get());
+        question.setQuestionnairePhase(questionnairePhase.get());
         question.setOrder(questionRepository.getCurrentMaxOrder(questionnaireId) + 1);
 
         Question persistedEntity = questionRepository.save(question);
@@ -54,7 +53,7 @@ public class QuestionService {
         }
 
         question.setChoices(persistedQuestion.get().getChoices());
-        question.setQuestionnaireLevel(persistedQuestion.get().getQuestionnaireLevel());
+        question.setQuestionnairePhase(persistedQuestion.get().getQuestionnairePhase());
         question.setOrder(persistedQuestion.get().getOrder());
 
         Question savedEntity = questionRepository.save(question);
@@ -71,7 +70,7 @@ public class QuestionService {
         }
 
         int questionOrder = question.get().getOrder();
-        questionRepository.decreaseOrderAfterQuestionWasDeleted(questionOrder, question.get().getQuestionnaireLevel().getId());
+        questionRepository.decreaseOrderAfterQuestionWasDeleted(questionOrder, question.get().getQuestionnairePhase().getId());
 
         questionRepository.delete(question.get());
     }

@@ -36,7 +36,7 @@ public class Question {
     private int order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private QuestionnaireLevel questionnaireLevel;
+    private QuestionnairePhase questionnairePhase;
 
     @OrderBy
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -77,12 +77,12 @@ public class Question {
         this.order = order;
     }
 
-    public QuestionnaireLevel getQuestionnaireLevel() {
-        return questionnaireLevel;
+    public QuestionnairePhase getQuestionnairePhase() {
+        return questionnairePhase;
     }
 
-    public void setQuestionnaireLevel(QuestionnaireLevel questionnaireLevel) {
-        this.questionnaireLevel = questionnaireLevel;
+    public void setQuestionnairePhase(QuestionnairePhase questionnairePhase) {
+        this.questionnairePhase = questionnairePhase;
     }
 
     public List<QuestionChoice> getChoices() {

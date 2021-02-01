@@ -12,13 +12,13 @@ import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
-public class QuestionnaireLevel extends AbstractPhase {
+public class QuestionnairePhase extends AbstractPhase {
 
     @Enumerated(EnumType.STRING)
     private QuestionnaireType questionnaireType;
 
     @OrderBy
-    @OneToMany(mappedBy = "questionnaireLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "questionnairePhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Question> questions;
 
     @OrderBy

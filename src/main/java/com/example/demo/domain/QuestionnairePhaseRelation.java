@@ -23,7 +23,7 @@ public class QuestionnairePhaseRelation {
     private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private QuestionnaireLevel relatedPhase;
+    private QuestionnairePhase relatedPhase;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "questionnaire_phase_relation_question",
@@ -50,11 +50,11 @@ public class QuestionnairePhaseRelation {
         this.order = order;
     }
 
-    public QuestionnaireLevel getRelatedPhase() {
+    public QuestionnairePhase getRelatedPhase() {
         return relatedPhase;
     }
 
-    public void setRelatedPhase(QuestionnaireLevel relatedPhase) {
+    public void setRelatedPhase(QuestionnairePhase relatedPhase) {
         this.relatedPhase = relatedPhase;
     }
 

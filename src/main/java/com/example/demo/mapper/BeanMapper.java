@@ -3,10 +3,10 @@ package com.example.demo.mapper;
 import com.example.demo.domain.AbstractPhase;
 import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.InfoPhase;
+import com.example.demo.domain.QuestionnairePhase;
 import com.example.demo.domain.TrainingPhase;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
-import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
 import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
@@ -18,7 +18,7 @@ import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
-import com.example.demo.dto.QuestionnaireLevelDto;
+import com.example.demo.dto.QuestionnairePhaseDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
@@ -43,8 +43,8 @@ public interface BeanMapper {
             abstractPhaseDto = toDto((InfoPhase) abstractPhase);
         } else if (abstractPhase instanceof Task) {
             abstractPhaseDto = toDto((Task) abstractPhase);
-        } else if (abstractPhase instanceof QuestionnaireLevel) {
-            abstractPhaseDto = toDto((QuestionnaireLevel) abstractPhase);
+        } else if (abstractPhase instanceof QuestionnairePhase) {
+            abstractPhaseDto = toDto((QuestionnairePhase) abstractPhase);
         } else {
             throw new RuntimeException("Unknown level type " + abstractPhase.getClass().getName());
         }
@@ -91,9 +91,9 @@ public interface BeanMapper {
 
     QuestionDto toDto(Question question);
 
-    QuestionnaireLevel toEntity(QuestionnaireUpdateDto questionnaireUpdateDto);
+    QuestionnairePhase toEntity(QuestionnaireUpdateDto questionnaireUpdateDto);
 
-    QuestionnaireLevel toEntity(QuestionnaireLevelDto questionnaireLevelDto);
+    QuestionnairePhase toEntity(QuestionnairePhaseDto questionnairePhaseDto);
 
-    QuestionnaireLevelDto toDto(QuestionnaireLevel questionnaireLevel);
+    QuestionnairePhaseDto toDto(QuestionnairePhase questionnairePhase);
 }

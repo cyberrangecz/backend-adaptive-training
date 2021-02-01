@@ -4,9 +4,9 @@ import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
+import com.example.demo.dto.QuestionnairePhaseDto;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
-import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.facade.TrainingPhaseFacade;
 import io.swagger.annotations.Api;
@@ -192,7 +192,7 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{phaseId}/questionnaire")
-    public ResponseEntity<QuestionnaireLevelDto> updateQuestionnairePhase(
+    public ResponseEntity<QuestionnairePhaseDto> updateQuestionnairePhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
@@ -200,7 +200,7 @@ public class PhasesController {
             @ApiParam(value = "Questionnaire to be updated")
             @RequestBody @Valid QuestionnaireUpdateDto questionnaireUpdateDto) {
 
-        QuestionnaireLevelDto updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
+        QuestionnairePhaseDto updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
 
         return new ResponseEntity<>(updatedQuestionnairePhase, HttpStatus.OK);
     }

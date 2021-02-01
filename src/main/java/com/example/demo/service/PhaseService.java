@@ -1,9 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.BaseLevel;
-import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.domain.AbstractPhase;
+import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.AbstractPhaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,14 +14,14 @@ import java.util.List;
 public class PhaseService {
 
     @Autowired
-    private BaseLevelRepository baseLevelRepository;
+    private AbstractPhaseRepository abstractPhaseRepository;
 
     @Autowired
     private TrainingPhaseService trainingPhaseService;
 
     @Transactional
     public void deletePhase(Long definitionId, Long phaseId) {
-        BaseLevel phase = baseLevelRepository.findById(phaseId)
+        AbstractPhase phase = abstractPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
 
@@ -29,13 +29,13 @@ public class PhaseService {
 
 
         int levelOrder = phase.getOrder();
-        baseLevelRepository.decreaseOrderAfterLevelWasDeleted(definitionId, levelOrder);
+        abstractPhaseRepository.decreaseOrderAfterLevelWasDeleted(definitionId, levelOrder);
 
-        baseLevelRepository.delete(phase);
+        abstractPhaseRepository.delete(phase);
     }
 
-    public BaseLevelDto getPhase(Long definitionId, Long phaseId) {
-        BaseLevel phase = baseLevelRepository.findById(phaseId)
+    public AbstractPhaseDto getPhase(Long definitionId, Long phaseId) {
+        AbstractPhase phase = abstractPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
 
@@ -45,15 +45,15 @@ public class PhaseService {
     }
 
 
-    public List<BaseLevelDto> getPhases(Long trainingDefinitionId) {
-        List<BaseLevel> phases = baseLevelRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
+    public List<AbstractPhaseDto> getPhases(Long trainingDefinitionId) {
+        List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
 
         return BeanMapper.INSTANCE.toDtoList(phases);
     }
 
     @Transactional
     public void moveLevelToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
-        BaseLevel levelFrom = baseLevelRepository.findById(phaseIdFrom)
+        AbstractPhase levelFrom = abstractPhaseRepository.findById(phaseIdFrom)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
 
@@ -61,16 +61,16 @@ public class PhaseService {
         int fromOrder = levelFrom.getOrder();
 
         if (fromOrder < newPosition) {
-            baseLevelRepository.decreaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), fromOrder, newPosition);
+            abstractPhaseRepository.decreaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), fromOrder, newPosition);
         } else if (fromOrder > newPosition) {
-            baseLevelRepository.increaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), newPosition, fromOrder);
+            abstractPhaseRepository.increaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), newPosition, fromOrder);
         } else {
             // nothing should be changed, no further actions needed
             return;
         }
 
         levelFrom.setOrder(newPosition);
-        baseLevelRepository.save(levelFrom);
+        abstractPhaseRepository.save(levelFrom);
 
         trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.getTrainingDefinitionId());
     }

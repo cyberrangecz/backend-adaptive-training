@@ -1,7 +1,7 @@
 package com.example.demo.mapper;
 
+import com.example.demo.domain.AbstractPhase;
 import com.example.demo.domain.Attachment;
-import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.InfoPhase;
 import com.example.demo.domain.TrainingPhase;
@@ -9,8 +9,8 @@ import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
+import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.AttachmentDto;
-import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
@@ -38,24 +38,24 @@ public interface BeanMapper {
 
     BeanMapper INSTANCE = Mappers.getMapper(BeanMapper.class);
 
-    default BaseLevelDto toDto(BaseLevel baseLevel) {
-        BaseLevelDto baseLevelDto;
-        if (baseLevel instanceof TrainingPhase) {
-            baseLevelDto = toDto((TrainingPhase) baseLevel);
-        } else if (baseLevel instanceof InfoPhase) {
-            baseLevelDto = toDto((InfoPhase) baseLevel);
-        } else if (baseLevel instanceof Task) {
-            baseLevelDto = toDto((Task) baseLevel);
-        } else if (baseLevel instanceof QuestionnaireLevel) {
-            baseLevelDto = toDto((QuestionnaireLevel) baseLevel);
+    default AbstractPhaseDto toDto(AbstractPhase abstractPhase) {
+        AbstractPhaseDto abstractPhaseDto;
+        if (abstractPhase instanceof TrainingPhase) {
+            abstractPhaseDto = toDto((TrainingPhase) abstractPhase);
+        } else if (abstractPhase instanceof InfoPhase) {
+            abstractPhaseDto = toDto((InfoPhase) abstractPhase);
+        } else if (abstractPhase instanceof Task) {
+            abstractPhaseDto = toDto((Task) abstractPhase);
+        } else if (abstractPhase instanceof QuestionnaireLevel) {
+            abstractPhaseDto = toDto((QuestionnaireLevel) abstractPhase);
         } else {
-            throw new RuntimeException("Unknown level type " + baseLevel.getClass().getName());
+            throw new RuntimeException("Unknown level type " + abstractPhase.getClass().getName());
         }
 
-        return baseLevelDto;
+        return abstractPhaseDto;
     }
 
-    List<BaseLevelDto> toDtoList(List<BaseLevel> baseLevel);
+    List<AbstractPhaseDto> toDtoList(List<AbstractPhase> abstractPhase);
 
     @Mapping(target = "phaseType", constant = "task")
     TaskDto toDto(Task task);

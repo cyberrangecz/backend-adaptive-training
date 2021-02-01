@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.util.List;
 
-public class TrainingPhaseDto extends BaseLevelDto {
+public class TrainingPhaseDto extends AbstractPhaseDto {
 
     private List<TaskDto> tasks;
 

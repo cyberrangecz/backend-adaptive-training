@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.util.List;
 
-public class QuestionnaireLevelDto extends BaseLevelDto {
+public class QuestionnaireLevelDto extends AbstractPhaseDto {
 
     private List<QuestionDto> questions;
 

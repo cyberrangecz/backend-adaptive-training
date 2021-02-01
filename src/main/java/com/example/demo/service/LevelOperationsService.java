@@ -1,10 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.BaseLevel;
+import com.example.demo.domain.AbstractPhase;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
-import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.QuestionChoiceDto;
 import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
@@ -12,7 +12,7 @@ import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.enums.QuestionType;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.AbstractPhaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public class LevelOperationsService {
 
     @Autowired
-    private BaseLevelRepository baseLevelRepository;
+    private AbstractPhaseRepository abstractPhaseRepository;
 
     @Autowired
     private InfoPhaseService infoPhaseService;
@@ -123,8 +123,8 @@ public class LevelOperationsService {
 //        return BeanMapper.INSTANCE.toDtoList(phases);
 //    }
 
-    public BaseLevelDto getLevel(Long levelId) {
-        Optional<BaseLevel> level = baseLevelRepository.findById(levelId);
+    public AbstractPhaseDto getLevel(Long levelId) {
+        Optional<AbstractPhase> level = abstractPhaseRepository.findById(levelId);
 
         if (level.isEmpty()) {
             // TODO throw 404

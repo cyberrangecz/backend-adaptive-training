@@ -8,7 +8,7 @@ import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
-public class TrainingPhase extends BaseLevel {
+public class TrainingPhase extends AbstractPhase {
 
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

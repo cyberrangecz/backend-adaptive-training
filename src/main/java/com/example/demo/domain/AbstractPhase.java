@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class BaseLevel {
+public abstract class AbstractPhase {
 
     @Id
     @GeneratedValue
@@ -109,7 +109,7 @@ public abstract class BaseLevel {
 
     @Override
     public String toString() {
-        return "BaseLevel{" +
+        return "AbstractPhase{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", estimatedDuration='" + estimatedDuration + '\'' +

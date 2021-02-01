@@ -1,9 +1,8 @@
 package com.example.demo.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
-public class TaskDto extends BaseLevelDto implements Serializable {
+public class TaskDto extends AbstractPhaseDto implements Serializable {
 
     private String content;
     private String flag;

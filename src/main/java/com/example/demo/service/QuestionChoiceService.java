@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.dto.QuestionChoiceDto;

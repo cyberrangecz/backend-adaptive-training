@@ -4,7 +4,7 @@ import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.dto.QuestionnaireLevelDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.AbstractPhaseRepository;
 import com.example.demo.repository.QuestionnaireLevelRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +22,14 @@ public class QuestionnaireLevelService {
     private QuestionnaireLevelRepository questionnaireLevelRepository;
 
     @Autowired
-    private BaseLevelRepository baseLevelRepository;
+    private AbstractPhaseRepository abstractPhaseRepository;
 
     public QuestionnaireLevelDto createDefaultQuestionnaireLevel(Long trainingDefinitionId) {
 
         QuestionnaireLevel questionnaireLevel =new QuestionnaireLevel();
         questionnaireLevel.setTitle("Title of questionnaire level");
         questionnaireLevel.setTrainingDefinitionId(trainingDefinitionId);
-        questionnaireLevel.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        questionnaireLevel.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         QuestionnaireLevel persistedEntity = questionnaireLevelRepository.save(questionnaireLevel);
 

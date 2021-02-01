@@ -4,7 +4,7 @@ import com.example.demo.enums.PhaseType;
 
 import java.io.Serializable;
 
-public abstract class BaseLevelDto implements Serializable {
+public abstract class AbstractPhaseDto implements Serializable {
 
     private Long id;
     private String title;
@@ -81,7 +81,7 @@ public abstract class BaseLevelDto implements Serializable {
 
     @Override
     public String toString() {
-        return "BaseLevelDto{" +
+        return "AbstractPhaseDto{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", order=" + order +

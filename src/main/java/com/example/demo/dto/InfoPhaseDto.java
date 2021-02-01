@@ -2,7 +2,7 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
-public class InfoPhaseDto extends BaseLevelDto implements Serializable {
+public class InfoPhaseDto extends AbstractPhaseDto implements Serializable {
 
     private String content;
 

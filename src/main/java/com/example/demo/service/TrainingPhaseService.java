@@ -5,7 +5,7 @@ import com.example.demo.domain.TrainingPhase;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.AbstractPhaseRepository;
 import com.example.demo.repository.TrainingPhaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,14 +28,14 @@ public class TrainingPhaseService {
     private TrainingPhaseRepository trainingPhaseRepository;
 
     @Autowired
-    private BaseLevelRepository baseLevelRepository;
+    private AbstractPhaseRepository abstractPhaseRepository;
 
     public TrainingPhaseDto createDefaultTrainingPhase(Long trainingDefinitionId) {
 
         TrainingPhase trainingPhase = new TrainingPhase();
         trainingPhase.setTitle("Title of phase level");
         trainingPhase.setTrainingDefinitionId(trainingDefinitionId);
-        trainingPhase.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinitionId, trainingPhase));
 

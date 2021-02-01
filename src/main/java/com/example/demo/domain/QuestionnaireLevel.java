@@ -12,7 +12,7 @@ import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
-public class QuestionnaireLevel extends BaseLevel {
+public class QuestionnaireLevel extends AbstractPhase {
 
     @Enumerated(EnumType.STRING)
     private QuestionnaireType questionnaireType;

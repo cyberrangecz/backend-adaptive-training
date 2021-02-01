@@ -4,7 +4,7 @@ import com.example.demo.domain.InfoPhase;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.BaseLevelRepository;
+import com.example.demo.repository.AbstractPhaseRepository;
 import com.example.demo.repository.InfoPhaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +17,12 @@ public class InfoPhaseService {
     private static final Logger LOG = LoggerFactory.getLogger(InfoPhaseService.class);
 
     private final InfoPhaseRepository infoPhaseRepository;
-    private final BaseLevelRepository baseLevelRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
 
     @Autowired
-    public InfoPhaseService(InfoPhaseRepository infoPhaseRepository, BaseLevelRepository baseLevelRepository) {
+    public InfoPhaseService(InfoPhaseRepository infoPhaseRepository, AbstractPhaseRepository abstractPhaseRepository) {
         this.infoPhaseRepository = infoPhaseRepository;
-        this.baseLevelRepository = baseLevelRepository;
+        this.abstractPhaseRepository = abstractPhaseRepository;
     }
 
     public InfoPhaseDto createDefaultInfoPhase(Long trainingDefinitionId) {
@@ -30,7 +30,7 @@ public class InfoPhaseService {
         infoPhase.setContent("Content of info level");
         infoPhase.setTitle("Title of info level");
         infoPhase.setTrainingDefinitionId(trainingDefinitionId);
-        infoPhase.setOrder(baseLevelRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         InfoPhase persistedEntity = infoPhaseRepository.save(infoPhase);
 

@@ -1,6 +1,6 @@
 package com.example.demo.facade;
 
-import com.example.demo.dto.BaseLevelDto;
+import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
 import com.example.demo.dto.PhaseCreateDTO;
@@ -34,35 +34,35 @@ public class TrainingPhaseFacade {
     @Autowired
     private TrainingPhaseService trainingPhaseService;
 
-    public BaseLevelDto createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
-        BaseLevelDto baseLevelDto;
+    public AbstractPhaseDto createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
+        AbstractPhaseDto abstractPhaseDto;
         if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
-            baseLevelDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
+            abstractPhaseDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
         } else if (PhaseType.QUESTIONNAIRE.equals(phaseCreateDTO.getPhaseType())) {
-            baseLevelDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
+            abstractPhaseDto = questionnaireLevelService.createDefaultQuestionnaireLevel(trainingDefinitionId);
         } else {
-            baseLevelDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
+            abstractPhaseDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
         }
 
-        baseLevelDto.setPhaseType(phaseCreateDTO.getPhaseType());
+        abstractPhaseDto.setPhaseType(phaseCreateDTO.getPhaseType());
 
-        return baseLevelDto;
+        return abstractPhaseDto;
     }
 
 
     @Transactional
-    public List<BaseLevelDto> deletePhase(Long definitionId, Long phaseId) {
+    public List<AbstractPhaseDto> deletePhase(Long definitionId, Long phaseId) {
 
         phaseService.deletePhase(definitionId, phaseId);
 
         return getPhases(definitionId);
     }
 
-    public BaseLevelDto getPhase(Long definitionId, Long phaseId) {
+    public AbstractPhaseDto getPhase(Long definitionId, Long phaseId) {
         return phaseService.getPhase(definitionId, phaseId);
     }
 
-    public List<BaseLevelDto> getPhases(Long definitionId) {
+    public List<AbstractPhaseDto> getPhases(Long definitionId) {
 
         return phaseService.getPhases(definitionId);
     }

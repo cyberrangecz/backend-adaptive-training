@@ -3,7 +3,7 @@ package com.example.demo.domain;
 import javax.persistence.Entity;
 
 @Entity
-public class InfoPhase extends BaseLevel {
+public class InfoPhase extends AbstractPhase {
 
     private String content;
 

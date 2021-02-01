@@ -1,20 +1,55 @@
 package com.example.demo.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 
 @Entity
-public class Task extends AbstractPhase {
+public class Task {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String title;
     private String content;
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
 
+    @Column(name = "order_in_training_phase", nullable = false)
+    private Integer order;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private TrainingPhase trainingPhase;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Integer getOrder() {
+        return order;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
 
     public String getContent() {
         return content;
@@ -56,10 +91,17 @@ public class Task extends AbstractPhase {
         this.trainingPhase = trainingPhase;
     }
 
+
     @Override
     public String toString() {
-        return "Task{" + "content='" + content + '\'' + ", flag='" +
-                flag + '\'' + ", solution='" + solution + '\'' + ", incorrectFlagLimit=" + incorrectFlagLimit +
-                super.toString();
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", flag='" + flag + '\'' +
+                ", solution='" + solution + '\'' +
+                ", incorrectFlagLimit=" + incorrectFlagLimit +
+                ", order=" + order +
+                '}';
     }
 }

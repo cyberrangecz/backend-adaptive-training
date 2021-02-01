@@ -1,13 +1,13 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.TrainingPhase;
 import com.example.demo.domain.Task;
+import com.example.demo.domain.TrainingPhase;
 import com.example.demo.dto.TaskCreateDto;
 import com.example.demo.dto.TaskDto;
 import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.mapper.BeanMapper;
-import com.example.demo.repository.TrainingPhaseRepository;
 import com.example.demo.repository.TaskRepository;
+import com.example.demo.repository.TrainingPhaseRepository;
 import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,7 +115,6 @@ public class TaskService {
         // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
 
         taskUpdate.setTrainingPhase(persistedTask.getTrainingPhase());
-        taskUpdate.setTrainingDefinitionId(persistedTask.getTrainingDefinitionId());
         taskUpdate.setOrder(persistedTask.getOrder());
 
         Task savedEntity = taskRepository.save(taskUpdate);

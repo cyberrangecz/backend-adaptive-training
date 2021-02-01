@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionnairePhase;
 import com.example.demo.dto.QuestionnairePhaseDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Optional;
 
@@ -68,7 +70,16 @@ public class QuestionnairePhaseService {
         questionnairePhase.setTrainingDefinitionId(persistedQuestionnairePhase.getTrainingDefinitionId());
         questionnairePhase.setOrder(persistedQuestionnairePhase.getOrder());
 
-        // TODO questions, their choices and realtions among questions and training phases must be set here
+        if (!CollectionUtils.isEmpty(questionnairePhase.getQuestionPhaseRelations())) {
+            questionnairePhase.getQuestionPhaseRelations().forEach(x -> x.setRelatedPhase(questionnairePhase));
+        }
+
+        if (!CollectionUtils.isEmpty(questionnairePhase.getQuestions())) {
+            questionnairePhase.getQuestions().forEach(x -> x.setQuestionnairePhase(questionnairePhase));
+            for (Question question : questionnairePhase.getQuestions()) {
+                question.getChoices().forEach(x -> x.setQuestion(question));
+            }
+        }
 
         QuestionnairePhase savedEntity = questionnairePhaseRepository.save(questionnairePhase);
 

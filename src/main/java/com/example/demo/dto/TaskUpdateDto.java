@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.util.List;
 
 public class TaskUpdateDto {
 

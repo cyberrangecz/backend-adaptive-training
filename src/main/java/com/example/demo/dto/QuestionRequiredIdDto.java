@@ -2,11 +2,12 @@ package com.example.demo.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
-public class QuestionDto extends AbstractQuestionDto implements Serializable {
+public class QuestionRequiredIdDto extends AbstractQuestionDto {
 
     @ApiModelProperty(value = "Question ID. Leave blank if a new question is added", required = true, example = "1")
+    @NotNull(message = "Question ID must be specified")
     private Long id;
 
     public Long getId() {

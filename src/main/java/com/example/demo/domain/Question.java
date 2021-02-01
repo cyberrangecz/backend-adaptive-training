@@ -43,7 +43,7 @@ public class Question {
     private List<QuestionChoice> choices = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions", fetch = FetchType.LAZY)
-    private Set<QuestionnairePhaseRelation> questionnairePhaseRelations = new HashSet<>();
+    private Set<QuestionPhaseRelation> questionPhaseRelations = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -93,15 +93,15 @@ public class Question {
         this.choices = choices;
     }
 
-    public Set<QuestionnairePhaseRelation> getQuestionPhaseRelations() {
-        return Collections.unmodifiableSet(questionnairePhaseRelations);
+    public Set<QuestionPhaseRelation> getQuestionPhaseRelations() {
+        return Collections.unmodifiableSet(questionPhaseRelations);
     }
 
-    public void setQuestionPhaseRelations(Set<QuestionnairePhaseRelation> questionnairePhaseRelations) {
-        this.questionnairePhaseRelations = questionnairePhaseRelations;
+    public void setQuestionPhaseRelations(Set<QuestionPhaseRelation> questionPhaseRelations) {
+        this.questionPhaseRelations = questionPhaseRelations;
     }
 
-    public void addQuestionPhaseRelation(QuestionnairePhaseRelation questionnairePhaseRelation) {
-        this.questionnairePhaseRelations.add(questionnairePhaseRelation);
+    public void addQuestionPhaseRelation(QuestionPhaseRelation questionPhaseRelation) {
+        this.questionPhaseRelations.add(questionPhaseRelation);
     }
 }

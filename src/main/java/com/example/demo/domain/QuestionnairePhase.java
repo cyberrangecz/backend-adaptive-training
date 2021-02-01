@@ -23,7 +23,7 @@ public class QuestionnairePhase extends AbstractPhase {
 
     @OrderBy
     @OneToMany(mappedBy = "relatedPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<QuestionnairePhaseRelation> questionnairePhaseRelations;
+    private List<QuestionPhaseRelation> questionPhaseRelations;
 
     public List<Question> getQuestions() {
         return questions;
@@ -41,11 +41,11 @@ public class QuestionnairePhase extends AbstractPhase {
         this.questionnaireType = questionnaireType;
     }
 
-    public List<QuestionnairePhaseRelation> getQuestionnairePhaseRelations() {
-        return questionnairePhaseRelations;
+    public List<QuestionPhaseRelation> getQuestionPhaseRelations() {
+        return questionPhaseRelations;
     }
 
-    public void setQuestionnairePhaseRelations(List<QuestionnairePhaseRelation> questionnairePhaseRelations) {
-        this.questionnairePhaseRelations = questionnairePhaseRelations;
+    public void setQuestionPhaseRelations(List<QuestionPhaseRelation> questionPhaseRelations) {
+        this.questionPhaseRelations = questionPhaseRelations;
     }
 }

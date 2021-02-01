@@ -3,6 +3,7 @@ package com.example.demo.mapper;
 import com.example.demo.domain.AbstractPhase;
 import com.example.demo.domain.DecisionMatrixRow;
 import com.example.demo.domain.InfoPhase;
+import com.example.demo.domain.QuestionPhaseRelation;
 import com.example.demo.domain.QuestionnairePhase;
 import com.example.demo.domain.TrainingPhase;
 import com.example.demo.domain.Question;
@@ -12,10 +13,11 @@ import com.example.demo.dto.AbstractPhaseDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
 import com.example.demo.dto.InfoPhaseDto;
 import com.example.demo.dto.InfoPhaseUpdateDto;
+import com.example.demo.dto.QuestionPhaseRelationDto;
+import com.example.demo.dto.QuestionRequiredIdDto;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
 import com.example.demo.dto.QuestionChoiceDto;
-import com.example.demo.dto.QuestionChoiceUpdateDto;
 import com.example.demo.dto.QuestionDto;
 import com.example.demo.dto.QuestionUpdateDto;
 import com.example.demo.dto.QuestionnairePhaseDto;
@@ -81,19 +83,25 @@ public interface BeanMapper {
 
     QuestionChoice toEntity(QuestionChoiceDto questionChoiceDto);
 
-    QuestionChoice toEntity(QuestionChoiceUpdateDto questionChoiceDto);
-
     QuestionChoiceDto toDto(QuestionChoice questionChoice);
 
     Question toEntity(QuestionDto questionDto);
+
+    Question toEntity(QuestionRequiredIdDto questionDto);
 
     Question toEntity(QuestionUpdateDto questionUpdateDto);
 
     QuestionDto toDto(Question question);
 
+    @Mapping(target = "questionPhaseRelations", source = "phaseRelations")
     QuestionnairePhase toEntity(QuestionnaireUpdateDto questionnaireUpdateDto);
 
     QuestionnairePhase toEntity(QuestionnairePhaseDto questionnairePhaseDto);
 
+    @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
     QuestionnairePhaseDto toDto(QuestionnairePhase questionnairePhase);
+
+    QuestionPhaseRelation toEntity(QuestionPhaseRelationDto questionnairePhaseDto);
+
+    QuestionPhaseRelationDto toDto(QuestionPhaseRelation questionnairePhase);
 }

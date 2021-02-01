@@ -13,7 +13,7 @@ import javax.persistence.ManyToOne;
 import java.util.Set;
 
 @Entity
-public class QuestionnairePhaseRelation {
+public class QuestionPhaseRelation {
 
     @Id
     @GeneratedValue
@@ -26,7 +26,7 @@ public class QuestionnairePhaseRelation {
     private QuestionnairePhase relatedPhase;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "questionnaire_phase_relation_question",
+    @JoinTable(name = "question_phase_relation_question",
             joinColumns = @JoinColumn(name = "question_phase_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id")
     )

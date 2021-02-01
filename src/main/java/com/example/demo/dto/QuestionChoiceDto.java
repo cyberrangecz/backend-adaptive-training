@@ -1,12 +1,26 @@
 package com.example.demo.dto;
 
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public class QuestionChoiceDto implements Serializable {
 
+    @ApiModelProperty(value = "Question choice ID. Leave blank if new choice is added", required = true, example = "1")
     private Long id;
+
+    @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")
+    @NotEmpty(message = "Task title must not be blank")
     private String text;
-    private boolean correct;
+
+    @ApiModelProperty(value = "It defines whether this answer is correct or not", required = true, example = "true")
+    @NotNull(message = "It must be specified whether a question choice is correct")
+    private Boolean correct;
+
+    @ApiModelProperty(value = "Order of question choice", required = true, example = "0")
+    @NotNull(message = "Question choice order must be specified")
     private Integer order;
 
     public Long getId() {
@@ -25,11 +39,11 @@ public class QuestionChoiceDto implements Serializable {
         this.text = text;
     }
 
-    public boolean isCorrect() {
+    public Boolean isCorrect() {
         return correct;
     }
 
-    public void setCorrect(boolean correct) {
+    public void setCorrect(Boolean correct) {
         this.correct = correct;
     }
 

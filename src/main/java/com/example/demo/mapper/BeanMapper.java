@@ -1,6 +1,5 @@
 package com.example.demo.mapper;
 
-import com.example.demo.domain.AssessmentLevel;
 import com.example.demo.domain.Attachment;
 import com.example.demo.domain.BaseLevel;
 import com.example.demo.domain.DecisionMatrixRow;
@@ -10,7 +9,6 @@ import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionChoice;
 import com.example.demo.domain.QuestionnaireLevel;
 import com.example.demo.domain.Task;
-import com.example.demo.dto.AssessmentLevelDto;
 import com.example.demo.dto.AttachmentDto;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.dto.DecisionMatrixRowDto;
@@ -44,9 +42,7 @@ public interface BeanMapper {
 
     default BaseLevelDto toDto(BaseLevel baseLevel) {
         BaseLevelDto baseLevelDto;
-        if (baseLevel instanceof AssessmentLevel) {
-            baseLevelDto = toDto((AssessmentLevel) baseLevel);
-        } else if (baseLevel instanceof PhaseLevel) {
+        if (baseLevel instanceof PhaseLevel) {
             baseLevelDto = toDto((PhaseLevel) baseLevel);
         } else if (baseLevel instanceof InfoLevel) {
             baseLevelDto = toDto((InfoLevel) baseLevel);
@@ -62,10 +58,6 @@ public interface BeanMapper {
     }
 
     List<BaseLevelDto> toDtoList(List<BaseLevel> baseLevel);
-
-    AssessmentLevelDto toDto(AssessmentLevel assessmentLevel);
-
-    AssessmentLevel toEntity(AssessmentLevelDto assessmentLevel);
 
     @Mapping(target = "phaseType", constant = "task")
     TaskDto toDto(Task task);
@@ -96,15 +88,11 @@ public interface BeanMapper {
 
     PhaseLevel toEntity(PhaseLevelUpdateDto phaseLevelUpdateDto);
 
-    AssessmentLevel toAssessmentLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
-
     InfoLevel toInfoLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     Task toGameLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
 
     PhaseLevel toPhaseLevel(GameDefinitionCreateDto gameDefinitionCreateDto);
-
-    AssessmentLevel updateAssessmentLevel(@MappingTarget AssessmentLevel assessmentLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
     InfoLevel updateInfoLevel(@MappingTarget InfoLevel infoLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
 
@@ -115,9 +103,6 @@ public interface BeanMapper {
 
     @Mapping(target = "subLevels", ignore = true)
     PhaseLevel updatePhaseLevel(@MappingTarget PhaseLevel phaseLevel, GameDefinitionCreateDto gameDefinitionCreateDto);
-
-//    @Mapping(target = "type", constant = "assessment")
-    GameDefinitionCreateDto toLevelDefinitionDto(AssessmentLevel assessmentLevel);
 
 //    @Mapping(target = "type", constant = "task")
     GameDefinitionCreateDto toLevelDefinitionDto(Task task);

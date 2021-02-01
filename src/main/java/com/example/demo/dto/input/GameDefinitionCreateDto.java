@@ -12,9 +12,6 @@ public class GameDefinitionCreateDto {
     private Integer order;
     private PhaseType type;
 
-    // assessment level fields
-    private String assessmentType;
-
     // game level fields
     private String content;
     private String flag;
@@ -59,14 +56,6 @@ public class GameDefinitionCreateDto {
 
     public void setType(PhaseType type) {
         this.type = type;
-    }
-
-    public String getAssessmentType() {
-        return assessmentType;
-    }
-
-    public void setAssessmentType(String assessmentType) {
-        this.assessmentType = assessmentType;
     }
 
     public String getContent() {

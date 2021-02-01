@@ -33,9 +33,6 @@ public class LevelOperationsService {
     private InfoLevelService infoLevelService;
 
     @Autowired
-    private AssessmentLevelService assessmentLevelService;
-
-    @Autowired
     private QuestionnaireLevelService questionnaireLevelService;
 
     @Autowired

@@ -32,7 +32,7 @@ public class LevelOperationsService {
     private QuestionnaireLevelService questionnaireLevelService;
 
     @Autowired
-    private PhaseLevelService phaseLevelService;
+    private TrainingPhaseService trainingPhaseService;
 
     @Autowired
     private TaskService taskService;

@@ -1,7 +1,6 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.BaseLevel;
-import com.example.demo.domain.PhaseLevel;
 import com.example.demo.dto.BaseLevelDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.BaseLevelRepository;
@@ -18,7 +17,7 @@ public class PhaseService {
     private BaseLevelRepository baseLevelRepository;
 
     @Autowired
-    private PhaseLevelService phaseLevelService;
+    private TrainingPhaseService trainingPhaseService;
 
     @Transactional
     public void deletePhase(Long definitionId, Long phaseId) {
@@ -73,7 +72,7 @@ public class PhaseService {
         levelFrom.setOrder(newPosition);
         baseLevelRepository.save(levelFrom);
 
-        phaseLevelService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.getTrainingDefinitionId());
+        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.getTrainingDefinitionId());
     }
 
 }

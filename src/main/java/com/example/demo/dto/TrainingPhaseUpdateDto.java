@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
-public class PhaseLevelUpdateDto {
+public class TrainingPhaseUpdateDto {
 
     @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
     @NotEmpty(message = "Training phase title must not be blank")

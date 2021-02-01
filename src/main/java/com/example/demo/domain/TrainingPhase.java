@@ -8,22 +8,22 @@ import javax.persistence.OrderBy;
 import java.util.List;
 
 @Entity
-public class PhaseLevel extends BaseLevel {
+public class TrainingPhase extends BaseLevel {
 
     @OrderBy
-    @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Task> subLevels;
+    @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Task> tasks;
 
     @OrderBy
-    @OneToMany(mappedBy = "phaseLevel", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DecisionMatrixRow> decisionMatrix;
 
-    public List<Task> getSubLevels() {
-        return subLevels;
+    public List<Task> getTasks() {
+        return tasks;
     }
 
-    public void setSubLevels(List<Task> subLevels) {
-        this.subLevels = subLevels;
+    public void setTasks(List<Task> subLevels) {
+        this.tasks = subLevels;
     }
 
     public List<DecisionMatrixRow> getDecisionMatrix() {

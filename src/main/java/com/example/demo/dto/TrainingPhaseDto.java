@@ -2,18 +2,18 @@ package com.example.demo.dto;
 
 import java.util.List;
 
-public class PhaseLevelDto extends BaseLevelDto {
+public class TrainingPhaseDto extends BaseLevelDto {
 
-    private List<TaskDto> subLevels;
+    private List<TaskDto> tasks;
 
     private List<DecisionMatrixRowDto> decisionMatrix;
 
-    public List<TaskDto> getSubLevels() {
-        return subLevels;
+    public List<TaskDto> getTasks() {
+        return tasks;
     }
 
-    public void setSubLevels(List<TaskDto> subLevels) {
-        this.subLevels = subLevels;
+    public void setTasks(List<TaskDto> tasks) {
+        this.tasks = tasks;
     }
 
     public List<DecisionMatrixRowDto> getDecisionMatrix() {

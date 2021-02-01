@@ -30,8 +30,8 @@ public abstract class BaseLevel {
     @Column(name = "order_in_training_definition", nullable = false)
     private Integer order;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private PhaseLevel phaseLevel;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private TrainingPhase trainingPhase;
 
     private Long trainingDefinitionId;
 
@@ -75,13 +75,13 @@ public abstract class BaseLevel {
         this.id = id;
     }
 
-    public PhaseLevel getPhaseLevel() {
-        return phaseLevel;
-    }
+//    public TrainingPhase getPhaseLevel() {
+//        return trainingPhase;
+//    }
 
-    public void setPhaseLevel(PhaseLevel phaseLevel) {
-        this.phaseLevel = phaseLevel;
-    }
+//    public void setPhaseLevel(TrainingPhase trainingPhase) {
+//        this.trainingPhase = trainingPhase;
+//    }
 
     public Long getTrainingDefinitionId() {
         return trainingDefinitionId;

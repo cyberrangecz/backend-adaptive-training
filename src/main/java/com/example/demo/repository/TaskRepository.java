@@ -9,14 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    @Query("SELECT COALESCE(MAX(g.order), -1) FROM Task g WHERE g.phaseLevel.id = :phaseId")
+    @Query("SELECT COALESCE(MAX(g.order), -1) FROM Task g WHERE g.trainingPhase.id = :phaseId")
     Integer getCurrentMaxOrder(@Param("phaseId") Long phaseId);
 
     @Transactional
     @Modifying
     @Query("UPDATE Task t SET t.order = t.order - 1 " +
-            "WHERE t.phaseLevel.id = :gamePhaseId " +
+            "WHERE t.trainingPhase.id = :trainingPhaseId " +
             "AND t.order > :order ")
-    void decreaseOrderAfterTaskWasDeleted(@Param("gamePhaseId") Long gamePhaseId,
+    void decreaseOrderAfterTaskWasDeleted(@Param("trainingPhaseId") Long trainingPhaseId,
                                           @Param("order") int order);
 }

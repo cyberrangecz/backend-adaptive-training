@@ -3,6 +3,7 @@ package com.example.demo.domain;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import java.util.List;
@@ -15,6 +16,9 @@ public class Task extends BaseLevel {
     private String flag;
     private String solution;
     private Long incorrectFlagLimit;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TrainingPhase trainingPhase;
 
 //    @OrderBy
 //    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -58,6 +62,14 @@ public class Task extends BaseLevel {
 
     public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
         this.incorrectFlagLimit = incorrectFlagLimit;
+    }
+
+    public TrainingPhase getTrainingPhase() {
+        return trainingPhase;
+    }
+
+    public void setTrainingPhase(TrainingPhase trainingPhase) {
+        this.trainingPhase = trainingPhase;
     }
 
     @Override

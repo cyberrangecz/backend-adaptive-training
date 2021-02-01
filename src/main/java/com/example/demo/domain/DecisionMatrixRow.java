@@ -23,7 +23,7 @@ public class DecisionMatrixRow {
     double WF;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private PhaseLevel phaseLevel;
+    private TrainingPhase trainingPhase;
 
     public Long getId() {
         return id;
@@ -81,12 +81,12 @@ public class DecisionMatrixRow {
         this.WF = WF;
     }
 
-    public PhaseLevel getPhaseLevel() {
-        return phaseLevel;
+    public TrainingPhase getTrainingPhase() {
+        return trainingPhase;
     }
 
-    public void setPhaseLevel(PhaseLevel phaseLevel) {
-        this.phaseLevel = phaseLevel;
+    public void setTrainingPhase(TrainingPhase trainingPhase) {
+        this.trainingPhase = trainingPhase;
     }
 
     @Override

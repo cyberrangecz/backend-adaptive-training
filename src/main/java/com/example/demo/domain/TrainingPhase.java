@@ -10,6 +10,10 @@ import java.util.List;
 @Entity
 public class TrainingPhase extends AbstractPhase {
 
+    private String estimatedDuration;
+    private Integer allowedCommands;
+    private Integer allowedWrongFlags;
+
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Task> tasks;
@@ -17,6 +21,30 @@ public class TrainingPhase extends AbstractPhase {
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DecisionMatrixRow> decisionMatrix;
+
+    public String getEstimatedDuration() {
+        return estimatedDuration;
+    }
+
+    public void setEstimatedDuration(String estimatedDuration) {
+        this.estimatedDuration = estimatedDuration;
+    }
+
+    public Integer getAllowedCommands() {
+        return allowedCommands;
+    }
+
+    public void setAllowedCommands(Integer allowedCommands) {
+        this.allowedCommands = allowedCommands;
+    }
+
+    public Integer getAllowedWrongFlags() {
+        return allowedWrongFlags;
+    }
+
+    public void setAllowedWrongFlags(Integer allowedWrongFlags) {
+        this.allowedWrongFlags = allowedWrongFlags;
+    }
 
     public List<Task> getTasks() {
         return tasks;

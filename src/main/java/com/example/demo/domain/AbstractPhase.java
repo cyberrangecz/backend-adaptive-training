@@ -20,15 +20,9 @@ public abstract class AbstractPhase {
     private Long id;
 
     private String title;
-    private String estimatedDuration;
-    private Integer allowedCommands;
-    private Integer allowedWrongFlags;
 
     @Column(name = "order_in_training_definition", nullable = false)
     private Integer order;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private TrainingPhase trainingPhase;
 
     private Long trainingDefinitionId;
 
@@ -38,14 +32,6 @@ public abstract class AbstractPhase {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getEstimatedDuration() {
-        return estimatedDuration;
-    }
-
-    public void setEstimatedDuration(String estimatedDuration) {
-        this.estimatedDuration = estimatedDuration;
     }
 
     public Integer getOrder() {
@@ -64,14 +50,6 @@ public abstract class AbstractPhase {
         this.id = id;
     }
 
-//    public TrainingPhase getPhaseLevel() {
-//        return trainingPhase;
-//    }
-
-//    public void setPhaseLevel(TrainingPhase trainingPhase) {
-//        this.trainingPhase = trainingPhase;
-//    }
-
     public Long getTrainingDefinitionId() {
         return trainingDefinitionId;
     }
@@ -80,30 +58,11 @@ public abstract class AbstractPhase {
         this.trainingDefinitionId = trainingDefinition;
     }
 
-    public Integer getAllowedCommands() {
-        return allowedCommands;
-    }
-
-    public void setAllowedCommands(Integer allowedCommands) {
-        this.allowedCommands = allowedCommands;
-    }
-
-    public Integer getAllowedWrongFlags() {
-        return allowedWrongFlags;
-    }
-
-    public void setAllowedWrongFlags(Integer allowedWrongFlags) {
-        this.allowedWrongFlags = allowedWrongFlags;
-    }
-
     @Override
     public String toString() {
         return "AbstractPhase{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", estimatedDuration='" + estimatedDuration + '\'' +
-                ", allowedCommands=" + allowedCommands +
-                ", allowedWrongFlags=" + allowedWrongFlags +
                 ", order=" + order +
                 ", trainingDefinitionId=" + trainingDefinitionId +
                 '}';

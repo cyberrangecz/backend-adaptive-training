@@ -10,7 +10,6 @@ public abstract class AbstractPhaseDto implements Serializable {
     private String title;
     private Integer order;
     private String estimatedDuration;
-    private Long maxScore;
     private PhaseType phaseType;
     private Integer allowedCommands;
     private Integer allowedWrongFlags;
@@ -47,14 +46,6 @@ public abstract class AbstractPhaseDto implements Serializable {
         this.estimatedDuration = estimatedDuration;
     }
 
-    public Long getMaxScore() {
-        return maxScore;
-    }
-
-    public void setMaxScore(Long maxScore) {
-        this.maxScore = maxScore;
-    }
-
     public PhaseType getPhaseType() {
         return phaseType;
     }
@@ -86,7 +77,6 @@ public abstract class AbstractPhaseDto implements Serializable {
                 ", title='" + title + '\'' +
                 ", order=" + order +
                 ", estimatedDuration='" + estimatedDuration + '\'' +
-                ", maxScore=" + maxScore +
                 ", levelType=" + phaseType +
                 ", allowedCommands=" + allowedCommands +
                 ", allowedWrongFlags=" + allowedWrongFlags +

@@ -3,12 +3,10 @@ package com.example.demo.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 
 
 // good source for entity inheritance: http://blog.marcinchwedczuk.pl/mapping-inheritance-in-hibernate
@@ -23,7 +21,6 @@ public abstract class AbstractPhase {
 
     private String title;
     private String estimatedDuration;
-    private Long maxScore;
     private Integer allowedCommands;
     private Integer allowedWrongFlags;
 
@@ -49,14 +46,6 @@ public abstract class AbstractPhase {
 
     public void setEstimatedDuration(String estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
-    }
-
-    public Long getMaxScore() {
-        return maxScore;
-    }
-
-    public void setMaxScore(Long maxScore) {
-        this.maxScore = maxScore;
     }
 
     public Integer getOrder() {
@@ -113,7 +102,6 @@ public abstract class AbstractPhase {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", estimatedDuration='" + estimatedDuration + '\'' +
-                ", maxScore=" + maxScore +
                 ", allowedCommands=" + allowedCommands +
                 ", allowedWrongFlags=" + allowedWrongFlags +
                 ", order=" + order +

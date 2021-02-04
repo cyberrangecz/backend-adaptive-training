@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public class TrainingPhaseUpdateDto {
@@ -24,10 +23,6 @@ public class TrainingPhaseUpdateDto {
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
     @NotNull(message = "Estimated duration of phase task must be set")
     private Integer estimatedDuration;
-
-    @ApiModelProperty(value = "Maximal score player can achieve in the training phase", example = "200")
-    @PositiveOrZero
-    private Long maxScore;
 
     private List<DecisionMatrixRowDto> decisionMatrix;
 
@@ -61,14 +56,6 @@ public class TrainingPhaseUpdateDto {
 
     public void setEstimatedDuration(Integer estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
-    }
-
-    public Long getMaxScore() {
-        return maxScore;
-    }
-
-    public void setMaxScore(Long maxScore) {
-        this.maxScore = maxScore;
     }
 
     public List<DecisionMatrixRowDto> getDecisionMatrix() {

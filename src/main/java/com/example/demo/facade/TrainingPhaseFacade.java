@@ -55,6 +55,8 @@ public class TrainingPhaseFacade {
 
         phaseService.deletePhase(definitionId, phaseId);
 
+        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(definitionId);
+
         return getPhases(definitionId);
     }
 

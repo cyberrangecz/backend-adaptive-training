@@ -9,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -19,11 +20,11 @@ public class QuestionnairePhase extends AbstractPhase {
 
     @OrderBy
     @OneToMany(mappedBy = "questionnairePhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Question> questions;
+    private List<Question> questions = new ArrayList<>();
 
     @OrderBy
     @OneToMany(mappedBy = "relatedPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<QuestionPhaseRelation> questionPhaseRelations;
+    private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public List<Question> getQuestions() {
         return questions;

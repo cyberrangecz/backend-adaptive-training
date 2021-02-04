@@ -2,8 +2,11 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Question;
 import com.example.demo.domain.QuestionnairePhase;
+import com.example.demo.dto.PhaseCreateDTO;
 import com.example.demo.dto.QuestionnairePhaseDto;
 import com.example.demo.dto.QuestionnaireUpdateDto;
+import com.example.demo.enums.PhaseType;
+import com.example.demo.enums.QuestionnaireType;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.AbstractPhaseRepository;
 import com.example.demo.repository.QuestionnairePhaseRepository;
@@ -26,12 +29,18 @@ public class QuestionnairePhaseService {
     @Autowired
     private AbstractPhaseRepository abstractPhaseRepository;
 
-    public QuestionnairePhaseDto createDefaultQuestionnairePhase(Long trainingDefinitionId) {
+    public QuestionnairePhaseDto createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
 
         QuestionnairePhase questionnairePhase =new QuestionnairePhase();
         questionnairePhase.setTitle("Title of questionnaire level");
         questionnairePhase.setTrainingDefinitionId(trainingDefinitionId);
         questionnairePhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+
+        if (PhaseType.QUESTIONNAIRE_ADAPTIVE.equals(phaseCreateDTO.getPhaseType())) {
+            questionnairePhase.setQuestionnaireType(QuestionnaireType.ADAPTIVE);
+        } else {
+            questionnairePhase.setQuestionnaireType(QuestionnaireType.GENERAL);
+        }
 
         QuestionnairePhase persistedEntity = questionnairePhaseRepository.save(questionnairePhase);
 

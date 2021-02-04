@@ -41,7 +41,7 @@ public class TrainingPhaseFacade {
         } else if (PhaseType.TRAINING.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
         } else {
-            abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId);
+            abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId, phaseCreateDTO);
         }
 
         abstractPhaseDto.setPhaseType(phaseCreateDTO.getPhaseType());

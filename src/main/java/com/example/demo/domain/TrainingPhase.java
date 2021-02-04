@@ -5,18 +5,19 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 public class TrainingPhase extends AbstractPhase {
 
     private String estimatedDuration;
-    private Integer allowedCommands;
-    private Integer allowedWrongFlags;
+    private int allowedCommands;
+    private int allowedWrongFlags;
 
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
 
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -30,19 +31,19 @@ public class TrainingPhase extends AbstractPhase {
         this.estimatedDuration = estimatedDuration;
     }
 
-    public Integer getAllowedCommands() {
+    public int getAllowedCommands() {
         return allowedCommands;
     }
 
-    public void setAllowedCommands(Integer allowedCommands) {
+    public void setAllowedCommands(int allowedCommands) {
         this.allowedCommands = allowedCommands;
     }
 
-    public Integer getAllowedWrongFlags() {
+    public int getAllowedWrongFlags() {
         return allowedWrongFlags;
     }
 
-    public void setAllowedWrongFlags(Integer allowedWrongFlags) {
+    public void setAllowedWrongFlags(int allowedWrongFlags) {
         this.allowedWrongFlags = allowedWrongFlags;
     }
 

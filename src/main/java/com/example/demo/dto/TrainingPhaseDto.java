@@ -1,13 +1,14 @@
 package com.example.demo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrainingPhaseDto extends AbstractPhaseDto {
 
     private String estimatedDuration;
-    private Integer allowedCommands;
-    private Integer allowedWrongFlags;
-    private List<TaskDto> tasks;
+    private int allowedCommands;
+    private int allowedWrongFlags;
+    private List<TaskDto> tasks = new ArrayList<>();
 
     private List<DecisionMatrixRowDto> decisionMatrix;
 
@@ -19,19 +20,19 @@ public class TrainingPhaseDto extends AbstractPhaseDto {
         this.estimatedDuration = estimatedDuration;
     }
 
-    public Integer getAllowedCommands() {
+    public int getAllowedCommands() {
         return allowedCommands;
     }
 
-    public void setAllowedCommands(Integer allowedCommands) {
+    public void setAllowedCommands(int allowedCommands) {
         this.allowedCommands = allowedCommands;
     }
 
-    public Integer getAllowedWrongFlags() {
+    public int getAllowedWrongFlags() {
         return allowedWrongFlags;
     }
 
-    public void setAllowedWrongFlags(Integer allowedWrongFlags) {
+    public void setAllowedWrongFlags(int allowedWrongFlags) {
         this.allowedWrongFlags = allowedWrongFlags;
     }
 

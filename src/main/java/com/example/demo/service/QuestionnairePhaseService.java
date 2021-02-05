@@ -127,7 +127,7 @@ public class QuestionnairePhaseService {
 
                 questionPhaseRelation.setOrder(order);
                 questionPhaseRelation.setSuccessRate(phaseRelation.getSuccessRate());
-                questionPhaseRelation.setRelatedPhase(trainingPhase);
+                questionPhaseRelation.setRelatedTrainingPhase(trainingPhase);
                 questionPhaseRelation.setQuestionnairePhase(questionnairePhase);
 
                 questionnairePhaseRelations.add(questionPhaseRelation);

@@ -26,7 +26,7 @@ public class QuestionPhaseRelation {
     private QuestionnairePhase questionnairePhase;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private TrainingPhase relatedPhase;
+    private TrainingPhase relatedTrainingPhase;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "question_phase_relation_question",
@@ -61,12 +61,12 @@ public class QuestionPhaseRelation {
         this.questionnairePhase = questionnairePhase;
     }
 
-    public TrainingPhase getRelatedPhase() {
-        return relatedPhase;
+    public TrainingPhase getRelatedTrainingPhase() {
+        return relatedTrainingPhase;
     }
 
-    public void setRelatedPhase(TrainingPhase relatedPhase) {
-        this.relatedPhase = relatedPhase;
+    public void setRelatedTrainingPhase(TrainingPhase relatedPhase) {
+        this.relatedTrainingPhase = relatedPhase;
     }
 
     public Set<Question> getQuestions() {

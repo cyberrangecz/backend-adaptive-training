@@ -23,6 +23,10 @@ public class TrainingPhase extends AbstractPhase {
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DecisionMatrixRow> decisionMatrix;
 
+    @OrderBy
+    @OneToMany(mappedBy = "relatedTrainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
+
     public String getEstimatedDuration() {
         return estimatedDuration;
     }
@@ -61,5 +65,13 @@ public class TrainingPhase extends AbstractPhase {
 
     public void setDecisionMatrix(List<DecisionMatrixRow> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
+    }
+
+    public List<QuestionPhaseRelation> getQuestionPhaseRelations() {
+        return questionPhaseRelations;
+    }
+
+    public void setQuestionPhaseRelations(List<QuestionPhaseRelation> questionPhaseRelations) {
+        this.questionPhaseRelations = questionPhaseRelations;
     }
 }

@@ -9,6 +9,7 @@ import com.example.demo.dto.QuestionnaireUpdateDto;
 import com.example.demo.dto.TrainingPhaseDto;
 import com.example.demo.dto.TrainingPhaseUpdateDto;
 import com.example.demo.enums.PhaseType;
+import com.example.demo.enums.QuestionnaireType;
 import com.example.demo.service.InfoPhaseService;
 import com.example.demo.service.PhaseService;
 import com.example.demo.service.QuestionnairePhaseService;
@@ -61,7 +62,18 @@ public class TrainingPhaseFacade {
     }
 
     public AbstractPhaseDto getPhase(Long definitionId, Long phaseId) {
-        return phaseService.getPhase(definitionId, phaseId);
+        AbstractPhaseDto phase = phaseService.getPhase(definitionId, phaseId);
+
+        if (phase instanceof QuestionnairePhaseDto) {
+            QuestionnairePhaseDto questionnairePhaseDto = (QuestionnairePhaseDto) phase;
+            if (QuestionnaireType.ADAPTIVE.equals(questionnairePhaseDto.getQuestionnaireType())) {
+                phase.setPhaseType(PhaseType.QUESTIONNAIRE_ADAPTIVE);
+            } else {
+                phase.setPhaseType(PhaseType.QUESTIONNAIRE_GENERAL);
+            }
+        }
+
+        return phase;
     }
 
     public List<AbstractPhaseDto> getPhases(Long definitionId) {

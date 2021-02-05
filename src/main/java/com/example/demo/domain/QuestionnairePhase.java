@@ -23,7 +23,7 @@ public class QuestionnairePhase extends AbstractPhase {
     private List<Question> questions = new ArrayList<>();
 
     @OrderBy
-    @OneToMany(mappedBy = "relatedPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "questionnairePhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public List<Question> getQuestions() {

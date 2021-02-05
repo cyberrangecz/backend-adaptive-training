@@ -20,7 +20,7 @@ public abstract class AbstractQuestionDto implements Serializable {
 
     @ApiModelProperty(value = "It defines the type of the question", allowableValues = "FFQ, MCQ, RFQ", required = true, example = "MCQ")
     @NotNull(message = "Question type must be specified")
-    private QuestionType type;
+    private QuestionType questionType;
 
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
     private List<QuestionChoiceDto> choices;
@@ -41,12 +41,12 @@ public abstract class AbstractQuestionDto implements Serializable {
         this.text = text;
     }
 
-    public QuestionType getType() {
-        return type;
+    public QuestionType getQuestionType() {
+        return questionType;
     }
 
-    public void setType(QuestionType type) {
-        this.type = type;
+    public void setQuestionType(QuestionType type) {
+        this.questionType = type;
     }
 
     public List<QuestionChoiceDto> getChoices() {

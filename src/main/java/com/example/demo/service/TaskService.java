@@ -8,16 +8,12 @@ import com.example.demo.dto.TaskUpdateDto;
 import com.example.demo.mapper.BeanMapper;
 import com.example.demo.repository.TaskRepository;
 import com.example.demo.repository.TrainingPhaseRepository;
-import org.apache.commons.collections4.IterableUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class TaskService {
@@ -82,21 +78,6 @@ public class TaskService {
         Task persistedEntity = taskRepository.save(task);
 
         return BeanMapper.INSTANCE.toDto(persistedEntity);
-    }
-
-    public List<TaskDto> findAllTasks() {
-
-        Iterable<Task> allTasks = taskRepository.findAll();
-
-        List<TaskDto> result = new ArrayList<>();
-
-        if (!IterableUtils.isEmpty(allTasks)) {
-            for (Task task : allTasks) {
-                result.add(BeanMapper.INSTANCE.toDto(task));
-            }
-        }
-
-        return result;
     }
 
     public TaskDto getTask(Long trainingDefinitionId, Long phaseId, Long taskId) {

@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 public class TrainingPhase extends AbstractPhase {
 
-    private String estimatedDuration;
+    private int estimatedDuration;
     private int allowedCommands;
     private int allowedWrongFlags;
 
@@ -27,11 +27,11 @@ public class TrainingPhase extends AbstractPhase {
     @OneToMany(mappedBy = "relatedTrainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
-    public String getEstimatedDuration() {
+    public int getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(String estimatedDuration) {
+    public void setEstimatedDuration(int estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 

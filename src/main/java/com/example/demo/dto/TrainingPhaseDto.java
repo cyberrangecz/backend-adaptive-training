@@ -5,18 +5,18 @@ import java.util.List;
 
 public class TrainingPhaseDto extends AbstractPhaseDto {
 
-    private String estimatedDuration;
+    private int estimatedDuration;
     private int allowedCommands;
     private int allowedWrongFlags;
     private List<TaskDto> tasks = new ArrayList<>();
 
     private List<DecisionMatrixRowDto> decisionMatrix;
 
-    public String getEstimatedDuration() {
+    public int getEstimatedDuration() {
         return estimatedDuration;
     }
 
-    public void setEstimatedDuration(String estimatedDuration) {
+    public void setEstimatedDuration(int estimatedDuration) {
         this.estimatedDuration = estimatedDuration;
     }
 

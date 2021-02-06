@@ -41,7 +41,7 @@ public class TasksController {
 
     @ApiOperation(httpMethod = "POST",
             value = "Create a new task in a phase",
-            notes = "Creates a new default task in a specified game phase",
+            notes = "Creates a new default task in a specified training phase",
             response = TaskDto.class,
             nickname = "createTask",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -54,7 +54,7 @@ public class TasksController {
     public ResponseEntity<TaskDto> createTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Game phase ID", required = true)
+            @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId) {
 
         TaskDto createdTask = taskService.createDefaultTask(definitionId, phaseId);
@@ -63,7 +63,7 @@ public class TasksController {
     }
 
     @ApiOperation(httpMethod = "POST",
-            value = "Clone task inside of the game phase",
+            value = "Clone task inside of the training phase",
             notes = "Creates a new task with the same properties as the specified task (pattern)",
             response = TaskDto.class,
             nickname = "cloneTask",
@@ -77,7 +77,7 @@ public class TasksController {
     public ResponseEntity<TaskDto> cloneTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Game phase ID", required = true)
+            @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
@@ -89,7 +89,7 @@ public class TasksController {
 
     @ApiOperation(httpMethod = "GET",
             value = "Get tasks",
-            notes = "Get tasks detail associated with the specified game phase",
+            notes = "Get tasks detail associated with the specified training phase",
             response = TaskDto.class,
             nickname = "getTask",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -102,7 +102,7 @@ public class TasksController {
     public ResponseEntity<TaskDto> getTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Game phase ID", required = true)
+            @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
@@ -126,7 +126,7 @@ public class TasksController {
     public ResponseEntity<TaskDto> updateTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Game phase ID", required = true)
+            @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId,
@@ -153,7 +153,7 @@ public class TasksController {
     public ResponseEntity<Void> removeTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Game phase ID", required = true)
+            @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {

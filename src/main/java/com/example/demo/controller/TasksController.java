@@ -122,16 +122,18 @@ public class TasksController {
             @ApiResponse(code = 200, message = "Task updated"),
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PutMapping
+    @PutMapping(path = "/{taskId}")
     public ResponseEntity<TaskDto> updateTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Game phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
+            @ApiParam(value = "Task ID", required = true)
+            @PathVariable(name = "taskId") Long taskId,
             @ApiParam(value = "Task to be updated")
             @RequestBody @Valid TaskUpdateDto taskUpdateDto) {
 
-        TaskDto updatedTask = taskService.updateTask(definitionId, phaseId, taskUpdateDto);
+        TaskDto updatedTask = taskService.updateTask(definitionId, phaseId, taskId, taskUpdateDto);
 
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }

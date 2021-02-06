@@ -8,10 +8,6 @@ import javax.validation.constraints.PositiveOrZero;
 
 public class TaskUpdateDto {
 
-    @ApiModelProperty(value = "Task ID", required = true, example = "1")
-    @NotNull(message = "Task ID must be specified")
-    private Long id;
-
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")
     @NotEmpty(message = "Task title must not be blank")
     private String title;
@@ -33,14 +29,6 @@ public class TaskUpdateDto {
     @PositiveOrZero(message = "Limit of the number of provided incorrect flags must not be a negative number")
     private Integer incorrectFlagLimit;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getTitle() {
         return title;
     }
@@ -48,7 +36,6 @@ public class TaskUpdateDto {
     public void setTitle(String title) {
         this.title = title;
     }
-
 
     public String getContent() {
         return content;
@@ -85,8 +72,7 @@ public class TaskUpdateDto {
     @Override
     public String toString() {
         return "TaskUpdateDto{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", flag='" + flag + '\'' +
                 ", solution='" + solution + '\'' +

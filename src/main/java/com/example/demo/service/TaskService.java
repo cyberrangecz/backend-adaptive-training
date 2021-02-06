@@ -109,8 +109,9 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(task);
     }
 
-    public TaskDto updateTask(Long trainingDefinitionId, Long phaseId, TaskUpdateDto taskUpdateDto) {
+    public TaskDto updateTask(Long trainingDefinitionId, Long phaseId, Long taskId, TaskUpdateDto taskUpdateDto) {
         Task taskUpdate = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
+        taskUpdate.setId(taskId);
 
         Task persistedTask = taskRepository.findById(taskUpdate.getId())
                 .orElseThrow(() -> new RuntimeException("Task was not found"));

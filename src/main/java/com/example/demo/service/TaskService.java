@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,5 +133,26 @@ public class TaskService {
         taskRepository.decreaseOrderAfterTaskWasDeleted(phaseId, task.getOrder());
 
         taskRepository.delete(task);
+    }
+
+    @Transactional
+    public void moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
+        Task task = taskRepository.findById(taskIdFrom)
+                .orElseThrow(() -> new RuntimeException("Task was not found"));
+        // TODO throw proper exception once kypo2-training is migrated
+
+        int fromOrder = task.getOrder();
+
+        if (fromOrder < newPosition) {
+            taskRepository.decreaseOrderOfTasksOnInterval(task.getTrainingPhase().getId(), fromOrder, newPosition);
+        } else if (fromOrder > newPosition) {
+            taskRepository.increaseOrderOfTasksOnInterval(task.getTrainingPhase().getId(), newPosition, fromOrder);
+        } else {
+            // nothing should be changed, no further actions needed
+            return;
+        }
+
+        task.setOrder(newPosition);
+        taskRepository.save(task);
     }
 }

@@ -30,11 +30,10 @@ import javax.validation.Valid;
 @RequestMapping(value = "/training-definitions/{definitionId}/phases/{phaseId}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Api(value = "/training-definitions/{definitionId}/phases",
+@Api(value = "/training-definitions/{definitionId}/tasks",
         tags = "Tasks",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         authorizations = @Authorization(value = "bearerAuth"))
-
 public class TasksController {
 
     @Autowired
@@ -158,6 +157,25 @@ public class TasksController {
             @PathVariable(name = "taskId") Long taskId) {
 
         taskService.removeTask(definitionId, phaseId, taskId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Move task to specified order",
+            nickname = "moveTaskToSpecifiedOrder",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Task moved to specified order"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping(value = "/{taskIdFrom}/move-to/{newPosition}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> moveTaskToSpecifiedOrder(
+            @ApiParam(value = "Task ID - from", required = true) @PathVariable(name = "taskIdFrom") Long taskIdFrom,
+            @ApiParam(value = "Position (order) to which the task should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
+
+        taskService.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
 
         return ResponseEntity.ok().build();
     }

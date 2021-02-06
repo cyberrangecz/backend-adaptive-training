@@ -1,11 +1,9 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class QuestionnaireUpdateDTO {
@@ -13,10 +11,6 @@ public class QuestionnaireUpdateDTO {
     @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")
     @NotEmpty(message = "Questionnaire title must not be blank")
     private String title;
-
-    @ApiModelProperty(value = "Type of questionnaire", required = true, allowableValues = "ADAPTIVE, GENERAL", example = "ADAPTIVE")
-    @NotNull(message = "Questionnaire type must be specified")
-    private QuestionnaireType questionnaireType;
 
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)
@@ -32,14 +26,6 @@ public class QuestionnaireUpdateDTO {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public QuestionnaireType getQuestionnaireType() {
-        return questionnaireType;
-    }
-
-    public void setQuestionnaireType(QuestionnaireType questionnaireType) {
-        this.questionnaireType = questionnaireType;
     }
 
     public List<QuestionDTO> getQuestions() {
@@ -62,7 +48,6 @@ public class QuestionnaireUpdateDTO {
     public String toString() {
         return "QuestionnaireUpdateDto{" +
                 "title='" + title + '\'' +
-                ", questionnaireType=" + questionnaireType +
                 ", questions=" + questions +
                 ", phaseRelations=" + phaseRelations +
                 '}';

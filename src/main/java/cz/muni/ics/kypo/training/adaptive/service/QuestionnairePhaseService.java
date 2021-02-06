@@ -77,6 +77,7 @@ public class QuestionnairePhaseService {
 
         questionnairePhase.setTrainingDefinitionId(persistedQuestionnairePhase.getTrainingDefinitionId());
         questionnairePhase.setOrder(persistedQuestionnairePhase.getOrder());
+        questionnairePhase.setQuestionnaireType(persistedQuestionnairePhase.getQuestionnaireType());
 
         questionnairePhase.getQuestionPhaseRelations().clear();
         questionnairePhase.getQuestionPhaseRelations().addAll(resolveQuestionnairePhaseRelationsUpdate(questionnairePhase, questionnaireUpdateDto));

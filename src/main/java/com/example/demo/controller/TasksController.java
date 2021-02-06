@@ -88,8 +88,8 @@ public class TasksController {
     }
 
     @ApiOperation(httpMethod = "GET",
-            value = "Get tasks",
-            notes = "Get tasks detail associated with the specified training phase",
+            value = "Get task",
+            notes = "Get task detail associated with the specified training phase",
             response = TaskDto.class,
             nickname = "getTask",
             produces = MediaType.APPLICATION_JSON_VALUE

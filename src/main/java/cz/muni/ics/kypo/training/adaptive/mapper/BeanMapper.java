@@ -93,6 +93,7 @@ public interface BeanMapper {
     QuestionnairePhase toEntity(QuestionnairePhaseDTO questionnairePhaseDto);
 
     @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
+    @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseDTO toDto(QuestionnairePhase questionnairePhase);
 
     QuestionPhaseRelation toEntity(QuestionPhaseRelationDTO questionnairePhaseDto);

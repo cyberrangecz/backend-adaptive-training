@@ -8,8 +8,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
-import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
+import cz.muni.ics.kypo.training.adaptive.enums.PhaseTypeCreate;
 import cz.muni.ics.kypo.training.adaptive.service.InfoPhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.QuestionnairePhaseService;
@@ -37,15 +36,13 @@ public class TrainingPhaseFacade {
 
     public AbstractPhaseDTO createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
         AbstractPhaseDTO abstractPhaseDto;
-        if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
+        if (PhaseTypeCreate.INFO.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
-        } else if (PhaseType.TRAINING.equals(phaseCreateDTO.getPhaseType())) {
+        } else if (PhaseTypeCreate.TRAINING.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = trainingPhaseService.createDefaultTrainingPhase(trainingDefinitionId);
         } else {
             abstractPhaseDto = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinitionId, phaseCreateDTO);
         }
-
-        abstractPhaseDto.setPhaseType(phaseCreateDTO.getPhaseType());
 
         return abstractPhaseDto;
     }
@@ -62,18 +59,7 @@ public class TrainingPhaseFacade {
     }
 
     public AbstractPhaseDTO getPhase(Long definitionId, Long phaseId) {
-        AbstractPhaseDTO phase = phaseService.getPhase(definitionId, phaseId);
-
-        if (phase instanceof QuestionnairePhaseDTO) {
-            QuestionnairePhaseDTO questionnairePhaseDto = (QuestionnairePhaseDTO) phase;
-            if (QuestionnaireType.ADAPTIVE.equals(questionnairePhaseDto.getQuestionnaireType())) {
-                phase.setPhaseType(PhaseType.QUESTIONNAIRE_ADAPTIVE);
-            } else {
-                phase.setPhaseType(PhaseType.QUESTIONNAIRE_GENERAL);
-            }
-        }
-
-        return phase;
+        return phaseService.getPhase(definitionId, phaseId);
     }
 
     public List<AbstractPhaseDTO> getPhases(Long definitionId) {

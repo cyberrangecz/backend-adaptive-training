@@ -8,7 +8,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionPhaseRelationDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import cz.muni.ics.kypo.training.adaptive.enums.PhaseTypeCreate;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
@@ -54,7 +54,7 @@ public class QuestionnairePhaseService {
         questionnairePhase.setTrainingDefinitionId(trainingDefinitionId);
         questionnairePhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
-        if (PhaseType.QUESTIONNAIRE_ADAPTIVE.equals(phaseCreateDTO.getPhaseType())) {
+        if (PhaseTypeCreate.QUESTIONNAIRE_ADAPTIVE.equals(phaseCreateDTO.getPhaseType())) {
             questionnairePhase.setQuestionnaireType(QuestionnaireType.ADAPTIVE);
         } else {
             questionnairePhase.setQuestionnaireType(QuestionnaireType.GENERAL);
@@ -92,11 +92,6 @@ public class QuestionnairePhaseService {
         QuestionnairePhase savedEntity = questionnairePhaseRepository.save(questionnairePhase);
 
         QuestionnairePhaseDTO result = BeanMapper.INSTANCE.toDto(savedEntity);
-        if (QuestionnaireType.ADAPTIVE.equals(savedEntity.getQuestionnaireType())) {
-            result.setPhaseType(PhaseType.QUESTIONNAIRE_ADAPTIVE);
-        } else {
-            result.setPhaseType(PhaseType.QUESTIONNAIRE_GENERAL);
-        }
 
         return result;
     }

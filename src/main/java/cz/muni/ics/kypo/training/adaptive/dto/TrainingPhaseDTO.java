@@ -3,14 +3,14 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrainingPhaseDto extends AbstractPhaseDto {
+public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
     private int estimatedDuration;
     private int allowedCommands;
     private int allowedWrongFlags;
-    private List<TaskDto> tasks = new ArrayList<>();
+    private List<TaskDTO> tasks = new ArrayList<>();
 
-    private List<DecisionMatrixRowDto> decisionMatrix;
+    private List<DecisionMatrixRowDTO> decisionMatrix;
 
     public int getEstimatedDuration() {
         return estimatedDuration;
@@ -36,19 +36,19 @@ public class TrainingPhaseDto extends AbstractPhaseDto {
         this.allowedWrongFlags = allowedWrongFlags;
     }
 
-    public List<TaskDto> getTasks() {
+    public List<TaskDTO> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<TaskDto> tasks) {
+    public void setTasks(List<TaskDTO> tasks) {
         this.tasks = tasks;
     }
 
-    public List<DecisionMatrixRowDto> getDecisionMatrix() {
+    public List<DecisionMatrixRowDTO> getDecisionMatrix() {
         return decisionMatrix;
     }
 
-    public void setDecisionMatrix(List<DecisionMatrixRowDto> decisionMatrix) {
+    public void setDecisionMatrix(List<DecisionMatrixRowDTO> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
     }
 }

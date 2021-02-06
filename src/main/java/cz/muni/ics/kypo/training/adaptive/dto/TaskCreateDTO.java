@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-public class TaskCreateDto extends TaskUpdateDto {
+public class TaskCreateDTO extends TaskUpdateDTO {
 
     @Override
     public String toString() {

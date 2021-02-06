@@ -2,7 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 
 import java.io.Serializable;
 
-public class TaskDto implements Serializable {
+public class TaskDTO implements Serializable {
 
     private Long id;
     private String title;

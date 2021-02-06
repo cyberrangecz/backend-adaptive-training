@@ -1,13 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.service.InfoPhaseService;
@@ -35,8 +35,8 @@ public class TrainingPhaseFacade {
     @Autowired
     private TrainingPhaseService trainingPhaseService;
 
-    public AbstractPhaseDto createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
-        AbstractPhaseDto abstractPhaseDto;
+    public AbstractPhaseDTO createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
+        AbstractPhaseDTO abstractPhaseDto;
         if (PhaseType.INFO.equals(phaseCreateDTO.getPhaseType())) {
             abstractPhaseDto = infoPhaseService.createDefaultInfoPhase(trainingDefinitionId);
         } else if (PhaseType.TRAINING.equals(phaseCreateDTO.getPhaseType())) {
@@ -52,7 +52,7 @@ public class TrainingPhaseFacade {
 
 
     @Transactional
-    public List<AbstractPhaseDto> deletePhase(Long definitionId, Long phaseId) {
+    public List<AbstractPhaseDTO> deletePhase(Long definitionId, Long phaseId) {
 
         phaseService.deletePhase(definitionId, phaseId);
 
@@ -61,11 +61,11 @@ public class TrainingPhaseFacade {
         return getPhases(definitionId);
     }
 
-    public AbstractPhaseDto getPhase(Long definitionId, Long phaseId) {
-        AbstractPhaseDto phase = phaseService.getPhase(definitionId, phaseId);
+    public AbstractPhaseDTO getPhase(Long definitionId, Long phaseId) {
+        AbstractPhaseDTO phase = phaseService.getPhase(definitionId, phaseId);
 
-        if (phase instanceof QuestionnairePhaseDto) {
-            QuestionnairePhaseDto questionnairePhaseDto = (QuestionnairePhaseDto) phase;
+        if (phase instanceof QuestionnairePhaseDTO) {
+            QuestionnairePhaseDTO questionnairePhaseDto = (QuestionnairePhaseDTO) phase;
             if (QuestionnaireType.ADAPTIVE.equals(questionnairePhaseDto.getQuestionnaireType())) {
                 phase.setPhaseType(PhaseType.QUESTIONNAIRE_ADAPTIVE);
             } else {
@@ -76,20 +76,20 @@ public class TrainingPhaseFacade {
         return phase;
     }
 
-    public List<AbstractPhaseDto> getPhases(Long definitionId) {
+    public List<AbstractPhaseDTO> getPhases(Long definitionId) {
 
         return phaseService.getPhases(definitionId);
     }
 
-    public InfoPhaseDto updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDto infoPhaseUpdateDto) {
+    public InfoPhaseDTO updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDTO infoPhaseUpdateDto) {
         return infoPhaseService.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
     }
 
-    public TrainingPhaseDto updateTrainingPhase(Long definitionId, Long phaseId, TrainingPhaseUpdateDto trainingPhaseUpdate) {
+    public TrainingPhaseDTO updateTrainingPhase(Long definitionId, Long phaseId, TrainingPhaseUpdateDTO trainingPhaseUpdate) {
         return trainingPhaseService.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdate);
     }
 
-    public QuestionnairePhaseDto updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDto questionnaireUpdateDto) {
+    public QuestionnairePhaseDTO updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDTO questionnaireUpdateDto) {
         return questionnairePhaseService.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
     }
 

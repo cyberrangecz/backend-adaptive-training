@@ -4,7 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 
 import java.util.List;
 
-public class QuestionUpdateDto {
+public class QuestionUpdateDTO {
 
     private Long id;
     private QuestionType questionType;

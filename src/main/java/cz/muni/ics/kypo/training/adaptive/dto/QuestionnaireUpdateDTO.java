@@ -8,7 +8,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class QuestionnaireUpdateDto {
+public class QuestionnaireUpdateDTO {
 
     @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")
     @NotEmpty(message = "Questionnaire title must not be blank")
@@ -20,11 +20,11 @@ public class QuestionnaireUpdateDto {
 
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)
-    private List<QuestionDto> questions;
+    private List<QuestionDTO> questions;
 
     @Valid
     @ApiModelProperty(value = "The relation between questions in the questionnaire and phases in the training definition", required = true)
-    private List<QuestionPhaseRelationDto> phaseRelations;
+    private List<QuestionPhaseRelationDTO> phaseRelations;
 
     public String getTitle() {
         return title;
@@ -42,19 +42,19 @@ public class QuestionnaireUpdateDto {
         this.questionnaireType = questionnaireType;
     }
 
-    public List<QuestionDto> getQuestions() {
+    public List<QuestionDTO> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<QuestionDto> questions) {
+    public void setQuestions(List<QuestionDTO> questions) {
         this.questions = questions;
     }
 
-    public List<QuestionPhaseRelationDto> getPhaseRelations() {
+    public List<QuestionPhaseRelationDTO> getPhaseRelations() {
         return phaseRelations;
     }
 
-    public void setPhaseRelations(List<QuestionPhaseRelationDto> phaseRelations) {
+    public void setPhaseRelations(List<QuestionPhaseRelationDTO> phaseRelations) {
         this.phaseRelations = phaseRelations;
     }
 

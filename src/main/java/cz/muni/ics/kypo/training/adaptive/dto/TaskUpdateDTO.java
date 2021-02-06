@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
-public class TaskUpdateDto {
+public class TaskUpdateDTO {
 
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")
     @NotEmpty(message = "Task title must not be blank")

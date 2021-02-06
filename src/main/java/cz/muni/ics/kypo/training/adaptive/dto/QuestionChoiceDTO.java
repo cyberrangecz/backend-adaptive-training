@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
-public class QuestionChoiceDto implements Serializable {
+public class QuestionChoiceDTO implements Serializable {
 
     @ApiModelProperty(value = "Question choice ID. Leave blank if new choice is added", required = true, example = "1")
     private Long id;

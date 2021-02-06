@@ -2,7 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 
 import java.io.Serializable;
 
-public class InfoPhaseDto extends AbstractPhaseDto implements Serializable {
+public class InfoPhaseDTO extends AbstractPhaseDTO implements Serializable {
 
     private String content;
 

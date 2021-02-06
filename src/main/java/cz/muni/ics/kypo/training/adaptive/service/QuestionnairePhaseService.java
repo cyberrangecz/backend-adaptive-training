@@ -5,9 +5,9 @@ import cz.muni.ics.kypo.training.adaptive.domain.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionPhaseRelationDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionPhaseRelationDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
@@ -47,7 +47,7 @@ public class QuestionnairePhaseService {
     @Autowired
     private QuestionPhaseRelationRepository questionPhaseRelationRepository;
 
-    public QuestionnairePhaseDto createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
+    public QuestionnairePhaseDTO createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
 
         QuestionnairePhase questionnairePhase = new QuestionnairePhase();
         questionnairePhase.setTitle("Title of questionnaire level");
@@ -65,7 +65,7 @@ public class QuestionnairePhaseService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public QuestionnairePhaseDto updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDto questionnaireUpdateDto) {
+    public QuestionnairePhaseDTO updateQuestionnairePhase(Long definitionId, Long phaseId, QuestionnaireUpdateDTO questionnaireUpdateDto) {
         QuestionnairePhase questionnairePhase = BeanMapper.INSTANCE.toEntity(questionnaireUpdateDto);
         questionnairePhase.setId(phaseId);
 
@@ -90,7 +90,7 @@ public class QuestionnairePhaseService {
 
         QuestionnairePhase savedEntity = questionnairePhaseRepository.save(questionnairePhase);
 
-        QuestionnairePhaseDto result = BeanMapper.INSTANCE.toDto(savedEntity);
+        QuestionnairePhaseDTO result = BeanMapper.INSTANCE.toDto(savedEntity);
         if (QuestionnaireType.ADAPTIVE.equals(savedEntity.getQuestionnaireType())) {
             result.setPhaseType(PhaseType.QUESTIONNAIRE_ADAPTIVE);
         } else {
@@ -100,12 +100,12 @@ public class QuestionnairePhaseService {
         return result;
     }
 
-    private List<QuestionPhaseRelation> resolveQuestionnairePhaseRelationsUpdate(QuestionnairePhase questionnairePhase, QuestionnaireUpdateDto questionnaireUpdateDto) {
+    private List<QuestionPhaseRelation> resolveQuestionnairePhaseRelationsUpdate(QuestionnairePhase questionnairePhase, QuestionnaireUpdateDTO questionnaireUpdateDto) {
         List<QuestionPhaseRelation> questionnairePhaseRelations = new ArrayList<>();
 
         if (!CollectionUtils.isEmpty(questionnaireUpdateDto.getPhaseRelations())) {
             int order = 0;
-            for (QuestionPhaseRelationDto phaseRelation : questionnaireUpdateDto.getPhaseRelations()) {
+            for (QuestionPhaseRelationDTO phaseRelation : questionnaireUpdateDto.getPhaseRelations()) {
                 Set<Question> questionsInPhaseRelation = Set.copyOf(questionRepository.findAllById(phaseRelation.getQuestionIds()));
 
                 QuestionPhaseRelation questionPhaseRelation;

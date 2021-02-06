@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-public class DecisionMatrixRowDto {
+public class DecisionMatrixRowDTO {
     private long id;
     private int order;
     private double AA;

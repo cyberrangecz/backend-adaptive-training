@@ -1,8 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.InfoPhaseRepository;
@@ -25,7 +25,7 @@ public class InfoPhaseService {
         this.abstractPhaseRepository = abstractPhaseRepository;
     }
 
-    public InfoPhaseDto createDefaultInfoPhase(Long trainingDefinitionId) {
+    public InfoPhaseDTO createDefaultInfoPhase(Long trainingDefinitionId) {
         InfoPhase infoPhase = new InfoPhase();
         infoPhase.setContent("Content of info level");
         infoPhase.setTitle("Title of info level");
@@ -37,7 +37,7 @@ public class InfoPhaseService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public InfoPhaseDto updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDto infoPhaseUpdateDto) {
+    public InfoPhaseDTO updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDTO infoPhaseUpdateDto) {
         InfoPhase infoPhaseUpdate = BeanMapper.INSTANCE.toEntity(infoPhaseUpdateDto);
         infoPhaseUpdate.setId(phaseId);
 

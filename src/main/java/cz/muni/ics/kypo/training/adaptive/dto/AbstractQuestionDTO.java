@@ -8,7 +8,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class AbstractQuestionDto implements Serializable {
+public abstract class AbstractQuestionDTO implements Serializable {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     @NotNull(message = "Question order must be specified")
@@ -23,7 +23,7 @@ public abstract class AbstractQuestionDto implements Serializable {
     private QuestionType questionType;
 
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
-    private List<QuestionChoiceDto> choices;
+    private List<QuestionChoiceDTO> choices;
 
     public int getOrder() {
         return order;
@@ -49,11 +49,11 @@ public abstract class AbstractQuestionDto implements Serializable {
         this.questionType = type;
     }
 
-    public List<QuestionChoiceDto> getChoices() {
+    public List<QuestionChoiceDTO> getChoices() {
         return choices;
     }
 
-    public void setChoices(List<QuestionChoiceDto> choices) {
+    public void setChoices(List<QuestionChoiceDTO> choices) {
         this.choices = choices;
     }
 }

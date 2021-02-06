@@ -2,9 +2,9 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TrainingPhaseRepository;
@@ -29,7 +29,7 @@ public class TaskService {
         this.trainingPhaseRepository = trainingPhaseRepository;
     }
 
-    public TaskDto createDefaultTask(Long trainingDefinitionId, Long phaseId) {
+    public TaskDTO createDefaultTask(Long trainingDefinitionId, Long phaseId) {
         TrainingPhase trainingPhase = trainingPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Game phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
@@ -49,7 +49,7 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public TaskDto cloneTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
+    public TaskDTO cloneTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
         Task taskToBeCloned = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));
         // TODO throw proper exception once kypo2-training is migrated
@@ -72,7 +72,7 @@ public class TaskService {
     }
 
 
-    public TaskDto createTask(TaskCreateDto taskCreateDto) {
+    public TaskDTO createTask(TaskCreateDTO taskCreateDto) {
         Task task = BeanMapper.INSTANCE.toEntity(taskCreateDto);
 
         Task persistedEntity = taskRepository.save(task);
@@ -80,7 +80,7 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public TaskDto getTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
+    public TaskDTO getTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));
         // TODO throw proper exception once kypo2-training is migrated
@@ -90,7 +90,7 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(task);
     }
 
-    public TaskDto updateTask(Long trainingDefinitionId, Long phaseId, Long taskId, TaskUpdateDto taskUpdateDto) {
+    public TaskDTO updateTask(Long trainingDefinitionId, Long phaseId, Long taskId, TaskUpdateDTO taskUpdateDto) {
         Task taskUpdate = BeanMapper.INSTANCE.toEntity(taskUpdateDto);
         taskUpdate.setId(taskId);
 

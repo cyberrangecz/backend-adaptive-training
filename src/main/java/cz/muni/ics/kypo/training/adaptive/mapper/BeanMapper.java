@@ -9,22 +9,22 @@ import cz.muni.ics.kypo.training.adaptive.domain.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.DecisionMatrixRowDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionChoiceDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionPhaseRelationDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionRequiredIdDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.DecisionMatrixRowDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionChoiceDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionPhaseRelationDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionRequiredIdDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -37,8 +37,8 @@ public interface BeanMapper {
 
     BeanMapper INSTANCE = Mappers.getMapper(BeanMapper.class);
 
-    default AbstractPhaseDto toDto(AbstractPhase abstractPhase) {
-        AbstractPhaseDto abstractPhaseDto;
+    default AbstractPhaseDTO toDto(AbstractPhase abstractPhase) {
+        AbstractPhaseDTO abstractPhaseDto;
         if (abstractPhase instanceof TrainingPhase) {
             abstractPhaseDto = toDto((TrainingPhase) abstractPhase);
         } else if (abstractPhase instanceof InfoPhase) {
@@ -52,57 +52,57 @@ public interface BeanMapper {
         return abstractPhaseDto;
     }
 
-    List<AbstractPhaseDto> toDtoList(List<AbstractPhase> abstractPhase);
+    List<AbstractPhaseDTO> toDtoList(List<AbstractPhase> abstractPhase);
 
-    TaskDto toDto(Task task);
+    TaskDTO toDto(Task task);
 
-    Task toEntity(TaskDto taskDto);
+    Task toEntity(TaskDTO taskDto);
 
-    Task toEntity(TaskCreateDto taskCreateDto);
+    Task toEntity(TaskCreateDTO taskCreateDto);
 
-    Task toEntity(TaskUpdateDto taskUpdateDto);
+    Task toEntity(TaskUpdateDTO taskUpdateDto);
 
     @Mapping(target = "phaseType", constant = "INFO")
-    InfoPhaseDto toDto(InfoPhase infoPhase);
+    InfoPhaseDTO toDto(InfoPhase infoPhase);
 
-    InfoPhase toEntity(InfoPhaseUpdateDto infoPhaseUpdateDto);
+    InfoPhase toEntity(InfoPhaseUpdateDTO infoPhaseUpdateDto);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
-    TrainingPhaseDto toDto(TrainingPhase trainingPhase);
+    TrainingPhaseDTO toDto(TrainingPhase trainingPhase);
 
-    TrainingPhase toEntity(TrainingPhaseDto trainingPhaseDto);
+    TrainingPhase toEntity(TrainingPhaseDTO trainingPhaseDto);
 
-    TrainingPhase toEntity(TrainingPhaseUpdateDto trainingPhaseUpdateDto);
+    TrainingPhase toEntity(TrainingPhaseUpdateDTO trainingPhaseUpdateDto);
 
-    DecisionMatrixRow toEntity(DecisionMatrixRowDto decisionMatrixRowDto);
+    DecisionMatrixRow toEntity(DecisionMatrixRowDTO decisionMatrixRowDto);
 
-    DecisionMatrixRowDto toDto(DecisionMatrixRow decisionMatrixRow);
+    DecisionMatrixRowDTO toDto(DecisionMatrixRow decisionMatrixRow);
 
-    QuestionChoice toEntity(QuestionChoiceDto questionChoiceDto);
+    QuestionChoice toEntity(QuestionChoiceDTO questionChoiceDto);
 
-    QuestionChoiceDto toDto(QuestionChoice questionChoice);
+    QuestionChoiceDTO toDto(QuestionChoice questionChoice);
 
-    Question toEntity(QuestionDto questionDto);
+    Question toEntity(QuestionDTO questionDto);
 
-    Question toEntity(QuestionRequiredIdDto questionDto);
+    Question toEntity(QuestionRequiredIdDTO questionDto);
 
-    Question toEntity(QuestionUpdateDto questionUpdateDto);
+    Question toEntity(QuestionUpdateDTO questionUpdateDto);
 
-    QuestionDto toDto(Question question);
+    QuestionDTO toDto(Question question);
 
     @Mapping(target = "questionPhaseRelations", source = "phaseRelations")
-    QuestionnairePhase toEntity(QuestionnaireUpdateDto questionnaireUpdateDto);
+    QuestionnairePhase toEntity(QuestionnaireUpdateDTO questionnaireUpdateDto);
 
-    QuestionnairePhase toEntity(QuestionnairePhaseDto questionnairePhaseDto);
+    QuestionnairePhase toEntity(QuestionnairePhaseDTO questionnairePhaseDto);
 
     @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
-    QuestionnairePhaseDto toDto(QuestionnairePhase questionnairePhase);
+    QuestionnairePhaseDTO toDto(QuestionnairePhase questionnairePhase);
 
-    QuestionPhaseRelation toEntity(QuestionPhaseRelationDto questionnairePhaseDto);
+    QuestionPhaseRelation toEntity(QuestionPhaseRelationDTO questionnairePhaseDto);
 
     @Mapping(target = "phaseId", source = "relatedTrainingPhase")
     @Mapping(target = "questionIds", source = "questions")
-    QuestionPhaseRelationDto toDto(QuestionPhaseRelation questionnairePhase);
+    QuestionPhaseRelationDTO toDto(QuestionPhaseRelation questionnairePhase);
 
     default Long mapTrainingPhaseId(TrainingPhase trainingPhase) {
         if (trainingPhase == null) {

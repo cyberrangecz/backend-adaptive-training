@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
-import cz.muni.ics.kypo.training.adaptive.dto.TaskDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,7 +42,7 @@ public class TasksController {
     @ApiOperation(httpMethod = "POST",
             value = "Create a new task in a phase",
             notes = "Creates a new default task in a specified training phase",
-            response = TaskDto.class,
+            response = TaskDTO.class,
             nickname = "createTask",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -51,13 +51,13 @@ public class TasksController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PostMapping
-    public ResponseEntity<TaskDto> createTask(
+    public ResponseEntity<TaskDTO> createTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId) {
 
-        TaskDto createdTask = taskService.createDefaultTask(definitionId, phaseId);
+        TaskDTO createdTask = taskService.createDefaultTask(definitionId, phaseId);
 
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
@@ -65,7 +65,7 @@ public class TasksController {
     @ApiOperation(httpMethod = "POST",
             value = "Clone task inside of the training phase",
             notes = "Creates a new task with the same properties as the specified task (pattern)",
-            response = TaskDto.class,
+            response = TaskDTO.class,
             nickname = "cloneTask",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -74,7 +74,7 @@ public class TasksController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PostMapping(path = "/{taskId}")
-    public ResponseEntity<TaskDto> cloneTask(
+    public ResponseEntity<TaskDTO> cloneTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
@@ -82,7 +82,7 @@ public class TasksController {
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
 
-        TaskDto createdTask = taskService.cloneTask(definitionId, phaseId, taskId);
+        TaskDTO createdTask = taskService.cloneTask(definitionId, phaseId, taskId);
 
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
@@ -90,7 +90,7 @@ public class TasksController {
     @ApiOperation(httpMethod = "GET",
             value = "Get task",
             notes = "Get task detail associated with the specified training phase",
-            response = TaskDto.class,
+            response = TaskDTO.class,
             nickname = "getTask",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -99,7 +99,7 @@ public class TasksController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @GetMapping(path = "/{taskId}")
-    public ResponseEntity<TaskDto> getTask(
+    public ResponseEntity<TaskDTO> getTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
@@ -107,7 +107,7 @@ public class TasksController {
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
 
-        TaskDto createdTask = taskService.getTask(definitionId, phaseId, taskId);
+        TaskDTO createdTask = taskService.getTask(definitionId, phaseId, taskId);
 
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
@@ -123,7 +123,7 @@ public class TasksController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{taskId}")
-    public ResponseEntity<TaskDto> updateTask(
+    public ResponseEntity<TaskDTO> updateTask(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
@@ -131,9 +131,9 @@ public class TasksController {
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId,
             @ApiParam(value = "Task to be updated")
-            @RequestBody @Valid TaskUpdateDto taskUpdateDto) {
+            @RequestBody @Valid TaskUpdateDTO taskUpdateDto) {
 
-        TaskDto updatedTask = taskService.updateTask(definitionId, phaseId, taskId, taskUpdateDto);
+        TaskDTO updatedTask = taskService.updateTask(definitionId, phaseId, taskId, taskUpdateDto);
 
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
@@ -141,7 +141,7 @@ public class TasksController {
     @ApiOperation(httpMethod = "DELETE",
             value = "Remove a task",
             notes = "Remove the specified task",
-            response = TaskDto.class,
+            response = TaskDTO.class,
             nickname = "removeTask",
             produces = MediaType.APPLICATION_JSON_VALUE
     )

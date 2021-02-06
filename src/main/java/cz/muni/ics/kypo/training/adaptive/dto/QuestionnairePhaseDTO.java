@@ -4,17 +4,17 @@ import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 
 import java.util.List;
 
-public class QuestionnairePhaseDto extends AbstractPhaseDto {
+public class QuestionnairePhaseDTO extends AbstractPhaseDTO {
 
-    private List<QuestionDto> questions;
+    private List<QuestionDTO> questions;
     private QuestionnaireType questionnaireType;
-    private List<QuestionPhaseRelationDto> phaseRelations;
+    private List<QuestionPhaseRelationDTO> phaseRelations;
 
-    public List<QuestionDto> getQuestions() {
+    public List<QuestionDTO> getQuestions() {
         return questions;
     }
 
-    public void setQuestions(List<QuestionDto> questions) {
+    public void setQuestions(List<QuestionDTO> questions) {
         this.questions = questions;
     }
 
@@ -26,11 +26,11 @@ public class QuestionnairePhaseDto extends AbstractPhaseDto {
         this.questionnaireType = questionnaireType;
     }
 
-    public List<QuestionPhaseRelationDto> getPhaseRelations() {
+    public List<QuestionPhaseRelationDTO> getPhaseRelations() {
         return phaseRelations;
     }
 
-    public void setPhaseRelations(List<QuestionPhaseRelationDto> phaseRelations) {
+    public void setPhaseRelations(List<QuestionPhaseRelationDTO> phaseRelations) {
         this.phaseRelations = phaseRelations;
     }
 }

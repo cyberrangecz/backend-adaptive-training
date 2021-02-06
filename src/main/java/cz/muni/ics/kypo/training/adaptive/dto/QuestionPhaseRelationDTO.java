@@ -7,7 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 
-public class QuestionPhaseRelationDto {
+public class QuestionPhaseRelationDTO {
 
     @ApiModelProperty(value = "Question-Phase relation ID. Leave blank if a new one is added", required = true, example = "1")
     private Long id;

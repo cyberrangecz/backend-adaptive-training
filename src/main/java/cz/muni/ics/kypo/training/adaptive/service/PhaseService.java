@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDto;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class PhaseService {
         abstractPhaseRepository.delete(phase);
     }
 
-    public AbstractPhaseDto getPhase(Long definitionId, Long phaseId) {
+    public AbstractPhaseDTO getPhase(Long definitionId, Long phaseId) {
         AbstractPhase phase = abstractPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
@@ -45,7 +45,7 @@ public class PhaseService {
     }
 
 
-    public List<AbstractPhaseDto> getPhases(Long trainingDefinitionId) {
+    public List<AbstractPhaseDTO> getPhases(Long trainingDefinitionId) {
         List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
 
         return BeanMapper.INSTANCE.toDtoList(phases);

@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class TrainingPhaseUpdateDto {
+public class TrainingPhaseUpdateDTO {
 
     @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
     @NotEmpty(message = "Training phase title must not be blank")
@@ -24,7 +24,7 @@ public class TrainingPhaseUpdateDto {
     @NotNull(message = "Estimated duration of phase task must be set")
     private Integer estimatedDuration;
 
-    private List<DecisionMatrixRowDto> decisionMatrix;
+    private List<DecisionMatrixRowDTO> decisionMatrix;
 
     public String getTitle() {
         return title;
@@ -58,11 +58,11 @@ public class TrainingPhaseUpdateDto {
         this.estimatedDuration = estimatedDuration;
     }
 
-    public List<DecisionMatrixRowDto> getDecisionMatrix() {
+    public List<DecisionMatrixRowDTO> getDecisionMatrix() {
         return decisionMatrix;
     }
 
-    public void setDecisionMatrix(List<DecisionMatrixRowDto> decisionMatrix) {
+    public void setDecisionMatrix(List<DecisionMatrixRowDTO> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
     }
 }

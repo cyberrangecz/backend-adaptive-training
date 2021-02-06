@@ -2,7 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.Question;
 import cz.muni.ics.kypo.training.adaptive.domain.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionDto;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionRepository;
@@ -25,7 +25,7 @@ public class QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
-    public QuestionDto createDefaultQuestion(Long questionnaireId, QuestionType questionType) {
+    public QuestionDTO createDefaultQuestion(Long questionnaireId, QuestionType questionType) {
         Optional<QuestionnairePhase> questionnairePhase = questionnairePhaseRepository.findById(questionnaireId);
         if (questionnairePhase.isEmpty()) {
             // TODO return 404
@@ -43,13 +43,13 @@ public class QuestionService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public QuestionDto updateQuestion(Question question) {
+    public QuestionDTO updateQuestion(Question question) {
         Optional<Question> persistedQuestion = questionRepository.findById(question.getId());
 
         if (persistedQuestion.isEmpty()) {
             // TODO return 404
             LOG.error("No question found with ID {}.", question.getId());
-            return new QuestionDto();
+            return new QuestionDTO();
         }
 
         question.setChoices(persistedQuestion.get().getChoices());

@@ -2,8 +2,8 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.DecisionMatrixRow;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TrainingPhaseRepository;
@@ -30,7 +30,7 @@ public class TrainingPhaseService {
     @Autowired
     private AbstractPhaseRepository abstractPhaseRepository;
 
-    public TrainingPhaseDto createDefaultTrainingPhase(Long trainingDefinitionId) {
+    public TrainingPhaseDTO createDefaultTrainingPhase(Long trainingDefinitionId) {
 
         TrainingPhase trainingPhase = new TrainingPhase();
         trainingPhase.setTitle("Title of phase level");
@@ -44,7 +44,7 @@ public class TrainingPhaseService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public TrainingPhaseDto updateTrainingPhase(Long definitionId, Long phaseId, TrainingPhaseUpdateDto trainingPhaseUpdate) {
+    public TrainingPhaseDTO updateTrainingPhase(Long definitionId, Long phaseId, TrainingPhaseUpdateDTO trainingPhaseUpdate) {
         TrainingPhase trainingPhase = BeanMapper.INSTANCE.toEntity(trainingPhaseUpdate);
         trainingPhase.setId(phaseId);
 

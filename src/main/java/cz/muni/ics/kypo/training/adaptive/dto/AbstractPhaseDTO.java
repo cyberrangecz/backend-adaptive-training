@@ -4,7 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 
 import java.io.Serializable;
 
-public abstract class AbstractPhaseDto implements Serializable {
+public abstract class AbstractPhaseDTO implements Serializable {
 
     private Long id;
     private String title;

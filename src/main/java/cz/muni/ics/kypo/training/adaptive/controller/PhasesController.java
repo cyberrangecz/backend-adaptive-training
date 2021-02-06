@@ -1,13 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDto;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDto;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.facade.TrainingPhaseFacade;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,7 +49,7 @@ public class PhasesController {
     @ApiOperation(httpMethod = "POST",
             value = "Create a new phase",
             notes = "Creates a new default phase with a specified type",
-            response = AbstractPhaseDto.class,
+            response = AbstractPhaseDTO.class,
             nickname = "createPhase",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -58,13 +58,13 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PostMapping
-    public ResponseEntity<AbstractPhaseDto> createPhase(
+    public ResponseEntity<AbstractPhaseDTO> createPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Level type", allowableValues = "questionnaire, info, game", required = true)
             @RequestBody @Valid PhaseCreateDTO phaseCreateDTO) {
 
-        AbstractPhaseDto createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
+        AbstractPhaseDTO createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
 
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
     }
@@ -81,18 +81,18 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @GetMapping
-    public ResponseEntity<List<AbstractPhaseDto>> getPhases(
+    public ResponseEntity<List<AbstractPhaseDTO>> getPhases(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId) {
 
-        List<AbstractPhaseDto> phases = trainingPhaseFacade.getPhases(definitionId);
+        List<AbstractPhaseDTO> phases = trainingPhaseFacade.getPhases(definitionId);
 
         return new ResponseEntity<>(phases, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "GET",
             value = "Get phase by ID",
-            response = AbstractPhaseDto.class,
+            response = AbstractPhaseDTO.class,
             nickname = "getPhase",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -101,20 +101,20 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @GetMapping(path = "/{phaseId}")
-    public ResponseEntity<AbstractPhaseDto> getPhase(
+    public ResponseEntity<AbstractPhaseDTO> getPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Level ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
 
-        AbstractPhaseDto phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
+        AbstractPhaseDTO phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
 
         return new ResponseEntity<>(phase, HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "DELETE",
             value = "Remove phase by ID",
-            response = AbstractPhaseDto.class,
+            response = AbstractPhaseDTO.class,
             nickname = "getPhase",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -123,13 +123,13 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @DeleteMapping(path = "/{phaseId}")
-    public ResponseEntity<List<AbstractPhaseDto>> removePhase(
+    public ResponseEntity<List<AbstractPhaseDTO>> removePhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Level ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
 
-        List<AbstractPhaseDto> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
+        List<AbstractPhaseDTO> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
 
         return new ResponseEntity<>(remainingPhases, HttpStatus.OK);
     }
@@ -137,7 +137,7 @@ public class PhasesController {
     @ApiOperation(httpMethod = "PUT",
             value = "Update info phase",
             nickname = "updateInfoPhase",
-            response = InfoPhaseDto.class,
+            response = InfoPhaseDTO.class,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
@@ -145,15 +145,15 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{phaseId}/info")
-    public ResponseEntity<InfoPhaseDto> updateInfoPhase(
+    public ResponseEntity<InfoPhaseDTO> updateInfoPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Level ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Info phase to be updated")
-            @RequestBody @Valid InfoPhaseUpdateDto infoPhaseUpdateDto) {
+            @RequestBody @Valid InfoPhaseUpdateDTO infoPhaseUpdateDto) {
 
-        InfoPhaseDto updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
+        InfoPhaseDTO updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
 
         return new ResponseEntity<>(updatedInfoPhase, HttpStatus.OK);
     }
@@ -161,7 +161,7 @@ public class PhasesController {
     @ApiOperation(httpMethod = "PUT",
             value = "Update training phase",
             nickname = "updateTrainingPhase",
-            response = TrainingPhaseDto.class,
+            response = TrainingPhaseDTO.class,
             consumes = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
@@ -169,15 +169,15 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{phaseId}/training")
-    public ResponseEntity<TrainingPhaseDto> updateTrainingPhase(
+    public ResponseEntity<TrainingPhaseDTO> updateTrainingPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Training phase to be updated")
-            @RequestBody @Valid TrainingPhaseUpdateDto trainingPhaseUpdateDto) {
+            @RequestBody @Valid TrainingPhaseUpdateDTO trainingPhaseUpdateDto) {
 
-        TrainingPhaseDto updatedTrainingPhase = trainingPhaseFacade.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdateDto);
+        TrainingPhaseDTO updatedTrainingPhase = trainingPhaseFacade.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdateDto);
 
         return new ResponseEntity<>(updatedTrainingPhase, HttpStatus.OK);
     }
@@ -192,15 +192,15 @@ public class PhasesController {
             @ApiResponse(code = 500, message = "Unexpected application error")
     })
     @PutMapping(path = "/{phaseId}/questionnaire")
-    public ResponseEntity<QuestionnairePhaseDto> updateQuestionnairePhase(
+    public ResponseEntity<QuestionnairePhaseDTO> updateQuestionnairePhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Questionnaire to be updated")
-            @RequestBody @Valid QuestionnaireUpdateDto questionnaireUpdateDto) {
+            @RequestBody @Valid QuestionnaireUpdateDTO questionnaireUpdateDto) {
 
-        QuestionnairePhaseDto updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
+        QuestionnairePhaseDTO updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
 
         return new ResponseEntity<>(updatedQuestionnairePhase, HttpStatus.OK);
     }

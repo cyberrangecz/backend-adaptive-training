@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 
-public class InfoPhaseUpdateDto {
+public class InfoPhaseUpdateDTO {
 
     @ApiModelProperty(value = "Short description of info phase", required = true, example = "Info phase title")
     @NotEmpty(message = "Info phase title must not be blank")

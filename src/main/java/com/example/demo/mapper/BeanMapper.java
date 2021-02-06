@@ -100,5 +100,23 @@ public interface BeanMapper {
 
     QuestionPhaseRelation toEntity(QuestionPhaseRelationDto questionnairePhaseDto);
 
+    @Mapping(target = "phaseId", source = "relatedTrainingPhase")
+    @Mapping(target = "questionIds", source = "questions")
     QuestionPhaseRelationDto toDto(QuestionPhaseRelation questionnairePhase);
+
+    default Long mapTrainingPhaseId(TrainingPhase trainingPhase) {
+        if (trainingPhase == null) {
+            return null;
+        } else {
+            return trainingPhase.getId();
+        }
+    }
+
+    default Long mapQuestionId(Question question) {
+        if (question == null) {
+            return null;
+        } else {
+            return question.getId();
+        }
+    }
 }

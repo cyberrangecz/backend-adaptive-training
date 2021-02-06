@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public class PhaseCreateDTO {
 
-    @ApiModelProperty(value = "Type of phase.", required = true, allowableValues = "QUESTIONNAIRE, INFO, GAME", example = "GAME")
+    @ApiModelProperty(value = "Type of phase.", required = true, allowableValues = "QUESTIONNAIRE_ADAPTIVE, QUESTIONNAIRE_GENERAL, INFO, GAME", example = "TRAINING")
     @NotNull(message = "Phase type must be specified")
     private PhaseType phaseType;
 

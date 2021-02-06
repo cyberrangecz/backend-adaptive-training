@@ -19,7 +19,7 @@ public class Task {
     private String content;
     private String flag;
     private String solution;
-    private Long incorrectFlagLimit;
+    private int incorrectFlagLimit;
 
     @Column(name = "order_in_training_phase", nullable = false)
     private Integer order;
@@ -75,11 +75,11 @@ public class Task {
         this.solution = solution;
     }
 
-    public Long getIncorrectFlagLimit() {
+    public int getIncorrectFlagLimit() {
         return incorrectFlagLimit;
     }
 
-    public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
+    public void setIncorrectFlagLimit(int incorrectFlagLimit) {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 

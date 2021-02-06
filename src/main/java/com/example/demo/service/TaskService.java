@@ -41,9 +41,12 @@ public class TaskService {
         // TODO add check to trainingDefinitionId (field structure will be probably changed)
 
         Task task = new Task();
-        task.setTitle("Title of task");
+        task.setTitle("Title of a new task");
         task.setTrainingPhase(trainingPhase);
         task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
+        task.setFlag("Secret flag");
+        task.setContent("Task content ...");
+        task.setSolution("Task solution ...");
 
         Task persistedEntity = taskRepository.save(task);
 

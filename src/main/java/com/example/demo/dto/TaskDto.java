@@ -10,7 +10,7 @@ public class TaskDto implements Serializable {
     private String content;
     private String flag;
     private String solution;
-    private Long incorrectFlagLimit;
+    private int incorrectFlagLimit;
 
     public Long getId() {
         return id;
@@ -60,11 +60,11 @@ public class TaskDto implements Serializable {
         this.solution = solution;
     }
 
-    public Long getIncorrectFlagLimit() {
+    public int getIncorrectFlagLimit() {
         return incorrectFlagLimit;
     }
 
-    public void setIncorrectFlagLimit(Long incorrectFlagLimit) {
+    public void setIncorrectFlagLimit(int incorrectFlagLimit) {
         this.incorrectFlagLimit = incorrectFlagLimit;
     }
 

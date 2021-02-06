@@ -20,7 +20,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.QuestionRequiredIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
@@ -57,8 +56,6 @@ public interface BeanMapper {
     TaskDTO toDto(Task task);
 
     Task toEntity(TaskDTO taskDto);
-
-    Task toEntity(TaskCreateDTO taskCreateDto);
 
     Task toEntity(TaskUpdateDTO taskUpdateDto);
 

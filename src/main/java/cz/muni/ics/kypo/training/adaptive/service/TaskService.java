@@ -2,7 +2,6 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
@@ -65,15 +64,6 @@ public class TaskService {
         task.setId(null);
         task.setTrainingPhase(trainingPhase);
         task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
-
-        Task persistedEntity = taskRepository.save(task);
-
-        return BeanMapper.INSTANCE.toDto(persistedEntity);
-    }
-
-
-    public TaskDTO createTask(TaskCreateDTO taskCreateDto) {
-        Task task = BeanMapper.INSTANCE.toEntity(taskCreateDto);
 
         Task persistedEntity = taskRepository.save(task);
 

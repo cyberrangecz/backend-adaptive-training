@@ -42,6 +42,7 @@ public class TaskService {
         task.setFlag("Secret flag");
         task.setContent("Task content ...");
         task.setSolution("Task solution ...");
+        task.setIncorrectFlagLimit(1);
 
         Task persistedEntity = taskRepository.save(task);
 

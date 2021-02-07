@@ -27,8 +27,8 @@ public class InfoPhaseService {
 
     public InfoPhaseDTO createDefaultInfoPhase(Long trainingDefinitionId) {
         InfoPhase infoPhase = new InfoPhase();
-        infoPhase.setContent("Content of info level");
-        infoPhase.setTitle("Title of info level");
+        infoPhase.setContent("Content of info phase");
+        infoPhase.setTitle("Title of info phase");
         infoPhase.setTrainingDefinitionId(trainingDefinitionId);
         infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 

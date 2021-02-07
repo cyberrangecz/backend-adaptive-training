@@ -19,7 +19,7 @@ public interface AbstractPhaseRepository extends JpaRepository<AbstractPhase, Lo
     @Query("UPDATE AbstractPhase l SET l.order = l.order - 1 " +
             "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
             "AND l.order > :order ")
-    void decreaseOrderAfterLevelWasDeleted(@Param("trainingDefinitionId") Long trainingDefinitionId,
+    void decreaseOrderAfterPhaseWasDeleted(@Param("trainingDefinitionId") Long trainingDefinitionId,
                                            @Param("order") int order);
 
     @Modifying
@@ -27,7 +27,7 @@ public interface AbstractPhaseRepository extends JpaRepository<AbstractPhase, Lo
             "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
             "AND l.order >= :lowerBound " +
             "AND l.order < :upperBound ")
-    void increaseOrderOfLevelsOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
+    void increaseOrderOfPhasesOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
                                          @Param("lowerBound") int lowerBound,
                                          @Param("upperBound") int upperBound);
 
@@ -36,7 +36,7 @@ public interface AbstractPhaseRepository extends JpaRepository<AbstractPhase, Lo
             "WHERE l.trainingDefinitionId = :trainingDefinitionId " +
             "AND l.order > :lowerBound " +
             "AND l.order <= :upperBound ")
-    void decreaseOrderOfLevelsOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
+    void decreaseOrderOfPhasesOnInterval(@Param("trainingDefinitionId") Long trainingDefinitionId,
                                          @Param("lowerBound") int lowerBound,
                                          @Param("upperBound") int upperBound);
 

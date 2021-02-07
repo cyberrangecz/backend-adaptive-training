@@ -16,7 +16,7 @@ public class TaskUpdateDTO {
     @NotEmpty(message = "Task content must not be blank")
     private String content;
 
-    @ApiModelProperty(value = "Keyword that must be found in the task. Necessary in order to get to the next level", required = true, example = "secretFlag")
+    @ApiModelProperty(value = "Keyword that must be found in the task. Necessary in order to get to the next phase", required = true, example = "secretFlag")
     @NotEmpty(message = "Flag of task cannot be null")
     private String flag;
 

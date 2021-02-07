@@ -55,8 +55,8 @@ public class TrainingPhase extends AbstractPhase {
         return tasks;
     }
 
-    public void setTasks(List<Task> subLevels) {
-        this.tasks = subLevels;
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 
     public List<DecisionMatrixRow> getDecisionMatrix() {

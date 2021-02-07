@@ -80,7 +80,7 @@ public class TrainingPhaseFacade {
     }
 
     public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
-        phaseService.moveLevelToSpecifiedOrder(phaseIdFrom, newPosition);
+        phaseService.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
     }
 
 

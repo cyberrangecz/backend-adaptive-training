@@ -50,7 +50,7 @@ public class QuestionnairePhaseService {
     public QuestionnairePhaseDTO createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
 
         QuestionnairePhase questionnairePhase = new QuestionnairePhase();
-        questionnairePhase.setTitle("Title of questionnaire level");
+        questionnairePhase.setTitle("Title of questionnaire phase");
         questionnairePhase.setTrainingDefinitionId(trainingDefinitionId);
         questionnairePhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 

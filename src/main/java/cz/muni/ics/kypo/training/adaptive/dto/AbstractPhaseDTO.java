@@ -49,7 +49,7 @@ public abstract class AbstractPhaseDTO implements Serializable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", order=" + order +
-                ", levelType=" + phaseType +
+                ", phaseType=" + phaseType +
                 '}';
     }
 }

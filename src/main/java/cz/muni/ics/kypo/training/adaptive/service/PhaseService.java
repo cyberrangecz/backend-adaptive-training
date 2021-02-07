@@ -28,8 +28,8 @@ public class PhaseService {
         // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
 
 
-        int levelOrder = phase.getOrder();
-        abstractPhaseRepository.decreaseOrderAfterLevelWasDeleted(definitionId, levelOrder);
+        int phaseOrder = phase.getOrder();
+        abstractPhaseRepository.decreaseOrderAfterPhaseWasDeleted(definitionId, phaseOrder);
 
         abstractPhaseRepository.delete(phase);
     }
@@ -52,27 +52,27 @@ public class PhaseService {
     }
 
     @Transactional
-    public void moveLevelToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
-        AbstractPhase levelFrom = abstractPhaseRepository.findById(phaseIdFrom)
+    public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
+        AbstractPhase phaseFrom = abstractPhaseRepository.findById(phaseIdFrom)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
 
 
-        int fromOrder = levelFrom.getOrder();
+        int fromOrder = phaseFrom.getOrder();
 
         if (fromOrder < newPosition) {
-            abstractPhaseRepository.decreaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), fromOrder, newPosition);
+            abstractPhaseRepository.decreaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinitionId(), fromOrder, newPosition);
         } else if (fromOrder > newPosition) {
-            abstractPhaseRepository.increaseOrderOfLevelsOnInterval(levelFrom.getTrainingDefinitionId(), newPosition, fromOrder);
+            abstractPhaseRepository.increaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinitionId(), newPosition, fromOrder);
         } else {
             // nothing should be changed, no further actions needed
             return;
         }
 
-        levelFrom.setOrder(newPosition);
-        abstractPhaseRepository.save(levelFrom);
+        phaseFrom.setOrder(newPosition);
+        abstractPhaseRepository.save(phaseFrom);
 
-        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(levelFrom.getTrainingDefinitionId());
+        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(phaseFrom.getTrainingDefinitionId());
     }
 
 }

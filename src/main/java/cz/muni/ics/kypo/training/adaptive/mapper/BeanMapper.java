@@ -45,7 +45,7 @@ public interface BeanMapper {
         } else if (abstractPhase instanceof QuestionnairePhase) {
             abstractPhaseDto = toDto((QuestionnairePhase) abstractPhase);
         } else {
-            throw new RuntimeException("Unknown level type " + abstractPhase.getClass().getName());
+            throw new RuntimeException("Unknown phase type " + abstractPhase.getClass().getName());
         }
 
         return abstractPhaseDto;

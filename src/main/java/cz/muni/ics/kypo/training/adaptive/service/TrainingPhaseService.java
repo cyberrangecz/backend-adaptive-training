@@ -33,7 +33,7 @@ public class TrainingPhaseService {
     public TrainingPhaseDTO createDefaultTrainingPhase(Long trainingDefinitionId) {
 
         TrainingPhase trainingPhase = new TrainingPhase();
-        trainingPhase.setTitle("Title of phase level");
+        trainingPhase.setTitle("Title of training phase");
         trainingPhase.setTrainingDefinitionId(trainingDefinitionId);
         trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 

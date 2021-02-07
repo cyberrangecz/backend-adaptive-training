@@ -61,7 +61,7 @@ public class PhasesController {
     public ResponseEntity<AbstractPhaseDTO> createPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level type", allowableValues = "questionnaire, info, game", required = true)
+            @ApiParam(value = "Phase type", allowableValues = "questionnaire, info, game", required = true)
             @RequestBody @Valid PhaseCreateDTO phaseCreateDTO) {
 
         AbstractPhaseDTO createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
@@ -104,7 +104,7 @@ public class PhasesController {
     public ResponseEntity<AbstractPhaseDTO> getPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level ID", required = true)
+            @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
 
         AbstractPhaseDTO phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
@@ -126,7 +126,7 @@ public class PhasesController {
     public ResponseEntity<List<AbstractPhaseDTO>> removePhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level ID", required = true)
+            @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
 
         List<AbstractPhaseDTO> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
@@ -148,7 +148,7 @@ public class PhasesController {
     public ResponseEntity<InfoPhaseDTO> updateInfoPhase(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Level ID", required = true)
+            @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Info phase to be updated")
             @RequestBody @Valid InfoPhaseUpdateDTO infoPhaseUpdateDto) {

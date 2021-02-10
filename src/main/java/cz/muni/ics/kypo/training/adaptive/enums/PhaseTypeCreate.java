@@ -4,5 +4,5 @@ public enum PhaseTypeCreate {
     QUESTIONNAIRE_ADAPTIVE,
     QUESTIONNAIRE_GENERAL,
     INFO,
-    TRAINING,
+    TRAINING;
 }

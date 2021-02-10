@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     @Query("SELECT COALESCE(MAX(g.order), -1) FROM Task g WHERE g.trainingPhase.id = :phaseId")
@@ -18,8 +19,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "AND t.order > :lowerBound " +
             "AND t.order <= :upperBound ")
     void decreaseOrderOfTasksOnInterval(@Param("trainingPhaseId") Long trainingPhaseId,
-                                         @Param("lowerBound") int lowerBound,
-                                         @Param("upperBound") int upperBound);
+                                        @Param("lowerBound") int lowerBound,
+                                        @Param("upperBound") int upperBound);
 
 
     @Modifying
@@ -28,11 +29,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "AND t.order >= :lowerBound " +
             "AND t.order < :upperBound ")
     void increaseOrderOfTasksOnInterval(@Param("trainingPhaseId") Long trainingPhaseId,
-                                         @Param("lowerBound") int lowerBound,
-                                         @Param("upperBound") int upperBound);
+                                        @Param("lowerBound") int lowerBound,
+                                        @Param("upperBound") int upperBound);
 
-
-    @Transactional
     @Modifying
     @Query("UPDATE Task t SET t.order = t.order - 1 " +
             "WHERE t.trainingPhase.id = :trainingPhaseId " +

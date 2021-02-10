@@ -99,6 +99,7 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
+    @Transactional
     public void removeTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));

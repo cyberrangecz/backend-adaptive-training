@@ -5,10 +5,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.List;
 
-public abstract class AbstractQuestionDTO implements Serializable {
+public abstract class AbstractQuestionDTO {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     @NotNull(message = "Question order must be specified")

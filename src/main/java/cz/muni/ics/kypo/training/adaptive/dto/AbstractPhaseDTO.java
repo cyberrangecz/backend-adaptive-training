@@ -2,9 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 
-import java.io.Serializable;
-
-public abstract class AbstractPhaseDTO implements Serializable {
+public abstract class AbstractPhaseDTO {
 
     private Long id;
     private String title;

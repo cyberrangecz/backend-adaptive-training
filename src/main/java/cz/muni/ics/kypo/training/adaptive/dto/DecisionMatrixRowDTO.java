@@ -3,11 +3,11 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 public class DecisionMatrixRowDTO {
     private long id;
     private int order;
-    private double AA;
-    private double KU;
-    private double CiT;
-    private double SD;
-    private double WF;
+    private double assessmentAnswered;
+    private double keywordUsed;
+    private double completedInTime;
+    private double solutionDisplayed;
+    private double wrongFlags;
 
     public long getId() {
         return id;
@@ -25,44 +25,44 @@ public class DecisionMatrixRowDTO {
         this.order = order;
     }
 
-    public double getAA() {
-        return AA;
+    public double getAssessmentAnswered() {
+        return assessmentAnswered;
     }
 
-    public void setAA(double AA) {
-        this.AA = AA;
+    public void setAssessmentAnswered(double assessmentAnswered) {
+        this.assessmentAnswered = assessmentAnswered;
     }
 
-    public double getKU() {
-        return KU;
+    public double getKeywordUsed() {
+        return keywordUsed;
     }
 
-    public void setKU(double KU) {
-        this.KU = KU;
+    public void setKeywordUsed(double keywordUsed) {
+        this.keywordUsed = keywordUsed;
     }
 
-    public double getCiT() {
-        return CiT;
+    public double getCompletedInTime() {
+        return completedInTime;
     }
 
-    public void setCiT(double ciT) {
-        CiT = ciT;
+    public void setCompletedInTime(double completedInTime) {
+        this.completedInTime = completedInTime;
     }
 
-    public double getSD() {
-        return SD;
+    public double getSolutionDisplayed() {
+        return solutionDisplayed;
     }
 
-    public void setSD(double SD) {
-        this.SD = SD;
+    public void setSolutionDisplayed(double solutionDisplayed) {
+        this.solutionDisplayed = solutionDisplayed;
     }
 
-    public double getWF() {
-        return WF;
+    public double getWrongFlags() {
+        return wrongFlags;
     }
 
-    public void setWF(double WF) {
-        this.WF = WF;
+    public void setWrongFlags(double wrongFlags) {
+        this.wrongFlags = wrongFlags;
     }
 
     @Override
@@ -70,11 +70,11 @@ public class DecisionMatrixRowDTO {
         return "DecisionMatrixRow{" +
                 "id=" + id +
                 ", order=" + order +
-                ", AA=" + AA +
-                ", KU=" + KU +
-                ", CiT=" + CiT +
-                ", SD=" + SD +
-                ", WF=" + WF +
+                ", assessmentAnswered=" + assessmentAnswered +
+                ", keywordUsed=" + keywordUsed +
+                ", completedInTime=" + completedInTime +
+                ", solutionDisplayed=" + solutionDisplayed +
+                ", wrongFlags=" + wrongFlags +
                 '}';
     }
 }

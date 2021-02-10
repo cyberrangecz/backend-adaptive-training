@@ -43,8 +43,12 @@ import java.util.List;
         authorizations = @Authorization(value = "bearerAuth"))
 public class PhasesController {
 
+    private final TrainingPhaseFacade trainingPhaseFacade;
+
     @Autowired
-    private TrainingPhaseFacade trainingPhaseFacade;
+    public PhasesController(TrainingPhaseFacade trainingPhaseFacade) {
+        this.trainingPhaseFacade = trainingPhaseFacade;
+    }
 
     @ApiOperation(httpMethod = "POST",
             value = "Create a new phase",

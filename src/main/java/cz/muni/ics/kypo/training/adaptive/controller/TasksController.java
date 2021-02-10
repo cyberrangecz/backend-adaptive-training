@@ -36,8 +36,12 @@ import javax.validation.Valid;
         authorizations = @Authorization(value = "bearerAuth"))
 public class TasksController {
 
+    private final TaskService taskService;
+
     @Autowired
-    private TaskService taskService;
+    public TasksController(TaskService taskService) {
+        this.taskService = taskService;
+    }
 
     @ApiOperation(httpMethod = "POST",
             value = "Create a new task in a phase",

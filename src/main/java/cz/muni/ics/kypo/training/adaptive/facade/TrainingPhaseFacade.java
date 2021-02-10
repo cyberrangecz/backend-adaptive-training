@@ -22,17 +22,19 @@ import java.util.List;
 @Service
 public class TrainingPhaseFacade {
 
-    @Autowired
-    private PhaseService phaseService;
+    private final PhaseService phaseService;
+    private final InfoPhaseService infoPhaseService;
+    private final QuestionnairePhaseService questionnairePhaseService;
+    private final TrainingPhaseService trainingPhaseService;
 
     @Autowired
-    private InfoPhaseService infoPhaseService;
-
-    @Autowired
-    private QuestionnairePhaseService questionnairePhaseService;
-
-    @Autowired
-    private TrainingPhaseService trainingPhaseService;
+    public TrainingPhaseFacade(PhaseService phaseService, InfoPhaseService infoPhaseService,
+                               QuestionnairePhaseService questionnairePhaseService, TrainingPhaseService trainingPhaseService) {
+        this.phaseService = phaseService;
+        this.infoPhaseService = infoPhaseService;
+        this.questionnairePhaseService = questionnairePhaseService;
+        this.trainingPhaseService = trainingPhaseService;
+    }
 
     public AbstractPhaseDTO createPhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
         AbstractPhaseDTO abstractPhaseDto;

@@ -32,20 +32,22 @@ public class QuestionnairePhaseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuestionnairePhaseService.class);
 
-    @Autowired
-    private QuestionnairePhaseRepository questionnairePhaseRepository;
+    private final QuestionnairePhaseRepository questionnairePhaseRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
+    private final QuestionRepository questionRepository;
+    private final TrainingPhaseRepository trainingPhaseRepository;
+    private final QuestionPhaseRelationRepository questionPhaseRelationRepository;
 
     @Autowired
-    private AbstractPhaseRepository abstractPhaseRepository;
-
-    @Autowired
-    private QuestionRepository questionRepository;
-
-    @Autowired
-    private TrainingPhaseRepository trainingPhaseRepository;
-
-    @Autowired
-    private QuestionPhaseRelationRepository questionPhaseRelationRepository;
+    public QuestionnairePhaseService(QuestionnairePhaseRepository questionnairePhaseRepository, AbstractPhaseRepository abstractPhaseRepository,
+                                     QuestionRepository questionRepository, TrainingPhaseRepository trainingPhaseRepository,
+                                     QuestionPhaseRelationRepository questionPhaseRelationRepository) {
+        this.questionnairePhaseRepository = questionnairePhaseRepository;
+        this.abstractPhaseRepository = abstractPhaseRepository;
+        this.questionRepository = questionRepository;
+        this.trainingPhaseRepository = trainingPhaseRepository;
+        this.questionPhaseRelationRepository = questionPhaseRelationRepository;
+    }
 
     public QuestionnairePhaseDTO createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
 

@@ -13,11 +13,14 @@ import java.util.List;
 @Service
 public class PhaseService {
 
-    @Autowired
-    private AbstractPhaseRepository abstractPhaseRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
+    private final TrainingPhaseService trainingPhaseService;
 
     @Autowired
-    private TrainingPhaseService trainingPhaseService;
+    public PhaseService(AbstractPhaseRepository abstractPhaseRepository, TrainingPhaseService trainingPhaseService) {
+        this.abstractPhaseRepository = abstractPhaseRepository;
+        this.trainingPhaseService = trainingPhaseService;
+    }
 
     @Transactional
     public void deletePhase(Long definitionId, Long phaseId) {

@@ -24,11 +24,14 @@ public class TrainingPhaseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingPhaseService.class);
 
-    @Autowired
-    private TrainingPhaseRepository trainingPhaseRepository;
+    private final TrainingPhaseRepository trainingPhaseRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
 
     @Autowired
-    private AbstractPhaseRepository abstractPhaseRepository;
+    public TrainingPhaseService(TrainingPhaseRepository trainingPhaseRepository, AbstractPhaseRepository abstractPhaseRepository) {
+        this.trainingPhaseRepository = trainingPhaseRepository;
+        this.abstractPhaseRepository = abstractPhaseRepository;
+    }
 
     public TrainingPhaseDTO createDefaultTrainingPhase(Long trainingDefinitionId) {
 
@@ -121,7 +124,7 @@ public class TrainingPhaseService {
         trainingPhaseRepository.save(trainingPhase);
     }
 
-    private List<DecisionMatrixRow> getNewDecisionMatrixRows(int currentNumberOfNewRows, int expectedNumberOfRows,  TrainingPhase trainingPhase) {
+    private List<DecisionMatrixRow> getNewDecisionMatrixRows(int currentNumberOfNewRows, int expectedNumberOfRows, TrainingPhase trainingPhase) {
         List<DecisionMatrixRow> result = new ArrayList<>();
         for (int i = currentNumberOfNewRows; i < expectedNumberOfRows; i++) {
             DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();

@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
@@ -9,7 +10,6 @@ import cz.muni.ics.kypo.training.adaptive.repository.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TrainingPhaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,18 +50,13 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
-    public TaskDTO cloneTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
-        Task taskToBeCloned = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task was not found"));
-        // TODO throw proper exception once kypo2-training is migrated
+    public TaskDTO cloneTask(Long trainingDefinitionId, Long phaseId, Long taskId, TaskCopyDTO taskCopyDTO) {
+        Task task = BeanMapper.INSTANCE.toEntity(taskCopyDTO);
 
         TrainingPhase trainingPhase = trainingPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Game phase was not found"));
 
         // TODO add check to trainingDefinitionId (field structure will be probably changed)
-
-        Task task = new Task();
-        BeanUtils.copyProperties(taskToBeCloned, task);
 
         task.setId(null);
         task.setTrainingPhase(trainingPhase);

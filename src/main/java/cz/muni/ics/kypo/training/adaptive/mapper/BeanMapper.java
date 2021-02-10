@@ -20,6 +20,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
@@ -58,6 +59,8 @@ public interface BeanMapper {
     Task toEntity(TaskDTO taskDto);
 
     Task toEntity(TaskUpdateDTO taskUpdateDto);
+
+    Task toEntity(TaskCopyDTO taskCopyDTO);
 
     @Mapping(target = "phaseType", constant = "INFO")
     InfoPhaseDTO toDto(InfoPhase infoPhase);

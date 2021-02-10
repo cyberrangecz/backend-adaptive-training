@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.service.TaskService;
@@ -82,8 +83,9 @@ public class TasksController {
             @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
-            @PathVariable(name = "taskId") Long taskId) {
-        TaskDTO createdTask = taskService.cloneTask(definitionId, phaseId, taskId);
+            @PathVariable(name = "taskId") Long taskId,
+            @RequestBody @Valid TaskCopyDTO taskCopyDTO) {
+        TaskDTO createdTask = taskService.cloneTask(definitionId, phaseId, taskId, taskCopyDTO);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 

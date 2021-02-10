@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class DecisionMatrixRow implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = "order_in_phase", nullable = false)

@@ -18,7 +18,7 @@ import java.util.Set;
 public class QuestionPhaseRelation implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Long id;
 
     @Column(name = "order_in_questionnaire", nullable = false)

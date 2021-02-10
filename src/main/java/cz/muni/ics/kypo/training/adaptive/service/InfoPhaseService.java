@@ -1,8 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.InfoPhaseRepository;

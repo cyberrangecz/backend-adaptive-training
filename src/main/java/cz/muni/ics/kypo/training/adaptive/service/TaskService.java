@@ -2,8 +2,8 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TrainingPhaseRepository;

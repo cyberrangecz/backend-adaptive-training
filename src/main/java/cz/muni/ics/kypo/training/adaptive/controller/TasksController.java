@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
-import cz.muni.ics.kypo.training.adaptive.dto.TaskDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TaskUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

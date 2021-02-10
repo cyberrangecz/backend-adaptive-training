@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import io.swagger.annotations.ApiModelProperty;

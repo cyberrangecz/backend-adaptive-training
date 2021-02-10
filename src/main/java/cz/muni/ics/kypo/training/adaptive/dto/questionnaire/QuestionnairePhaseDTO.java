@@ -1,5 +1,6 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 
 import java.util.List;

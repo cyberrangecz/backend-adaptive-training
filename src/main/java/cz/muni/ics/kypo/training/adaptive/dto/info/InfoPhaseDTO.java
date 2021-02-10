@@ -1,4 +1,6 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.info;
+
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 
 public class InfoPhaseDTO extends AbstractPhaseDTO {
 

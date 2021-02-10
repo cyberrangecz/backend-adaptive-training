@@ -2,8 +2,8 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.DecisionMatrixRow;
 import cz.muni.ics.kypo.training.adaptive.domain.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.mapper.BeanMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TrainingPhaseRepository;

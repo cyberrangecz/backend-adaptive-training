@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 public class TaskDTO {
 

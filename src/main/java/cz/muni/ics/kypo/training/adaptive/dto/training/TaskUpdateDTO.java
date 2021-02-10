@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import io.swagger.annotations.ApiModelProperty;
 

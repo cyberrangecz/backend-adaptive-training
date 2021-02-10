@@ -1,4 +1,6 @@
-package cz.muni.ics.kypo.training.adaptive.dto;
+package cz.muni.ics.kypo.training.adaptive.dto.training;
+
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 
 import java.util.ArrayList;
 import java.util.List;

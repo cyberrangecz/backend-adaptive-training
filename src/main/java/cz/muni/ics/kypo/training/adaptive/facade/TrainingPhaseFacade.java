@@ -1,13 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnairePhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.QuestionnaireUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseTypeCreate;
 import cz.muni.ics.kypo.training.adaptive.service.InfoPhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.PhaseService;

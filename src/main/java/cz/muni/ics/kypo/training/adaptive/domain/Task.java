@@ -6,10 +6,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 
 @Entity
-public class Task {
+public class Task implements Serializable {
 
     @Id
     @GeneratedValue

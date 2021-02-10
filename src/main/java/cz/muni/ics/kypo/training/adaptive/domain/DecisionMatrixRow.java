@@ -6,9 +6,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @Entity
-public class DecisionMatrixRow {
+public class DecisionMatrixRow implements Serializable {
 
     @Id
     @GeneratedValue

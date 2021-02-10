@@ -7,13 +7,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import java.io.Serializable;
 
 
 // good source for entity inheritance: http://blog.marcinchwedczuk.pl/mapping-inheritance-in-hibernate
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class AbstractPhase {
+public abstract class AbstractPhase implements Serializable {
 
     @Id
     @GeneratedValue

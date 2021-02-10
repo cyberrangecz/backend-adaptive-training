@@ -6,9 +6,10 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @Entity
-public class QuestionChoice {
+public class QuestionChoice implements Serializable {
 
     @Id
     @GeneratedValue

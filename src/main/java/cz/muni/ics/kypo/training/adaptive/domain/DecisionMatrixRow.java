@@ -7,16 +7,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 
 @Entity
 public class DecisionMatrixRow implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "decisionMatrixRowGenerator")
+    @SequenceGenerator(name = "decisionMatrixRowGenerator", sequenceName = "decision_matrix_row_seq")
     private Long id;
 
-    @Column(name = "order_in_phase", nullable = false)
+    @Column(name = "order_in_training_phase", nullable = false)
     private int order;
     private double assessmentAnswered;
     private double keywordUsed;

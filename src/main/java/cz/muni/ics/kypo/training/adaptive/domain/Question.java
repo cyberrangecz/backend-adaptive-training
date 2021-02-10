@@ -15,6 +15,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,10 +24,11 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Question implements Serializable  {
+public class Question implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionGenerator")
+    @SequenceGenerator(name = "questionGenerator", sequenceName = "question_seq")
     private Long id;
 
     @Enumerated(EnumType.STRING)

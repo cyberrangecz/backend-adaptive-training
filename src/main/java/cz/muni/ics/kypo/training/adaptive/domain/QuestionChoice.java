@@ -7,13 +7,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 
 @Entity
 public class QuestionChoice implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionChoiceGenerator")
+    @SequenceGenerator(name = "questionChoiceGenerator", sequenceName = "question_choice_seq")
     private Long id;
 
     private String text;

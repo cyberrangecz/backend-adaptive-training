@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -18,7 +19,8 @@ import java.util.Set;
 public class QuestionPhaseRelation implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionPhaseGenerator")
+    @SequenceGenerator(name = "questionPhaseGenerator", sequenceName = "question_phase_seq")
     private Long id;
 
     @Column(name = "order_in_questionnaire", nullable = false)

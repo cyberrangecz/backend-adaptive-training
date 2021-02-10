@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 import java.io.Serializable;
 
 
@@ -18,7 +19,8 @@ import java.io.Serializable;
 public abstract class AbstractPhase implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "phaseGenerator")
+    @SequenceGenerator(name = "phaseGenerator", sequenceName = "phase_seq")
     private Long id;
 
     private String title;

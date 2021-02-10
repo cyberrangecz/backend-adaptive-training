@@ -9,7 +9,7 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
     private int estimatedDuration;
     private int allowedCommands;
-    private int allowedWrongFlags;
+    private int allowedWrongAnswers;
     private List<TaskDTO> tasks = new ArrayList<>();
 
     private List<DecisionMatrixRowDTO> decisionMatrix;
@@ -30,12 +30,12 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
         this.allowedCommands = allowedCommands;
     }
 
-    public int getAllowedWrongFlags() {
-        return allowedWrongFlags;
+    public int getAllowedWrongAnswers() {
+        return allowedWrongAnswers;
     }
 
-    public void setAllowedWrongFlags(int allowedWrongFlags) {
-        this.allowedWrongFlags = allowedWrongFlags;
+    public void setAllowedWrongAnswers(int allowedWrongAnswers) {
+        this.allowedWrongAnswers = allowedWrongAnswers;
     }
 
     public List<TaskDTO> getTasks() {

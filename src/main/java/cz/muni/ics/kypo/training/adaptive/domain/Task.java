@@ -21,9 +21,9 @@ public class Task implements Serializable {
 
     private String title;
     private String content;
-    private String flag;
+    private String answer;
     private String solution;
-    private int incorrectFlagLimit;
+    private int incorrectAnswerLimit;
 
     @Column(name = "order_in_training_phase", nullable = false)
     private Integer order;
@@ -63,12 +63,12 @@ public class Task implements Serializable {
         this.content = content;
     }
 
-    public String getFlag() {
-        return flag;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public String getSolution() {
@@ -79,12 +79,12 @@ public class Task implements Serializable {
         this.solution = solution;
     }
 
-    public int getIncorrectFlagLimit() {
-        return incorrectFlagLimit;
+    public int getIncorrectAnswerLimit() {
+        return incorrectAnswerLimit;
     }
 
-    public void setIncorrectFlagLimit(int incorrectFlagLimit) {
-        this.incorrectFlagLimit = incorrectFlagLimit;
+    public void setIncorrectAnswerLimit(int incorrectAnswerLimit) {
+        this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
     public TrainingPhase getTrainingPhase() {
@@ -102,9 +102,9 @@ public class Task implements Serializable {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", flag='" + flag + '\'' +
+                ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
-                ", incorrectFlagLimit=" + incorrectFlagLimit +
+                ", incorrectAnswerLimit=" + incorrectAnswerLimit +
                 ", order=" + order +
                 '}';
     }

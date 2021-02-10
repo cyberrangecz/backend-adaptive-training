@@ -40,10 +40,10 @@ public class TaskService {
         task.setTitle("Title of a new task");
         task.setTrainingPhase(trainingPhase);
         task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
-        task.setFlag("Secret flag");
+        task.setAnswer("Secret flag");
         task.setContent("Task content ...");
         task.setSolution("Task solution ...");
-        task.setIncorrectFlagLimit(1);
+        task.setIncorrectAnswerLimit(1);
 
         Task persistedEntity = taskRepository.save(task);
 

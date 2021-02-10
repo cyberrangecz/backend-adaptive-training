@@ -13,7 +13,7 @@ public class TrainingPhase extends AbstractPhase {
 
     private int estimatedDuration;
     private int allowedCommands;
-    private int allowedWrongFlags;
+    private int allowedWrongAnswers;
 
     @OrderBy
     @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
@@ -43,12 +43,12 @@ public class TrainingPhase extends AbstractPhase {
         this.allowedCommands = allowedCommands;
     }
 
-    public int getAllowedWrongFlags() {
-        return allowedWrongFlags;
+    public int getAllowedWrongAnswers() {
+        return allowedWrongAnswers;
     }
 
-    public void setAllowedWrongFlags(int allowedWrongFlags) {
-        this.allowedWrongFlags = allowedWrongFlags;
+    public void setAllowedWrongAnswers(int allowedWrongAnswers) {
+        this.allowedWrongAnswers = allowedWrongAnswers;
     }
 
     public List<Task> getTasks() {

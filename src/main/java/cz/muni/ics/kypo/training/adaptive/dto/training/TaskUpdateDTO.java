@@ -17,17 +17,17 @@ public class TaskUpdateDTO {
     private String content;
 
     @ApiModelProperty(value = "Keyword that must be found in the task. Necessary in order to get to the next phase", required = true, example = "secretFlag")
-    @NotEmpty(message = "Flag of task cannot be null")
-    private String flag;
+    @NotEmpty(message = "Answer of task cannot be null")
+    private String answer;
 
-    @ApiModelProperty(value = "Description how to get the flag", required = true, example = "Open secret.txt")
+    @ApiModelProperty(value = "Description how to get the answer", required = true, example = "Open secret.txt")
     @NotEmpty(message = "Solution of task cannot be null")
     private String solution;
 
-    @ApiModelProperty(value = "It defines the allowed number of incorrect flags submitted by the player", required = true, example = "5")
-    @NotNull(message = "Limit of the number of provided incorrect flags must be specified")
-    @PositiveOrZero(message = "Limit of the number of provided incorrect flags must not be a negative number")
-    private Integer incorrectFlagLimit;
+    @ApiModelProperty(value = "It defines the allowed number of incorrect answers submitted by the player", required = true, example = "5")
+    @NotNull(message = "Limit of the number of provided incorrect answers must be specified")
+    @PositiveOrZero(message = "Limit of the number of provided incorrect answers must not be a negative number")
+    private Integer incorrectAnswerLimit;
 
     public String getTitle() {
         return title;
@@ -45,12 +45,12 @@ public class TaskUpdateDTO {
         this.content = content;
     }
 
-    public String getFlag() {
-        return flag;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public String getSolution() {
@@ -61,12 +61,12 @@ public class TaskUpdateDTO {
         this.solution = solution;
     }
 
-    public Integer getIncorrectFlagLimit() {
-        return incorrectFlagLimit;
+    public Integer getIncorrectAnswerLimit() {
+        return incorrectAnswerLimit;
     }
 
-    public void setIncorrectFlagLimit(Integer incorrectFlagLimit) {
-        this.incorrectFlagLimit = incorrectFlagLimit;
+    public void setIncorrectAnswerLimit(Integer incorrectAnswerLimit) {
+        this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
     @Override
@@ -74,9 +74,9 @@ public class TaskUpdateDTO {
         return "TaskUpdateDto{" +
                 "title='" + title + '\'' +
                 ", content='" + content + '\'' +
-                ", flag='" + flag + '\'' +
+                ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
-                ", incorrectFlagLimit=" + incorrectFlagLimit +
+                ", incorrectAnswerLimit=" + incorrectAnswerLimit +
                 '}';
     }
 }

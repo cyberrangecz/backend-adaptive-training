@@ -7,7 +7,7 @@ public class DecisionMatrixRowDTO {
     private double keywordUsed;
     private double completedInTime;
     private double solutionDisplayed;
-    private double wrongFlags;
+    private double wrongAnswers;
 
     public long getId() {
         return id;
@@ -57,12 +57,12 @@ public class DecisionMatrixRowDTO {
         this.solutionDisplayed = solutionDisplayed;
     }
 
-    public double getWrongFlags() {
-        return wrongFlags;
+    public double getWrongAnswers() {
+        return wrongAnswers;
     }
 
-    public void setWrongFlags(double wrongFlags) {
-        this.wrongFlags = wrongFlags;
+    public void setWrongAnswers(double wrongAnswers) {
+        this.wrongAnswers = wrongAnswers;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class DecisionMatrixRowDTO {
                 ", keywordUsed=" + keywordUsed +
                 ", completedInTime=" + completedInTime +
                 ", solutionDisplayed=" + solutionDisplayed +
-                ", wrongFlags=" + wrongFlags +
+                ", wrongAnswers=" + wrongAnswers +
                 '}';
     }
 }

@@ -24,7 +24,7 @@ public class DecisionMatrixRow implements Serializable {
     private double keywordUsed;
     private double completedInTime;
     private double solutionDisplayed;
-    private double wrongFlags;
+    private double wrongAnswers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TrainingPhase trainingPhase;
@@ -77,12 +77,12 @@ public class DecisionMatrixRow implements Serializable {
         this.solutionDisplayed = solutionDisplayed;
     }
 
-    public double getWrongFlags() {
-        return wrongFlags;
+    public double getWrongAnswers() {
+        return wrongAnswers;
     }
 
-    public void setWrongFlags(double wrongFlags) {
-        this.wrongFlags = wrongFlags;
+    public void setWrongAnswers(double wrongAnswers) {
+        this.wrongAnswers = wrongAnswers;
     }
 
     public TrainingPhase getTrainingPhase() {
@@ -102,7 +102,7 @@ public class DecisionMatrixRow implements Serializable {
                 ", keywordUsed=" + keywordUsed +
                 ", completedInTime=" + completedInTime +
                 ", solutionDisplayed=" + solutionDisplayed +
-                ", wrongFlags=" + wrongFlags +
+                ", wrongAnswers=" + wrongAnswers +
                 '}';
     }
 }

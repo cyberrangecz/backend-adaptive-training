@@ -6,9 +6,9 @@ public class TaskDTO {
     private String title;
     private Integer order;
     private String content;
-    private String flag;
+    private String answer;
     private String solution;
-    private int incorrectFlagLimit;
+    private int incorrectAnswerLimit;
 
     public Long getId() {
         return id;
@@ -42,12 +42,12 @@ public class TaskDTO {
         this.content = content;
     }
 
-    public String getFlag() {
-        return flag;
+    public String getAnswer() {
+        return answer;
     }
 
-    public void setFlag(String flag) {
-        this.flag = flag;
+    public void setAnswer(String answer) {
+        this.answer = answer;
     }
 
     public String getSolution() {
@@ -58,12 +58,12 @@ public class TaskDTO {
         this.solution = solution;
     }
 
-    public int getIncorrectFlagLimit() {
-        return incorrectFlagLimit;
+    public int getIncorrectAnswerLimit() {
+        return incorrectAnswerLimit;
     }
 
-    public void setIncorrectFlagLimit(int incorrectFlagLimit) {
-        this.incorrectFlagLimit = incorrectFlagLimit;
+    public void setIncorrectAnswerLimit(int incorrectAnswerLimit) {
+        this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
     @Override
@@ -73,9 +73,9 @@ public class TaskDTO {
                 ", title='" + title + '\'' +
                 ", order=" + order +
                 ", content='" + content + '\'' +
-                ", flag='" + flag + '\'' +
+                ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
-                ", incorrectFlagLimit=" + incorrectFlagLimit +
+                ", incorrectAnswerLimit=" + incorrectAnswerLimit +
                 "} " + super.toString();
     }
 }

@@ -84,9 +84,7 @@ public class PhasesController {
     public ResponseEntity<List<AbstractPhaseDTO>> getPhases(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId) {
-
         List<AbstractPhaseDTO> phases = trainingPhaseFacade.getPhases(definitionId);
-
         return new ResponseEntity<>(phases, HttpStatus.OK);
     }
 
@@ -106,9 +104,7 @@ public class PhasesController {
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
-
         AbstractPhaseDTO phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
-
         return new ResponseEntity<>(phase, HttpStatus.OK);
     }
 
@@ -128,9 +124,7 @@ public class PhasesController {
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
-
         List<AbstractPhaseDTO> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
-
         return new ResponseEntity<>(remainingPhases, HttpStatus.OK);
     }
 
@@ -152,9 +146,7 @@ public class PhasesController {
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Info phase to be updated")
             @RequestBody @Valid InfoPhaseUpdateDTO infoPhaseUpdateDto) {
-
         InfoPhaseDTO updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
-
         return new ResponseEntity<>(updatedInfoPhase, HttpStatus.OK);
     }
 
@@ -176,9 +168,7 @@ public class PhasesController {
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Training phase to be updated")
             @RequestBody @Valid TrainingPhaseUpdateDTO trainingPhaseUpdateDto) {
-
         TrainingPhaseDTO updatedTrainingPhase = trainingPhaseFacade.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdateDto);
-
         return new ResponseEntity<>(updatedTrainingPhase, HttpStatus.OK);
     }
 
@@ -199,9 +189,7 @@ public class PhasesController {
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Questionnaire to be updated")
             @RequestBody @Valid QuestionnaireUpdateDTO questionnaireUpdateDto) {
-
         QuestionnairePhaseDTO updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
-
         return new ResponseEntity<>(updatedQuestionnairePhase, HttpStatus.OK);
     }
 
@@ -218,9 +206,7 @@ public class PhasesController {
     public ResponseEntity<Void> movePhaseToSpecifiedOrder(
             @ApiParam(value = "Phase ID - from", required = true) @PathVariable(name = "phaseIdFrom") Long phaseIdFrom,
             @ApiParam(value = "Position (order) to which the phase should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
-
         trainingPhaseFacade.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
-
         return ResponseEntity.ok().build();
     }
 }

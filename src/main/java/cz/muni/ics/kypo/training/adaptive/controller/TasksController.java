@@ -56,9 +56,7 @@ public class TasksController {
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId) {
-
         TaskDTO createdTask = taskService.createDefaultTask(definitionId, phaseId);
-
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -81,9 +79,7 @@ public class TasksController {
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
-
         TaskDTO createdTask = taskService.cloneTask(definitionId, phaseId, taskId);
-
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -106,9 +102,7 @@ public class TasksController {
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
-
         TaskDTO createdTask = taskService.getTask(definitionId, phaseId, taskId);
-
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -132,9 +126,7 @@ public class TasksController {
             @PathVariable(name = "taskId") Long taskId,
             @ApiParam(value = "Task to be updated")
             @RequestBody @Valid TaskUpdateDTO taskUpdateDto) {
-
         TaskDTO updatedTask = taskService.updateTask(definitionId, phaseId, taskId, taskUpdateDto);
-
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
 
@@ -157,9 +149,7 @@ public class TasksController {
             @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
-
         taskService.removeTask(definitionId, phaseId, taskId);
-
         return ResponseEntity.ok().build();
     }
 
@@ -176,9 +166,7 @@ public class TasksController {
     public ResponseEntity<Void> moveTaskToSpecifiedOrder(
             @ApiParam(value = "Task ID - from", required = true) @PathVariable(name = "taskIdFrom") Long taskIdFrom,
             @ApiParam(value = "Position (order) to which the task should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
-
         taskService.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
-
         return ResponseEntity.ok().build();
     }
 }

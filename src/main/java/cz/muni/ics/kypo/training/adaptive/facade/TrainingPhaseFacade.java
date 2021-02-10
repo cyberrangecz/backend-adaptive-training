@@ -15,7 +15,6 @@ import cz.muni.ics.kypo.training.adaptive.service.QuestionnairePhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.TrainingPhaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,7 +49,6 @@ public class TrainingPhaseFacade {
     }
 
 
-    @Transactional
     public List<AbstractPhaseDTO> deletePhase(Long definitionId, Long phaseId) {
 
         phaseService.deletePhase(definitionId, phaseId);

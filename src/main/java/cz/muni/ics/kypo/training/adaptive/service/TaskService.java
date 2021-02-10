@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class TaskService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TaskService.class);
@@ -71,6 +72,7 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
+    @Transactional(readOnly = true)
     public TaskDTO getTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));
@@ -99,7 +101,6 @@ public class TaskService {
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
-    @Transactional
     public void removeTask(Long trainingDefinitionId, Long phaseId, Long taskId) {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));
@@ -112,7 +113,6 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    @Transactional
     public void moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
         Task task = taskRepository.findById(taskIdFrom)
                 .orElseThrow(() -> new RuntimeException("Task was not found"));

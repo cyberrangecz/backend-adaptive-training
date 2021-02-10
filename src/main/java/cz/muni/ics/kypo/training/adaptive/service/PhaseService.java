@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class PhaseService {
 
     private final AbstractPhaseRepository abstractPhaseRepository;
@@ -22,7 +23,6 @@ public class PhaseService {
         this.trainingPhaseService = trainingPhaseService;
     }
 
-    @Transactional
     public void deletePhase(Long definitionId, Long phaseId) {
         AbstractPhase phase = abstractPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
@@ -37,6 +37,7 @@ public class PhaseService {
         abstractPhaseRepository.delete(phase);
     }
 
+    @Transactional(readOnly = true)
     public AbstractPhaseDTO getPhase(Long definitionId, Long phaseId) {
         AbstractPhase phase = abstractPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
@@ -47,14 +48,13 @@ public class PhaseService {
         return BeanMapper.INSTANCE.toDto(phase);
     }
 
-
+    @Transactional(readOnly = true)
     public List<AbstractPhaseDTO> getPhases(Long trainingDefinitionId) {
         List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
 
         return BeanMapper.INSTANCE.toDtoList(phases);
     }
 
-    @Transactional
     public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
         AbstractPhase phaseFrom = abstractPhaseRepository.findById(phaseIdFrom)
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));

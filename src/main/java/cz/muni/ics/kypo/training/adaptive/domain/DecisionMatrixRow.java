@@ -16,6 +16,7 @@ public class DecisionMatrixRow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "decisionMatrixRowGenerator")
     @SequenceGenerator(name = "decisionMatrixRowGenerator", sequenceName = "decision_matrix_row_seq")
+    @Column(name = "id_decision_matrix_row", nullable = false, unique = true)
     private Long id;
 
     @Column(name = "order_in_training_phase", nullable = false)

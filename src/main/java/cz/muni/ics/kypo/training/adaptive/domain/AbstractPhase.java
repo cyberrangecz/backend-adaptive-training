@@ -21,6 +21,7 @@ public abstract class AbstractPhase implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "phaseGenerator")
     @SequenceGenerator(name = "phaseGenerator", sequenceName = "phase_seq")
+    @Column(name = "id_phase", nullable = false, unique = true)
     private Long id;
 
     private String title;

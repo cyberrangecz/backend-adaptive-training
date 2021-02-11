@@ -9,10 +9,12 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "questionnairePhase")
 public class QuestionnairePhase extends AbstractPhase {
 
     @Enumerated(EnumType.STRING)

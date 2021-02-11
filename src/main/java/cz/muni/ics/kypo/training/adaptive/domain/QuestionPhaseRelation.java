@@ -12,10 +12,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Set;
 
 @Entity
+@Table(name = "question_phase_relation")
 public class QuestionPhaseRelation implements Serializable {
 
     @Id

@@ -1,8 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "info_phase")
 public class InfoPhase extends AbstractPhase {
 
     private String content;

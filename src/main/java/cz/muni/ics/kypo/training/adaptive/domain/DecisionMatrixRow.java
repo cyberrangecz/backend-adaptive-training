@@ -8,9 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 @Entity
+@Table(name = "decision_matrix_row")
 public class DecisionMatrixRow implements Serializable {
 
     @Id

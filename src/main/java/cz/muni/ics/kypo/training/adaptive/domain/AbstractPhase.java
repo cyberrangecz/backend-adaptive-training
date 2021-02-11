@@ -9,12 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import java.io.Serializable;
 
 
 // good source for entity inheritance: http://blog.marcinchwedczuk.pl/mapping-inheritance-in-hibernate
 
 @Entity
+@Table(name = "abstract_phase")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class AbstractPhase implements Serializable {
 

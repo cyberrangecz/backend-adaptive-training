@@ -29,6 +29,13 @@ public class TaskCopyDTO {
     @PositiveOrZero(message = "Limit of the number of provided incorrect answers must not be a negative number")
     private Integer incorrectAnswerLimit;
 
+    @ApiModelProperty(value = "It defines whether the sandbox can be modified", example = "true")
+    private boolean isSandboxModified;
+
+    @ApiModelProperty(value = "It defines the expected duration of sandbox change defined in seconds", example = "15")
+    @PositiveOrZero(message = "Estimated duration of sandbox change must not be a negative number")
+    private int sandboxChangeExpectedDuration;
+
     public String getTitle() {
         return title;
     }
@@ -69,6 +76,22 @@ public class TaskCopyDTO {
         this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
+    public boolean isSandboxModified() {
+        return isSandboxModified;
+    }
+
+    public void setSandboxModified(boolean sandboxModified) {
+        isSandboxModified = sandboxModified;
+    }
+
+    public int getSandboxChangeExpectedDuration() {
+        return sandboxChangeExpectedDuration;
+    }
+
+    public void setSandboxChangeExpectedDuration(int sandboxChangeExpectedDuration) {
+        this.sandboxChangeExpectedDuration = sandboxChangeExpectedDuration;
+    }
+
     @Override
     public String toString() {
         return "TaskCopyDTO{" +
@@ -77,6 +100,8 @@ public class TaskCopyDTO {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
+                ", isSandboxModified=" + isSandboxModified +
+                ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
                 '}';
     }
 }

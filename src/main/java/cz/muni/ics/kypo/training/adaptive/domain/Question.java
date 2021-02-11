@@ -31,7 +31,7 @@ public class Question implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionGenerator")
     @SequenceGenerator(name = "questionGenerator", sequenceName = "question_seq")
-    @Column(name = "id_question", nullable = false, unique = true)
+    @Column(name = "question_id", nullable = false, unique = true)
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -46,7 +46,7 @@ public class Question implements Serializable {
     private QuestionnairePhase questionnairePhase;
 
     @OrderBy
-    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionChoice> choices = new ArrayList<>();
 
     @ManyToMany(mappedBy = "questions", fetch = FetchType.LAZY)

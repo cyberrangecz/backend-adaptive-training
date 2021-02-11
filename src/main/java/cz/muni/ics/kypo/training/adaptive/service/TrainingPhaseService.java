@@ -36,7 +36,6 @@ public class TrainingPhaseService {
     }
 
     public TrainingPhaseDTO createDefaultTrainingPhase(Long trainingDefinitionId) {
-
         TrainingPhase trainingPhase = new TrainingPhase();
         trainingPhase.setTitle("Title of training phase");
         trainingPhase.setTrainingDefinitionId(trainingDefinitionId);
@@ -45,7 +44,6 @@ public class TrainingPhaseService {
         trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinitionId, trainingPhase));
 
         TrainingPhase persistedEntity = trainingPhaseRepository.save(trainingPhase);
-
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
@@ -68,7 +66,6 @@ public class TrainingPhaseService {
         }
 
         TrainingPhase savedEntity = trainingPhaseRepository.save(trainingPhase);
-
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
@@ -95,7 +92,6 @@ public class TrainingPhaseService {
 
             result.add(decisionMatrixRow);
         }
-
         return result;
     }
 
@@ -110,7 +106,6 @@ public class TrainingPhaseService {
         }
 
         final int expectedNumberOfRows = currentPhaseOrder + 1;
-
         if (numberOfRows == expectedNumberOfRows) {
             return;
         } else if (numberOfRows < expectedNumberOfRows) {
@@ -118,7 +113,6 @@ public class TrainingPhaseService {
             trainingPhase.getDecisionMatrix().addAll(newDecisionMatrixRows);
         } else {
             List<DecisionMatrixRow> neededDecisionMatrixRows = getOnlyNeededDecisionMatrixRows(expectedNumberOfRows, trainingPhase);
-
             trainingPhase.getDecisionMatrix().clear();
             trainingPhase.getDecisionMatrix().addAll(neededDecisionMatrixRows);
         }
@@ -135,13 +129,11 @@ public class TrainingPhaseService {
 
             result.add(decisionMatrixRow);
         }
-
         return result;
     }
 
     private List<DecisionMatrixRow> getOnlyNeededDecisionMatrixRows(int expectedNumberOfRows, TrainingPhase trainingPhase) {
         List<DecisionMatrixRow> decisionMatrix = trainingPhase.getDecisionMatrix();
-
         return decisionMatrix.stream()
                 .sorted(Comparator.comparingInt(DecisionMatrixRow::getOrder))
                 .limit(expectedNumberOfRows)

@@ -33,14 +33,12 @@ public class InfoPhaseService {
         infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
         InfoPhase persistedEntity = infoPhaseRepository.save(infoPhase);
-
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
     public InfoPhaseDTO updateInfoPhase(Long definitionId, Long phaseId, InfoPhaseUpdateDTO infoPhaseUpdateDto) {
         InfoPhase infoPhaseUpdate = BeanMapper.INSTANCE.toEntity(infoPhaseUpdateDto);
         infoPhaseUpdate.setId(phaseId);
-
         InfoPhase persistedInfoPhase = infoPhaseRepository.findById(infoPhaseUpdate.getId())
                 .orElseThrow(() -> new RuntimeException("Info phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
@@ -51,7 +49,6 @@ public class InfoPhaseService {
         infoPhaseUpdate.setOrder(persistedInfoPhase.getOrder());
 
         InfoPhase savedEntity = infoPhaseRepository.save(infoPhaseUpdate);
-
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 

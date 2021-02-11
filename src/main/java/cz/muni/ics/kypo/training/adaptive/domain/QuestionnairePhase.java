@@ -14,18 +14,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "questionnairePhase")
+@Table(name = "questionnaire_phase")
 public class QuestionnairePhase extends AbstractPhase {
 
     @Enumerated(EnumType.STRING)
     private QuestionnaireType questionnaireType;
 
     @OrderBy
-    @OneToMany(mappedBy = "questionnairePhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "questionnairePhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
 
     @OrderBy
-    @OneToMany(mappedBy = "questionnairePhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "questionnairePhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public List<Question> getQuestions() {

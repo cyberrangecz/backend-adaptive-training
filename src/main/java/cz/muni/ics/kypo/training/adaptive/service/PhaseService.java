@@ -30,7 +30,6 @@ public class PhaseService {
 
         // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
 
-
         int phaseOrder = phase.getOrder();
         abstractPhaseRepository.decreaseOrderAfterPhaseWasDeleted(definitionId, phaseOrder);
 
@@ -60,9 +59,7 @@ public class PhaseService {
                 .orElseThrow(() -> new RuntimeException("Phase was not found"));
         // TODO throw proper exception once kypo2-training is migrated
 
-
         int fromOrder = phaseFrom.getOrder();
-
         if (fromOrder < newPosition) {
             abstractPhaseRepository.decreaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinitionId(), fromOrder, newPosition);
         } else if (fromOrder > newPosition) {
@@ -74,7 +71,6 @@ public class PhaseService {
 
         phaseFrom.setOrder(newPosition);
         abstractPhaseRepository.save(phaseFrom);
-
         trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(phaseFrom.getTrainingDefinitionId());
     }
 

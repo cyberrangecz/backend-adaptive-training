@@ -19,7 +19,7 @@ public class Task implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "taskGenerator")
     @SequenceGenerator(name = "taskGenerator", sequenceName = "task_seq")
-    @Column(name = "id_task", nullable = false, unique = true)
+    @Column(name = "task_id", nullable = false, unique = true)
     private Long id;
 
     private String title;
@@ -27,6 +27,8 @@ public class Task implements Serializable {
     private String answer;
     private String solution;
     private int incorrectAnswerLimit;
+    private boolean isSandboxModified;
+    private int sandboxChangeExpectedDuration;
 
     @Column(name = "order_in_training_phase", nullable = false)
     private Integer order;
@@ -98,6 +100,21 @@ public class Task implements Serializable {
         this.trainingPhase = trainingPhase;
     }
 
+    public boolean isSandboxModified() {
+        return isSandboxModified;
+    }
+
+    public void setSandboxModified(boolean sandboxModified) {
+        isSandboxModified = sandboxModified;
+    }
+
+    public int getSandboxChangeExpectedDuration() {
+        return sandboxChangeExpectedDuration;
+    }
+
+    public void setSandboxChangeExpectedDuration(int sandboxChangeExpectedDuration) {
+        this.sandboxChangeExpectedDuration = sandboxChangeExpectedDuration;
+    }
 
     @Override
     public String toString() {
@@ -108,7 +125,10 @@ public class Task implements Serializable {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
+                ", isSandboxModified=" + isSandboxModified +
+                ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
                 ", order=" + order +
+                ", trainingPhase=" + trainingPhase.getId() +
                 '}';
     }
 }

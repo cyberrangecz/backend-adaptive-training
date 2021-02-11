@@ -18,15 +18,15 @@ public class TrainingPhase extends AbstractPhase {
     private int allowedWrongAnswers;
 
     @OrderBy
-    @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Task> tasks = new ArrayList<>();
 
     @OrderBy
-    @OneToMany(mappedBy = "trainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "trainingPhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<DecisionMatrixRow> decisionMatrix;
 
     @OrderBy
-    @OneToMany(mappedBy = "relatedTrainingPhase", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "relatedTrainingPhase", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public int getEstimatedDuration() {

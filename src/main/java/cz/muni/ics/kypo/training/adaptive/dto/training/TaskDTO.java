@@ -9,6 +9,8 @@ public class TaskDTO {
     private String answer;
     private String solution;
     private int incorrectAnswerLimit;
+    private boolean isSandboxModified;
+    private int sandboxChangeExpectedDuration;
 
     public Long getId() {
         return id;
@@ -66,9 +68,25 @@ public class TaskDTO {
         this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
+    public boolean isSandboxModified() {
+        return isSandboxModified;
+    }
+
+    public void setSandboxModified(boolean sandboxModified) {
+        isSandboxModified = sandboxModified;
+    }
+
+    public int getSandboxChangeExpectedDuration() {
+        return sandboxChangeExpectedDuration;
+    }
+
+    public void setSandboxChangeExpectedDuration(int sandboxChangeExpectedDuration) {
+        this.sandboxChangeExpectedDuration = sandboxChangeExpectedDuration;
+    }
+
     @Override
     public String toString() {
-        return "TaskDto{" +
+        return "TaskDTO{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", order=" + order +
@@ -76,6 +94,8 @@ public class TaskDTO {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
-                "} " + super.toString();
+                ", isSandboxModified=" + isSandboxModified +
+                ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
+                '}';
     }
 }

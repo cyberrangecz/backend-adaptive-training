@@ -67,9 +67,7 @@ public class PhasesController {
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase type", allowableValues = "questionnaire, info, game", required = true)
             @RequestBody @Valid PhaseCreateDTO phaseCreateDTO) {
-
         AbstractPhaseDTO createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
-
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
     }
 

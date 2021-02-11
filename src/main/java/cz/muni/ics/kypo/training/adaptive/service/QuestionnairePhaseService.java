@@ -50,7 +50,6 @@ public class QuestionnairePhaseService {
     }
 
     public QuestionnairePhaseDTO createDefaultQuestionnairePhase(Long trainingDefinitionId, PhaseCreateDTO phaseCreateDTO) {
-
         QuestionnairePhase questionnairePhase = new QuestionnairePhase();
         questionnairePhase.setTitle("Title of questionnaire phase");
         questionnairePhase.setTrainingDefinitionId(trainingDefinitionId);
@@ -63,7 +62,6 @@ public class QuestionnairePhaseService {
         }
 
         QuestionnairePhase persistedEntity = questionnairePhaseRepository.save(questionnairePhase);
-
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
@@ -92,10 +90,7 @@ public class QuestionnairePhaseService {
         }
 
         QuestionnairePhase savedEntity = questionnairePhaseRepository.save(questionnairePhase);
-
-        QuestionnairePhaseDTO result = BeanMapper.INSTANCE.toDto(savedEntity);
-
-        return result;
+        return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
     private List<QuestionPhaseRelation> resolveQuestionnairePhaseRelationsUpdate(QuestionnairePhase questionnairePhase, QuestionnaireUpdateDTO questionnaireUpdateDto) {

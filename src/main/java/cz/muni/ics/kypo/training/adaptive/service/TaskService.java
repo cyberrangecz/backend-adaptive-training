@@ -46,7 +46,6 @@ public class TaskService {
         task.setIncorrectAnswerLimit(1);
 
         Task persistedEntity = taskRepository.save(task);
-
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
@@ -63,7 +62,6 @@ public class TaskService {
         task.setOrder(taskRepository.getCurrentMaxOrder(phaseId) + 1);
 
         Task persistedEntity = taskRepository.save(task);
-
         return BeanMapper.INSTANCE.toDto(persistedEntity);
     }
 
@@ -92,7 +90,6 @@ public class TaskService {
         taskUpdate.setOrder(persistedTask.getOrder());
 
         Task savedEntity = taskRepository.save(taskUpdate);
-
         return BeanMapper.INSTANCE.toDto(savedEntity);
     }
 
@@ -104,7 +101,6 @@ public class TaskService {
         // TODO add check to trainingDefinitionId and phaseId (field structure will be probably changed)
 
         taskRepository.decreaseOrderAfterTaskWasDeleted(phaseId, task.getOrder());
-
         taskRepository.delete(task);
     }
 

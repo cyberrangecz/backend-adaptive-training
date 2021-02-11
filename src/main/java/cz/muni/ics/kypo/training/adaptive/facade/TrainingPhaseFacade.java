@@ -50,11 +50,8 @@ public class TrainingPhaseFacade {
 
 
     public List<AbstractPhaseDTO> deletePhase(Long definitionId, Long phaseId) {
-
         phaseService.deletePhase(definitionId, phaseId);
-
         trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(definitionId);
-
         return getPhases(definitionId);
     }
 
@@ -63,7 +60,6 @@ public class TrainingPhaseFacade {
     }
 
     public List<AbstractPhaseDTO> getPhases(Long definitionId) {
-
         return phaseService.getPhases(definitionId);
     }
 

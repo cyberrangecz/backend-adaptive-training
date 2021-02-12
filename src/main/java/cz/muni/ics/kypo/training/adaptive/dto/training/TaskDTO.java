@@ -9,7 +9,7 @@ public class TaskDTO {
     private String answer;
     private String solution;
     private int incorrectAnswerLimit;
-    private boolean isSandboxModified;
+    private boolean modifySandbox;
     private int sandboxChangeExpectedDuration;
 
     public Long getId() {
@@ -68,12 +68,12 @@ public class TaskDTO {
         this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
-    public boolean isSandboxModified() {
-        return isSandboxModified;
+    public boolean isModifySandbox() {
+        return modifySandbox;
     }
 
-    public void setSandboxModified(boolean sandboxModified) {
-        isSandboxModified = sandboxModified;
+    public void setModifySandbox(boolean modifySandbox) {
+        this.modifySandbox = modifySandbox;
     }
 
     public int getSandboxChangeExpectedDuration() {
@@ -94,7 +94,7 @@ public class TaskDTO {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
-                ", isSandboxModified=" + isSandboxModified +
+                ", modifySandbox=" + modifySandbox +
                 ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
                 '}';
     }

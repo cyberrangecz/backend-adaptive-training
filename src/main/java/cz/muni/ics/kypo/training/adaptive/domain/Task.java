@@ -27,7 +27,7 @@ public class Task implements Serializable {
     private String answer;
     private String solution;
     private int incorrectAnswerLimit;
-    private boolean isSandboxModified;
+    private boolean modifySandbox;
     private int sandboxChangeExpectedDuration;
 
     @Column(name = "order_in_training_phase", nullable = false)
@@ -100,12 +100,12 @@ public class Task implements Serializable {
         this.trainingPhase = trainingPhase;
     }
 
-    public boolean isSandboxModified() {
-        return isSandboxModified;
+    public boolean isModifySandbox() {
+        return modifySandbox;
     }
 
-    public void setSandboxModified(boolean sandboxModified) {
-        isSandboxModified = sandboxModified;
+    public void setModifySandbox(boolean modifySandbox) {
+        this.modifySandbox = modifySandbox;
     }
 
     public int getSandboxChangeExpectedDuration() {
@@ -125,7 +125,7 @@ public class Task implements Serializable {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
-                ", isSandboxModified=" + isSandboxModified +
+                ", modifySandbox=" + modifySandbox +
                 ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
                 ", order=" + order +
                 ", trainingPhase=" + trainingPhase.getId() +

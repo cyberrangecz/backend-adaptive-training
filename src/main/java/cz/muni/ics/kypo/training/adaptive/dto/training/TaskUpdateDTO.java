@@ -30,7 +30,7 @@ public class TaskUpdateDTO {
     private Integer incorrectAnswerLimit;
 
     @ApiModelProperty(value = "It defines whether the sandbox can be modified", example = "true")
-    private boolean isSandboxModified;
+    private boolean modifySandbox;
 
     @ApiModelProperty(value = "It defines the expected duration of sandbox change defined in seconds", example = "15")
     @PositiveOrZero(message = "Estimated duration of sandbox change must not be a negative number")
@@ -76,12 +76,12 @@ public class TaskUpdateDTO {
         this.incorrectAnswerLimit = incorrectAnswerLimit;
     }
 
-    public boolean isSandboxModified() {
-        return isSandboxModified;
+    public boolean isModifySandbox() {
+        return modifySandbox;
     }
 
-    public void setSandboxModified(boolean sandboxModified) {
-        isSandboxModified = sandboxModified;
+    public void setModifySandbox(boolean modifySandbox) {
+        this.modifySandbox = modifySandbox;
     }
 
     public int getSandboxChangeExpectedDuration() {
@@ -100,7 +100,7 @@ public class TaskUpdateDTO {
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +
                 ", incorrectAnswerLimit=" + incorrectAnswerLimit +
-                ", isSandboxModified=" + isSandboxModified +
+                ", modifySandbox=" + modifySandbox +
                 ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
                 '}';
     }

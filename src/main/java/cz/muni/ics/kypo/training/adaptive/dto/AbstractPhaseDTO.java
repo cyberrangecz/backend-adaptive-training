@@ -1,12 +1,20 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import io.swagger.annotations.ApiModelProperty;
 
 public abstract class AbstractPhaseDTO {
 
+    @ApiModelProperty(value = "ID of task", required = true, example = "1")
     private Long id;
+
+    @ApiModelProperty(value = "Short description of phase", required = true, example = "Training Phase 1")
     private String title;
+
+    @ApiModelProperty(value = "Order of phase in a training definition", required = true, example = "1")
     private Integer order;
+
+    @ApiModelProperty(value = "Type of phase", required = true, allowableValues = "QUESTIONNAIRE,INFO,TRAINING", example = "TRAINING")
     private PhaseType phaseType;
 
     public Long getId() {

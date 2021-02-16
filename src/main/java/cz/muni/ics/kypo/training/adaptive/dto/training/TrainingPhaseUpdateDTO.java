@@ -21,9 +21,11 @@ public class TrainingPhaseUpdateDTO {
     private Integer allowedCommands;
 
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
-    @NotNull(message = "Estimated duration of phase task must be set")
+    @NotNull(message = "Estimated duration of training phase must be set")
     private Integer estimatedDuration;
 
+    @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
+    @NotNull(message = "Decision matrix of training phase must be set")
     private List<DecisionMatrixRowDTO> decisionMatrix;
 
     public String getTitle() {

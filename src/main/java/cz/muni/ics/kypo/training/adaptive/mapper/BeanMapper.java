@@ -15,8 +15,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionPhaseRelationDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionRequiredIdDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowDTO;
@@ -83,10 +81,6 @@ public interface BeanMapper {
     QuestionChoiceDTO toDto(QuestionChoice questionChoice);
 
     Question toEntity(QuestionDTO questionDto);
-
-    Question toEntity(QuestionRequiredIdDTO questionDto);
-
-    Question toEntity(QuestionUpdateDTO questionUpdateDto);
 
     QuestionDTO toDto(Question question);
 

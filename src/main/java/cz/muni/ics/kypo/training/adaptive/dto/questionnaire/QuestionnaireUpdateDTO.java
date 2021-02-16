@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Objects;
 
 public class QuestionnaireUpdateDTO {
 
@@ -42,6 +43,21 @@ public class QuestionnaireUpdateDTO {
 
     public void setPhaseRelations(List<QuestionPhaseRelationDTO> phaseRelations) {
         this.phaseRelations = phaseRelations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionnaireUpdateDTO that = (QuestionnaireUpdateDTO) o;
+        return Objects.equals(title, that.title) &&
+                Objects.equals(questions, that.questions) &&
+                Objects.equals(phaseRelations, that.phaseRelations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, questions, phaseRelations);
     }
 
     @Override

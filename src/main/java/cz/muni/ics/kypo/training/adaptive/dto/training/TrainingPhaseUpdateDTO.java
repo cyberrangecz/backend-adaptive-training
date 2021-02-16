@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 public class TrainingPhaseUpdateDTO {
 
@@ -66,5 +67,33 @@ public class TrainingPhaseUpdateDTO {
 
     public void setDecisionMatrix(List<DecisionMatrixRowDTO> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TrainingPhaseUpdateDTO that = (TrainingPhaseUpdateDTO) o;
+        return Objects.equals(title, that.title) &&
+                Objects.equals(allowedWrongAnswers, that.allowedWrongAnswers) &&
+                Objects.equals(allowedCommands, that.allowedCommands) &&
+                Objects.equals(estimatedDuration, that.estimatedDuration) &&
+                Objects.equals(decisionMatrix, that.decisionMatrix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, allowedWrongAnswers, allowedCommands, estimatedDuration, decisionMatrix);
+    }
+
+    @Override
+    public String toString() {
+        return "TrainingPhaseUpdateDTO{" +
+                "title='" + title + '\'' +
+                ", allowedWrongAnswers=" + allowedWrongAnswers +
+                ", allowedCommands=" + allowedCommands +
+                ", estimatedDuration=" + estimatedDuration +
+                ", decisionMatrix=" + decisionMatrix +
+                '}';
     }
 }

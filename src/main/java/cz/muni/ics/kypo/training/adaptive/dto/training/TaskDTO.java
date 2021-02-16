@@ -2,6 +2,8 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Objects;
+
 public class TaskDTO {
 
     @ApiModelProperty(value = "ID of task", required = true, example = "1")
@@ -101,6 +103,27 @@ public class TaskDTO {
 
     public void setSandboxChangeExpectedDuration(int sandboxChangeExpectedDuration) {
         this.sandboxChangeExpectedDuration = sandboxChangeExpectedDuration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskDTO taskDTO = (TaskDTO) o;
+        return incorrectAnswerLimit == taskDTO.incorrectAnswerLimit &&
+                modifySandbox == taskDTO.modifySandbox &&
+                sandboxChangeExpectedDuration == taskDTO.sandboxChangeExpectedDuration &&
+                Objects.equals(id, taskDTO.id) &&
+                Objects.equals(title, taskDTO.title) &&
+                Objects.equals(order, taskDTO.order) &&
+                Objects.equals(content, taskDTO.content) &&
+                Objects.equals(answer, taskDTO.answer) &&
+                Objects.equals(solution, taskDTO.solution);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, order, content, answer, solution, incorrectAnswerLimit, modifySandbox, sandboxChangeExpectedDuration);
     }
 
     @Override

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractQuestionDTO {
 
@@ -54,5 +55,31 @@ public abstract class AbstractQuestionDTO {
 
     public void setChoices(List<QuestionChoiceDTO> choices) {
         this.choices = choices;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractQuestionDTO that = (AbstractQuestionDTO) o;
+        return order == that.order &&
+                Objects.equals(text, that.text) &&
+                questionType == that.questionType &&
+                Objects.equals(choices, that.choices);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(order, text, questionType, choices);
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractQuestionDTO{" +
+                "order=" + order +
+                ", text='" + text + '\'' +
+                ", questionType=" + questionType +
+                ", choices=" + choices +
+                '}';
     }
 }

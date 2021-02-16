@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
@@ -61,5 +62,33 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
     public void setDecisionMatrix(List<DecisionMatrixRowDTO> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TrainingPhaseDTO that = (TrainingPhaseDTO) o;
+        return estimatedDuration == that.estimatedDuration &&
+                allowedCommands == that.allowedCommands &&
+                allowedWrongAnswers == that.allowedWrongAnswers &&
+                Objects.equals(tasks, that.tasks) &&
+                Objects.equals(decisionMatrix, that.decisionMatrix);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(estimatedDuration, allowedCommands, allowedWrongAnswers, tasks, decisionMatrix);
+    }
+
+    @Override
+    public String toString() {
+        return "TrainingPhaseDTO{" +
+                "estimatedDuration=" + estimatedDuration +
+                ", allowedCommands=" + allowedCommands +
+                ", allowedWrongAnswers=" + allowedWrongAnswers +
+                ", tasks=" + tasks +
+                ", decisionMatrix=" + decisionMatrix +
+                "} " + super.toString();
     }
 }

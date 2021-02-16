@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class QuestionChoiceDTO {
 
@@ -52,5 +53,31 @@ public class QuestionChoiceDTO {
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionChoiceDTO that = (QuestionChoiceDTO) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(text, that.text) &&
+                Objects.equals(correct, that.correct) &&
+                Objects.equals(order, that.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, text, correct, order);
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionChoiceDTO{" +
+                "id=" + id +
+                ", text='" + text + '\'' +
+                ", correct=" + correct +
+                ", order=" + order +
+                '}';
     }
 }

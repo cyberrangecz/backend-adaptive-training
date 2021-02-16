@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.info;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Objects;
 
 public class InfoPhaseUpdateDTO {
 
@@ -28,6 +29,20 @@ public class InfoPhaseUpdateDTO {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InfoPhaseUpdateDTO that = (InfoPhaseUpdateDTO) o;
+        return Objects.equals(title, that.title) &&
+                Objects.equals(content, that.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content);
     }
 
     @Override

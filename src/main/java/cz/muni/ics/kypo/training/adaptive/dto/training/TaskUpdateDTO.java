@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
+import java.util.Objects;
 
 public class TaskUpdateDTO {
 
@@ -90,6 +91,25 @@ public class TaskUpdateDTO {
 
     public void setSandboxChangeExpectedDuration(int sandboxChangeExpectedDuration) {
         this.sandboxChangeExpectedDuration = sandboxChangeExpectedDuration;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TaskUpdateDTO that = (TaskUpdateDTO) o;
+        return modifySandbox == that.modifySandbox &&
+                sandboxChangeExpectedDuration == that.sandboxChangeExpectedDuration &&
+                Objects.equals(title, that.title) &&
+                Objects.equals(content, that.content) &&
+                Objects.equals(answer, that.answer) &&
+                Objects.equals(solution, that.solution) &&
+                Objects.equals(incorrectAnswerLimit, that.incorrectAnswerLimit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, content, answer, solution, incorrectAnswerLimit, modifySandbox, sandboxChangeExpectedDuration);
     }
 
     @Override

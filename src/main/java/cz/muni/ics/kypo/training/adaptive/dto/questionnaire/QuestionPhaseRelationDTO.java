@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.Set;
 
 public class QuestionPhaseRelationDTO {
@@ -66,5 +67,33 @@ public class QuestionPhaseRelationDTO {
 
     public void setSuccessRate(int successRate) {
         this.successRate = successRate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionPhaseRelationDTO that = (QuestionPhaseRelationDTO) o;
+        return successRate == that.successRate &&
+                Objects.equals(id, that.id) &&
+                Objects.equals(order, that.order) &&
+                Objects.equals(questionIds, that.questionIds) &&
+                Objects.equals(phaseId, that.phaseId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order, questionIds, phaseId, successRate);
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionPhaseRelationDTO{" +
+                "id=" + id +
+                ", order=" + order +
+                ", questionIds=" + questionIds +
+                ", phaseId=" + phaseId +
+                ", successRate=" + successRate +
+                '}';
     }
 }

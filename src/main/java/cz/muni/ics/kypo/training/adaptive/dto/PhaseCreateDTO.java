@@ -4,6 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.PhaseTypeCreate;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class PhaseCreateDTO {
 
@@ -17,6 +18,19 @@ public class PhaseCreateDTO {
 
     public void setPhaseType(PhaseTypeCreate phaseType) {
         this.phaseType = phaseType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhaseCreateDTO that = (PhaseCreateDTO) o;
+        return phaseType == that.phaseType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(phaseType);
     }
 
     @Override

@@ -2,6 +2,8 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Objects;
+
 public class DecisionMatrixRowDTO {
 
     @ApiModelProperty(value = "ID of decision matrix row", required = true, example = "1")
@@ -79,6 +81,25 @@ public class DecisionMatrixRowDTO {
 
     public void setWrongAnswers(double wrongAnswers) {
         this.wrongAnswers = wrongAnswers;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DecisionMatrixRowDTO that = (DecisionMatrixRowDTO) o;
+        return id == that.id &&
+                order == that.order &&
+                Double.compare(that.assessmentAnswered, assessmentAnswered) == 0 &&
+                Double.compare(that.keywordUsed, keywordUsed) == 0 &&
+                Double.compare(that.completedInTime, completedInTime) == 0 &&
+                Double.compare(that.solutionDisplayed, solutionDisplayed) == 0 &&
+                Double.compare(that.wrongAnswers, wrongAnswers) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, order, assessmentAnswered, keywordUsed, completedInTime, solutionDisplayed, wrongAnswers);
     }
 
     @Override

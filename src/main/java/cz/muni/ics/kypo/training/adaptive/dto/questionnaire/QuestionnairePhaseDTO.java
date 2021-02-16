@@ -5,6 +5,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
+import java.util.Objects;
 
 public class QuestionnairePhaseDTO extends AbstractPhaseDTO {
 
@@ -39,5 +40,29 @@ public class QuestionnairePhaseDTO extends AbstractPhaseDTO {
 
     public void setPhaseRelations(List<QuestionPhaseRelationDTO> phaseRelations) {
         this.phaseRelations = phaseRelations;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuestionnairePhaseDTO that = (QuestionnairePhaseDTO) o;
+        return Objects.equals(questions, that.questions) &&
+                questionnaireType == that.questionnaireType &&
+                Objects.equals(phaseRelations, that.phaseRelations);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(questions, questionnaireType, phaseRelations);
+    }
+
+    @Override
+    public String toString() {
+        return "QuestionnairePhaseDTO{" +
+                "questions=" + questions +
+                ", questionnaireType=" + questionnaireType +
+                ", phaseRelations=" + phaseRelations +
+                "} " + super.toString();
     }
 }

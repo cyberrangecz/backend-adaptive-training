@@ -10,7 +10,7 @@
     </parent>
     <groupId>cz.muni.ics.kypo</groupId>
     <artifactId>kypo2-adaptive-training</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
     <name>KYPO2 Adaptive Training</name>
     <description>KYPO2 Adaptive Training</description>

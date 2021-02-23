@@ -13,7 +13,7 @@ public class DecisionMatrixRowDTO {
     private int order;
 
     @ApiModelProperty(value = "It determines how important the answers of the questions in questionnaires are", required = true, example = "0.5")
-    private double assessmentAnswered;
+    private double questionnaireAnswered;
 
     @ApiModelProperty(value = "It determines how important it is whether the player used the keyword", required = true, example = "0.5")
     private double keywordUsed;
@@ -43,12 +43,12 @@ public class DecisionMatrixRowDTO {
         this.order = order;
     }
 
-    public double getAssessmentAnswered() {
-        return assessmentAnswered;
+    public double getQuestionnaireAnswered() {
+        return questionnaireAnswered;
     }
 
-    public void setAssessmentAnswered(double assessmentAnswered) {
-        this.assessmentAnswered = assessmentAnswered;
+    public void setQuestionnaireAnswered(double questionnaireAnswered) {
+        this.questionnaireAnswered = questionnaireAnswered;
     }
 
     public double getKeywordUsed() {
@@ -90,7 +90,7 @@ public class DecisionMatrixRowDTO {
         DecisionMatrixRowDTO that = (DecisionMatrixRowDTO) o;
         return id == that.id &&
                 order == that.order &&
-                Double.compare(that.assessmentAnswered, assessmentAnswered) == 0 &&
+                Double.compare(that.questionnaireAnswered, questionnaireAnswered) == 0 &&
                 Double.compare(that.keywordUsed, keywordUsed) == 0 &&
                 Double.compare(that.completedInTime, completedInTime) == 0 &&
                 Double.compare(that.solutionDisplayed, solutionDisplayed) == 0 &&
@@ -99,7 +99,7 @@ public class DecisionMatrixRowDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, order, assessmentAnswered, keywordUsed, completedInTime, solutionDisplayed, wrongAnswers);
+        return Objects.hash(id, order, questionnaireAnswered, keywordUsed, completedInTime, solutionDisplayed, wrongAnswers);
     }
 
     @Override
@@ -107,7 +107,7 @@ public class DecisionMatrixRowDTO {
         return "DecisionMatrixRow{" +
                 "id=" + id +
                 ", order=" + order +
-                ", assessmentAnswered=" + assessmentAnswered +
+                ", questionnaireAnswered=" + questionnaireAnswered +
                 ", keywordUsed=" + keywordUsed +
                 ", completedInTime=" + completedInTime +
                 ", solutionDisplayed=" + solutionDisplayed +

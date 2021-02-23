@@ -1,23 +1,37 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-import cz.muni.ics.kypo.training.adaptive.enums.PhaseTypeCreate;
+import cz.muni.ics.kypo.training.adaptive.annotations.validation.NotNullQuestionnaireType;
+import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+@NotNullQuestionnaireType
 public class PhaseCreateDTO {
 
-    @ApiModelProperty(value = "Type of phase.", required = true, allowableValues = "QUESTIONNAIRE_ADAPTIVE, QUESTIONNAIRE_GENERAL, INFO, GAME", example = "TRAINING")
+    @ApiModelProperty(value = "Type of phase.", required = true, allowableValues = "QUESTIONNAIRE, INFO, TRAINING", example = "TRAINING")
     @NotNull(message = "Phase type must be specified")
-    private PhaseTypeCreate phaseType;
+    private PhaseType phaseType;
 
-    public PhaseTypeCreate getPhaseType() {
+    @ApiModelProperty(value = "Type of questionnaire.", allowableValues = "ADAPTIVE, GENERAL", example = "ADAPTIVE")
+    private QuestionnaireType questionnaireType;
+
+    public PhaseType getPhaseType() {
         return phaseType;
     }
 
-    public void setPhaseType(PhaseTypeCreate phaseType) {
+    public void setPhaseType(PhaseType phaseType) {
         this.phaseType = phaseType;
+    }
+
+    public QuestionnaireType getQuestionnaireType() {
+        return questionnaireType;
+    }
+
+    public void setQuestionnaireType(QuestionnaireType questionnaireType) {
+        this.questionnaireType = questionnaireType;
     }
 
     @Override
@@ -37,6 +51,7 @@ public class PhaseCreateDTO {
     public String toString() {
         return "PhaseCreateDTO{" +
                 "phaseType=" + phaseType +
+                ", questionnaireType=" + questionnaireType +
                 '}';
     }
 }

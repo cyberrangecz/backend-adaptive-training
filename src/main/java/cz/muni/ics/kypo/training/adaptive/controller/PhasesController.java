@@ -8,27 +8,13 @@ import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDT
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.facade.TrainingPhaseFacade;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import cz.muni.ics.kypo.training.adaptive.facade.PhaseFacade;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -37,17 +23,17 @@ import java.util.List;
 @RequestMapping(value = "/training-definitions/{definitionId}/phases", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
         methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
-@Api(value = "/training-definitions/{definitionId}/phases",
+@Api(value = "/training-definitions/{definitionId}/phase",
         tags = "Phases",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         authorizations = @Authorization(value = "bearerAuth"))
 public class PhasesController {
 
-    private final TrainingPhaseFacade trainingPhaseFacade;
+    private final PhaseFacade phaseFacade;
 
     @Autowired
-    public PhasesController(TrainingPhaseFacade trainingPhaseFacade) {
-        this.trainingPhaseFacade = trainingPhaseFacade;
+    public PhasesController(PhaseFacade phaseFacade) {
+        this.phaseFacade = phaseFacade;
     }
 
     @ApiOperation(httpMethod = "POST",
@@ -67,13 +53,13 @@ public class PhasesController {
             @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase type", allowableValues = "questionnaire, info, game", required = true)
             @RequestBody @Valid PhaseCreateDTO phaseCreateDTO) {
-        AbstractPhaseDTO createdPhase = trainingPhaseFacade.createPhase(definitionId, phaseCreateDTO);
+        AbstractPhaseDTO createdPhase = phaseFacade.createPhase(definitionId, phaseCreateDTO);
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
     }
 
     @ApiOperation(httpMethod = "GET",
-            value = "Get all phases",
-            notes = "Get all phases associated with specified training definition",
+            value = "Get all phase",
+            notes = "Get all phase associated with specified training definition",
             response = Object.class,
             nickname = "getPhases",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -86,7 +72,7 @@ public class PhasesController {
     public ResponseEntity<List<AbstractPhaseDTO>> getPhases(
             @ApiParam(value = "Training definition ID", required = true)
             @PathVariable(name = "definitionId") Long definitionId) {
-        List<AbstractPhaseDTO> phases = trainingPhaseFacade.getPhases(definitionId);
+        List<AbstractPhaseDTO> phases = phaseFacade.getPhases(definitionId);
         return new ResponseEntity<>(phases, HttpStatus.OK);
     }
 
@@ -102,11 +88,9 @@ public class PhasesController {
     })
     @GetMapping(path = "/{phaseId}")
     public ResponseEntity<AbstractPhaseDTO> getPhase(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
-        AbstractPhaseDTO phase = trainingPhaseFacade.getPhase(definitionId, phaseId);
+        AbstractPhaseDTO phase = phaseFacade.getPhase(phaseId);
         return new ResponseEntity<>(phase, HttpStatus.OK);
     }
 
@@ -122,11 +106,9 @@ public class PhasesController {
     })
     @DeleteMapping(path = "/{phaseId}")
     public ResponseEntity<List<AbstractPhaseDTO>> removePhase(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId) {
-        List<AbstractPhaseDTO> remainingPhases = trainingPhaseFacade.deletePhase(definitionId, phaseId);
+        List<AbstractPhaseDTO> remainingPhases = phaseFacade.deletePhase(phaseId);
         return new ResponseEntity<>(remainingPhases, HttpStatus.OK);
     }
 
@@ -142,13 +124,11 @@ public class PhasesController {
     })
     @PutMapping(path = "/{phaseId}/info")
     public ResponseEntity<InfoPhaseDTO> updateInfoPhase(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Info phase to be updated")
             @RequestBody @Valid InfoPhaseUpdateDTO infoPhaseUpdateDto) {
-        InfoPhaseDTO updatedInfoPhase = trainingPhaseFacade.updateInfoPhase(definitionId, phaseId, infoPhaseUpdateDto);
+        InfoPhaseDTO updatedInfoPhase = phaseFacade.updateInfoPhase(phaseId, infoPhaseUpdateDto);
         return new ResponseEntity<>(updatedInfoPhase, HttpStatus.OK);
     }
 
@@ -164,13 +144,11 @@ public class PhasesController {
     })
     @PutMapping(path = "/{phaseId}/training")
     public ResponseEntity<TrainingPhaseDTO> updateTrainingPhase(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Training phase to be updated")
             @RequestBody @Valid TrainingPhaseUpdateDTO trainingPhaseUpdateDto) {
-        TrainingPhaseDTO updatedTrainingPhase = trainingPhaseFacade.updateTrainingPhase(definitionId, phaseId, trainingPhaseUpdateDto);
+        TrainingPhaseDTO updatedTrainingPhase = phaseFacade.updateTrainingPhase(phaseId, trainingPhaseUpdateDto);
         return new ResponseEntity<>(updatedTrainingPhase, HttpStatus.OK);
     }
 
@@ -185,13 +163,11 @@ public class PhasesController {
     })
     @PutMapping(path = "/{phaseId}/questionnaire")
     public ResponseEntity<QuestionnairePhaseDTO> updateQuestionnairePhase(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Phase ID", required = true)
             @PathVariable("phaseId") Long phaseId,
             @ApiParam(value = "Questionnaire to be updated")
             @RequestBody @Valid QuestionnaireUpdateDTO questionnaireUpdateDto) {
-        QuestionnairePhaseDTO updatedQuestionnairePhase = trainingPhaseFacade.updateQuestionnairePhase(definitionId, phaseId, questionnaireUpdateDto);
+        QuestionnairePhaseDTO updatedQuestionnairePhase = phaseFacade.updateQuestionnairePhase(phaseId, questionnaireUpdateDto);
         return new ResponseEntity<>(updatedQuestionnairePhase, HttpStatus.OK);
     }
 
@@ -206,9 +182,13 @@ public class PhasesController {
     })
     @PutMapping(value = "/{phaseIdFrom}/move-to/{newPosition}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> movePhaseToSpecifiedOrder(
-            @ApiParam(value = "Phase ID - from", required = true) @PathVariable(name = "phaseIdFrom") Long phaseIdFrom,
-            @ApiParam(value = "Position (order) to which the phase should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
-        trainingPhaseFacade.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
+            @ApiParam(value = "Training definition ID", required = true)
+            @PathVariable(name = "definitionId") Long definitionId,
+            @ApiParam(value = "Phase ID - from", required = true)
+            @PathVariable(name = "phaseIdFrom") Long phaseIdFrom,
+            @ApiParam(value = "Position (order) to which the phase should be moved", required = true)
+            @PathVariable(name = "newPosition") int newPosition) {
+        phaseFacade.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
         return ResponseEntity.ok().build();
     }
 }

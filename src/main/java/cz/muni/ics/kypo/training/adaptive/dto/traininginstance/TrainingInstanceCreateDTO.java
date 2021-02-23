@@ -1,0 +1,138 @@
+package cz.muni.ics.kypo.training.adaptive.dto.traininginstance;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import cz.muni.ics.kypo.training.adaptive.converter.LocalDateTimeUTCDeserializer;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+
+/**
+ * Encapsulates information about Training Instance, intended for creation of new instance.
+ */
+@ApiModel(value = "TrainingInstanceCreateDTO", description = "Training Instance to create.")
+public class TrainingInstanceCreateDTO {
+
+    @ApiModelProperty(value = "Date when training instance starts.", required = true, example = "2020-11-20T10:28:02.727Z")
+    @NotNull(message = "{trainingInstance.startTime.NotNull.message}")
+    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
+    private LocalDateTime startTime;
+    @ApiModelProperty(value = "Date when training instance ends.", required = true, example = "2020-11-25T10:26:02.727Z")
+    @NotNull(message = "{trainingInstance.endTime.NotNull.message}")
+    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
+    private LocalDateTime endTime;
+    @ApiModelProperty(value = "Short textual description of the training instance.", required = true, example = "December instance")
+    @NotEmpty(message = "{trainingInstance.title.NotEmpty.message}")
+    private String title;
+    @ApiModelProperty(value = "AccessToken which will be modified and then used for accessing training run.", required = true, example = "hunter")
+    @NotEmpty(message = "{trainingInstance.accessToken.NotEmpty.message}")
+    private String accessToken;
+    @ApiModelProperty(value = "Reference to training definition from which is training instance created.", required = true, example = "1")
+    @NotNull(message = "{trainingInstance.trainingDefinitionId.NotNull.message}")
+    @Min(value = 0, message = "{trainingInstance.trainingDefinitionId.Min.message}")
+    private Long trainingDefinitionId;
+
+    /**
+     * Gets start time.
+     *
+     * @return the start time
+     */
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Sets start time.
+     *
+     * @param startTime the start time
+     */
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * Gets end time.
+     *
+     * @return the end time
+     */
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * Sets end time.
+     *
+     * @param endTime the end time
+     */
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    /**
+     * Gets title.
+     *
+     * @return the title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Sets title.
+     *
+     * @param title the title
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets access token.
+     *
+     * @return the access token
+     */
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    /**
+     * Sets access token.
+     *
+     * @param accessToken the access token
+     */
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    /**
+     * Gets training definition id.
+     *
+     * @return the training definition id
+     */
+    public long getTrainingDefinitionId() {
+        return trainingDefinitionId;
+    }
+
+    /**
+     * Sets training definition id.
+     *
+     * @param trainingDefinitionId the training definition id
+     */
+    public void setTrainingDefinitionId(long trainingDefinitionId) {
+        this.trainingDefinitionId = trainingDefinitionId;
+    }
+
+    @Override
+    public String toString() {
+        return "TrainingInstanceCreateDTO{" +
+                "startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", title='" + title + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", trainingDefinitionId=" + trainingDefinitionId +
+                '}';
+    }
+}

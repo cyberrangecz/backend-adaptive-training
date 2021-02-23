@@ -18,7 +18,7 @@ public class QuestionnaireUpdateDTO {
     private List<QuestionDTO> questions;
 
     @Valid
-    @ApiModelProperty(value = "The relation between questions in the questionnaire and phases in the training definition", required = true)
+    @ApiModelProperty(value = "The relation between questions in the questionnaire and phase in the training definition", required = true)
     private List<QuestionPhaseRelationDTO> phaseRelations;
 
     public String getTitle() {

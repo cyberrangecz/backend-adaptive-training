@@ -3,27 +3,13 @@ package cz.muni.ics.kypo.training.adaptive.controller;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.service.TaskService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.Authorization;
+import cz.muni.ics.kypo.training.adaptive.facade.TaskFacade;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -37,11 +23,11 @@ import javax.validation.Valid;
         authorizations = @Authorization(value = "bearerAuth"))
 public class TasksController {
 
-    private final TaskService taskService;
+    private final TaskFacade taskFacade;
 
     @Autowired
-    public TasksController(TaskService taskService) {
-        this.taskService = taskService;
+    public TasksController(TaskFacade taskFacade) {
+        this.taskFacade = taskFacade;
     }
 
     @ApiOperation(httpMethod = "POST",
@@ -57,11 +43,9 @@ public class TasksController {
     })
     @PostMapping
     public ResponseEntity<TaskDTO> createTask(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
             @ApiParam(value = "Training phase ID", required = true)
             @PathVariable(name = "phaseId") Long phaseId) {
-        TaskDTO createdTask = taskService.createDefaultTask(definitionId, phaseId);
+        TaskDTO createdTask = taskFacade.createDefaultTask(phaseId);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -78,14 +62,12 @@ public class TasksController {
     })
     @PostMapping(path = "/{taskId}")
     public ResponseEntity<TaskDTO> cloneTask(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Training phase ID", required = true)
-            @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId,
+            @ApiParam(value = "Training phase ID", required = true)
+            @PathVariable(name = "phaseId") Long phaseId,
             @RequestBody @Valid TaskCopyDTO taskCopyDTO) {
-        TaskDTO createdTask = taskService.cloneTask(definitionId, phaseId, taskId, taskCopyDTO);
+        TaskDTO createdTask = taskFacade.createTask(phaseId, taskCopyDTO);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -102,13 +84,9 @@ public class TasksController {
     })
     @GetMapping(path = "/{taskId}")
     public ResponseEntity<TaskDTO> getTask(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Training phase ID", required = true)
-            @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
-        TaskDTO createdTask = taskService.getTask(definitionId, phaseId, taskId);
+        TaskDTO createdTask = taskFacade.getTask(taskId);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
@@ -124,15 +102,11 @@ public class TasksController {
     })
     @PutMapping(path = "/{taskId}")
     public ResponseEntity<TaskDTO> updateTask(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Training phase ID", required = true)
-            @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId,
             @ApiParam(value = "Task to be updated")
             @RequestBody @Valid TaskUpdateDTO taskUpdateDto) {
-        TaskDTO updatedTask = taskService.updateTask(definitionId, phaseId, taskId, taskUpdateDto);
+        TaskDTO updatedTask = taskFacade.updateTask(taskId, taskUpdateDto);
         return new ResponseEntity<>(updatedTask, HttpStatus.OK);
     }
 
@@ -149,13 +123,9 @@ public class TasksController {
     })
     @DeleteMapping(path = "/{taskId}")
     public ResponseEntity<Void> removeTask(
-            @ApiParam(value = "Training definition ID", required = true)
-            @PathVariable(name = "definitionId") Long definitionId,
-            @ApiParam(value = "Training phase ID", required = true)
-            @PathVariable(name = "phaseId") Long phaseId,
             @ApiParam(value = "Task ID", required = true)
             @PathVariable(name = "taskId") Long taskId) {
-        taskService.removeTask(definitionId, phaseId, taskId);
+        taskFacade.removeTask(taskId);
         return ResponseEntity.ok().build();
     }
 
@@ -172,7 +142,7 @@ public class TasksController {
     public ResponseEntity<Void> moveTaskToSpecifiedOrder(
             @ApiParam(value = "Task ID - from", required = true) @PathVariable(name = "taskIdFrom") Long taskIdFrom,
             @ApiParam(value = "Position (order) to which the task should be moved", required = true) @PathVariable(name = "newPosition") int newPosition) {
-        taskService.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
+        taskFacade.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
         return ResponseEntity.ok().build();
     }
 }

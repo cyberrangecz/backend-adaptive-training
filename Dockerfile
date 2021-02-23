@@ -3,7 +3,7 @@ FROM maven:3.6.2-jdk-11-slim AS build
 ## default environment variables for database settings
 ARG USERNAME=postgres
 ARG PASSWORD=postgres
-ARG POSTGRES_DB=adaptive-training
+ARG POSTGRES_DB=kypo-adaptive-training
 ## rename the artifact id to something else, e.g. kypo-adaptive-training
 ARG PROJECT_ARTIFACT_ID=kypo-adaptive-training
 
@@ -23,7 +23,7 @@ RUN /etc/init.d/postgresql start && \
     /etc/init.d/postgresql stop
 
 # copy only essential parts
-COPY /etc/adaptive-training.properties /app/etc/adaptive-training.properties
+COPY /etc/kypo-adaptive-training.properties /app/etc/kypo-adaptive-training.properties
 COPY supervisord.conf /app/supervisord.conf
 COPY pom.xml /app/pom.xml
 COPY src /app/src

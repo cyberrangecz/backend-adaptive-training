@@ -15,8 +15,13 @@ import java.util.Objects;
                 query = "SELECT at FROM AccessToken at WHERE at.accessToken = :accessToken"
         ),
 })
-public class AccessToken extends AbstractEntity<Long> {
+public class AccessToken {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accessTokenGenerator")
+    @SequenceGenerator(name = "accessTokenGenerator", sequenceName = "access_token_seq")
+    @Column(name = "access_token_id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "access_token", nullable = false, unique = true)
     private String accessToken;
 
@@ -34,7 +39,7 @@ public class AccessToken extends AbstractEntity<Long> {
      */
     public AccessToken(Long id, String accessToken) {
         this.accessToken = accessToken;
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -43,7 +48,7 @@ public class AccessToken extends AbstractEntity<Long> {
      * @return the id
      */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
     /**
@@ -52,7 +57,7 @@ public class AccessToken extends AbstractEntity<Long> {
      * @param id the id
      */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -80,18 +85,18 @@ public class AccessToken extends AbstractEntity<Long> {
         if (!(o instanceof AccessToken))
             return false;
         AccessToken accessToken = (AccessToken) o;
-        return Objects.equals(super.getId(), accessToken.getId()) && Objects.equals(this.accessToken, accessToken.getAccessToken());
+        return Objects.equals(this.getId(), accessToken.getId()) && Objects.equals(this.accessToken, accessToken.getAccessToken());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.getId(), accessToken);
+        return Objects.hash(this.getId(), accessToken);
     }
 
     @Override
     public String toString() {
         return "AccessToken{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", accessToken='" + accessToken + '\'' +
                 '}';
     }

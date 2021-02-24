@@ -31,8 +31,13 @@ import java.util.Set;
                         "WHERE ti.id = :trainingInstanceId"
         )
 })
-public class UserRef extends AbstractEntity<Long> {
+public class UserRef {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userRefGenerator")
+    @SequenceGenerator(name = "userRefGenerator", sequenceName = "user_ref_seq")
+    @Column(name = "id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "user_ref_id", nullable = false)
     private Long userRefId;
     @ManyToMany(mappedBy = "organizers", fetch = FetchType.LAZY)
@@ -60,7 +65,7 @@ public class UserRef extends AbstractEntity<Long> {
      * @return the id
      */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
     /**
@@ -69,7 +74,7 @@ public class UserRef extends AbstractEntity<Long> {
      * @param id the id
      */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -178,7 +183,7 @@ public class UserRef extends AbstractEntity<Long> {
     @Override
     public String toString() {
         return "UserRef{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", userRefId=" + userRefId +
                 '}';
     }

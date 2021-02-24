@@ -1,12 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.AbstractEntity;
 import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -94,8 +92,13 @@ import java.util.Objects;
                         "WHERE td.id = :trainingDefinitionId"
         )
 })
-public class TrainingRun extends AbstractEntity<Long> {
+public class TrainingRun {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingRunGenerator")
+    @SequenceGenerator(name = "trainingRunGenerator", sequenceName = "training_run_seq")
+    @Column(name = "training_run_id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
     @Column(name = "end_time", nullable = false)
@@ -114,6 +117,7 @@ public class TrainingRun extends AbstractEntity<Long> {
     @JoinColumn(name = "current_task_id")
     private Task currentTask;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "training_instance_id")
     private TrainingInstance trainingInstance;
     @Column(name = "sandbox_instance_ref_id")
     private Long sandboxInstanceRefId;
@@ -131,7 +135,7 @@ public class TrainingRun extends AbstractEntity<Long> {
      * @return the id
      */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
     /**
@@ -140,7 +144,7 @@ public class TrainingRun extends AbstractEntity<Long> {
      * @param id the id
      */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -381,7 +385,7 @@ public class TrainingRun extends AbstractEntity<Long> {
     @Override
     public String toString() {
         return "TrainingRun{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", state=" + state +

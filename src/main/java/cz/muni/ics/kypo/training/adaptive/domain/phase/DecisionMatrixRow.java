@@ -13,7 +13,6 @@ public class DecisionMatrixRow implements Serializable {
     @SequenceGenerator(name = "decisionMatrixRowGenerator", sequenceName = "decision_matrix_row_seq")
     @Column(name = "decision_matrix_row_id", nullable = false, unique = true)
     private Long id;
-
     @Column(name = "order_in_training_phase", nullable = false)
     private int order;
     private double assessmentAnswered;

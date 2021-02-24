@@ -26,6 +26,7 @@ public abstract class AbstractPhase implements Serializable {
     private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_definition_id")
     private TrainingDefinition trainingDefinition;
 
     public String getTitle() {

@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.AbstractEntity;
 import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
 
 import javax.persistence.*;
@@ -70,8 +69,13 @@ import java.util.Set;
                 query = "SELECT (COUNT(ti) > 0) FROM TrainingInstance ti WHERE ti.id = :instanceId AND ti.endTime < :currentTime"
         )
 })
-public class TrainingInstance extends AbstractEntity<Long> {
+public class TrainingInstance {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingInstanceGenerator")
+    @SequenceGenerator(name = "trainingInstanceGenerator", sequenceName = "training_instance_seq")
+    @Column(name = "training_instance_id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
     @Column(name = "end_time", nullable = false)
@@ -83,6 +87,7 @@ public class TrainingInstance extends AbstractEntity<Long> {
     @Column(name = "access_token", nullable = false, unique = true)
     private String accessToken;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_definition_id")
     private TrainingDefinition trainingDefinition;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "training_instance_user_ref",
@@ -97,7 +102,7 @@ public class TrainingInstance extends AbstractEntity<Long> {
      * @return the id
      */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
     /**
@@ -106,7 +111,7 @@ public class TrainingInstance extends AbstractEntity<Long> {
      * @param id the id
      */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -278,7 +283,7 @@ public class TrainingInstance extends AbstractEntity<Long> {
     @Override
     public String toString() {
         return "TrainingInstance{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", startTime=" + startTime +
                 ", endTime=" + endTime +
                 ", title='" + title + '\'' +

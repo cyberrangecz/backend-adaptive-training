@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.AbstractEntity;
 import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 
@@ -26,8 +25,13 @@ import java.util.*;
                         "WHERE aut.userRefId = :userRefId  AND td.state = 'UNRELEASED'"
         )
 })
-public class TrainingDefinition extends AbstractEntity<Long> {
+public class TrainingDefinition {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingDefinitionGenerator")
+    @SequenceGenerator(name = "trainingDefinitionGenerator", sequenceName = "training_definition_seq")
+    @Column(name = "training_definition_id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description", nullable = true)
@@ -58,7 +62,7 @@ public class TrainingDefinition extends AbstractEntity<Long> {
      * @return the id
      */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
     /**
@@ -67,7 +71,7 @@ public class TrainingDefinition extends AbstractEntity<Long> {
      * @param id the id
      */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -279,7 +283,7 @@ public class TrainingDefinition extends AbstractEntity<Long> {
     @Override
     public String toString() {
         return "TrainingDefinition{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", prerequisites=" + Arrays.toString(prerequisites) +

@@ -40,11 +40,10 @@ public class TrainingDefinitionRepositoryImpl extends QuerydslRepositorySupport 
         Objects.requireNonNull(loggedInUserId, "Input logged in user ID must not be null.");
         QTrainingDefinition trainingDefinition = QTrainingDefinition.trainingDefinition;
         QUserRef authors = new QUserRef("authors");
-        QUserRef organizers = new QUserRef("organizers");
 
         JPQLQuery<TrainingDefinition> query = new JPAQueryFactory(entityManager).selectFrom(trainingDefinition).distinct()
                 .leftJoin(trainingDefinition.authors, authors)
-                .where(authors.userRefId.eq(loggedInUserId).or(organizers.userRefId.eq(loggedInUserId)));
+                .where(authors.userRefId.eq(loggedInUserId));
 
         if (predicate != null) {
             query.where(predicate);

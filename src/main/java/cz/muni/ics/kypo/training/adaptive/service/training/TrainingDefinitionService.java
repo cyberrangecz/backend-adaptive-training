@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.service.training;
 
 import com.querydsl.core.types.Predicate;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
@@ -421,11 +421,11 @@ public class TrainingDefinitionService {
     }
 
     private void addLoggedInUserToTrainingDefinitionAsAuthor(TrainingDefinition trainingDefinition) {
-        Optional<UserRef> user = userRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
+        Optional<User> user = userRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
         if (user.isPresent()) {
             trainingDefinition.addAuthor(user.get());
         } else {
-            UserRef newUser = new UserRef(userManagementServiceApi.getLoggedInUserRefId());
+            User newUser = new User(userManagementServiceApi.getLoggedInUserRefId());
             trainingDefinition.addAuthor(newUser);
         }
         trainingDefinition.setLastEdited(getCurrentTimeInUTC());

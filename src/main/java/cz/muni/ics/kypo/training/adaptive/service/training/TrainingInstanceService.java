@@ -2,7 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.domain.AccessToken;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
@@ -203,12 +203,12 @@ public class TrainingInstanceService {
     }
 
     private void addLoggedInUserAsOrganizerToTrainingInstance(TrainingInstance trainingInstance) {
-        Optional<UserRef> authorOfTrainingInstance = organizerRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
+        Optional<User> authorOfTrainingInstance = organizerRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
         if (authorOfTrainingInstance.isPresent()) {
             trainingInstance.addOrganizer(authorOfTrainingInstance.get());
         } else {
-            UserRef userRef = new UserRef(userManagementServiceApi.getLoggedInUserRefId());
-            trainingInstance.addOrganizer(organizerRefRepository.save(userRef));
+            User user = new User(userManagementServiceApi.getLoggedInUserRefId());
+            trainingInstance.addOrganizer(organizerRefRepository.save(user));
         }
     }
 
@@ -270,9 +270,9 @@ public class TrainingInstanceService {
      * Find UserRefs by userRefId
      *
      * @param usersRefId of wanted UserRefs
-     * @return {@link UserRef}s with corresponding userRefIds
+     * @return {@link User}s with corresponding userRefIds
      */
-    public Set<UserRef> findUserRefsByUserRefIds(Set<Long> usersRefId) {
+    public Set<User> findUserRefsByUserRefIds(Set<Long> usersRefId) {
         return organizerRefRepository.findUsers(usersRefId);
     }
 

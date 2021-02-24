@@ -8,7 +8,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.security.IsDesignerOrOrgan
 import cz.muni.ics.kypo.training.adaptive.annotations.security.IsOrganizerOrAdmin;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
@@ -204,7 +204,7 @@ public class ExportImportFacade {
             TrainingInstanceArchiveDTO archivedInstance = exportImportMapper.mapToDTO(trainingInstance);
             archivedInstance.setDefinitionId(trainingInstance.getTrainingDefinition().getId());
             Set<Long> organizersRefIds = trainingInstance.getOrganizers().stream()
-                    .map(UserRef::getUserRefId)
+                    .map(User::getUserRefId)
                     .collect(Collectors.toSet());
             archivedInstance.setOrganizersRefIds(new HashSet<>(organizersRefIds));
 

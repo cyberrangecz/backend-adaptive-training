@@ -3,7 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.repository.training;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import cz.muni.ics.kypo.training.adaptive.domain.QUserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.QUser;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import org.springframework.data.domain.Page;
@@ -39,7 +39,7 @@ public class TrainingInstanceRepositoryImpl extends QuerydslRepositorySupport im
     public Page<TrainingInstance> findAll(Predicate predicate, Pageable pageable, Long loggedInUserId) {
         Objects.requireNonNull(loggedInUserId, "Input logged in user ID must not be null.");
         QTrainingInstance trainingInstance = QTrainingInstance.trainingInstance;
-        QUserRef organizers = new QUserRef("organizers");
+        QUser organizers = new QUser("organizers");
 
         JPQLQuery<TrainingInstance> query = new JPAQueryFactory(entityManager).selectFrom(trainingInstance).distinct()
                 .leftJoin(trainingInstance.organizers, organizers)

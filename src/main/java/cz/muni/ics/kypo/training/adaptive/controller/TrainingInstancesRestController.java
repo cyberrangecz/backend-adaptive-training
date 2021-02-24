@@ -41,8 +41,8 @@ import java.util.Set;
 @RequestMapping(path = "/training-instances", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TrainingInstancesRestController {
 
-    private TrainingInstanceFacade trainingInstanceFacade;
-    private ObjectMapper objectMapper;
+    private final TrainingInstanceFacade trainingInstanceFacade;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Training instances rest controller.

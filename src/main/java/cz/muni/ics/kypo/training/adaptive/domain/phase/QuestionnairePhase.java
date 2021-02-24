@@ -13,14 +13,23 @@ import java.util.List;
 public class QuestionnairePhase extends AbstractPhase {
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "questionnaire_type")
     private QuestionnaireType questionnaireType;
-
     @OrderBy
-    @OneToMany(mappedBy = "questionnairePhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "questionnairePhase",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<Question> questions = new ArrayList<>();
-
     @OrderBy
-    @OneToMany(mappedBy = "questionnairePhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "questionnairePhase",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public List<Question> getQuestions() {

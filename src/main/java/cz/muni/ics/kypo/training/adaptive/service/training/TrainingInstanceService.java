@@ -36,11 +36,11 @@ public class TrainingInstanceService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingInstanceService.class);
     private final Random random = new Random();
-    private TrainingInstanceRepository trainingInstanceRepository;
-    private TrainingRunRepository trainingRunRepository;
-    private AccessTokenRepository accessTokenRepository;
-    private UserRefRepository organizerRefRepository;
-    private UserManagementServiceApi userManagementServiceApi;
+    private final TrainingInstanceRepository trainingInstanceRepository;
+    private final TrainingRunRepository trainingRunRepository;
+    private final AccessTokenRepository accessTokenRepository;
+    private final UserRefRepository organizerRefRepository;
+    private final UserManagementServiceApi userManagementServiceApi;
 
     /**
      * Instantiates a new Training instance service.

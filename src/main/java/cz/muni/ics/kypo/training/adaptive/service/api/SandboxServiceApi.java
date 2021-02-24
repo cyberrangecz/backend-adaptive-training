@@ -24,7 +24,7 @@ import reactor.core.publisher.Mono;
 public class SandboxServiceApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(SandboxServiceApi.class);
-    private WebClient sandboxServiceWebClient;
+    private final WebClient sandboxServiceWebClient;
 
 
     /**

@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.mapping.mapstruct;
+package cz.muni.ics.kypo.training.adaptive.mapping;
 
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;

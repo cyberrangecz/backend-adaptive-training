@@ -23,7 +23,6 @@ public class PhaseService {
 
     public static final String PHASE_NOT_FOUND = "Phase not found.";
 
-
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final TrainingPhaseService trainingPhaseService;
     private final TrainingDefinitionRepository trainingDefinitionRepository;
@@ -106,5 +105,4 @@ public class PhaseService {
     private LocalDateTime getCurrentTimeInUTC() {
         return LocalDateTime.now(Clock.systemUTC());
     }
-
 }

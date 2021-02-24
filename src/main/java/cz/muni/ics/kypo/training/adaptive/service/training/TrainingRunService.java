@@ -42,15 +42,15 @@ public class TrainingRunService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingRunService.class);
 
-    private SandboxServiceApi sandboxServiceApi;
-    private TrainingRunRepository trainingRunRepository;
-    private AbstractPhaseRepository abstractPhaseRepository;
-    private TrainingInstanceRepository trainingInstanceRepository;
-    private UserRefRepository participantRefRepository;
-    private AuditEventsService auditEventsService;
-    private ElasticsearchServiceApi elasticsearchServiceApi;
-    private UserManagementServiceApi userManagementServiceApi;
-    private TRAcquisitionLockRepository trAcquisitionLockRepository;
+    private final SandboxServiceApi sandboxServiceApi;
+    private final TrainingRunRepository trainingRunRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
+    private final TrainingInstanceRepository trainingInstanceRepository;
+    private final UserRefRepository participantRefRepository;
+    private final AuditEventsService auditEventsService;
+    private final ElasticsearchServiceApi elasticsearchServiceApi;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final TRAcquisitionLockRepository trAcquisitionLockRepository;
 
     /**
      * Instantiates a new Training run service.

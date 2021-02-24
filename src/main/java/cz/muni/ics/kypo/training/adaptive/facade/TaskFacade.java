@@ -11,8 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TaskMapper;
-import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
+import cz.muni.ics.kypo.training.adaptive.mapping.TaskMapper;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class TaskFacade {
 
     private final TaskService taskService;
     private final PhaseService phaseService;
-    private TaskMapper taskMapper;
+    private final TaskMapper taskMapper;
 
     @Autowired
     public TaskFacade(TaskService taskService,

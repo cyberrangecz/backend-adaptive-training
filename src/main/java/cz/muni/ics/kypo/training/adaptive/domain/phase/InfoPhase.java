@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
@@ -9,6 +10,7 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "phase_id")
 public class InfoPhase extends AbstractPhase {
 
+    @Column(name = "content")
     private String content;
 
     public String getContent() {

@@ -9,14 +9,23 @@ import java.io.Serializable;
 public class QuestionPhaseResult implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionPhaseResultGenerator")
-    @SequenceGenerator(name = "questionPhaseResultGenerator", sequenceName = "question_phase_result_seq")
-    @Column(name = "question_phase_result_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "questionPhaseResultGenerator"
+    )
+    @SequenceGenerator(
+            name = "questionPhaseResultGenerator",
+            sequenceName = "question_phase_result_seq"
+    )
+    @Column(
+            name = "question_phase_result_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-
     private Long trainingRunId;
+    @Column(name = "achieved_result")
     private int achievedResult;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_phase_relation_id")
     private QuestionPhaseRelation questionPhaseRelation;

@@ -12,7 +12,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.CloneMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.CloneMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
@@ -39,15 +39,15 @@ public class TrainingDefinitionService {
     public static final String ARCHIVED_OR_RELEASED = "Cannot edit released or archived training definition.";
     private static final Logger LOG = LoggerFactory.getLogger(TrainingDefinitionService.class);
     private static final String PHASE_NOT_FOUND = "Phase not found.";
-    private TrainingDefinitionRepository trainingDefinitionRepository;
-    private TrainingInstanceRepository trainingInstanceRepository;
-    private AbstractPhaseRepository abstractPhaseRepository;
-    private TrainingPhaseRepository trainingPhaseRepository;
-    private InfoPhaseRepository infoPhaseRepository;
-    private QuestionnairePhaseRepository questionnairePhaseRepository;
-    private UserRefRepository userRefRepository;
-    private UserManagementServiceApi userManagementServiceApi;
-    private CloneMapper cloneMapper;
+    private final TrainingDefinitionRepository trainingDefinitionRepository;
+    private final TrainingInstanceRepository trainingInstanceRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
+    private final TrainingPhaseRepository trainingPhaseRepository;
+    private final InfoPhaseRepository infoPhaseRepository;
+    private final QuestionnairePhaseRepository questionnairePhaseRepository;
+    private final UserRefRepository userRefRepository;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final CloneMapper cloneMapper;
 
     /**
      * Instantiates a new Training definition service.

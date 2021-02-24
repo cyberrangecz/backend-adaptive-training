@@ -19,8 +19,8 @@ import cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.PhaseMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingDefinitionMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
 import cz.muni.ics.kypo.training.adaptive.service.UserService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
@@ -48,12 +48,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class TrainingDefinitionFacade {
 
-    private TrainingDefinitionService trainingDefinitionService;
-    private UserService userService;
-    private UserManagementServiceApi userManagementServiceApi;
-    private SecurityService securityService;
-    private TrainingDefinitionMapper trainingDefinitionMapper;
-    private PhaseMapper phaseMapper;
+    private final TrainingDefinitionService trainingDefinitionService;
+    private final UserService userService;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final SecurityService securityService;
+    private final TrainingDefinitionMapper trainingDefinitionMapper;
+    private final PhaseMapper phaseMapper;
 
     /**
      * Instantiates a new Training definition facade.

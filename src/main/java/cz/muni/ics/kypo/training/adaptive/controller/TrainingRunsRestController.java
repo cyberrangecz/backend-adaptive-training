@@ -11,7 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
-import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionnairePhaseAnswersDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.ValidateAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
@@ -48,8 +48,8 @@ import java.util.List;
 @Validated
 public class TrainingRunsRestController {
 
-    private TrainingRunFacade trainingRunFacade;
-    private ObjectMapper objectMapper;
+    private final TrainingRunFacade trainingRunFacade;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Training runs rest controller.

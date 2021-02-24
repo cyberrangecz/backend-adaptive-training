@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -15,14 +16,28 @@ import java.util.Objects;
                 query = "SELECT at FROM AccessToken at WHERE at.accessToken = :accessToken"
         ),
 })
-public class AccessToken {
+public class AccessToken implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accessTokenGenerator")
-    @SequenceGenerator(name = "accessTokenGenerator", sequenceName = "access_token_seq")
-    @Column(name = "access_token_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "accessTokenGenerator"
+    )
+    @SequenceGenerator(
+            name = "accessTokenGenerator",
+            sequenceName = "access_token_seq"
+    )
+    @Column(
+            name = "access_token_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "access_token", nullable = false, unique = true)
+    @Column(
+            name = "access_token",
+            nullable = false,
+            unique = true
+    )
     private String accessToken;
 
     /**

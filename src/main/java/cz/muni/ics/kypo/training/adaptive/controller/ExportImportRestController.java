@@ -34,8 +34,8 @@ import javax.validation.Valid;
 @RestController
 public class ExportImportRestController {
 
-    private ExportImportFacade exportImportFacade;
-    private ObjectMapper objectMapper;
+    private final ExportImportFacade exportImportFacade;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Export import rest controller.

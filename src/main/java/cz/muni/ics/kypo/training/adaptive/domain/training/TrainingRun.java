@@ -7,6 +7,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -92,37 +93,72 @@ import java.util.Objects;
                         "WHERE td.id = :trainingDefinitionId"
         )
 })
-public class TrainingRun {
+public class TrainingRun implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingRunGenerator")
-    @SequenceGenerator(name = "trainingRunGenerator", sequenceName = "training_run_seq")
-    @Column(name = "training_run_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "trainingRunGenerator"
+    )
+    @SequenceGenerator(
+            name = "trainingRunGenerator",
+            sequenceName = "training_run_seq"
+    )
+    @Column(
+            name = "training_run_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "start_time", nullable = false)
+    @Column(
+            name = "start_time",
+            nullable = false
+    )
     private LocalDateTime startTime;
-    @Column(name = "end_time", nullable = false)
+    @Column(
+            name = "end_time",
+            nullable = false
+    )
     private LocalDateTime endTime;
-    @Column(name = "state", length = 128, nullable = false)
+    @Column(
+            name = "state",
+            length = 128,
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private TRState state;
-    @Column(name = "incorrect_answer_count", nullable = false)
+    @Column(
+            name = "incorrect_answer_count",
+            nullable = false
+    )
     private int incorrectAnswerCount;
-    @Column(name = "solution_taken", nullable = false)
+    @Column(
+            name = "solution_taken",
+            nullable = false
+    )
     private boolean solutionTaken;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
     @JoinColumn(name = "current_phase_id")
     private AbstractPhase currentPhase;
-    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_task_id")
     private Task currentTask;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            optional = false
+    )
     @JoinColumn(name = "training_instance_id")
     private TrainingInstance trainingInstance;
     @Column(name = "sandbox_instance_ref_id")
     private Long sandboxInstanceRefId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false
+    )
     private User participantRef;
     @Column(name = "phase_answered")
     private boolean phaseAnswered;

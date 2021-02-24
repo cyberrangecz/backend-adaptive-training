@@ -4,6 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
@@ -31,18 +32,37 @@ import java.util.Set;
                         "WHERE ti.id = :trainingInstanceId"
         )
 })
-public class User {
+public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userGenerator")
-    @SequenceGenerator(name = "userGenerator", sequenceName = "user_seq")
-    @Column(name = "user_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "userGenerator"
+    )
+    @SequenceGenerator(
+            name = "userGenerator",
+            sequenceName = "user_seq"
+    )
+    @Column(
+            name = "user_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "user_ref_id", nullable = false)
+    @Column(
+            name = "user_ref_id",
+            nullable = false
+    )
     private Long userRefId;
-    @ManyToMany(mappedBy = "organizers", fetch = FetchType.LAZY)
+    @ManyToMany(
+            mappedBy = "organizers",
+            fetch = FetchType.LAZY
+    )
     private Set<TrainingInstance> trainingInstances = new HashSet<>();
-    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
+    @ManyToMany(
+            mappedBy = "authors",
+            fetch = FetchType.LAZY
+    )
     private Set<TrainingDefinition> trainingDefinitions = new HashSet<>();
 
     /**

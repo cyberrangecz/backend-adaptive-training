@@ -19,12 +19,10 @@ public abstract class AbstractPhase implements Serializable {
     @SequenceGenerator(name = "phaseGenerator", sequenceName = "phase_seq")
     @Column(name = "phase_id", nullable = false, unique = true)
     private Long id;
-
+    @Column(name = "title")
     private String title;
-
     @Column(name = "order_in_training_definition", nullable = false)
     private Integer order;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_definition_id")
     private TrainingDefinition trainingDefinition;

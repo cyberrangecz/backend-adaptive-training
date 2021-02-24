@@ -4,6 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -25,26 +26,47 @@ import java.util.*;
                         "WHERE aut.userRefId = :userRefId  AND td.state = 'UNRELEASED'"
         )
 })
-public class TrainingDefinition {
+public class TrainingDefinition implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingDefinitionGenerator")
-    @SequenceGenerator(name = "trainingDefinitionGenerator", sequenceName = "training_definition_seq")
-    @Column(name = "training_definition_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "trainingDefinitionGenerator"
+    )
+    @SequenceGenerator(
+            name = "trainingDefinitionGenerator",
+            sequenceName = "training_definition_seq"
+    )
+    @Column(
+            name = "training_definition_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "title", nullable = false)
+    @Column(
+            name = "title",
+            nullable = false
+    )
     private String title;
-    @Column(name = "description", nullable = true)
+    @Column(name = "description")
     private String description;
-    @Column(name = "prerequisites", nullable = true)
+    @Column(name = "prerequisites")
     private String[] prerequisites;
-    @Column(name = "outcomes", nullable = true)
+    @Column(name = "outcomes")
     private String[] outcomes;
-    @Column(name = "state", length = 128, nullable = false)
+    @Column(
+            name = "state",
+            length = 128,
+            nullable = false
+    )
     @Enumerated(EnumType.STRING)
     private TDState state;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "training_definition_user",
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST
+    )
+    @JoinTable(
+            name = "training_definition_user",
             joinColumns = @JoinColumn(name = "training_definition_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )

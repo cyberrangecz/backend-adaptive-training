@@ -17,8 +17,8 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.MicroserviceApiException;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingInstanceMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingRunMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TrainingInstanceMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
 import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
 import cz.muni.ics.kypo.training.adaptive.service.UserService;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
@@ -46,16 +46,16 @@ import java.util.stream.Collectors;
 @Service
 public class TrainingInstanceFacade {
 
-    private TrainingInstanceService trainingInstanceService;
-    private TrainingDefinitionService trainingDefinitionService;
-    private TrainingRunService trainingRunService;
-    private UserService userService;
-    private UserManagementServiceApi userManagementServiceApi;
-    private SecurityService securityService;
-    private SandboxServiceApi sandboxServiceApi;
-    private ElasticsearchServiceApi elasticsearchServiceApi;
-    private TrainingInstanceMapper trainingInstanceMapper;
-    private TrainingRunMapper trainingRunMapper;
+    private final TrainingInstanceService trainingInstanceService;
+    private final TrainingDefinitionService trainingDefinitionService;
+    private final TrainingRunService trainingRunService;
+    private final UserService userService;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final SecurityService securityService;
+    private final SandboxServiceApi sandboxServiceApi;
+    private final ElasticsearchServiceApi elasticsearchServiceApi;
+    private final TrainingInstanceMapper trainingInstanceMapper;
+    private final TrainingRunMapper trainingRunMapper;
 
 
     /**

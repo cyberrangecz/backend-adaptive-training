@@ -10,20 +10,35 @@ import java.util.List;
 @Table(name = "training_phase")
 public class TrainingPhase extends AbstractPhase {
 
+    @Column(name = "estimated_duration")
     private int estimatedDuration;
+    @Column(name = "allowed_commands")
     private int allowedCommands;
+    @Column(name = "allowed_wrong_answers")
     private int allowedWrongAnswers;
-
     @OrderBy
-    @OneToMany(mappedBy = "trainingPhase", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "trainingPhase",
+            cascade = {CascadeType.REMOVE, CascadeType.PERSIST},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<Task> tasks = new ArrayList<>();
-
     @OrderBy
-    @OneToMany(mappedBy = "trainingPhase", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<DecisionMatrixRow> decisionMatrix;
-
+    @OneToMany(
+            mappedBy = "trainingPhase",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<DecisionMatrixRow> decisionMatrix = new ArrayList<>();
     @OrderBy
-    @OneToMany(mappedBy = "relatedTrainingPhase", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "relatedTrainingPhase",
+            cascade = CascadeType.REMOVE,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
 
     public int getEstimatedDuration() {

@@ -8,17 +8,26 @@ import java.io.Serializable;
 public class QuestionChoice implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionChoiceGenerator")
-    @SequenceGenerator(name = "questionChoiceGenerator", sequenceName = "question_choice_seq")
-    @Column(name = "question_choice_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "questionChoiceGenerator"
+    )
+    @SequenceGenerator(
+            name = "questionChoiceGenerator",
+            sequenceName = "question_choice_seq"
+    )
+    @Column(
+            name = "question_choice_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-
+    @Column(name = "text")
     private String text;
+    @Column(name = "correct")
     private boolean correct;
-
-    @Column(name = "order_in_question", nullable = false)
-    private Integer order;
-
+    @Column(name = "order_in_question")
+    private int order;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     private Question question;
@@ -47,11 +56,11 @@ public class QuestionChoice implements Serializable {
         this.correct = correct;
     }
 
-    public Integer getOrder() {
+    public int getOrder() {
         return order;
     }
 
-    public void setOrder(Integer order) {
+    public void setOrder(int order) {
         this.order = order;
     }
 

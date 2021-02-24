@@ -20,7 +20,7 @@ public class AuditService {
 
     private static Logger logger = LoggerFactory.getLogger(AuditService.class);
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Audit service.

@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.domain.training;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -69,28 +70,55 @@ import java.util.Set;
                 query = "SELECT (COUNT(ti) > 0) FROM TrainingInstance ti WHERE ti.id = :instanceId AND ti.endTime < :currentTime"
         )
 })
-public class TrainingInstance {
+public class TrainingInstance implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingInstanceGenerator")
-    @SequenceGenerator(name = "trainingInstanceGenerator", sequenceName = "training_instance_seq")
-    @Column(name = "training_instance_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "trainingInstanceGenerator"
+    )
+    @SequenceGenerator(
+            name = "trainingInstanceGenerator",
+            sequenceName = "training_instance_seq"
+    )
+    @Column(
+            name = "training_instance_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "start_time", nullable = false)
+    @Column(
+            name = "start_time",
+            nullable = false
+    )
     private LocalDateTime startTime;
-    @Column(name = "end_time", nullable = false)
+    @Column(
+            name = "end_time",
+            nullable = false
+    )
     private LocalDateTime endTime;
-    @Column(name = "title", nullable = false)
+    @Column(
+            name = "title",
+            nullable = false
+    )
     private String title;
     @Column(name = "pool_id")
     private Long poolId;
-    @Column(name = "access_token", nullable = false, unique = true)
+    @Column(
+            name = "access_token",
+            nullable = false,
+            unique = true
+    )
     private String accessToken;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_definition_id")
     private TrainingDefinition trainingDefinition;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "training_instance_user",
+    @ManyToMany(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.PERSIST
+    )
+    @JoinTable(
+            name = "training_instance_user",
             joinColumns = @JoinColumn(name = "training_instance_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )

@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.domain;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -16,12 +17,22 @@ import java.util.Objects;
                 query = "DELETE FROM TRAcquisitionLock tral WHERE tral.participantRefId = :participantRefId AND tral.trainingInstanceId = :trainingInstanceId"
         )
 })
-public class TRAcquisitionLock {
+public class TRAcquisitionLock implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trAcquisitionLockGenerator")
-    @SequenceGenerator(name = "trAcquisitionLockGenerator", sequenceName = "tr_acquisition_lock_seq")
-    @Column(name = "training_run_acquisition_lock_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "trAcquisitionLockGenerator"
+    )
+    @SequenceGenerator(
+            name = "trAcquisitionLockGenerator",
+            sequenceName = "tr_acquisition_lock_seq"
+    )
+    @Column(
+            name = "training_run_acquisition_lock_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
     @Column(name = "participant_ref_id")
     private Long participantRefId;

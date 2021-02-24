@@ -25,10 +25,10 @@ import org.springframework.transaction.annotation.Propagation;
 @TransactionalRO(propagation = Propagation.REQUIRES_NEW)
 public class SecurityService {
 
-    private UserManagementServiceApi userManagementServiceApi;
-    private TrainingRunRepository trainingRunRepository;
-    private TrainingDefinitionRepository trainingDefinitionRepository;
-    private TrainingInstanceRepository trainingInstanceRepository;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final TrainingRunRepository trainingRunRepository;
+    private final TrainingDefinitionRepository trainingDefinitionRepository;
+    private final TrainingInstanceRepository trainingInstanceRepository;
 
     /**
      * Instantiates a new Security service.

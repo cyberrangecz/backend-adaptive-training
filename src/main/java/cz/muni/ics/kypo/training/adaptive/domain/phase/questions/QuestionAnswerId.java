@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
 
-import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;

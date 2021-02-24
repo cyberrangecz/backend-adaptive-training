@@ -20,16 +20,16 @@ import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
-import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionAnswerDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionnairePhaseAnswersDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.Actions;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.PhaseMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingRunMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
 import cz.muni.ics.kypo.training.adaptive.service.QuestionnaireEvaluationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
@@ -60,8 +60,6 @@ public class TrainingRunFacade {
     private final TrainingRunMapper trainingRunMapper;
     private final PhaseMapper phaseMapper;
     private final QuestionnaireEvaluationService questionnaireEvaluationService;
-
-
 
     /**
      * Instantiates a new Training run facade.

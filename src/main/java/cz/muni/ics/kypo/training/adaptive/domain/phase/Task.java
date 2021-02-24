@@ -9,22 +9,36 @@ import java.io.Serializable;
 public class Task implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "taskGenerator")
-    @SequenceGenerator(name = "taskGenerator", sequenceName = "task_seq")
-    @Column(name = "task_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "taskGenerator"
+    )
+    @SequenceGenerator(
+            name = "taskGenerator",
+            sequenceName = "task_seq"
+    )
+    @Column(
+            name = "task_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-
+    @Column(name = "title")
     private String title;
+    @Column(name = "content")
     private String content;
+    @Column(name = "answer")
     private String answer;
+    @Column(name = "solution")
     private String solution;
+    @Column(name = "incorrect_answer_limit")
     private int incorrectAnswerLimit;
+    @Column(name = "modify_sandbox")
     private boolean modifySandbox;
+    @Column(name = "sandbox_change_expected_duration")
     private int sandboxChangeExpectedDuration;
-
     @Column(name = "order_in_training_phase", nullable = false)
     private Integer order;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_phase_id")
     private TrainingPhase trainingPhase;

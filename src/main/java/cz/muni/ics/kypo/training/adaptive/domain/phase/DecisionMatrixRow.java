@@ -9,18 +9,35 @@ import java.io.Serializable;
 public class DecisionMatrixRow implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "decisionMatrixRowGenerator")
-    @SequenceGenerator(name = "decisionMatrixRowGenerator", sequenceName = "decision_matrix_row_seq")
-    @Column(name = "decision_matrix_row_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "decisionMatrixRowGenerator"
+    )
+    @SequenceGenerator(
+            name = "decisionMatrixRowGenerator",
+            sequenceName = "decision_matrix_row_seq"
+    )
+    @Column(
+            name = "decision_matrix_row_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-    @Column(name = "order_in_training_phase", nullable = false)
+    @Column(
+            name = "order_in_training_phase",
+            nullable = false
+    )
     private int order;
+    @Column(name = "assessment_answered")
     private double assessmentAnswered;
+    @Column(name = "keyword_used")
     private double keywordUsed;
+    @Column(name = "completed_in_time")
     private double completedInTime;
+    @Column(name = "solution_displayed")
     private double solutionDisplayed;
+    @Column(name = "wrong_answers")
     private double wrongAnswers;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_phase_id")
     private TrainingPhase trainingPhase;

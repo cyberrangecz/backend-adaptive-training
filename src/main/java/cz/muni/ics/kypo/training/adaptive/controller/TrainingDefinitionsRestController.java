@@ -42,8 +42,8 @@ import java.util.Set;
 @RequestMapping(path = "/training-definitions", produces = MediaType.APPLICATION_JSON_VALUE)
 public class TrainingDefinitionsRestController {
 
-    private TrainingDefinitionFacade trainingDefinitionFacade;
-    private ObjectMapper objectMapper;
+    private final TrainingDefinitionFacade trainingDefinitionFacade;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Training Definitions rest controller.

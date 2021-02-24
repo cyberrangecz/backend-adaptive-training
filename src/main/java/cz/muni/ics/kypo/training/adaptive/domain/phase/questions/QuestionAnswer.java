@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -12,6 +13,7 @@ public class QuestionAnswer implements Serializable {
 
     @EmbeddedId
     private QuestionAnswerId questionAnswerId;
+    @Column(name = "answer")
     private String answer;
 
     public QuestionAnswerId getQuestionAnswerId() {

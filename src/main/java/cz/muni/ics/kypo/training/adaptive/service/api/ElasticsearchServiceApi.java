@@ -20,7 +20,7 @@ import java.util.Map;
 public class ElasticsearchServiceApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(ElasticsearchServiceApi.class);
-    private WebClient elasticsearchServiceWebClient;
+    private final WebClient elasticsearchServiceWebClient;
 
     /**
      * Instantiates a new ElasticSearchService API.

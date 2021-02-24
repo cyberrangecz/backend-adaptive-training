@@ -16,8 +16,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.PhaseMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.QuestionPhaseRelationMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.QuestionPhaseRelationMapper;
 import cz.muni.ics.kypo.training.adaptive.service.phases.InfoPhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.QuestionnairePhaseService;
@@ -39,8 +39,8 @@ public class PhaseFacade {
     private final InfoPhaseService infoPhaseService;
     private final QuestionnairePhaseService questionnairePhaseService;
     private final TrainingPhaseService trainingPhaseService;
-    private PhaseMapper phaseMapper;
-    private QuestionPhaseRelationMapper questionPhaseRelationMapper;
+    private final PhaseMapper phaseMapper;
+    private final QuestionPhaseRelationMapper questionPhaseRelationMapper;
 
     @Autowired
     public PhaseFacade(PhaseService phaseService,

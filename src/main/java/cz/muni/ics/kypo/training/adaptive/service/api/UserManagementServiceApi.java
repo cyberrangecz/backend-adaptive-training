@@ -27,7 +27,7 @@ import java.util.Set;
 public class UserManagementServiceApi {
 
     private static final Logger LOG = LoggerFactory.getLogger(UserManagementServiceApi.class);
-    private WebClient userManagementServiceWebClient;
+    private final WebClient userManagementServiceWebClient;
 
     /**
      * Instantiates a new User Management Api.

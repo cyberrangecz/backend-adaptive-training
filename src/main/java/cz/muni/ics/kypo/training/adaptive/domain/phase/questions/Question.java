@@ -12,28 +12,42 @@ import java.util.*;
 public class Question implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionGenerator")
-    @SequenceGenerator(name = "questionGenerator", sequenceName = "question_seq")
-    @Column(name = "question_id", nullable = false, unique = true)
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "questionGenerator"
+    )
+    @SequenceGenerator(
+            name = "questionGenerator",
+            sequenceName = "question_seq"
+    )
+    @Column(
+            name = "question_id",
+            nullable = false,
+            unique = true
+    )
     private Long id;
-
     @Enumerated(EnumType.STRING)
+    @Column(name = "question_type")
     private QuestionType questionType;
-
+    @Column(name = "text")
     private String text;
-
     @Column(name = "order_in_questionnaire")
     private int order;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionnaire_phase_id")
     private QuestionnairePhase questionnairePhase;
-
     @OrderBy
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(
+            mappedBy = "question",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
     private List<QuestionChoice> choices = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "questions", fetch = FetchType.LAZY)
+    @ManyToMany(
+            mappedBy = "questions",
+            fetch = FetchType.LAZY
+    )
     private Set<QuestionPhaseRelation> questionPhaseRelations = new HashSet<>();
 
     public Long getId() {

@@ -26,13 +26,13 @@ import java.util.Set;
 @Service
 public class ExportImportService {
 
-    private TrainingDefinitionRepository trainingDefinitionRepository;
-    private AbstractPhaseRepository abstractPhaseRepository;
-    private QuestionPhaseRelationRepository questionPhaseRelationRepository;
-    private QuestionRepository questionRepository;
-    private TrainingPhaseRepository trainingPhaseRepository;
-    private TrainingInstanceRepository trainingInstanceRepository;
-    private TrainingRunRepository trainingRunRepository;
+    private final TrainingDefinitionRepository trainingDefinitionRepository;
+    private final AbstractPhaseRepository abstractPhaseRepository;
+    private final QuestionPhaseRelationRepository questionPhaseRelationRepository;
+    private final QuestionRepository questionRepository;
+    private final TrainingPhaseRepository trainingPhaseRepository;
+    private final TrainingInstanceRepository trainingInstanceRepository;
+    private final TrainingRunRepository trainingRunRepository;
 
     /**
      * Instantiates a new Export import service.

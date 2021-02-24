@@ -31,10 +31,10 @@ import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinit
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.ExportImportMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.PhaseMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.QuestionPhaseRelationMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingDefinitionMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.ExportImportMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.QuestionPhaseRelationMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.ExportImportService;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
@@ -65,15 +65,15 @@ public class ExportImportFacade {
     private static final String EVENTS_FOLDER = "training_events";
     private static final String RUNS_FOLDER = "training_runs";
 
-    private ExportImportService exportImportService;
-    private TrainingDefinitionService trainingDefinitionService;
-    private SandboxServiceApi sandboxServiceApi;
-    private ElasticsearchServiceApi elasticsearchServiceApi;
-    private ExportImportMapper exportImportMapper;
-    private PhaseMapper phaseMapper;
-    private QuestionPhaseRelationMapper questionPhaseRelationMapper;
-    private TrainingDefinitionMapper trainingDefinitionMapper;
-    private ObjectMapper objectMapper;
+    private final ExportImportService exportImportService;
+    private final TrainingDefinitionService trainingDefinitionService;
+    private final SandboxServiceApi sandboxServiceApi;
+    private final ElasticsearchServiceApi elasticsearchServiceApi;
+    private final ExportImportMapper exportImportMapper;
+    private final PhaseMapper phaseMapper;
+    private final QuestionPhaseRelationMapper questionPhaseRelationMapper;
+    private final TrainingDefinitionMapper trainingDefinitionMapper;
+    private final ObjectMapper objectMapper;
 
     /**
      * Instantiates a new Export import facade.

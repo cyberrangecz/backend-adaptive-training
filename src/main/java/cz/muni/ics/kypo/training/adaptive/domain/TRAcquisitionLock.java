@@ -16,8 +16,13 @@ import java.util.Objects;
                 query = "DELETE FROM TRAcquisitionLock tral WHERE tral.participantRefId = :participantRefId AND tral.trainingInstanceId = :trainingInstanceId"
         )
 })
-public class TRAcquisitionLock extends AbstractEntity<Long> {
+public class TRAcquisitionLock {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trAcquisitionLockGenerator")
+    @SequenceGenerator(name = "trAcquisitionLockGenerator", sequenceName = "tr_acquisition_lock_seq")
+    @Column(name = "training_run_acquisition_lock_id", nullable = false, unique = true)
+    private Long id;
     @Column(name = "participant_ref_id")
     private Long participantRefId;
     @Column(name = "training_instance_id")
@@ -44,12 +49,22 @@ public class TRAcquisitionLock extends AbstractEntity<Long> {
         this.creationTime = creationTime;
     }
 
+    /**
+     * Gets unique identification number of tr acquisition lock
+     *
+     * @return the id
+     */
     public Long getId() {
-        return super.getId();
+        return id;
     }
 
+    /**
+     * Sets unique identification number of tr acquisition lock
+     *
+     * @param id the id
+     */
     public void setId(Long id) {
-        super.setId(id);
+        this.id = id;
     }
 
     /**
@@ -124,7 +139,7 @@ public class TRAcquisitionLock extends AbstractEntity<Long> {
     @Override
     public String toString() {
         return "TRAcquisitionLock{" +
-                "id=" + super.getId() +
+                "id=" + id +
                 ", participantRefId=" + participantRefId +
                 ", trainingInstanceId=" + trainingInstanceId +
                 ", creationTime=" + creationTime +

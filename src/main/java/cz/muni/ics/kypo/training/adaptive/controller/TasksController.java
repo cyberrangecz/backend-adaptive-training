@@ -15,8 +15,6 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/training-definitions/{definitionId}/phases/{phaseId}/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Api(value = "/training-definitions/{definitionId}/tasks",
         tags = "Tasks",
         consumes = MediaType.APPLICATION_JSON_VALUE,

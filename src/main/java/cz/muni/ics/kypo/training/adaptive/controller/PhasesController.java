@@ -21,8 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/training-definitions/{definitionId}/phases", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "*", allowCredentials = "true", allowedHeaders = "*",
-        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @Api(value = "/training-definitions/{definitionId}/phase",
         tags = "Phases",
         consumes = MediaType.APPLICATION_JSON_VALUE,

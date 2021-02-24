@@ -95,4 +95,19 @@ public class Question implements Serializable {
     public void addQuestionPhaseRelation(QuestionPhaseRelation questionPhaseRelation) {
         this.questionPhaseRelations.add(questionPhaseRelation);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Question)) return false;
+        Question question = (Question) o;
+        return getOrder() == question.getOrder() &&
+                getQuestionType() == question.getQuestionType() &&
+                Objects.equals(getText(), question.getText());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getQuestionType(), getText(), getOrder());
+    }
 }

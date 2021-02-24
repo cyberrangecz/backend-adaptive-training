@@ -4,3 +4,4 @@ CREATE SEQUENCE question_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE question_choice_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE question_phase_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE decision_matrix_row_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE question_phase_result_seq AS bigint INCREMENT 50 MINVALUE 1;

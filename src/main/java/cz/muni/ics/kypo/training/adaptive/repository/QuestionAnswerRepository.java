@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionAnswer;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionAnswerId;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswerId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

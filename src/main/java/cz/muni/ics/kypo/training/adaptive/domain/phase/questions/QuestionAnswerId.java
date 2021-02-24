@@ -1,11 +1,19 @@
-package cz.muni.ics.kypo.training.adaptive.domain;
+package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
+
+import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
 public class QuestionAnswerId implements Serializable {
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "question_id")
     private Question question;
     private Long trainingRunId;
 
@@ -36,10 +44,11 @@ public class QuestionAnswerId implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof QuestionAnswerId))
+            return false;
         QuestionAnswerId that = (QuestionAnswerId) o;
-        return Objects.equals(question, that.question) &&
-                Objects.equals(trainingRunId, that.trainingRunId);
+        return getQuestion().equals(that.getQuestion()) &&
+                getTrainingRunId().equals(that.getTrainingRunId());
     }
 
     @Override

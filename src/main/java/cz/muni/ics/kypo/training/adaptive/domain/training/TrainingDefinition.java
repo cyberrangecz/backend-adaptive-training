@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 
 import javax.persistence.*;
@@ -44,11 +44,11 @@ public class TrainingDefinition {
     @Enumerated(EnumType.STRING)
     private TDState state;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "training_definition_user_ref",
+    @JoinTable(name = "training_definition_user",
             joinColumns = @JoinColumn(name = "training_definition_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_ref_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<UserRef> authors = new HashSet<>();
+    private Set<User> authors = new HashSet<>();
     @Column(name = "show_stepper_bar", nullable = false)
     private boolean showStepperBar;
     @Column(name = "estimated_duration", nullable = true)
@@ -173,7 +173,7 @@ public class TrainingDefinition {
      *
      * @return the authors
      */
-    public Set<UserRef> getAuthors() {
+    public Set<User> getAuthors() {
         return Collections.unmodifiableSet(authors);
     }
 
@@ -182,7 +182,7 @@ public class TrainingDefinition {
      *
      * @param authors the authors
      */
-    public void setAuthors(Set<UserRef> authors) {
+    public void setAuthors(Set<User> authors) {
         this.authors = authors;
     }
 
@@ -191,7 +191,7 @@ public class TrainingDefinition {
      *
      * @param authorRef the author ref
      */
-    public void addAuthor(UserRef authorRef) {
+    public void addAuthor(User authorRef) {
         this.authors.add(authorRef);
         authorRef.addTrainingDefinition(this);
     }

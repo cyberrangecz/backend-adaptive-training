@@ -1,7 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
 
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
-
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;

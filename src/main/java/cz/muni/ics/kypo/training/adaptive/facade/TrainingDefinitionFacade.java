@@ -6,7 +6,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.security.IsDesignerOrOrgan
 import cz.muni.ics.kypo.training.adaptive.annotations.security.IsOrganizerOrAdmin;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
@@ -183,10 +183,10 @@ public class TrainingDefinitionFacade {
         trainingDefinitionService.update(mappedTrainingDefinition);
     }
 
-    private UserRef createUserRefFromDTO(UserRefDTO userToBeCreated) {
-        UserRef userRef = new UserRef();
-        userRef.setUserRefId(userToBeCreated.getUserRefId());
-        return userRef;
+    private User createUserRefFromDTO(UserRefDTO userToBeCreated) {
+        User user = new User();
+        user.setUserRefId(userToBeCreated.getUserRefId());
+        return user;
     }
 
     /**
@@ -266,7 +266,7 @@ public class TrainingDefinitionFacade {
     public PageResultResource<UserRefDTO> getAuthors(Long trainingDefinitionId, Pageable pageable, String givenName, String familyName) {
         TrainingDefinition trainingDefinition = trainingDefinitionService.findById(trainingDefinitionId);
         return userManagementServiceApi.getUserRefDTOsByUserIds(trainingDefinition.getAuthors().stream()
-                        .map(UserRef::getUserRefId)
+                        .map(User::getUserRefId)
                         .collect(Collectors.toSet()),
                 pageable, givenName, familyName);
     }
@@ -285,7 +285,7 @@ public class TrainingDefinitionFacade {
     public PageResultResource<UserRefDTO> getDesignersNotInGivenTrainingDefinition(Long trainingDefinitionId, Pageable pageable, String givenName, String familyName) {
         TrainingDefinition trainingDefinition = trainingDefinitionService.findById(trainingDefinitionId);
         Set<Long> excludedUsers = trainingDefinition.getAuthors().stream()
-                .map(UserRef::getUserRefId)
+                .map(User::getUserRefId)
                 .collect(Collectors.toSet());
         return userManagementServiceApi.getUserRefsByRoleAndNotWithIds(RoleType.ROLE_TRAINING_DESIGNER, excludedUsers, pageable, givenName, familyName);
     }
@@ -317,7 +317,7 @@ public class TrainingDefinitionFacade {
         do {
             authors = userManagementServiceApi.getUserRefDTOsByUserIds(userRefIds, PageRequest.of(page, 999), null, null);
             Set<Long> actualAuthorsIds = trainingDefinition.getAuthors().stream()
-                    .map(UserRef::getUserRefId)
+                    .map(User::getUserRefId)
                     .collect(Collectors.toSet());
             page++;
             for (UserRefDTO author : authors.getContent()) {

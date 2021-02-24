@@ -1,8 +1,8 @@
--- USER_REF
-create table user_ref (
-    id bigserial not null,
+-- USER
+create table "user" (
+    user_id bigserial not null,
     user_ref_id int8 not null,
-    primary key (id)
+    primary key (user_id)
 );
 
 -- TRAINING
@@ -19,12 +19,12 @@ create table training_definition (
     primary key (training_definition_id)
 );
 
-create table training_definition_user_ref (
+create table training_definition_user (
     training_definition_id int8 not null,
-    user_ref_id int8 not null,
-    primary key (training_definition_id, user_ref_id),
+    user_id int8 not null,
+    primary key (training_definition_id, user_id),
     foreign key (training_definition_id) references training_definition,
-    foreign key (user_ref_id) references user_ref
+    foreign key (user_id) references "user"
 );
 
 create table training_instance (
@@ -40,12 +40,12 @@ create table training_instance (
 
 );
 
-create table training_instance_user_ref (
+create table training_instance_user (
     training_instance_id int8 not null,
-    user_ref_id int8 not null,
-    primary key (training_instance_id, user_ref_id),
+    user_id int8 not null,
+    primary key (training_instance_id, user_id),
     foreign key (training_instance_id) references training_instance,
-    foreign key (user_ref_id) references user_ref
+    foreign key (user_id) references "user"
 
 );
 
@@ -60,13 +60,13 @@ create table training_run (
     state varchar(128) not null,
     current_phase_id int8 not null,
     current_task_id int8 null,
-    user_ref_id int8 not null,
+    user_id int8 not null,
     sandbox_instance_ref_id int8 null,
     training_instance_id int8 not null,
     previous_sandbox_instance_ref_id int8 null,
     primary key (training_instance_id),
     foreign key (training_instance_id) references training_instance,
-    foreign key (user_ref_id) references user_ref
+    foreign key (user_id) references "user"
 );
 
 -- PHASES
@@ -205,7 +205,7 @@ create table training_run_acquisition_lock (
     training_instance_id int8 not null,
     creation_time timestamp not null,
     primary key (training_run_acquisition_lock_id),
-    foreign key (participant_ref_id) references user_ref,
+    foreign key (participant_ref_id) references "user",
     foreign key (training_instance_id) references training_instance
 );
 

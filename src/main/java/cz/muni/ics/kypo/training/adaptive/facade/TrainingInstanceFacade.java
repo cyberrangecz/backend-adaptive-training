@@ -4,7 +4,7 @@ import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.annotations.security.IsOrganizerOrAdmin;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
@@ -165,7 +165,7 @@ public class TrainingInstanceFacade {
         do {
             organizers = userManagementServiceApi.getUserRefDTOsByUserIds(userRefIdsOfOrganizers, PageRequest.of(page, 999), null, null);
             Set<Long> actualOrganizersIds = trainingInstance.getOrganizers().stream()
-                    .map(UserRef::getUserRefId)
+                    .map(User::getUserRefId)
                     .collect(Collectors.toSet());
             page++;
             for (UserRefDTO organizer : organizers.getContent()) {
@@ -181,10 +181,10 @@ public class TrainingInstanceFacade {
         } while (organizers.getPagination().getTotalPages() != page);
     }
 
-    private UserRef createUserRefFromDTO(UserRefDTO userToBeCreated) {
-        UserRef userRef = new UserRef();
-        userRef.setUserRefId(userToBeCreated.getUserRefId());
-        return userRef;
+    private User createUserRefFromDTO(UserRefDTO userToBeCreated) {
+        User user = new User();
+        user.setUserRefId(userToBeCreated.getUserRefId());
+        return user;
     }
 
     /**
@@ -331,7 +331,7 @@ public class TrainingInstanceFacade {
     public PageResultResource<UserRefDTO> getOrganizersOfTrainingInstance(Long trainingInstanceId, Pageable pageable, String givenName, String familyName) {
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceId);
         return userManagementServiceApi.getUserRefDTOsByUserIds(trainingInstance.getOrganizers().stream()
-                .map(UserRef::getUserRefId)
+                .map(User::getUserRefId)
                 .collect(Collectors.toSet()), pageable, givenName, familyName);
     }
 
@@ -350,7 +350,7 @@ public class TrainingInstanceFacade {
     public PageResultResource<UserRefDTO> getOrganizersNotInGivenTrainingInstance(Long trainingInstanceId, Pageable pageable, String givenName, String familyName) {
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceId);
         Set<Long> excludedOrganizers = trainingInstance.getOrganizers().stream()
-                .map(UserRef::getUserRefId)
+                .map(User::getUserRefId)
                 .collect(Collectors.toSet());
         return userManagementServiceApi.getUserRefsByRoleAndNotWithIds(RoleType.ROLE_TRAINING_ORGANIZER, excludedOrganizers, pageable, givenName, familyName);
     }

@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service.api;
 
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.enums.RoleType;
@@ -42,7 +42,7 @@ public class UserManagementServiceApi {
      * Finds specific User reference by login
      *
      * @param id of wanted User reference
-     * @return {@link UserRef} with corresponding login
+     * @return {@link User} with corresponding login
      * @throws EntityNotFoundException UserRef was not found
      */
     public UserRefDTO getUserRefDTOByUserRefId(Long id) {

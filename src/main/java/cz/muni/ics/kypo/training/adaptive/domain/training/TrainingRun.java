@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
@@ -122,8 +122,8 @@ public class TrainingRun {
     @Column(name = "sandbox_instance_ref_id")
     private Long sandboxInstanceRefId;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_ref_id", nullable = false)
-    private UserRef participantRef;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User participantRef;
     @Column(name = "phase_answered")
     private boolean phaseAnswered;
     @Column(name = "previous_sandbox_instance_ref_id")
@@ -309,7 +309,7 @@ public class TrainingRun {
      *
      * @return the participant ref
      */
-    public UserRef getParticipantRef() {
+    public User getParticipantRef() {
         return participantRef;
     }
 
@@ -318,7 +318,7 @@ public class TrainingRun {
      *
      * @param participantRef the participant ref
      */
-    public void setParticipantRef(UserRef participantRef) {
+    public void setParticipantRef(User participantRef) {
         this.participantRef = participantRef;
     }
 

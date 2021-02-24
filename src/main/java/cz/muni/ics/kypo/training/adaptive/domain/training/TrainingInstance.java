@@ -1,6 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -90,11 +90,11 @@ public class TrainingInstance {
     @JoinColumn(name = "training_definition_id")
     private TrainingDefinition trainingDefinition;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "training_instance_user_ref",
+    @JoinTable(name = "training_instance_user",
             joinColumns = @JoinColumn(name = "training_instance_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_ref_id")
+            inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private Set<UserRef> organizers = new HashSet<>();
+    private Set<User> organizers = new HashSet<>();
 
     /**
      * Gets unique identification number of Training instance
@@ -227,7 +227,7 @@ public class TrainingInstance {
      *
      * @return the organizers
      */
-    public Set<UserRef> getOrganizers() {
+    public Set<User> getOrganizers() {
         return Collections.unmodifiableSet(organizers);
     }
 
@@ -236,18 +236,18 @@ public class TrainingInstance {
      *
      * @param organizers the organizers
      */
-    public void setOrganizers(Set<UserRef> organizers) {
+    public void setOrganizers(Set<User> organizers) {
         this.organizers = organizers;
     }
 
     /**
      * Adds user to the set of users that can make changes to the Training instance
      *
-     * @param userRef the user ref
+     * @param user the user ref
      */
-    public void addOrganizer(UserRef userRef) {
-        this.organizers.add(userRef);
-        userRef.addTrainingInstance(this);
+    public void addOrganizer(User user) {
+        this.organizers.add(user);
+        user.addTrainingInstance(this);
     }
 
     /**

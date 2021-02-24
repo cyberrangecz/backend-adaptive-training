@@ -3,7 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
-import cz.muni.ics.kypo.training.adaptive.domain.UserRef;
+import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
@@ -316,11 +316,11 @@ public class TrainingRunService {
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setCurrentPhase(currentPhase);
 
-        Optional<UserRef> userRefOpt = participantRefRepository.findUserByUserRefId(participantRefId);
+        Optional<User> userRefOpt = participantRefRepository.findUserByUserRefId(participantRefId);
         if (userRefOpt.isPresent()) {
             newTrainingRun.setParticipantRef(userRefOpt.get());
         } else {
-            newTrainingRun.setParticipantRef(participantRefRepository.save(new UserRef(userManagementServiceApi.getLoggedInUserRefId())));
+            newTrainingRun.setParticipantRef(participantRefRepository.save(new User(userManagementServiceApi.getLoggedInUserRefId())));
         }
         newTrainingRun.setState(TRState.RUNNING);
         newTrainingRun.setTrainingInstance(trainingInstance);

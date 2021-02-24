@@ -20,6 +20,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
+import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
@@ -28,8 +30,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.Actions;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.mapstruct.TrainingRunMapper;
-import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
-import cz.muni.ics.kypo.training.adaptive.service.UserService;
+import cz.muni.ics.kypo.training.adaptive.service.QuestionnaireEvaluationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
 import org.slf4j.Logger;
@@ -43,10 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The type Training run facade.
@@ -56,29 +55,29 @@ public class TrainingRunFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingRunFacade.class);
 
-    private TrainingRunService trainingRunService;
-    private UserService userService;
-    private UserManagementServiceApi userManagementServiceApi;
-    private TrainingRunMapper trainingRunMapper;
-    private PhaseMapper phaseMapper;
+    private final TrainingRunService trainingRunService;
+    private final UserManagementServiceApi userManagementServiceApi;
+    private final TrainingRunMapper trainingRunMapper;
+    private final PhaseMapper phaseMapper;
+    private final QuestionnaireEvaluationService questionnaireEvaluationService;
+
 
 
     /**
      * Instantiates a new Training run facade.
      *
      * @param trainingRunService the training run service
-     * @param userService        the user service
      * @param trainingRunMapper  the training run mapper
      * @param phaseMapper        the phase mapper
      */
     @Autowired
     public TrainingRunFacade(TrainingRunService trainingRunService,
-                             UserService userService,
+                             QuestionnaireEvaluationService questionnaireEvaluationService,
                              UserManagementServiceApi userManagementServiceApi,
                              TrainingRunMapper trainingRunMapper,
                              PhaseMapper phaseMapper) {
         this.trainingRunService = trainingRunService;
-        this.userService = userService;
+        this.questionnaireEvaluationService = questionnaireEvaluationService;
         this.userManagementServiceApi = userManagementServiceApi;
         this.trainingRunMapper = trainingRunMapper;
         this.phaseMapper = phaseMapper;
@@ -334,15 +333,18 @@ public class TrainingRunFacade {
     }
 
     /**
-     * Evaluate and store responses to questionnaire.
+     * Evaluate and store answers to questionnaire.
      *
-     * @param trainingRunId     id of Training Run to be finish.
-     * @param responsesAsString responses to questionnaire
+     * @param trainingRunId     id of the Training Run.
+     * @param questionnairePhaseAnswersDTO answers to questionnaire
      */
-    @IsTrainee
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
-    public void evaluateResponsesToQuestionnaire(Long trainingRunId, String responsesAsString) {
-        trainingRunService.evaluateResponsesToQuestionnaire(trainingRunId, responsesAsString);
+    public void evaluateAnswersToQuestionnaire(Long trainingRunId, QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
+        Map<Long, String> questionsAnswersMapping = questionnairePhaseAnswersDTO.getAnswers().stream()
+                .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getAnswer));
+        questionnaireEvaluationService.saveAndEvaluateAnswersToQuestionnaire(trainingRunId, questionsAnswersMapping);
     }
 
     /**

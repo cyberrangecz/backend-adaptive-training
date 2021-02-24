@@ -120,10 +120,6 @@ public class TrainingRun extends AbstractEntity<Long> {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_ref_id", nullable = false)
     private UserRef participantRef;
-    @Lob
-    @Type(type = "org.hibernate.type.TextType")
-    @Column(name = "questionnaire_responses", nullable = true)
-    private String questionnaireResponses;
     @Column(name = "phase_answered")
     private boolean phaseAnswered;
     @Column(name = "previous_sandbox_instance_ref_id")
@@ -302,24 +298,6 @@ public class TrainingRun extends AbstractEntity<Long> {
      */
     public void setSolutionTaken(boolean solutionTaken) {
         this.solutionTaken = solutionTaken;
-    }
-
-    /**
-     * Gets responses of current assessment phase
-     *
-     * @return the assessment responses
-     */
-    public String getQuestionnaireResponses() {
-        return questionnaireResponses;
-    }
-
-    /**
-     * Sets responses of current assessment phase
-     *
-     * @param assessmentResponses the assessment responses
-     */
-    public void setQuestionnaireResponses(String assessmentResponses) {
-        this.questionnaireResponses = assessmentResponses;
     }
 
     /**

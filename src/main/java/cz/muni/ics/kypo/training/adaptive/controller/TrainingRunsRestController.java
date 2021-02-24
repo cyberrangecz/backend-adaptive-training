@@ -11,6 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
+import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.ValidateAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
@@ -358,30 +359,21 @@ public class TrainingRunsRestController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Evaluate responses to questionnaire.
-     *
-     * @param runId     id of training run.
-     * @param responses to questionnaire
-     * @return the response entity
-     */
     @ApiOperation(httpMethod = "PUT",
-            value = "Evaluate responses to questionnaire",
-            nickname = "evaluateResponsesToQuestionnaire",
+            value = "Evaluate answers to a questionnaire phase",
+            nickname = "evaluateAnswersToQuestionnaire",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 204, message = "The responses to questionnaire has been evaluated and stored."),
-            @ApiResponse(code = 404, message = "The training run has not been found.", response = ApiError.class),
-            @ApiResponse(code = 409, message = "Current phase of training is not questionnaire phase or phase has been already answered.", response = ApiError.class),
-            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+            @ApiResponse(code = 200, message = "Answers evaluated"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
     })
-    @PutMapping(value = "/{runId}/questionnaire-evaluations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Void> evaluateResponsesToQuestionnaire(@ApiParam(value = "Training run ID", required = true)
-                                                                 @PathVariable("runId") Long runId,
-                                                                 @ApiParam(value = "Responses to questionnaire", required = true)
-                                                                 @RequestBody String responses) {
-        trainingRunFacade.evaluateResponsesToQuestionnaire(runId, responses);
+    @PutMapping(value = "/{runId}/questionnaire-evaluation", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Void> evaluateAnswersToQuestionnaire(@ApiParam(value = "Training run ID", required = true)
+                                                               @PathVariable("runId") Long runId,
+                                                               @ApiParam(value = "Responses to questionnaire", required = true)
+                                                               @Valid @RequestBody QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
+        trainingRunFacade.evaluateAnswersToQuestionnaire(runId, questionnairePhaseAnswersDTO);
         return ResponseEntity.noContent().build();
     }
 

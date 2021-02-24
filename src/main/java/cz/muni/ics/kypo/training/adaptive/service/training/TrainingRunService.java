@@ -60,7 +60,7 @@ public class TrainingRunService {
      * @param trainingInstanceRepository  the training instance repository
      * @param participantRefRepository    the participant ref repository
      * @param auditEventsService          the audit events service
-     * @param securityService             the security service
+     * @param sandboxServiceApi           the sandbox service api
      * @param trAcquisitionLockRepository the tr acquisition lock repository
      */
     @Autowired
@@ -322,7 +322,6 @@ public class TrainingRunService {
         } else {
             newTrainingRun.setParticipantRef(participantRefRepository.save(new UserRef(userManagementServiceApi.getLoggedInUserRefId())));
         }
-        newTrainingRun.setQuestionnaireResponses("[]");
         newTrainingRun.setState(TRState.RUNNING);
         newTrainingRun.setTrainingInstance(trainingInstance);
         newTrainingRun.setStartTime(startTime);
@@ -501,13 +500,7 @@ public class TrainingRunService {
         trainingRunRepository.save(trainingRun);
     }
 
-    /**
-     * Evaluate and store responses to questionnaire.
-     *
-     * @param trainingRunId     id of training run to be finished.
-     * @param responsesAsString response to questionnaire to be evaluated
-     * @throws EntityNotFoundException training run is not found.
-     */
+
     public void evaluateResponsesToQuestionnaire(Long trainingRunId, String responsesAsString) {
         TrainingRun trainingRun = findByIdWithPhase(trainingRunId);
         if (!(trainingRun.getCurrentPhase() instanceof QuestionnairePhase)) {

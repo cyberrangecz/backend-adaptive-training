@@ -1,33 +1,29 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
-import cz.muni.ics.kypo.training.adaptive.domain.Question;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionAnswer;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionAnswerId;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionChoice;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionPhaseRelation;
-import cz.muni.ics.kypo.training.adaptive.domain.QuestionPhaseResult;
-import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionAnswerDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.run.QuestionnairePhaseAnswersDTO;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.*;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
+import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
+import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
+import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
+import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionAnswerRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.QuestionPhaseRelationRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionPhaseResultRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.QuestionRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
+import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class QuestionnaireEvaluationService {
 
     private static final Logger LOG = LoggerFactory.getLogger(QuestionnaireEvaluationService.class);
@@ -36,35 +32,70 @@ public class QuestionnaireEvaluationService {
     private final QuestionAnswerRepository questionAnswerRepository;
     private final QuestionPhaseRelationRepository questionPhaseRelationRepository;
     private final QuestionPhaseResultRepository questionPhaseResultRepository;
+    private final TrainingRunRepository trainingRunRepository;
+    private final AuditEventsService auditEventsService;
 
     @Autowired
-    public QuestionnaireEvaluationService(QuestionRepository questionRepository, QuestionAnswerRepository questionAnswerRepository,
-                                          QuestionPhaseRelationRepository questionPhaseRelationRepository, QuestionPhaseResultRepository questionPhaseResultRepository) {
+    public QuestionnaireEvaluationService(QuestionRepository questionRepository,
+                                          QuestionAnswerRepository questionAnswerRepository,
+                                          QuestionPhaseRelationRepository questionPhaseRelationRepository,
+                                          QuestionPhaseResultRepository questionPhaseResultRepository,
+                                          TrainingRunRepository trainingRunRepository,
+                                          AuditEventsService auditEventsService) {
         this.questionRepository = questionRepository;
         this.questionAnswerRepository = questionAnswerRepository;
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
         this.questionPhaseResultRepository = questionPhaseResultRepository;
+        this.trainingRunRepository = trainingRunRepository;
+        this.auditEventsService = auditEventsService;
     }
 
-    public List<QuestionAnswer> saveAnswersToQuestionnaire(Long runId, QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
-        List<QuestionAnswer> result = new ArrayList<>();
-        for (QuestionAnswerDTO answer : questionnairePhaseAnswersDTO.getAnswers()) {
-            Question question = questionRepository.findById(answer.getQuestionId())
-                    .orElseThrow(() -> new RuntimeException("Question was not found"));
-            // TODO throw proper exception once kypo2-training is migrated
+    /**
+     * Evaluate and store answers to questionnaire.
+     *
+     * @param trainingRunId     id of training run to answer the questionnaire.
+     * @param questionnairePhaseAnswers answers to questionnaire to be evaluated. Map of entries (Key = question ID, Value = answer).
+     * @throws EntityNotFoundException training run is not found.
+     */
+    public List<QuestionAnswer> saveAndEvaluateAnswersToQuestionnaire(Long trainingRunId, Map<Long, String> questionnairePhaseAnswers) {
+        TrainingRun trainingRun = this.findByIdWithPhase(trainingRunId);
+        this.checkIfCanBeEvaluated(trainingRun);
 
-            QuestionAnswer questionAnswer = new QuestionAnswer();
-            questionAnswer.setQuestionAnswerId(new QuestionAnswerId(question, runId));
-            questionAnswer.setAnswer(answer.getAnswer());
-
-            questionAnswerRepository.save(questionAnswer);
-            result.add(questionAnswer);
+        List<QuestionAnswer> storedQuestionsAnswers = new ArrayList<>();
+        for (Map.Entry<Long, String> questionAnswer : questionnairePhaseAnswers.entrySet()) {
+            Long questionnaireId = trainingRun.getCurrentPhase().getId();
+            storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswer.getKey(), questionAnswer.getValue(), questionnaireId, trainingRun.getId()));
         }
-
-        return result;
+        if (((QuestionnairePhase) trainingRun.getCurrentPhase()).getQuestionnaireType() == QuestionnaireType.ADAPTIVE) {
+            this.evaluateAnswersToQuestionnaire(trainingRunId, storedQuestionsAnswers);
+        }
+        auditEventsService.auditPhaseCompletedAction(trainingRun);
+        auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.stream()
+                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestionAnswerId().getQuestion().getText(), QuestionAnswer::getAnswer))
+                .toString());
+        trainingRun.setPhaseAnswered(true);
+        return storedQuestionsAnswers;
     }
 
-    public void evaluateAnswersToQuestionnaire(Long runId, List<QuestionAnswer> answers) {
+    private void checkIfCanBeEvaluated(TrainingRun trainingRun) {
+        if (!(trainingRun.getCurrentPhase() instanceof QuestionnairePhase)) {
+            throw new BadRequestException("Current phase is not questionnaire phase and cannot be evaluated.");
+        }
+        if (trainingRun.isPhaseAnswered())
+            throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", Long.class, trainingRun.getId(),
+                    "Current phase of the training run has been already answered."));
+    }
+
+    private QuestionAnswer saveQuestionAnswer(Long questionId, String answer, Long questionnaireId, Long trainingRunId) {
+        Question question = this.findQuestionByIdAndQuestionnairePhaseId(questionId, questionnaireId);
+        QuestionAnswer questionAnswer = new QuestionAnswer();
+        questionAnswer.setQuestionAnswerId(new QuestionAnswerId(question, trainingRunId));
+        questionAnswer.setAnswer(answer);
+
+        return questionAnswerRepository.save(questionAnswer);
+    }
+
+    private void evaluateAnswersToQuestionnaire(Long runId, List<QuestionAnswer> answers) {
         if (CollectionUtils.isEmpty(answers)) {
             return;
         }
@@ -117,5 +148,15 @@ public class QuestionnaireEvaluationService {
         return questionChoices.stream()
                 .filter(q -> Objects.equals(answer, q.getText()))
                 .findFirst();
+    }
+
+    private TrainingRun findByIdWithPhase(Long runId) {
+        return trainingRunRepository.findByIdWithPhase(runId).orElseThrow(() -> new EntityNotFoundException(
+                new EntityErrorDetail(TrainingRun.class, "id", runId.getClass(), runId)));
+    }
+
+    private Question findQuestionByIdAndQuestionnairePhaseId(Long questionId, Long questionnaireId) {
+        return questionRepository.findByIdAndQuestionnairePhaseId(questionId, questionnaireId)
+                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(Question.class, "id", Long.class, questionId)));
     }
 }

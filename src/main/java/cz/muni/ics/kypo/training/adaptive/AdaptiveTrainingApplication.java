@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Import;
         AdaptiveTrainingWebMvcConfigurer.class,
         ResourceServerSecurityConfig.class
 })
-public class DemoApplication {
+public class AdaptiveTrainingApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(AdaptiveTrainingApplication.class, args);
     }
 }
 

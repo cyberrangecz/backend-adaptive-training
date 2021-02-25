@@ -10,7 +10,6 @@ public class InfoPhaseUpdateDTO {
     @ApiModelProperty(value = "Short description of info phase", required = true, example = "Info phase title")
     @NotEmpty(message = "Info phase title must not be blank")
     private String title;
-
     @ApiModelProperty(value = "The information of info phase that is displayed to a player", required = true, example = "Read the info")
     @NotEmpty(message = "Info phase content must not be blank")
     private String content;

@@ -9,7 +9,6 @@ public class QuestionAnswerDTO {
     @ApiModelProperty(value = "ID of answered question", example = "1")
     @NotNull(message = "ID of the answered question must not be null")
     private Long questionId;
-
     @ApiModelProperty(value = "Answer to the question", example = "An answer")
     private String answer;
 
@@ -27,5 +26,14 @@ public class QuestionAnswerDTO {
 
     public void setAnswer(String answer) {
         this.answer = answer;
+    }
+
+
+    @Override
+    public String toString() {
+        return "QuestionAnswerDTO{" +
+                "questionId=" + questionId +
+                ", answer='" + answer + '\'' +
+                '}';
     }
 }

@@ -58,4 +58,13 @@ public class QuestionChoiceImportDTO {
     public int hashCode() {
         return Objects.hash(getText(), correct, getOrder());
     }
+
+    @Override
+    public String toString() {
+        return "QuestionChoiceImportDTO{" +
+                "text='" + text + '\'' +
+                ", correct=" + correct +
+                ", order=" + order +
+                '}';
+    }
 }

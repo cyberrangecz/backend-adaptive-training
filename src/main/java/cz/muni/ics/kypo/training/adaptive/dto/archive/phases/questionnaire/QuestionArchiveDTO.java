@@ -74,4 +74,14 @@ public class QuestionArchiveDTO {
     public int hashCode() {
         return Objects.hash(getId(), getOrder(), getText(), getQuestionType());
     }
+
+    @Override
+    public String toString() {
+        return "QuestionArchiveDTO{" +
+                "id=" + id +
+                ", order=" + order +
+                ", text='" + text + '\'' +
+                ", questionType=" + questionType +
+                '}';
+    }
 }

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
 
 
 /**
@@ -138,11 +139,14 @@ public class TrainingDefinitionCreateDTO {
         this.showStepperBar = showStepperBar;
     }
 
+
     @Override
     public String toString() {
         return "TrainingDefinitionCreateDTO{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", prerequisites=" + Arrays.toString(prerequisites) +
+                ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
                 ", showStepperBar=" + showStepperBar +
                 '}';

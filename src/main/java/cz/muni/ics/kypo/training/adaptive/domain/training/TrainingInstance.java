@@ -311,11 +311,11 @@ public class TrainingInstance implements Serializable {
     @Override
     public String toString() {
         return "TrainingInstance{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", title='" + title + '\'' +
-                ", accessToken='" + accessToken + '\'' +
+                "id=" + this.getId() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + this.getEndTime() +
+                ", title='" + this.getTitle() + '\'' +
+                ", accessToken='" + this.getAccessToken() + '\'' +
                 '}';
     }
 }

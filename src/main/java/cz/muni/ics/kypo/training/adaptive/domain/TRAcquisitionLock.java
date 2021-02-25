@@ -150,10 +150,10 @@ public class TRAcquisitionLock implements Serializable {
     @Override
     public String toString() {
         return "TRAcquisitionLock{" +
-                "id=" + id +
-                ", participantRefId=" + participantRefId +
-                ", trainingInstanceId=" + trainingInstanceId +
-                ", creationTime=" + creationTime +
+                "id=" + this.getId() +
+                ", participantRefId=" + this.getParticipantRefId() +
+                ", trainingInstanceId=" + this.getTrainingInstanceId() +
+                ", creationTime=" + this.getCreationTime() +
                 '}';
     }
 }

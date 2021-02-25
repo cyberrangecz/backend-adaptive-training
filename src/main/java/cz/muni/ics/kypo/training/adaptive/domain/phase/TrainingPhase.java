@@ -88,4 +88,17 @@ public class TrainingPhase extends AbstractPhase {
     public void setQuestionPhaseRelations(List<QuestionPhaseRelation> questionPhaseRelations) {
         this.questionPhaseRelations = questionPhaseRelations;
     }
+
+
+    @Override
+    public String toString() {
+        return "TrainingPhase{" +
+                "estimatedDuration=" + this.getEstimatedDuration() +
+                ", allowedCommands=" + this.getAllowedCommands() +
+                ", allowedWrongAnswers=" + this.getAllowedWrongAnswers() +
+                ", title='" + super.getTitle() + '\'' +
+                ", order=" + super.getOrder() +
+                ", id=" + super.getId() +
+                '}';
+    }
 }

@@ -62,4 +62,15 @@ public class QuestionnairePhase extends AbstractPhase {
         }
         this.questionPhaseRelations.add(questionPhaseRelation);
     }
+
+
+    @Override
+    public String toString() {
+        return "QuestionnairePhase{" +
+                "questionnaireType=" + this.getQuestionnaireType() +
+                ", title='" + super.getTitle() + '\'' +
+                ", order=" + super.getOrder() +
+                ", id=" + super.getId() +
+                '}';
+    }
 }

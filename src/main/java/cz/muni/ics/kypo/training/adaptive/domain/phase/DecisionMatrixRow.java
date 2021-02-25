@@ -109,13 +109,13 @@ public class DecisionMatrixRow implements Serializable {
     @Override
     public String toString() {
         return "DecisionMatrixRow{" +
-                "id=" + id +
-                ", order=" + order +
-                ", assessmentAnswered=" + assessmentAnswered +
-                ", keywordUsed=" + keywordUsed +
-                ", completedInTime=" + completedInTime +
-                ", solutionDisplayed=" + solutionDisplayed +
-                ", wrongAnswers=" + wrongAnswers +
+                "id=" + this.getId() +
+                ", order=" + this.getOrder() +
+                ", assessmentAnswered=" + this.getAssessmentAnswered() +
+                ", keywordUsed=" + this.getKeywordUsed() +
+                ", completedInTime=" + this.getCompletedInTime() +
+                ", solutionDisplayed=" + this.getSolutionDisplayed() +
+                ", wrongAnswers=" + this.getWrongAnswers() +
                 '}';
     }
 }

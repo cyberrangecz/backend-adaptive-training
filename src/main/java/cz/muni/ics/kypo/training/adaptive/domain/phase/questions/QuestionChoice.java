@@ -71,4 +71,15 @@ public class QuestionChoice implements Serializable {
     public void setQuestion(Question question) {
         this.question = question;
     }
+
+
+    @Override
+    public String toString() {
+        return "QuestionChoice{" +
+                "id=" + this.getId() +
+                ", text='" + this.getText() + '\'' +
+                ", correct=" + this.isCorrect() +
+                ", order=" + this.getOrder() +
+                '}';
+    }
 }

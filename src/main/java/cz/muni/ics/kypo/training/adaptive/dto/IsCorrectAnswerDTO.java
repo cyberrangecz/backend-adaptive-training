@@ -87,11 +87,14 @@ public class IsCorrectAnswerDTO {
         return Objects.hash(isCorrect(), getRemainingAttempts(), getSolution());
     }
 
+
     @Override
     public String toString() {
         return "IsCorrectAnswerDTO{" +
                 "isCorrect=" + isCorrect +
                 ", remainingAttempts=" + remainingAttempts +
+                ", solution='" + solution + '\'' +
+                ", correct=" + isCorrect() +
                 '}';
     }
 }

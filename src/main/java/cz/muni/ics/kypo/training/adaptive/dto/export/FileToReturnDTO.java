@@ -3,6 +3,8 @@ package cz.muni.ics.kypo.training.adaptive.dto.export;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Arrays;
+
 /**
  * Class encapsulating entity into file.
  */
@@ -67,8 +69,12 @@ public class FileToReturnDTO {
         this.title = title;
     }
 
+
     @Override
     public String toString() {
-        return "FileToReturnDTO{" + "content=" + content + ", title='" + title + '\'' + '}';
+        return "FileToReturnDTO{" +
+                "content=" + Arrays.toString(content) +
+                ", title='" + title + '\'' +
+                '}';
     }
 }

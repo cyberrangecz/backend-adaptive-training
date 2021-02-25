@@ -126,16 +126,15 @@ public class Task implements Serializable {
     @Override
     public String toString() {
         return "Task{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", answer='" + answer + '\'' +
-                ", solution='" + solution + '\'' +
-                ", incorrectAnswerLimit=" + incorrectAnswerLimit +
-                ", modifySandbox=" + modifySandbox +
-                ", sandboxChangeExpectedDuration=" + sandboxChangeExpectedDuration +
-                ", order=" + order +
-                ", trainingPhase=" + id +
+                "id=" + this.getId() +
+                ", title='" + this.getTitle() + '\'' +
+                ", content='" + this.getContent() + '\'' +
+                ", answer='" + this.getAnswer() + '\'' +
+                ", solution='" + this.getSolution() + '\'' +
+                ", incorrectAnswerLimit=" + this.getIncorrectAnswerLimit() +
+                ", modifySandbox=" + this.isModifySandbox() +
+                ", sandboxChangeExpectedDuration=" + this.getSandboxChangeExpectedDuration() +
+                ", order=" + this.getOrder() +
                 '}';
     }
 }

@@ -75,4 +75,14 @@ public class QuestionPhaseRelationImportDTO {
     public int hashCode() {
         return Objects.hash(getOrder(), getQuestionIds(), getPhaseId(), getSuccessRate());
     }
+
+    @Override
+    public String toString() {
+        return "QuestionPhaseRelationImportDTO{" +
+                "order=" + order +
+                ", questionIds=" + questionIds +
+                ", phaseId=" + phaseId +
+                ", successRate=" + successRate +
+                '}';
+    }
 }

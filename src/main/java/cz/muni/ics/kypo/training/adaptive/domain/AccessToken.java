@@ -111,8 +111,8 @@ public class AccessToken implements Serializable {
     @Override
     public String toString() {
         return "AccessToken{" +
-                "id=" + id +
-                ", accessToken='" + accessToken + '\'' +
+                "id=" + this.getId() +
+                ", accessToken='" + this.getAccessToken() + '\'' +
                 '}';
     }
 }

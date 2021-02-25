@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -195,6 +196,8 @@ public class ImportTrainingDefinitionDTO {
         return "ImportTrainingDefinitionDTO{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", prerequisites=" + Arrays.toString(prerequisites) +
+                ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
                 ", showStepperBar=" + showStepperBar +
                 ", estimatedDuration=" + estimatedDuration +

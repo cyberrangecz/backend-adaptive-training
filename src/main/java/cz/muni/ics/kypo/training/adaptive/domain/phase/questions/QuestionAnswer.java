@@ -66,4 +66,13 @@ public class QuestionAnswer implements Serializable {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
+
+
+    @Override
+    public String toString() {
+        return "QuestionAnswer{" +
+                "questionAnswerId=" + this.getQuestionAnswerId() +
+                ", answer='" + this.getQuestionAnswerId() + '\'' +
+                '}';
+    }
 }

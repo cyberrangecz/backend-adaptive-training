@@ -13,15 +13,12 @@ public abstract class AbstractQuestionDTO {
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     @NotNull(message = "Question order must be specified")
     private int order;
-
     @ApiModelProperty(value = "The question that will be displayed to a player", required = true, example = "What's the capital of Canada?")
     @NotEmpty(message = "Text of question must not be blank")
     private String text;
-
     @ApiModelProperty(value = "It defines the type of the question", allowableValues = "FFQ, MCQ, RFQ", required = true, example = "MCQ")
     @NotNull(message = "Question type must be specified")
     private QuestionType questionType;
-
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
     private List<QuestionChoiceDTO> choices;
 

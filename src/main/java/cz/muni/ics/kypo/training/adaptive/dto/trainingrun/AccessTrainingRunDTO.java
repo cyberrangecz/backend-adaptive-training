@@ -178,10 +178,17 @@ public class AccessTrainingRunDTO {
         this.takenSolution = takenSolution;
     }
 
+
     @Override
     public String toString() {
-        return "AccessTrainingRunDTO{" + "trainingRunID=" + trainingRunID + ", showStepperBar=" + showStepperBar + ", sandboxInstanceRefId="
-                + sandboxInstanceRefId + ", abstractPhaseDTO=" + abstractPhaseDTO + ", infoAboutPhases=" + infoAboutPhases + ", instanceId="
-                + instanceId + ", startTime=" + startTime + '}';
+        return "AccessTrainingRunDTO{" +
+                "trainingRunID=" + trainingRunID +
+                ", showStepperBar=" + showStepperBar +
+                ", sandboxInstanceRefId=" + sandboxInstanceRefId +
+                ", abstractPhaseDTO=" + abstractPhaseDTO +
+                ", instanceId=" + instanceId +
+                ", startTime=" + startTime +
+                ", takenSolution='" + takenSolution + '\'' +
+                '}';
     }
 }

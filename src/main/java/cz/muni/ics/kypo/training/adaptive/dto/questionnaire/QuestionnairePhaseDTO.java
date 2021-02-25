@@ -11,10 +11,8 @@ public class QuestionnairePhaseDTO extends AbstractPhaseDTO {
 
     @ApiModelProperty(value = "List of questions associated with the questionnaire phase")
     private List<QuestionDTO> questions;
-
     @ApiModelProperty(value = "Type of questionnaire phase", allowableValues = "ADAPTIVE,GENERAL", example = "ADAPTIVE")
     private QuestionnaireType questionnaireType;
-
     @ApiModelProperty(value = "List of relations between questions and a training phase")
     private List<QuestionPhaseRelationDTO> phaseRelations;
 

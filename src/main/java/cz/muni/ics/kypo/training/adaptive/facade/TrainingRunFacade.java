@@ -33,6 +33,7 @@ import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
 import cz.muni.ics.kypo.training.adaptive.service.QuestionnaireEvaluationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
+import cz.muni.ics.kypo.training.adaptive.utils.Sort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -376,9 +377,9 @@ public class TrainingRunFacade {
     private List<AccessedTrainingRunDTO> sortByTitle(List<AccessedTrainingRunDTO> runs, String sortByTitle) {
         if (sortByTitle != null && !sortByTitle.isBlank()) {
             if (!runs.isEmpty()) {
-                if (sortByTitle.equals("asc")) {
+                if (sortByTitle.equals(Sort.ASC)) {
                     runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle));
-                } else if (sortByTitle.equals("desc")) {
+                } else if (sortByTitle.equals(Sort.DESC)) {
                     runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle).reversed());
                 }
             }

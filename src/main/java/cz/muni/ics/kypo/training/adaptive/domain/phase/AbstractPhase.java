@@ -62,10 +62,9 @@ public abstract class AbstractPhase implements Serializable {
     @Override
     public String toString() {
         return "AbstractPhase{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", order=" + order +
-                ", trainingDefinitionId=" + trainingDefinition +
+                "id=" + this.getId() +
+                ", title='" + this.getTitle() + '\'' +
+                ", order=" + this.getOrder() +
                 '}';
     }
 }

@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -254,13 +255,17 @@ public class TrainingDefinitionByIdDTO {
         return Objects.hash(getId(), getTitle(), getState());
     }
 
+
     @Override
     public String toString() {
         return "TrainingDefinitionByIdDTO{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
+                ", prerequisites=" + Arrays.toString(prerequisites) +
+                ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
+                ", phases=" + phases +
                 ", showStepperBar=" + showStepperBar +
                 ", canBeArchived=" + canBeArchived +
                 ", estimatedDuration=" + estimatedDuration +

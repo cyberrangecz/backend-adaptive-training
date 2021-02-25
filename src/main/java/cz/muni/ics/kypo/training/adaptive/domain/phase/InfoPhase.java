@@ -21,10 +21,14 @@ public class InfoPhase extends AbstractPhase {
         this.content = content;
     }
 
+
     @Override
     public String toString() {
         return "InfoPhase{" +
-                "content='" + content + '\'' +
-                "} " + super.toString();
+                "content='" + this.getContent() + '\'' +
+                ", title='" + super.getTitle() + '\'' +
+                ", order=" + super.getOrder() +
+                ", id=" + super.getId() +
+                '}';
     }
 }

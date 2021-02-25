@@ -203,8 +203,8 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "UserRef{" +
-                "id=" + id +
-                ", userRefId=" + userRefId +
+                "id=" + this.getId() +
+                ", userRefId=" + this.getUserRefId() +
                 '}';
     }
 }

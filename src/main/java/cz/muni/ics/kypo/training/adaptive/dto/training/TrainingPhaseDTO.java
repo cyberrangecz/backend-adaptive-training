@@ -11,16 +11,12 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
     private int estimatedDuration;
-
     @ApiModelProperty(value = "Maximal number of allowed commands provided by played", required = true, example = "10")
     private int allowedCommands;
-
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10")
     private int allowedWrongAnswers;
-
     @ApiModelProperty(value = "Tasks associated with the training phase", required = true)
     private List<TaskDTO> tasks = new ArrayList<>();
-
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
     private List<DecisionMatrixRowDTO> decisionMatrix;
 

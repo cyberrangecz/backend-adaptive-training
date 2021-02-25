@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -196,4 +197,18 @@ public class TrainingDefinitionArchiveDTO {
         this.estimatedDuration = estimatedDuration;
     }
 
+    @Override
+    public String toString() {
+        return "TrainingDefinitionArchiveDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", prerequisites=" + Arrays.toString(prerequisites) +
+                ", outcomes=" + Arrays.toString(outcomes) +
+                ", state=" + state +
+                ", showStepperBar=" + showStepperBar +
+                ", phases=" + phases +
+                ", estimatedDuration=" + estimatedDuration +
+                '}';
+    }
 }

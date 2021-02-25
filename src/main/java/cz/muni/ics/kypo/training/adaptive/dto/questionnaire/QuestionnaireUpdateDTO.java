@@ -12,11 +12,9 @@ public class QuestionnaireUpdateDTO {
     @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")
     @NotEmpty(message = "Questionnaire title must not be blank")
     private String title;
-
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)
     private List<QuestionDTO> questions;
-
     @Valid
     @ApiModelProperty(value = "The relation between questions in the questionnaire and phase in the training definition", required = true)
     private List<QuestionPhaseRelationDTO> phaseRelations;

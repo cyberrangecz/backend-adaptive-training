@@ -178,13 +178,7 @@ public class AccessedTrainingRunDTO {
         this.instanceId = instanceId;
     }
 
-    @Override
-    public String toString() {
-        return "AccessedTrainingRunDTO{" + "id=" + id + ", title='" + title + '\'' + ", trainingInstanceStartDate="
-                + trainingInstanceStartDate + ", trainingInstanceEndDate=" + trainingInstanceEndDate + ", currentPhaseOrder="
-                + currentPhaseOrder + ", numberOfPhases=" + numberOfPhases + ", possibleAction=" + possibleAction + ", instanceId=" + instanceId
-                + '}';
-    }
+
 
     @Override
     public boolean equals(Object object) {
@@ -200,5 +194,19 @@ public class AccessedTrainingRunDTO {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getTitle(), getCurrentPhaseOrder(), getNumberOfPhases(), getInstanceId());
+    }
+
+    @Override
+    public String toString() {
+        return "AccessedTrainingRunDTO{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", trainingInstanceStartDate=" + trainingInstanceStartDate +
+                ", trainingInstanceEndDate=" + trainingInstanceEndDate +
+                ", currentPhaseOrder=" + currentPhaseOrder +
+                ", numberOfPhases=" + numberOfPhases +
+                ", possibleAction=" + possibleAction +
+                ", instanceId=" + instanceId +
+                '}';
     }
 }

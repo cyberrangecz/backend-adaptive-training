@@ -56,4 +56,16 @@ public class QuestionPhaseRelationArchiveDTO {
     public void setSuccessRate(int successRate) {
         this.successRate = successRate;
     }
+
+
+    @Override
+    public String toString() {
+        return "QuestionPhaseRelationArchiveDTO{" +
+                "id=" + id +
+                ", order=" + order +
+                ", questionIds=" + questionIds +
+                ", phaseId=" + phaseId +
+                ", successRate=" + successRate +
+                '}';
+    }
 }

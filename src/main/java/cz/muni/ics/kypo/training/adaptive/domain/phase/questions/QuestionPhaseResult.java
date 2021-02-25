@@ -65,4 +65,12 @@ public class QuestionPhaseResult implements Serializable {
     public void setQuestionPhaseRelation(QuestionPhaseRelation questionPhaseRelation) {
         this.questionPhaseRelation = questionPhaseRelation;
     }
+
+    @Override
+    public String toString() {
+        return "QuestionPhaseResult{" +
+                "id=" + this.getId() +
+                ", achievedResult=" + this.getAchievedResult() +
+                '}';
+    }
 }

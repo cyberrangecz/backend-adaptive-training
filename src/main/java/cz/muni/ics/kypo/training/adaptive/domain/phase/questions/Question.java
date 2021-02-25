@@ -124,4 +124,14 @@ public class Question implements Serializable {
     public int hashCode() {
         return Objects.hash(getQuestionType(), getText(), getOrder());
     }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + this.getId() +
+                ", questionType=" + this.getQuestionType() +
+                ", text='" + this.getText() + '\'' +
+                ", order=" + this.getOrder() +
+                '}';
+    }
 }

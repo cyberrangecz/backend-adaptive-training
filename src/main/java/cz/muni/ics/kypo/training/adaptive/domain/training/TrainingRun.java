@@ -421,15 +421,14 @@ public class TrainingRun implements Serializable {
     @Override
     public String toString() {
         return "TrainingRun{" +
-                "id=" + id +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", state=" + state +
-                ", incorrectAnswerCount=" + incorrectAnswerCount +
-                ", solutionTaken=" + solutionTaken +
-                ", currentPhase=" + currentPhase +
-                ", sandboxInstanceRefId=" + sandboxInstanceRefId +
-                ", phaseAnswered=" + phaseAnswered +
+                "id=" + this.getId() +
+                ", startTime=" + this.getStartTime() +
+                ", endTime=" + this.getEndTime() +
+                ", state=" + this.getState() +
+                ", incorrectAnswerCount=" + this.getIncorrectAnswerCount() +
+                ", solutionTaken=" + this.isSolutionTaken() +
+                ", sandboxInstanceRefId=" + this.getSandboxInstanceRefId() +
+                ", phaseAnswered=" + this.isPhaseAnswered() +
                 '}';
     }
 }

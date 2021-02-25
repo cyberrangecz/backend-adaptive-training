@@ -100,4 +100,14 @@ public class QuestionPhaseRelation implements Serializable {
     public void setSuccessRate(int successRate) {
         this.successRate = successRate;
     }
+
+
+    @Override
+    public String toString() {
+        return "QuestionPhaseRelation{" +
+                "id=" + this.getId() +
+                ", order=" + this.getOrder() +
+                ", successRate=" + this.getSuccessRate() +
+                '}';
+    }
 }

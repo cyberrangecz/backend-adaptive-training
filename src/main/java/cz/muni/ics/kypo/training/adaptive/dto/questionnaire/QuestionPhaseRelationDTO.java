@@ -12,18 +12,14 @@ public class QuestionPhaseRelationDTO {
 
     @ApiModelProperty(value = "Question-Phase relation ID. Leave blank if a new one is added", required = true, example = "1")
     private Long id;
-
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     @NotNull(message = "Question order must be specified")
     private Integer order;
-
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire")
     private Set<Long> questionIds;
-
     @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1")
     @NotNull(message = "Phase ID in question-phase relations must not be null")
     private Long phaseId;
-
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50")
     @Min(value = 0, message = "Success rate must not be lower than 0 %")
     @Max(value = 100, message = "Success rate must not be higher than 100 %")

@@ -53,8 +53,10 @@ public class PageResultResource<E> {
 
     @Override
     public String toString() {
-        return "PageResultDTO [content=" + content + ", pageMetadata=" + pagination + ", getContent()=" + getContent() + ", getPageMetadata()="
-                + getPagination() + "]";
+        return "PageResultResource{" +
+                "content=" + content +
+                ", pagination=" + pagination +
+                '}';
     }
 
     public static class Pagination {
@@ -127,11 +129,16 @@ public class PageResultResource<E> {
             this.totalPages = totalPages;
         }
 
+
         @Override
         public String toString() {
-            return "PageMetadata [number=" + number + ", numberOfElements=" + numberOfElements + ", size=" + size + ", totalElements="
-                    + totalElements + ", totalPages=" + totalPages + "]";
+            return "Pagination{" +
+                    "number=" + number +
+                    ", numberOfElements=" + numberOfElements +
+                    ", size=" + size +
+                    ", totalElements=" + totalElements +
+                    ", totalPages=" + totalPages +
+                    '}';
         }
     }
-
 }

@@ -180,12 +180,7 @@ public class TrainingInstanceDTO {
         this.sandboxesWithTrainingRun = sandboxesWithTrainingRun;
     }
 
-    @Override
-    public String toString() {
-        return "TrainingInstanceDTO{" + "id=" + id + ", startTime=" + startTime + ", endTime=" + endTime + ", title='" + title + '\''
-                + ", trainingDefinition=" + trainingDefinition + ", accessToken='"
-                + accessToken + '\'' + ", poolId=" + poolId + '}';
-    }
+
 
     @Override
     public boolean equals(Object object) {
@@ -200,5 +195,18 @@ public class TrainingInstanceDTO {
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getTitle(), getAccessToken(), getPoolId());
+    }
+
+    @Override
+    public String toString() {
+        return "TrainingInstanceDTO{" +
+                "id=" + id +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", title='" + title + '\'' +
+                ", accessToken='" + accessToken + '\'' +
+                ", poolId=" + poolId +
+                ", sandboxesWithTrainingRun=" + sandboxesWithTrainingRun +
+                '}';
     }
 }

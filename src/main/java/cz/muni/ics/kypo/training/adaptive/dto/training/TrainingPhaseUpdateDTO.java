@@ -12,19 +12,15 @@ public class TrainingPhaseUpdateDTO {
     @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
     @NotEmpty(message = "Training phase title must not be blank")
     private String title;
-
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10")
     @NotNull(message = "Maximal number of allowed wrong answers must be set")
     private Integer allowedWrongAnswers;
-
     @ApiModelProperty(value = "Maximal number of allowed commands provided by played", required = true, example = "10")
     @NotNull(message = "Maximal number of allowed commands must be set")
     private Integer allowedCommands;
-
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
     @NotNull(message = "Estimated duration of training phase must be set")
     private Integer estimatedDuration;
-
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
     @NotNull(message = "Decision matrix of training phase must be set")
     private List<DecisionMatrixRowDTO> decisionMatrix;

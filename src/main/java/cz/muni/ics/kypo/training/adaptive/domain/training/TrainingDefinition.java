@@ -305,15 +305,15 @@ public class TrainingDefinition implements Serializable {
     @Override
     public String toString() {
         return "TrainingDefinition{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", prerequisites=" + Arrays.toString(prerequisites) +
-                ", outcomes=" + Arrays.toString(outcomes) +
-                ", state=" + state +
-                ", showStepperBar=" + showStepperBar +
-                ", estimatedDuration=" + estimatedDuration +
-                ", lastEdited=" + lastEdited +
+                "id=" + this.getId() +
+                ", title='" + this.getTitle() + '\'' +
+                ", description='" + this.getDescription() + '\'' +
+                ", prerequisites=" + Arrays.toString(this.getPrerequisites()) +
+                ", outcomes=" + Arrays.toString(this.getOutcomes()) +
+                ", state=" + this.getState() +
+                ", showStepperBar=" + this.isShowStepperBar() +
+                ", estimatedDuration=" + this.getEstimatedDuration() +
+                ", lastEdited=" + this.getLastEdited() +
                 '}';
     }
 }

@@ -55,8 +55,8 @@ public class QuestionAnswerId implements Serializable {
     @Override
     public String toString() {
         return "QuestionAnswerId{" +
-                "questionId=" + questionId +
-                ", trainingRunId=" + trainingRunId +
+                "questionId=" + this.getQuestionId() +
+                ", trainingRunId=" + this.getTrainingRunId() +
                 '}';
     }
 }

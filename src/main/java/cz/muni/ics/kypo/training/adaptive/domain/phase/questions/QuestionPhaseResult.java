@@ -1,6 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
 
 
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -23,7 +25,9 @@ public class QuestionPhaseResult implements Serializable {
             unique = true
     )
     private Long id;
-    private Long trainingRunId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_run_id")
+    private TrainingRun trainingRun;
     @Column(name = "achieved_result")
     private int achievedResult;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -38,12 +42,12 @@ public class QuestionPhaseResult implements Serializable {
         this.id = id;
     }
 
-    public Long getTrainingRunId() {
-        return trainingRunId;
+    public TrainingRun getTrainingRun() {
+        return trainingRun;
     }
 
-    public void setTrainingRunId(Long trainingRunId) {
-        this.trainingRunId = trainingRunId;
+    public void setTrainingRun(TrainingRun trainingRun) {
+        this.trainingRun = trainingRun;
     }
 
     public int getAchievedResult() {

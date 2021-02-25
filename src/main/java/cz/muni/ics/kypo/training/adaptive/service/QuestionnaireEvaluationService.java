@@ -64,14 +64,14 @@ public class QuestionnaireEvaluationService {
         List<QuestionAnswer> storedQuestionsAnswers = new ArrayList<>();
         for (Map.Entry<Long, String> questionAnswer : questionnairePhaseAnswers.entrySet()) {
             Long questionnaireId = trainingRun.getCurrentPhase().getId();
-            storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswer.getKey(), questionAnswer.getValue(), questionnaireId, trainingRun.getId()));
+            storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswer.getKey(), questionAnswer.getValue(), questionnaireId, trainingRun));
         }
         if (((QuestionnairePhase) trainingRun.getCurrentPhase()).getQuestionnaireType() == QuestionnaireType.ADAPTIVE) {
-            this.evaluateAnswersToQuestionnaire(trainingRunId, storedQuestionsAnswers);
+            this.evaluateAnswersToQuestionnaire(trainingRun, storedQuestionsAnswers);
         }
         auditEventsService.auditPhaseCompletedAction(trainingRun);
         auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.stream()
-                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestionAnswerId().getQuestion().getText(), QuestionAnswer::getAnswer))
+                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestion().getText(), QuestionAnswer::getAnswer))
                 .toString());
         trainingRun.setPhaseAnswered(true);
         return storedQuestionsAnswers;
@@ -86,24 +86,22 @@ public class QuestionnaireEvaluationService {
                     "Current phase of the training run has been already answered."));
     }
 
-    private QuestionAnswer saveQuestionAnswer(Long questionId, String answer, Long questionnaireId, Long trainingRunId) {
+    private QuestionAnswer saveQuestionAnswer(Long questionId, String answer, Long questionnaireId, TrainingRun trainingRun) {
         Question question = this.findQuestionByIdAndQuestionnairePhaseId(questionId, questionnaireId);
-        QuestionAnswer questionAnswer = new QuestionAnswer();
-        questionAnswer.setQuestionAnswerId(new QuestionAnswerId(question, trainingRunId));
+        QuestionAnswer questionAnswer = new QuestionAnswer(question, trainingRun);
         questionAnswer.setAnswer(answer);
 
         return questionAnswerRepository.save(questionAnswer);
     }
 
-    private void evaluateAnswersToQuestionnaire(Long runId, List<QuestionAnswer> answers) {
+    private void evaluateAnswersToQuestionnaire(TrainingRun trainingRun, List<QuestionAnswer> answers) {
         if (CollectionUtils.isEmpty(answers)) {
             return;
         }
 
         Set<Long> questionIdList = answers.stream()
                 .map(QuestionAnswer::getQuestionAnswerId)
-                .map(QuestionAnswerId::getQuestion)
-                .map(Question::getId)
+                .map(QuestionAnswerId::getQuestionId)
                 .collect(Collectors.toSet());
 
         List<QuestionPhaseRelation> questionPhaseRelations = questionPhaseRelationRepository.findAllByQuestionIdList(questionIdList);
@@ -132,7 +130,7 @@ public class QuestionnaireEvaluationService {
             QuestionPhaseResult questionPhaseResult = new QuestionPhaseResult();
             questionPhaseResult.setAchievedResult(achievedResult);
             questionPhaseResult.setQuestionPhaseRelation(questionPhaseRelation);
-            questionPhaseResult.setTrainingRunId(runId);
+            questionPhaseResult.setTrainingRun(trainingRun);
 
             questionPhaseResultRepository.save(questionPhaseResult);
         }
@@ -140,7 +138,7 @@ public class QuestionnaireEvaluationService {
 
     private Optional<QuestionAnswer> findCorrespondingAnswer(Long questionId, List<QuestionAnswer> answers) {
         return answers.stream()
-                .filter(a -> Objects.equals(questionId, a.getQuestionAnswerId().getQuestion().getId()))
+                .filter(a -> Objects.equals(questionId, a.getQuestionAnswerId().getQuestionId()))
                 .findFirst();
     }
 

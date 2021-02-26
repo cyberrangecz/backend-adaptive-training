@@ -19,25 +19,11 @@ import java.util.Objects;
 public class AccessToken implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "accessTokenGenerator"
-    )
-    @SequenceGenerator(
-            name = "accessTokenGenerator",
-            sequenceName = "access_token_seq"
-    )
-    @Column(
-            name = "access_token_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "accessTokenGenerator")
+    @SequenceGenerator(name = "accessTokenGenerator", sequenceName = "access_token_seq")
+    @Column(name = "access_token_id", nullable = false, unique = true)
     private Long id;
-    @Column(
-            name = "access_token",
-            nullable = false,
-            unique = true
-    )
+    @Column(name = "access_token", nullable = false, unique = true)
     private String accessToken;
 
     /**

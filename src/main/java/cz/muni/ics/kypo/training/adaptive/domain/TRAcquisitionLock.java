@@ -20,19 +20,9 @@ import java.util.Objects;
 public class TRAcquisitionLock implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "trAcquisitionLockGenerator"
-    )
-    @SequenceGenerator(
-            name = "trAcquisitionLockGenerator",
-            sequenceName = "tr_acquisition_lock_seq"
-    )
-    @Column(
-            name = "training_run_acquisition_lock_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trAcquisitionLockGenerator")
+    @SequenceGenerator(name = "trAcquisitionLockGenerator", sequenceName = "tr_acquisition_lock_seq")
+    @Column(name = "training_run_acquisition_lock_id", nullable = false, unique = true)
     private Long id;
     @Column(name = "participant_ref_id")
     private Long participantRefId;

@@ -20,9 +20,11 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPh
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -70,6 +72,9 @@ public interface PhaseMapper extends ParentMapper {
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseDTO mapToQuestionnairePhaseDTO(QuestionnairePhase entity);
 
+    @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
+    QuestionnairePhaseViewDTO mapToQuestionnairePhaseViewDTO(QuestionnairePhase entity);
+
     @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseArchiveDTO mapToQuestionnairePhaseArchiveDTO(QuestionnairePhase entity);
@@ -92,6 +97,9 @@ public interface PhaseMapper extends ParentMapper {
     TrainingPhaseDTO mapToTrainingPhaseDTO(TrainingPhase entity);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
+    TrainingPhaseViewDTO mapToTrainingPhaseViewDTO(TrainingPhase entity);
+
+    @Mapping(target = "phaseType", constant = "TRAINING")
     TrainingPhaseExportDTO mapToTrainingPhaseExportDTO(TrainingPhase entity);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
@@ -103,11 +111,11 @@ public interface PhaseMapper extends ParentMapper {
     default AbstractPhaseDTO mapToDTO(AbstractPhase entity) {
         AbstractPhaseDTO abstractPhaseDTO;
         if (entity instanceof TrainingPhase) {
-            abstractPhaseDTO = mapToTrainingPhaseDTO((TrainingPhase) entity);
+            abstractPhaseDTO = mapToTrainingPhaseViewDTO((TrainingPhase) entity);
         } else if (entity instanceof InfoPhase) {
             abstractPhaseDTO = mapToInfoPhaseDTO((InfoPhase) entity);
         } else if (entity instanceof QuestionnairePhase) {
-            abstractPhaseDTO = mapToQuestionnairePhaseDTO((QuestionnairePhase) entity);
+            abstractPhaseDTO = mapToQuestionnairePhaseViewDTO((QuestionnairePhase) entity);
         } else {
             throw new InternalServerErrorException("Phase with id: " + entity.getId() + " in given training definition with id: " + entity.getTrainingDefinition().getId() +
                     " is not instance of questionnaire, training or info phase.");

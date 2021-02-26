@@ -73,42 +73,19 @@ import java.util.Set;
 public class TrainingInstance implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "trainingInstanceGenerator"
-    )
-    @SequenceGenerator(
-            name = "trainingInstanceGenerator",
-            sequenceName = "training_instance_seq"
-    )
-    @Column(
-            name = "training_instance_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingInstanceGenerator")
+    @SequenceGenerator(name = "trainingInstanceGenerator", sequenceName = "training_instance_seq")
+    @Column(name = "training_instance_id", nullable = false, unique = true)
     private Long id;
-    @Column(
-            name = "start_time",
-            nullable = false
-    )
+    @Column(name = "start_time", nullable = false)
     private LocalDateTime startTime;
-    @Column(
-            name = "end_time",
-            nullable = false
-    )
+    @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
-    @Column(
-            name = "title",
-            nullable = false
-    )
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "pool_id")
     private Long poolId;
-    @Column(
-            name = "access_token",
-            nullable = false,
-            unique = true
-    )
+    @Column(name = "access_token", nullable = false, unique = true)
     private String accessToken;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_definition_id")

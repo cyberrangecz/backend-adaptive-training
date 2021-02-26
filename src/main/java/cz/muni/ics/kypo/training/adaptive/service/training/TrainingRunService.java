@@ -193,6 +193,7 @@ public class TrainingRunService {
             auditEventsService.auditPhaseCompletedAction(trainingRun);
         }
         if (nextPhase instanceof TrainingPhase) {
+            //TODO call the smart assistant
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(0));
         } else {
             trainingRun.setCurrentTask(null);
@@ -251,6 +252,7 @@ public class TrainingRunService {
         AbstractPhase initialPhase = findFirstPhaseForTrainingRun(trainingInstance.getTrainingDefinition().getId());
         TrainingRun trainingRun = getNewTrainingRun(initialPhase, trainingInstance, LocalDateTime.now(Clock.systemUTC()), trainingInstance.getEndTime(), participantRefId);
         if (initialPhase instanceof TrainingPhase) {
+            //TODO call smart assistant
             trainingRun.setCurrentTask(((TrainingPhase) initialPhase).getTasks().get(0));
         }
         return trainingRunRepository.save(trainingRun);
@@ -498,19 +500,5 @@ public class TrainingRunService {
         trainingRun.setSandboxInstanceRefId(null);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         trainingRunRepository.save(trainingRun);
-    }
-
-
-    public void evaluateResponsesToQuestionnaire(Long trainingRunId, String responsesAsString) {
-        TrainingRun trainingRun = findByIdWithPhase(trainingRunId);
-        if (!(trainingRun.getCurrentPhase() instanceof QuestionnairePhase)) {
-            throw new BadRequestException("Current phase is not questionnaire phase and cannot be evaluated.");
-        }
-        if (trainingRun.isPhaseAnswered())
-            throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", trainingRunId.getClass(), trainingRunId,
-                    "Current phase of the training run has been already answered."));
-        //TODO complete the evaluation
-        auditEventsService.auditQuestionnaireAnswersAction(trainingRun, responsesAsString);
-        auditEventsService.auditPhaseCompletedAction(trainingRun);
     }
 }

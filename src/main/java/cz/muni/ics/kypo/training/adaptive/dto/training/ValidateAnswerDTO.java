@@ -1,10 +1,14 @@
 package cz.muni.ics.kypo.training.adaptive.dto.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
-
+@ApiModel(
+        value = "ValidateAnswerDTO",
+        description = "Encapsulation of the answer submitted in training phase."
+)
 public class ValidateAnswerDTO {
     @ApiModelProperty(value = "Answer to be validated.", required = true, example = "answer")
     @NotEmpty(message = "{validateAnswer.answer.NotEmpty.message}")

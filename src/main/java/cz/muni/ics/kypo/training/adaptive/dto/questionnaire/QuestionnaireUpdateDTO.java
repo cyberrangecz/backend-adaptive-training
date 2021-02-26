@@ -1,12 +1,15 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionnaireUpdateDTO"
+)
 public class QuestionnaireUpdateDTO {
 
     @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")

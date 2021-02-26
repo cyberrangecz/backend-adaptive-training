@@ -1,13 +1,17 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+@ApiModel(
+        value = "TaskArchiveDTO"
+)
 public class TaskArchiveDTO {
 
     @ApiModelProperty(value = "Main identifier of task.", example = "1")
     private Long id;
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")
     private String title;
+    @ApiModelProperty(value = "Order of task, starts with 0", example = "2")
     private Integer order;
     @ApiModelProperty(value = "The information that are displayed to a player", required = true, example = "Capture the flag")
     private String content;

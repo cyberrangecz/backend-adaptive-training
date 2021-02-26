@@ -8,34 +8,37 @@ import javax.validation.constraints.*;
 /**
  * Encapsulates information about training phase. Inherits from {@link TaskImportDTO}
  */
-@ApiModel(value = "TaskImportDTO", description = "Imported task of the training phase.")
+@ApiModel(
+        value = "TaskImportDTO",
+        description = "Imported task of the training phase."
+)
 public class TaskImportDTO {
 
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training phase title")
     @NotEmpty(message = "{task.title.NotEmpty.message}")
     protected String title;
-    @ApiModelProperty(value = "Order of phase, starts with 0", example = "2")
+    @ApiModelProperty(value = "Order of phase, starts with 0", example = "2", position = 1)
     @NotNull(message = "{task.order.NotNull.message}")
     @Min(value = 0, message = "{task.order.Min.message}")
     protected Integer order;
-    @ApiModelProperty(value = "Keyword found in training, used for access next phase.", example = "secretFlag")
+    @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Play me", position = 2)
+    @NotEmpty(message = "{task.content.NotEmpty.message}")
+    private String content;
+    @ApiModelProperty(value = "Keyword found in training, used for access next phase.", example = "secretFlag", position = 3)
     @NotEmpty(message = "{task.answer.NotEmpty.message}")
     @Size(max = 50, message = "{task.answer.Size.message}")
     private String answer;
-    @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Play me")
-    @NotEmpty(message = "{task.content.NotEmpty.message}")
-    private String content;
-    @ApiModelProperty(value = "Instruction how to get answer in training.", example = "This is how you do it")
+    @ApiModelProperty(value = "Instruction how to get answer in training.", example = "This is how you do it", position = 4)
     @NotEmpty(message = "{task.solution.NotEmpty.message}")
     private String solution;
-    @ApiModelProperty(value = "How many times player can submit incorrect answer before displaying solution.", example = "5")
+    @ApiModelProperty(value = "How many times player can submit incorrect answer before displaying solution.", example = "5", position = 5)
     @NotNull(message = "{task.incorrectAnswerLimit.NotEmpty.message}")
     @Min(value = 0, message = "{task.incorrectAnswerLimit.Min.message}")
     @Max(value = 100, message = "{task.incorrectAnswerLimit.Max.message}")
     private int incorrectAnswerLimit;
-    @ApiModelProperty(value = "Sign if sandbox should be modified if the task is picked.", example = "true")
+    @ApiModelProperty(value = "Sign if sandbox should be modified if the task is picked.", example = "true", position = 6)
     private boolean modifySandbox;
-    @ApiModelProperty(value = "Expected duration of the sandbox change when the task is picked (in seconds).", example = "30")
+    @ApiModelProperty(value = "Expected duration of the sandbox change when the task is picked (in seconds).", example = "30", position = 7)
     @Min(value = 0, message = "{task.sandboxChangeExpectedDuration.Min.message}")
     private int sandboxChangeExpectedDuration;
 

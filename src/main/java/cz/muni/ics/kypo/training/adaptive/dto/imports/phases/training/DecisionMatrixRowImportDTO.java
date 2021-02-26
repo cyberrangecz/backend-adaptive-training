@@ -1,7 +1,11 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+@ApiModel(
+        value = "DecisionMatrixRowImportDTO"
+)
 public class DecisionMatrixRowImportDTO {
     @ApiModelProperty(value = "Order of row in a decision matrix", required = true, example = "1")
     private int order;

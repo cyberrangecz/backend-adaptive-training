@@ -7,7 +7,11 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Encapsulates information about info phase. Inherits from {@link AbstractPhaseExportDTO}
  */
-@ApiModel(value = "InfoPhaseExportDTO", description = "Exported info phase.", parent = AbstractPhaseExportDTO.class)
+@ApiModel(
+        value = "InfoPhaseExportDTO",
+        description = "Exported info phase.",
+        parent = AbstractPhaseExportDTO.class
+)
 public class InfoPhaseExportDTO extends AbstractPhaseExportDTO {
 
     @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Informational stuff")

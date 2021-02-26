@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
@@ -9,21 +10,23 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionImportDTO"
+)
 public class QuestionImportDTO {
 
-    @ApiModelProperty(value = "Order of question", required = true, example = "0")
-    @NotNull(message = "{question.order.NotNull.message}")
-    @Min(value = 0, message = "{question.order.Min.message}")
-    private Integer order;
     @ApiModelProperty(value = "The question that will be displayed to a player", required = true, example = "What's the capital of Canada?")
     @NotEmpty(message = "{question.text.NotEmpty.message}")
     private String text;
-    @ApiModelProperty(value = "It defines the type of the question", allowableValues = "FFQ, MCQ, RFQ", required = true, example = "MCQ")
+    @ApiModelProperty(value = "It defines the type of the question", allowableValues = "FFQ, MCQ, RFQ", required = true, example = "MCQ", position = 1)
     @NotNull(message = "{question.questionType.NotNull.message}")
     private QuestionType questionType;
+    @ApiModelProperty(value = "Order of question", required = true, example = "0", position = 2)
+    @NotNull(message = "{question.order.NotNull.message}")
+    @Min(value = 0, message = "{question.order.Min.message}")
+    private Integer order;
     @Valid
-    @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
+    @ApiModelProperty(value = "Choices that are distributed with the question", required = true, position = 3)
     private List<QuestionChoiceImportDTO> choices;
 
     public int getOrder() {

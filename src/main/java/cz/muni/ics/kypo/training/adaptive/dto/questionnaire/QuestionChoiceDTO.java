@@ -1,11 +1,14 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionChoiceDTO"
+)
 public class QuestionChoiceDTO {
 
     @ApiModelProperty(value = "Question choice ID. Leave blank if new choice is added", required = true, example = "1")

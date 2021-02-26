@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 /**
  * Encapsulates information about Training Instance
  */
-@ApiModel(value = "TrainingInstanceBasicInfoDTO")
+@ApiModel(
+        value = "TrainingInstanceBasicInfoDTO"
+)
 public class TrainingInstanceBasicInfoDTO {
 
     @ApiModelProperty(value = "Main identifier of training instance.", example = "1")

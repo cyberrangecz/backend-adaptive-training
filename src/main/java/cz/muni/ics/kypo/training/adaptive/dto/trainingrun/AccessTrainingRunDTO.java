@@ -13,7 +13,10 @@ import java.util.List;
 /**
  * Encapsulates information about Training Run, intended as a response to run accessing.
  */
-@ApiModel(value = "AccessTrainingRunDTO", description = "Just accessed training run.")
+@ApiModel(
+        value = "AccessTrainingRunDTO",
+        description = "Just accessed training run."
+)
 public class AccessTrainingRunDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")

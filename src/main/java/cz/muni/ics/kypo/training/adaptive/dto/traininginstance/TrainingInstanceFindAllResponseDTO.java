@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.traininginstance;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.muni.ics.kypo.training.adaptive.converter.LocalDateTimeUTCSerializer;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,10 @@ import java.time.LocalDateTime;
 /**
  * Encapsulates basic information about Training Instance
  */
+@ApiModel(
+        value = "TrainingInstanceFindAllResponseDTO",
+        description = "Information about training instance returned in find all training instance response."
+)
 public class TrainingInstanceFindAllResponseDTO {
 
     @ApiModelProperty(value = "Main identifier of training instance.", example = "1")

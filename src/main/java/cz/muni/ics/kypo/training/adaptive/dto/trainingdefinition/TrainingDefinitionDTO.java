@@ -13,7 +13,10 @@ import java.util.Objects;
 /**
  * Encapsulates information about Training Definition
  */
-@ApiModel(value = "TrainingDefinitionDTO", description = "A blueprint of abstract phase.")
+@ApiModel(
+        value = "TrainingDefinitionDTO",
+        description = "A base definition of the training."
+)
 public class TrainingDefinitionDTO {
 
     @ApiModelProperty(value = "Main identifier of training definition.", example = "1")

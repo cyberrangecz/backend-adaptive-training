@@ -13,27 +13,30 @@ import java.util.Objects;
 /**
  * Encapsulates information about Training Definition, intended for edit of the definition.
  */
-@ApiModel(value = "TrainingDefinitionUpdateDTO", description = "Training definition to update.")
+@ApiModel(
+        value = "TrainingDefinitionUpdateDTO",
+        description = "Training definition to update."
+)
 public class TrainingDefinitionUpdateDTO {
 
     @ApiModelProperty(value = "Main identifier of training definition.", required = true, example = "2")
     @NotNull(message = "{trainingDefinition.id.NotNull.message}")
     private Long id;
-    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", required = true, example = "TrainingDefinition2")
+    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", required = true, example = "TrainingDefinition2", position = 1)
     @NotEmpty(message = "{trainingDefinition.title.NotEmpty.message}")
     private String title;
-    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition")
-    private String description;
-    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "[phishing]")
-    private String[] prerequisites;
-    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "")
-    private String[] outcomes;
-    @ApiModelProperty(value = "Current state of training definition.", required = true, example = "UNRELEASED")
-    @NotNull(message = "{trainingDefinition.state.NotNull.message}")
-    private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "false")
+    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "false", position = 2)
     @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
     private boolean showStepperBar;
+    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition", position = 3)
+    private String description;
+    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "[phishing]", position = 4)
+    private String[] prerequisites;
+    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "", position = 5)
+    private String[] outcomes;
+    @ApiModelProperty(value = "Current state of training definition.", required = true, example = "UNRELEASED", position = 6)
+    @NotNull(message = "{trainingDefinition.state.NotNull.message}")
+    private TDState state;
 
     /**
      * Gets id.

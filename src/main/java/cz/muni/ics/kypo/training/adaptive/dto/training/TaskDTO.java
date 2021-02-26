@@ -1,9 +1,12 @@
 package cz.muni.ics.kypo.training.adaptive.dto.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
-
+@ApiModel(
+        value = "TaskDTO"
+)
 public class TaskDTO {
 
     @ApiModelProperty(value = "ID of task", required = true, example = "1")

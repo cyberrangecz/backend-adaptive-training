@@ -15,29 +15,32 @@ import java.util.List;
 /**
  * Encapsulates information about training definition and its phase.
  */
-@ApiModel(value = "ImportTrainingDefinitionDTO", description = "A basic information about hint.")
+@ApiModel(
+        value = "ImportTrainingDefinitionDTO",
+        description = "A basic information about hint."
+)
 public class ImportTrainingDefinitionDTO {
 
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")
     @NotEmpty(message = "{trainingDefinition.title.NotEmpty.message}")
     private String title;
-    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition")
+    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition", position = 1)
     private String description;
-    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "")
-    private String[] prerequisites;
-    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "")
-    private String[] outcomes;
-    @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED")
+    @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED", position = 2)
     @NotNull(message = "{trainingDefinition.state.NotNull.message}")
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
+    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false", position = 3)
     @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
     private boolean showStepperBar;
-    @Valid
-    @ApiModelProperty(value = "Information about all phase in training definition.")
-    private List<AbstractPhaseImportDTO> phases = new ArrayList<>();
-    @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5")
+    @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5", position = 4)
     private Integer estimatedDuration;
+    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "", position = 5)
+    private String[] prerequisites;
+    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "", position = 6)
+    private String[] outcomes;
+    @Valid
+    @ApiModelProperty(value = "Information about all phase in training definition.", position = 7)
+    private List<AbstractPhaseImportDTO> phases = new ArrayList<>();
 
     /**
      * Instantiates a new Import training definition dto.

@@ -14,7 +14,7 @@ import java.util.Set;
  * Class representing DB reference for user and training instances and definition they can access
  */
 @Entity
-@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {"user_ref_id"}))
+@Table(name = "\"user\"", uniqueConstraints = @UniqueConstraint(columnNames = {"user_ref_id"}))
 @NamedQueries({
         @NamedQuery(
                 name = "User.findUsers",

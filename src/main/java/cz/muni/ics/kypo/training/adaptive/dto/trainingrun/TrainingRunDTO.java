@@ -13,7 +13,10 @@ import java.util.Objects;
 /**
  * Encapsulates information about Training Run.
  */
-@ApiModel(value = "TrainingRunDTO", description = "The act, or a recording, of performing actions during training from a perspective of one concrete participant.")
+@ApiModel(
+        value = "TrainingRunDTO",
+        description = "The act, or a recording, of performing actions during training from a perspective of one concrete participant."
+)
 public class TrainingRunDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")

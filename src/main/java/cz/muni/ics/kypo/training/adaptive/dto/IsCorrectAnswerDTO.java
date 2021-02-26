@@ -8,8 +8,11 @@ import java.util.Objects;
 /**
  * Response to attempt of answer input
  */
-@ApiModel(value = "IsCorrectAnswerDTO", description = "A response for the request about the validation of the task answer. May also " +
-        "include solution if remaining attempts reach 0.")
+@ApiModel(
+        value = "IsCorrectAnswerDTO",
+        description = "A response for the request about the validation of the task answer. May also " +
+        "include solution if remaining attempts reach 0."
+)
 public class IsCorrectAnswerDTO {
 
     @ApiModelProperty(value = "True/false if answer has been correct/incorrect.", example = "false")

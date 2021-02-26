@@ -4,7 +4,10 @@ import io.swagger.annotations.ApiModel;
 
 import javax.validation.constraints.NotNull;
 
-@ApiModel(value = "SandboxDefinitionInfo", description = "Basic information about the sandbox definition.")
+@ApiModel(
+        value = "SandboxDefinitionInfo",
+        description = "Basic information about the sandbox definition."
+)
 public class SandboxDefinitionInfo {
     @NotNull(message = "{sandboxDefinition.id.NotNull.message}")
     private Long id;

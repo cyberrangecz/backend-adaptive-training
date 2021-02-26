@@ -11,7 +11,11 @@ import java.util.Objects;
 /**
  * Encapsulates information about questionnaire phase. Inherits from {@link AbstractPhaseExportDTO}
  */
-@ApiModel(value = "QuestionnairePhaseExportDTO", description = "Exported questionnaire phase.", parent = AbstractPhaseExportDTO.class)
+@ApiModel(
+        value = "QuestionnairePhaseExportDTO",
+        description = "Exported questionnaire phase.",
+        parent = AbstractPhaseExportDTO.class
+)
 public class QuestionnairePhaseExportDTO extends AbstractPhaseExportDTO {
 
     @ApiModelProperty(value = "List of questions associated with the questionnaire phase")

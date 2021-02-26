@@ -1,13 +1,16 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
-
+@ApiModel(
+        value = "AbstractQuestionDTO"
+)
 public abstract class AbstractQuestionDTO {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")

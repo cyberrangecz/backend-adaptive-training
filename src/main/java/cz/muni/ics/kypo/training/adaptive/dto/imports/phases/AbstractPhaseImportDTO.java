@@ -19,9 +19,16 @@ import java.util.Objects;
  * Encapsulates information about abstract phase.
  * Extended by {@link QuestionnairePhaseImportDTO}, {@link TaskImportDTO} and {@link InfoPhaseImportDTO}
  */
-@ApiModel(value = "AbstractPhaseImportDTO", subTypes = {TrainingPhaseImportDTO.class, InfoPhaseImportDTO.class, QuestionnairePhaseImportDTO.class},
-        description = "Superclass for classes TrainingPhaseImportDTO, QuestionnairePhaseImportDTO and InfoPhaseImportDTO")
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "phase_type", visible = true)
+@ApiModel(
+        value = "AbstractPhaseImportDTO",
+        subTypes = {TrainingPhaseImportDTO.class, InfoPhaseImportDTO.class, QuestionnairePhaseImportDTO.class},
+        description = "Superclass for classes TrainingPhaseImportDTO, QuestionnairePhaseImportDTO and InfoPhaseImportDTO"
+)
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "phase_type", visible = true
+)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TrainingPhaseImportDTO.class, name = "TRAINING"),
         @JsonSubTypes.Type(value = QuestionnairePhaseImportDTO.class, name = "QUESTIONNAIRE"),
@@ -31,10 +38,10 @@ public abstract class AbstractPhaseImportDTO {
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training phase description")
     @NotEmpty(message = "{phase.title.NotEmpty.message}")
     protected String title;
-    @ApiModelProperty(value = "Type of the phase.", example = "TRAINING")
+    @ApiModelProperty(value = "Type of the phase.", example = "TRAINING", position = 1)
     @NotNull(message = "{phase.phaseType.NotNull.message}")
     protected PhaseType phaseType;
-    @ApiModelProperty(value = "Order of phase, starts with 0", example = "2")
+    @ApiModelProperty(value = "Order of phase, starts with 0", example = "2", position = 2)
     @NotNull(message = "{phase.order.NotNull.message}")
     @Min(value = 0, message = "{phase.order.Min.message}")
     protected Integer order;

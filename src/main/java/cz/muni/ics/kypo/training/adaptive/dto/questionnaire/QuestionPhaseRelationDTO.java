@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Max;
@@ -7,7 +8,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
-
+@ApiModel(
+        value = "QuestionPhaseRelationDTO"
+)
 public class QuestionPhaseRelationDTO {
 
     @ApiModelProperty(value = "Question-Phase relation ID. Leave blank if a new one is added", required = true, example = "1")

@@ -10,22 +10,25 @@ import java.util.Objects;
 /**
  * Encapsulates information about user reference.
  */
-@ApiModel(value = "UserRefDTO", description = "User information from user-and-group microservice is mapped to this class " +
-        "and is also used to provide information about authors, participants, and organizers.")
+@ApiModel(
+        value = "UserRefDTO",
+        description = "User information from user-and-group microservice is mapped to this class " +
+        "and is also used to provide information about authors, participants, and organizers."
+)
 public class UserRefDTO {
 
     @ApiModelProperty(value = "Reference to user in another microservice and get his id", example = "1")
     private Long userRefId;
-    @ApiModelProperty(value = "Reference to user in another microservice.", example = "441048@mail.muni.cz")
+    @ApiModelProperty(value = "Reference to user in another microservice.", example = "john.doe@mail.com")
     @JsonProperty("sub")
     private String userRefSub;
-    @ApiModelProperty(value = "Reference to user in another microservice and get his full name", example = "Mgr. Ing. Pavel Šeda")
+    @ApiModelProperty(value = "Reference to user in another microservice and get his full name", example = "Mgr. John Doe")
     @JsonProperty("full_name")
     private String userRefFullName;
-    @ApiModelProperty(value = "User given name", example = "Pavel")
+    @ApiModelProperty(value = "User given name", example = "John")
     @JsonProperty("given_name")
     private String userRefGivenName;
-    @ApiModelProperty(value = "User family name", example = "Seda")
+    @ApiModelProperty(value = "User family name", example = "Doe")
     @JsonProperty("family_name")
     private String userRefFamilyName;
     @ApiModelProperty(value = "Reference to user in another microservice and get his iss", example = "https://oidc.muni.cz")

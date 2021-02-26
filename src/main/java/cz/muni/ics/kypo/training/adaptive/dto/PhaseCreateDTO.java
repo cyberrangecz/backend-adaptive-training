@@ -3,11 +3,16 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 import cz.muni.ics.kypo.training.adaptive.annotations.validation.NotNullQuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+@ApiModel(
+        value = "PhaseCreateDTO",
+        description = "Specification of the phase to create."
+)
 @NotNullQuestionnaireType
 public class PhaseCreateDTO {
 

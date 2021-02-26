@@ -11,19 +11,9 @@ import java.io.Serializable;
 public class QuestionsPhaseRelationResult implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "questionsPhaseRelationResultGenerator"
-    )
-    @SequenceGenerator(
-            name = "questionsPhaseRelationResultGenerator",
-            sequenceName = "questions_phase_relation_result_seq"
-    )
-    @Column(
-            name = "questions_phase_relation_result_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionsPhaseRelationResultGenerator")
+    @SequenceGenerator(name = "questionsPhaseRelationResultGenerator", sequenceName = "questions_phase_relation_result_seq")
+    @Column(name = "questions_phase_relation_result_id", nullable = false, unique = true)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_run_id")

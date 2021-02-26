@@ -10,7 +10,11 @@ import java.util.Objects;
 /**
  * The type Info phase import dto. * Encapsulates information about info phase. Inherits from {@link AbstractPhaseImportDTO}
  */
-@ApiModel(value = "InfoPhaseImportDTO", description = "An imported info phase.", parent = AbstractPhaseImportDTO.class)
+@ApiModel(
+        value = "InfoPhaseImportDTO",
+        description = "An imported info phase.",
+        parent = AbstractPhaseImportDTO.class
+)
 public class InfoPhaseImportDTO extends AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Informational stuff")

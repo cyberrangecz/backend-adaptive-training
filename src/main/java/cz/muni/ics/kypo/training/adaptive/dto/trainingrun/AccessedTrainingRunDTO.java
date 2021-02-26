@@ -12,7 +12,10 @@ import java.util.Objects;
 /**
  * Encapsulates information about already accessed training run.
  */
-@ApiModel(value = "AccessedTrainingRunDTO", description = "Already accessed training run by some participant.")
+@ApiModel(
+        value = "AccessedTrainingRunDTO",
+        description = "Already accessed training run by some participant."
+)
 public class AccessedTrainingRunDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")

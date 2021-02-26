@@ -12,20 +12,26 @@ import java.util.List;
 /**
  * Encapsulates information about training phase. Inherits from {@link AbstractPhaseImportDTO}
  */
-@ApiModel(value = "TrainingPhaseImportDTO", description = "Imported training phase.", parent = AbstractPhaseImportDTO.class)
+@ApiModel(
+        value = "TrainingPhaseImportDTO",
+        description = "Imported training phase.",
+        parent = AbstractPhaseImportDTO.class
+)
 public class TrainingPhaseImportDTO extends AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "Estimated time it takes to finish the phase (in seconds).", example = "50")
     @Min(value = 0, message = "{trainingPhase.estimatedDuration.Size.message}")
     private int estimatedDuration;
-    @ApiModelProperty(value = "Number of allowed commands that can be used to solve the task (used for data analysis).", example = "10")
+    @ApiModelProperty(value = "Number of allowed commands that can be used to solve the task (used for data analysis).", example = "10", position = 1)
     @Min(value = 0, message = "{trainingPhase.allowedCommands.Min.message}")
     private int allowedCommands;
-    @ApiModelProperty(value = "How many times player can submit incorrect answer before displaying solution.", example = "4")
+    @ApiModelProperty(value = "How many times player can submit incorrect answer before displaying solution.", example = "4", position = 2)
     @Min(value = 0, message = "{trainingPhase.allowedWrongAnswers.Min.message}")
     private int allowedWrongAnswers;
+    @ApiModelProperty(value = "Tasks associated with the training phase", required = true, position = 3)
     @Valid
     private List<TaskImportDTO> tasks = new ArrayList<>();
+    @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true, position = 4)
     @Valid
     private List<DecisionMatrixRowImportDTO> decisionMatrix;
 

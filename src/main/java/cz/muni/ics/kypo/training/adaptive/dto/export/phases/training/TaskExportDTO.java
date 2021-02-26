@@ -1,7 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.dto.export.phases.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+@ApiModel(
+        value = "TaskExportDTO"
+)
 public class TaskExportDTO {
 
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")

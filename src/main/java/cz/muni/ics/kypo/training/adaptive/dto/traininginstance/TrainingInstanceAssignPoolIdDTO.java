@@ -10,7 +10,10 @@ import java.util.Objects;
 /**
  * Encapsulates information about Training Instance, intended for assigning pool id.
  */
-@ApiModel(value = "TrainingInstanceAssignPoolIdDTO", description = "Training Instance assign pool ID.")
+@ApiModel(
+        value = "TrainingInstanceAssignPoolIdDTO",
+        description = "Training Instance assign pool ID."
+)
 public class TrainingInstanceAssignPoolIdDTO {
 
     @ApiModelProperty(value = "Pool associated with training instance.", example = "2", required = true)

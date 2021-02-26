@@ -6,7 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Encapsulates the information stating if training instance has finished.
  */
-@ApiModel(value = "TrainingInstanceIsFinishedInfoDTO", description = "Information stating if training instance has finished.")
+@ApiModel(
+        value = "TrainingInstanceIsFinishedInfoDTO",
+        description = "Information stating if training instance has finished."
+)
 public class TrainingInstanceIsFinishedInfoDTO {
 
     @ApiModelProperty(value = "Sign if training instance is finished or not.", example = "false")

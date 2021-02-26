@@ -13,27 +13,30 @@ import java.util.List;
  * Encapsulates information about Training Definition.
  * Used for archiving
  */
-@ApiModel(value = "TrainingDefinitionArchiveDTO", description = "Archived detailed information about training definition which also include individual phase.")
+@ApiModel(
+        value = "TrainingDefinitionArchiveDTO",
+        description = "Archived detailed information about training definition which also include individual phase."
+)
 public class TrainingDefinitionArchiveDTO {
 
     @ApiModelProperty(value = "Main identifier of training definition.", example = "1")
     private Long id;
-    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")
+    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter).", example = "TrainingDefinition2")
     private String title;
     @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition")
     private String description;
-    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "")
-    private String[] prerequisites;
-    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "")
-    private String[] outcomes;
     @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED")
     private TDState state;
     @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
     private boolean showStepperBar;
-    @ApiModelProperty(value = "Information about all phase in training definition.")
-    private List<AbstractPhaseArchiveDTO> phases = new ArrayList<>();
     @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5")
     private int estimatedDuration;
+    @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "")
+    private String[] prerequisites;
+    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "")
+    private String[] outcomes;
+    @ApiModelProperty(value = "Information about all phase in training definition.")
+    private List<AbstractPhaseArchiveDTO> phases = new ArrayList<>();
 
     /**
      * Gets id.

@@ -12,7 +12,11 @@ import java.util.List;
  * Encapsulates information about training phase. Inherits from {@link AbstractPhaseArchiveDTO}
  * Used for archiving.
  */
-@ApiModel(value = "TrainingPhaseArchiveDTO", description = "Archived training phase.", parent = AbstractPhaseArchiveDTO.class)
+@ApiModel(
+        value = "TrainingPhaseArchiveDTO",
+        description = "Archived training phase.",
+        parent = AbstractPhaseArchiveDTO.class
+)
 public class TrainingPhaseArchiveDTO extends AbstractPhaseArchiveDTO {
 
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")
@@ -22,7 +26,6 @@ public class TrainingPhaseArchiveDTO extends AbstractPhaseArchiveDTO {
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10")
     private int allowedWrongAnswers;
     private List<TaskDTO> tasks = new ArrayList<>();
-
     private List<DecisionMatrixRowArchiveDTO> decisionMatrix;
 
     public int getEstimatedDuration() {

@@ -1,10 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.dto.info;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
-
+@ApiModel(
+        value = "InfoPhaseUpdateDTO"
+)
 public class InfoPhaseUpdateDTO {
 
     @ApiModelProperty(value = "Short description of info phase", required = true, example = "Info phase title")

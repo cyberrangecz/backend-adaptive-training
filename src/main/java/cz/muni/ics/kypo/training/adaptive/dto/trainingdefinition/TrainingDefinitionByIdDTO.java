@@ -16,15 +16,18 @@ import java.util.Objects;
 /**
  * Encapsulates information about Training Definition.
  */
-@ApiModel(value = "TrainingDefinitionByIdDTO", description = "A blueprint of abstract phase.")
+@ApiModel(
+        value = "TrainingDefinitionByIdDTO",
+        description = "A definition of the training with phases."
+)
 public class TrainingDefinitionByIdDTO {
 
     @ApiModelProperty(value = "Main identifier of training definition.", example = "1")
     private Long id;
-    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")
-    private String title;
     @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition")
     private String description;
+    @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")
+    private String title;
     @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "")
     private String[] prerequisites;
     @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "")
@@ -35,7 +38,7 @@ public class TrainingDefinitionByIdDTO {
     private List<AbstractPhaseDTO> phases = new ArrayList<>();
     @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
     private boolean showStepperBar;
-    @ApiModelProperty(value = "Sign if training definition can be archived or not.", example = "true")
+    @ApiModelProperty(value = "Sign if training definition can be archived or not.", example = "true", position = 7)
     private boolean canBeArchived;
     @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5")
     private long estimatedDuration;

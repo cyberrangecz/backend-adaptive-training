@@ -1,7 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.training;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+@ApiModel(
+        value = "DecisionMatrixRowArchiveDTO"
+)
 public class DecisionMatrixRowArchiveDTO {
     @ApiModelProperty(value = "ID of decision matrix row", required = true, example = "1")
     private long id;

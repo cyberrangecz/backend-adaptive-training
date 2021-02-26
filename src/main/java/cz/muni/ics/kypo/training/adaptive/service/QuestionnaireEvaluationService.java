@@ -53,25 +53,25 @@ public class QuestionnaireEvaluationService {
     /**
      * Evaluate and store answers to questionnaire.
      *
-     * @param trainingRunId     id of training run to answer the questionnaire.
+     * @param trainingRunId             id of training run to answer the questionnaire.
      * @param questionnairePhaseAnswers answers to questionnaire to be evaluated. Map of entries (Key = question ID, Value = answer).
      * @throws EntityNotFoundException training run is not found.
      */
-    public List<QuestionAnswer> saveAndEvaluateAnswersToQuestionnaire(Long trainingRunId, Map<Long, String> questionnairePhaseAnswers) {
+    public List<QuestionAnswer> saveAndEvaluateAnswersToQuestionnaire(Long trainingRunId, Map<Long, Set<String>> questionnairePhaseAnswers) {
         TrainingRun trainingRun = this.findByIdWithPhase(trainingRunId);
         this.checkIfCanBeEvaluated(trainingRun);
 
         List<QuestionAnswer> storedQuestionsAnswers = new ArrayList<>();
-        for (Map.Entry<Long, String> questionAnswer : questionnairePhaseAnswers.entrySet()) {
+        for (Map.Entry<Long, Set<String>> questionAnswers : questionnairePhaseAnswers.entrySet()) {
             Long questionnaireId = trainingRun.getCurrentPhase().getId();
-            storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswer.getKey(), questionAnswer.getValue(), questionnaireId, trainingRun));
+            storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswers.getKey(), questionAnswers.getValue(), questionnaireId, trainingRun));
         }
         if (((QuestionnairePhase) trainingRun.getCurrentPhase()).getQuestionnaireType() == QuestionnaireType.ADAPTIVE) {
             this.evaluateAnswersToQuestionnaire(trainingRun, storedQuestionsAnswers);
         }
         auditEventsService.auditPhaseCompletedAction(trainingRun);
         auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.stream()
-                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestion().getText(), QuestionAnswer::getAnswer))
+                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestion().getText(), QuestionAnswer::getAnswers))
                 .toString());
         trainingRun.setPhaseAnswered(true);
         return storedQuestionsAnswers;
@@ -86,52 +86,44 @@ public class QuestionnaireEvaluationService {
                     "Current phase of the training run has been already answered."));
     }
 
-    private QuestionAnswer saveQuestionAnswer(Long questionId, String answer, Long questionnaireId, TrainingRun trainingRun) {
+    private QuestionAnswer saveQuestionAnswer(Long questionId, Set<String> answers, Long questionnaireId, TrainingRun trainingRun) {
         Question question = this.findQuestionByIdAndQuestionnairePhaseId(questionId, questionnaireId);
         QuestionAnswer questionAnswer = new QuestionAnswer(question, trainingRun);
-        questionAnswer.setAnswer(answer);
-
+        questionAnswer.setAnswers(answers);
         return questionAnswerRepository.save(questionAnswer);
     }
 
-    private void evaluateAnswersToQuestionnaire(TrainingRun trainingRun, List<QuestionAnswer> answers) {
-        if (CollectionUtils.isEmpty(answers)) {
+    private void evaluateAnswersToQuestionnaire(TrainingRun trainingRun, List<QuestionAnswer> questionAnswers) {
+        if (CollectionUtils.isEmpty(questionAnswers)) {
             return;
         }
-
-        Set<Long> questionIdList = answers.stream()
+        Set<Long> questionIdList = questionAnswers.stream()
                 .map(QuestionAnswer::getQuestionAnswerId)
                 .map(QuestionAnswerId::getQuestionId)
                 .collect(Collectors.toSet());
 
         List<QuestionPhaseRelation> questionPhaseRelations = questionPhaseRelationRepository.findAllByQuestionIdList(questionIdList);
         for (QuestionPhaseRelation questionPhaseRelation : questionPhaseRelations) {
-            int numberOfCorrectAnswers = 0;
+            double numberOfCorrectlyAnsweredQuestions = 0;
             if (CollectionUtils.isEmpty(questionPhaseRelation.getQuestions())) {
                 LOG.warn("No questions found for question phase relation {}", questionPhaseRelation.getId());
                 continue;
             }
 
             for (Question question : questionPhaseRelation.getQuestions()) {
-                Optional<QuestionAnswer> correspondingAnswer = findCorrespondingAnswer(question.getId(), answers);
-                if (correspondingAnswer.isPresent()) {
-                    String answer = correspondingAnswer.get().getAnswer();
-                    Optional<QuestionChoice> correspondingQuestionChoice = findCorrespondingQuestionChoice(answer, question.getChoices());
-                    if (correspondingQuestionChoice.isPresent() && correspondingQuestionChoice.get().isCorrect()) {
-                        numberOfCorrectAnswers++;
-                    }
+                Optional<QuestionAnswer> correspondingAnswer = findCorrespondingAnswer(question.getId(), questionAnswers);
+                if (correspondingAnswer.isPresent() && checkCorrectnessOfAnswersToQuestion(correspondingAnswer.get().getAnswers(), question)) {
+                    numberOfCorrectlyAnsweredQuestions++;
                 } else {
                     LOG.debug("No answer found for question {}. It is assumed as a wrong answer", question.getId());
                 }
             }
-
-            int achievedResult = numberOfCorrectAnswers * 100 / questionPhaseRelation.getQuestions().size();
+            double achievedResult = numberOfCorrectlyAnsweredQuestions / questionPhaseRelation.getQuestions().size();
 
             QuestionPhaseResult questionPhaseResult = new QuestionPhaseResult();
             questionPhaseResult.setAchievedResult(achievedResult);
             questionPhaseResult.setQuestionPhaseRelation(questionPhaseRelation);
             questionPhaseResult.setTrainingRun(trainingRun);
-
             questionPhaseResultRepository.save(questionPhaseResult);
         }
     }
@@ -142,10 +134,11 @@ public class QuestionnaireEvaluationService {
                 .findFirst();
     }
 
-    private Optional<QuestionChoice> findCorrespondingQuestionChoice(String answer, List<QuestionChoice> questionChoices) {
-        return questionChoices.stream()
-                .filter(q -> Objects.equals(answer, q.getText()))
-                .findFirst();
+    private boolean checkCorrectnessOfAnswersToQuestion(Set<String> answers, Question question) {
+        int numberOfCorrectAnswers = (int) question.getChoices().stream()
+                .filter(questionChoice -> answers.contains(questionChoice.getText()) && questionChoice.isCorrect())
+                .count();
+        return numberOfCorrectAnswers == answers.size();
     }
 
     private TrainingRun findByIdWithPhase(Long runId) {

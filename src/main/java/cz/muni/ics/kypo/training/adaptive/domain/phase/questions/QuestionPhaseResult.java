@@ -29,7 +29,7 @@ public class QuestionPhaseResult implements Serializable {
     @JoinColumn(name = "training_run_id")
     private TrainingRun trainingRun;
     @Column(name = "achieved_result")
-    private int achievedResult;
+    private double achievedResult;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_phase_relation_id")
     private QuestionPhaseRelation questionPhaseRelation;
@@ -50,11 +50,11 @@ public class QuestionPhaseResult implements Serializable {
         this.trainingRun = trainingRun;
     }
 
-    public int getAchievedResult() {
+    public double getAchievedResult() {
         return achievedResult;
     }
 
-    public void setAchievedResult(int achievedResult) {
+    public void setAchievedResult(double achievedResult) {
         this.achievedResult = achievedResult;
     }
 

@@ -33,5 +33,5 @@ WORKDIR /app
 RUN mvn clean install -DskipTests -Dproprietary-repo-url=$PROPRIETARY_REPO_URL
 COPY /target/$PROJECT_ARTIFACT_ID-*.jar kypo-adaptive-training.jar
 
-EXPOSE 8086
+EXPOSE 8082
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]

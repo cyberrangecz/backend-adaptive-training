@@ -3,6 +3,8 @@ package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 public class QuestionAnswerDTO {
 
@@ -10,7 +12,7 @@ public class QuestionAnswerDTO {
     @NotNull(message = "ID of the answered question must not be null")
     private Long questionId;
     @ApiModelProperty(value = "Answer to the question", example = "An answer")
-    private String answer;
+    private Set<String> answers;
 
     public Long getQuestionId() {
         return questionId;
@@ -20,20 +22,19 @@ public class QuestionAnswerDTO {
         this.questionId = questionId;
     }
 
-    public String getAnswer() {
-        return answer;
+    public Set<String> getAnswers() {
+        return answers;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswers(Set<String> answers) {
+        this.answers = answers;
     }
-
 
     @Override
     public String toString() {
         return "QuestionAnswerDTO{" +
                 "questionId=" + questionId +
-                ", answer='" + answer + '\'' +
+                ", answers='" + answers + '\'' +
                 '}';
     }
 }

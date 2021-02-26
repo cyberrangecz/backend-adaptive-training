@@ -16,12 +16,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.*;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
@@ -334,15 +330,15 @@ public class TrainingRunFacade {
     /**
      * Evaluate and store answers to questionnaire.
      *
-     * @param trainingRunId     id of the Training Run.
+     * @param trainingRunId                id of the Training Run.
      * @param questionnairePhaseAnswersDTO answers to questionnaire
      */
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
     public void evaluateAnswersToQuestionnaire(Long trainingRunId, QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
-        Map<Long, String> questionsAnswersMapping = questionnairePhaseAnswersDTO.getAnswers().stream()
-                .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getAnswer));
+        Map<Long, Set<String>> questionsAnswersMapping = questionnairePhaseAnswersDTO.getAnswers().stream()
+                .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getAnswers));
         questionnaireEvaluationService.saveAndEvaluateAnswersToQuestionnaire(trainingRunId, questionsAnswersMapping);
     }
 
@@ -375,13 +371,11 @@ public class TrainingRunFacade {
     }
 
     private List<AccessedTrainingRunDTO> sortByTitle(List<AccessedTrainingRunDTO> runs, String sortByTitle) {
-        if (sortByTitle != null && !sortByTitle.isBlank()) {
-            if (!runs.isEmpty()) {
+        if (sortByTitle != null && !sortByTitle.isBlank() && !runs.isEmpty()) {
                 if (sortByTitle.equals(Sort.ASC)) {
                     runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle));
                 } else if (sortByTitle.equals(Sort.DESC)) {
                     runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle).reversed());
-                }
             }
         }
         return runs;

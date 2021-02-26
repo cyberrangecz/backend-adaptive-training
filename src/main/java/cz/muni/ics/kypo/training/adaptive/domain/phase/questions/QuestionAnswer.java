@@ -4,7 +4,8 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "question_answer")
@@ -20,8 +21,13 @@ public class QuestionAnswer implements Serializable {
     @MapsId("trainingRunId")
     @JoinColumn(name = "training_run_id")
     private TrainingRun trainingRun;
+    @ElementCollection
+    @CollectionTable(
+            name = "question_answers",
+            joinColumns = {@JoinColumn(name = "training_run_id"), @JoinColumn(name = "question_id")}
+    )
     @Column(name = "answer")
-    private String answer;
+    private Set<String> answers;
 
     public QuestionAnswer() {
         this.questionAnswerId = new QuestionAnswerId();
@@ -59,20 +65,19 @@ public class QuestionAnswer implements Serializable {
         this.trainingRun = trainingRun;
     }
 
-    public String getAnswer() {
-        return answer;
+    public Set<String> getAnswers() {
+        return answers;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setAnswers(Set<String> answers) {
+        this.answers = answers;
     }
-
 
     @Override
     public String toString() {
         return "QuestionAnswer{" +
                 "questionAnswerId=" + this.getQuestionAnswerId() +
-                ", answer='" + this.getQuestionAnswerId() + '\'' +
+                ", answers='" + this.getAnswers() + '\'' +
                 '}';
     }
 }

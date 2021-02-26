@@ -175,18 +175,27 @@ create table question_phase_relation_question (
 create table question_answer (
     question_id int8 not null,
     training_run_id int8 not null,
-    answer varchar(255) not null,
     primary key (question_id, training_run_id),
     foreign key (question_id) references question,
     foreign key (training_run_id) references training_run,
     unique (question_id, training_run_id)
 );
 
+create table question_answers (
+    question_id int8 not null,
+    training_run_id int8 not null,
+    answer varchar(255) not null,
+    primary key (question_id, training_run_id),
+    foreign key (question_id, training_run_id) references question_answer,
+    unique (question_id, training_run_id)
+);
+
+
 create table question_phase_result (
     question_phase_result_id bigserial not null,
     training_run_id int8 not null,
     question_phase_relation_id int8 not null,
-    achieved_result int4 not null,
+    achieved_result double precision not null,
     primary key (question_phase_result_id),
     foreign key (question_phase_relation_id) references question_phase_relation
 );

@@ -28,10 +28,11 @@ COPY supervisord.conf /app/supervisord.conf
 COPY pom.xml /app/pom.xml
 COPY src /app/src
 
-# build training
-WORKDIR /app
-RUN mvn clean install -DskipTests -Dproprietary-repo-url=$PROPRIETARY_REPO_URL
-COPY /target/$PROJECT_ARTIFACT_ID-*.jar kypo-adaptive-training.jar
+# build adaptive training service
+RUN cd /app && \
+    mvn clean install -DskipTests -Dproprietary-repo-url=$PROPRIETARY_REPO_URL && \
+    cp /app/target/$PROJECT_ARTIFACT_ID-*.jar /app/kypo-adaptive-training.jar
 
-EXPOSE 8086
+WORKDIR /app
+EXPOSE 8082
 ENTRYPOINT ["/usr/bin/supervisord", "-c", "/app/supervisord.conf"]

@@ -4,6 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class QuestionAnswer implements Serializable {
             joinColumns = {@JoinColumn(name = "training_run_id"), @JoinColumn(name = "question_id")}
     )
     @Column(name = "answer")
-    private Set<String> answers;
+    private Set<String> answers = new HashSet<>();
 
     public QuestionAnswer() {
         this.questionAnswerId = new QuestionAnswerId();

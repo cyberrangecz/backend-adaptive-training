@@ -7,20 +7,20 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "question_phase_result")
-public class QuestionPhaseResult implements Serializable {
+@Table(name = "questions_phase_relation_result")
+public class QuestionsPhaseRelationResult implements Serializable {
 
     @Id
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "questionPhaseResultGenerator"
+            generator = "questionsPhaseRelationResultGenerator"
     )
     @SequenceGenerator(
-            name = "questionPhaseResultGenerator",
-            sequenceName = "question_phase_result_seq"
+            name = "questionsPhaseRelationResultGenerator",
+            sequenceName = "questions_phase_relation_result_seq"
     )
     @Column(
-            name = "question_phase_result_id",
+            name = "questions_phase_relation_result_id",
             nullable = false,
             unique = true
     )

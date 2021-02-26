@@ -17,8 +17,11 @@ import io.swagger.annotations.ApiModelProperty;
         @JsonSubTypes.Type(value = TrainingPhaseArchiveDTO.class, name = "TrainingPhaseArchiveDTO"),
         @JsonSubTypes.Type(value = QuestionnairePhaseArchiveDTO.class, name = "QuestionnairePhaseArchiveDTO"),
         @JsonSubTypes.Type(value = InfoPhaseArchiveDTO.class, name = "InfoPhaseArchiveDTO")})
-@ApiModel(value = "AbstractPhaseArchiveDTO", subTypes = {TrainingPhaseArchiveDTO.class, InfoPhaseArchiveDTO.class, QuestionnairePhaseArchiveDTO.class},
-        description = "Superclass for classes TrainingPhaseArchiveDTO, InfoPhaseArchiveDTO and QuestionnairePhaseArchiveDTO")
+@ApiModel(
+        value = "AbstractPhaseArchiveDTO",
+        subTypes = {TrainingPhaseArchiveDTO.class, InfoPhaseArchiveDTO.class, QuestionnairePhaseArchiveDTO.class},
+        description = "Superclass for classes TrainingPhaseArchiveDTO, InfoPhaseArchiveDTO and QuestionnairePhaseArchiveDTO"
+)
 public abstract class AbstractPhaseArchiveDTO {
 
     @ApiModelProperty(value = "Main identifier of phase.", example = "1")

@@ -14,7 +14,11 @@ import java.util.Objects;
  * Encapsulates information about c phase. Inherits from {@link AbstractPhaseArchiveDTO}
  * Used for archiving.
  */
-@ApiModel(value = "QuestionnairePhaseArchiveDTO", description = "Archived questionnaire phase.", parent = AbstractPhaseArchiveDTO.class)
+@ApiModel(
+        value = "QuestionnairePhaseArchiveDTO",
+        description = "Archived questionnaire phase.",
+        parent = AbstractPhaseArchiveDTO.class
+)
 public class QuestionnairePhaseArchiveDTO extends AbstractPhaseArchiveDTO {
 
     @ApiModelProperty(value = "List of questions associated with the questionnaire phase")
@@ -23,7 +27,6 @@ public class QuestionnairePhaseArchiveDTO extends AbstractPhaseArchiveDTO {
     private QuestionnaireType questionnaireType;
     @ApiModelProperty(value = "List of relations between questions and a training phase")
     private List<QuestionPhaseRelationDTO> phaseRelations;
-
     public List<QuestionDTO> getQuestions() {
         return questions;
     }

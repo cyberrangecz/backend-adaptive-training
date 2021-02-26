@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
 /**
  * Encapsulates information about Training Run.
  */
-@ApiModel(value = "TrainingRunByIdDTO", description = "The act, or a recording, of performing actions during training from a perspective of one concrete participant.")
+@ApiModel(
+        value = "TrainingRunByIdDTO",
+        description = "The act, or a recording, of performing actions during training from a perspective of one concrete participant."
+)
 public class TrainingRunByIdDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")

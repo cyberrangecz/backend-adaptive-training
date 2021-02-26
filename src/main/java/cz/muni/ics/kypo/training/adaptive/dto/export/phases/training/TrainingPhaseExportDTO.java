@@ -11,7 +11,11 @@ import java.util.Objects;
 /**
  * Encapsulates information about training phase. Inherits from {@link AbstractPhaseExportDTO}
  */
-@ApiModel(value = "TrainingPhaseExportDTO", description = "Exported training phase.", parent = AbstractPhaseExportDTO.class)
+@ApiModel(
+        value = "TrainingPhaseExportDTO",
+        description = "Exported training phase.",
+        parent = AbstractPhaseExportDTO.class
+)
 public class TrainingPhaseExportDTO extends AbstractPhaseExportDTO {
 
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20")

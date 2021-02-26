@@ -1,10 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.dto.export.phases.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
-
+@ApiModel(
+        value = "QuestionExportDTO"
+)
 public class QuestionExportDTO {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")

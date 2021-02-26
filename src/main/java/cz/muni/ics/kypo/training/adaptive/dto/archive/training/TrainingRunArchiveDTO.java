@@ -12,7 +12,10 @@ import java.time.LocalDateTime;
  * Encapsulates information about Training run.
  * Used for archiving
  */
-@ApiModel(value = "TrainingRunArchiveDTO", description = "An archived run of training instance of a particular participant.")
+@ApiModel(
+        value = "TrainingRunArchiveDTO",
+        description = "An archived run of training instance of a particular participant."
+)
 public class TrainingRunArchiveDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")

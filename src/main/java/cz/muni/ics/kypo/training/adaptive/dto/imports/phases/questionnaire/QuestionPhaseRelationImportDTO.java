@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Max;
@@ -8,25 +9,28 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
-
+@ApiModel(
+        value = "QuestionPhaseRelationImportDTO"
+)
 public class QuestionPhaseRelationImportDTO {
 
-    @ApiModelProperty(value = "Order of question", required = true, example = "0")
+    @ApiModelProperty(value = "Order of question", required = true, example = "0"
+    )
     @NotNull(message = "{questionnairePhaseRelation.order.NotNull.message}")
     @Min(value = 0, message = "{questionnairePhaseRelation.order.Min.message}")
     private Integer order;
-    @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire")
-    @NotNull(message = "{questionnairePhaseRelation.questionIds.NotNull.message}")
-    @Size(min = 1, message = "{questionnairePhaseRelation.questionIds.Size.message}")
-    private Set<Long> questionIds;
-    @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1")
+    @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1", position = 1)
     @NotNull(message = "{questionnairePhaseRelation.phaseId.NotNull.message}")
     @Min(value = 0, message = "{questionnairePhaseRelation.phaseId.Min.message}")
     private Long phaseId;
-    @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50")
+    @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50", position = 2)
     @Min(value = 0, message = "{questionnairePhaseRelation.successRate.Min.message}")
     @Max(value = 100, message = "{questionnairePhaseRelation.successRate.Max.message}")
     private int successRate;
+    @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire", position = 3)
+    @NotNull(message = "{questionnairePhaseRelation.questionIds.NotNull.message}")
+    @Size(min = 1, message = "{questionnairePhaseRelation.questionIds.Size.message}")
+    private Set<Long> questionIds;
 
     public Integer getOrder() {
         return order;

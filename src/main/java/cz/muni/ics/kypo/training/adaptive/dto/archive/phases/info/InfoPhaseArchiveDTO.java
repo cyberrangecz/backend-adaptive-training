@@ -10,7 +10,11 @@ import java.util.Objects;
  * Encapsulates information about info phase. Inherits from {@link AbstractPhaseArchiveDTO}
  * Used for archiving.
  */
-@ApiModel(value = "InfoPhaseArchiveDTO", description = "Archived info phase.", parent = AbstractPhaseArchiveDTO.class)
+@ApiModel(
+        value = "InfoPhaseArchiveDTO",
+        description = "Archived info phase.",
+        parent = AbstractPhaseArchiveDTO.class
+)
 public class InfoPhaseArchiveDTO extends AbstractPhaseArchiveDTO {
 
     @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Informational stuff")

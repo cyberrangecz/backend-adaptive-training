@@ -12,22 +12,25 @@ import java.util.Arrays;
 /**
  * Encapsulates information about Training definition, intended for creation of new definition.
  */
-@ApiModel(value = "TrainingDefinitionCreateDTO", description = "Training definition to create.")
+@ApiModel(
+        value = "TrainingDefinitionCreateDTO",
+        description = "Training definition to create."
+)
 public class TrainingDefinitionCreateDTO {
 
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", required = true, example = "Photo Hunter")
     @NotEmpty(message = "{trainingDefinition.title.NotEmpty.message}")
     private String title;
-    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Description of Photo Hunter")
+    @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Description of Photo Hunter", position = 1)
     private String description;
     @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "[HTML, http protocol]")
     private String[] prerequisites;
-    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "[outcomes]")
+    @ApiModelProperty(value = "A list of knowledge and skills that the participant should learn by attending the training (if it is used for educational purposes) ", example = "[outcomes]", position = 1)
     private String[] outcomes;
-    @ApiModelProperty(value = "Current state of training definition.", required = true, example = "UNRELEASED")
+    @ApiModelProperty(value = "Current state of training definition.", required = true, example = "UNRELEASED", position = 1)
     @NotNull(message = "{trainingDefinition.state.NotNull.message}")
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "true")
+    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "true", position = 1)
     @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
     private Boolean showStepperBar;
 

@@ -9,7 +9,10 @@ import java.util.Objects;
 /**
  * Encapsulates basic information about Training Definition.
  */
-@ApiModel(value = "TrainingDefinitionInfoDTO", description = "Basic training definition information.")
+@ApiModel(
+        value = "TrainingDefinitionInfoDTO",
+        description = "Basic training definition information."
+)
 public class TrainingDefinitionInfoDTO {
 
     @ApiModelProperty(value = "Main identifier of training definition.", example = "1")

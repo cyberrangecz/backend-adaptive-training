@@ -1,12 +1,15 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionChoiceImportDTO"
+)
 public class QuestionChoiceImportDTO {
 
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")

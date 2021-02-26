@@ -1,7 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.dto.export.phases.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
+@ApiModel(
+        value = "QuestionChoiceExportDTO"
+)
 public class QuestionChoiceExportDTO {
 
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")

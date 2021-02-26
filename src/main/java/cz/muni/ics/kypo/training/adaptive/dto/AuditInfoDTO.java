@@ -1,17 +1,32 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * Encapsulates information used for auditing.
  */
+@ApiModel(
+        value = "AuditInfoDTO",
+        description = "Common information used for auditing."
+)
 public class AuditInfoDTO {
 
+    @ApiModelProperty(value = "Main identifier of the user in user managements service.", example = "1")
     private long userRefId;
+    @ApiModelProperty(value = "Main identifier of the sandbox.", example = "1")
     private long sandboxId;
+    @ApiModelProperty(value = "Main identifier of the pool.", example = "1")
     private long poolId;
+    @ApiModelProperty(value = "Main identifier of the training run.", example = "1")
     private long trainingRunId;
+    @ApiModelProperty(value = "Main identifier of the training definition.", example = "1")
     private long trainingDefinitionId;
+    @ApiModelProperty(value = "Main identifier of the training instance.", example = "1")
     private long trainingInstanceId;
+    @ApiModelProperty(value = "Current duration of the training phase.", example = "1")
     private long trainingTime;
+    @ApiModelProperty(value = "Main identifier of the phase.", example = "1")
     private long phase;
 
     /**

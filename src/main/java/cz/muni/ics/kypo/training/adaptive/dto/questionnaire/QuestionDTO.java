@@ -1,9 +1,12 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionDTO"
+)
 public class QuestionDTO extends AbstractQuestionDTO {
 
     @ApiModelProperty(value = "Question ID. Leave blank if a new question is added", required = true, example = "1")

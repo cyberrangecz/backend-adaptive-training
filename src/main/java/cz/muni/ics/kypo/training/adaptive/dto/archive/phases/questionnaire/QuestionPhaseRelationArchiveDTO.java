@@ -1,9 +1,12 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Set;
-
+@ApiModel(
+        value = "QuestionPhaseRelationArchiveDTO"
+)
 public class QuestionPhaseRelationArchiveDTO {
 
     @ApiModelProperty(value = "Question-Phase relation ID. Leave blank if a new one is added", required = true, example = "1")

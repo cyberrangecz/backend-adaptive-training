@@ -1,10 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.dto.info;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
-
+@ApiModel(
+        value = "InfoPhaseDTO"
+)
 public class InfoPhaseDTO extends AbstractPhaseDTO {
 
     @ApiModelProperty(value = "Short description of info phase", required = true, example = "Info phase title")

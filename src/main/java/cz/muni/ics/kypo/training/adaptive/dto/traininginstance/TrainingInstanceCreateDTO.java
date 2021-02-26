@@ -13,24 +13,27 @@ import java.time.LocalDateTime;
 /**
  * Encapsulates information about Training Instance, intended for creation of new instance.
  */
-@ApiModel(value = "TrainingInstanceCreateDTO", description = "Training Instance to create.")
+@ApiModel(
+        value = "TrainingInstanceCreateDTO",
+        description = "Training Instance to create."
+)
 public class TrainingInstanceCreateDTO {
 
-    @ApiModelProperty(value = "Date when training instance starts.", required = true, example = "2020-11-20T10:28:02.727Z")
-    @NotNull(message = "{trainingInstance.startTime.NotNull.message}")
-    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
-    private LocalDateTime startTime;
-    @ApiModelProperty(value = "Date when training instance ends.", required = true, example = "2020-11-25T10:26:02.727Z")
-    @NotNull(message = "{trainingInstance.endTime.NotNull.message}")
-    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
-    private LocalDateTime endTime;
     @ApiModelProperty(value = "Short textual description of the training instance.", required = true, example = "December instance")
     @NotEmpty(message = "{trainingInstance.title.NotEmpty.message}")
     private String title;
-    @ApiModelProperty(value = "AccessToken which will be modified and then used for accessing training run.", required = true, example = "hunter")
+    @ApiModelProperty(value = "Date when training instance starts.", required = true, example = "2020-11-20T10:28:02.727Z", position = 1)
+    @NotNull(message = "{trainingInstance.startTime.NotNull.message}")
+    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
+    private LocalDateTime startTime;
+    @ApiModelProperty(value = "Date when training instance ends.", required = true, example = "2020-11-25T10:26:02.727Z", position = 2)
+    @NotNull(message = "{trainingInstance.endTime.NotNull.message}")
+    @JsonDeserialize(using = LocalDateTimeUTCDeserializer.class)
+    private LocalDateTime endTime;
+    @ApiModelProperty(value = "AccessToken which will be modified and then used for accessing training run.", required = true, example = "hunter", position = 3)
     @NotEmpty(message = "{trainingInstance.accessToken.NotEmpty.message}")
     private String accessToken;
-    @ApiModelProperty(value = "Reference to training definition from which is training instance created.", required = true, example = "1")
+    @ApiModelProperty(value = "Reference to training definition from which is training instance created.", required = true, example = "1", position = 4)
     @NotNull(message = "{trainingInstance.trainingDefinitionId.NotNull.message}")
     @Min(value = 0, message = "{trainingInstance.trainingDefinitionId.Min.message}")
     private Long trainingDefinitionId;

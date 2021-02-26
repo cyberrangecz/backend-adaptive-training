@@ -13,24 +13,11 @@ import java.util.Set;
 public class QuestionPhaseRelation implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "questionPhaseGenerator"
-    )
-    @SequenceGenerator(
-            name = "questionPhaseGenerator",
-            sequenceName = "question_phase_seq"
-    )
-    @Column(
-            name = "question_phase_relation_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionPhaseGenerator")
+    @SequenceGenerator(name = "questionPhaseGenerator", sequenceName = "question_phase_seq")
+    @Column(name = "question_phase_relation_id", nullable = false, unique = true)
     private Long id;
-    @Column(
-            name = "order_in_questionnaire",
-            nullable = false
-    )
+    @Column(name = "order_in_questionnaire", nullable = false)
     private Integer order;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "questionnaire_phase_id")

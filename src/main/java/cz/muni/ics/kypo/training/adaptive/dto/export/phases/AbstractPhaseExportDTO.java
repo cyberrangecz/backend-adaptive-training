@@ -13,8 +13,11 @@ import java.util.Objects;
  * Encapsulates information about abstract phase.
  * Extended by {@link QuestionnairePhaseExportDTO}, {@link TrainingPhaseExportDTO} and {@link InfoPhaseExportDTO}
  */
-@ApiModel(value = "AbstractPhaseExportDTO", subTypes = {TrainingPhaseExportDTO.class, InfoPhaseExportDTO.class, QuestionnairePhaseExportDTO.class},
-        description = "Superclass for classes TrainingPhaseExportDTO, InfoPhaseExportDTO and QuestionnairePhaseExportDTO")
+@ApiModel(
+        value = "AbstractPhaseExportDTO",
+        subTypes = {TrainingPhaseExportDTO.class, InfoPhaseExportDTO.class, QuestionnairePhaseExportDTO.class},
+        description = "Superclass for classes TrainingPhaseExportDTO, InfoPhaseExportDTO and QuestionnairePhaseExportDTO"
+)
 public abstract class AbstractPhaseExportDTO {
 
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training Phase")

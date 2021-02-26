@@ -1,11 +1,14 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionArchiveDTO"
+)
 public class QuestionArchiveDTO {
 
     @ApiModelProperty(value = "Main identifier of question.", example = "1")

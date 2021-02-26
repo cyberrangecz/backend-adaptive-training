@@ -2,11 +2,14 @@ package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 import java.util.Objects;
-
+@ApiModel(
+        value = "QuestionnairePhaseDTO"
+)
 public class QuestionnairePhaseDTO extends AbstractPhaseDTO {
 
     @ApiModelProperty(value = "List of questions associated with the questionnaire phase")

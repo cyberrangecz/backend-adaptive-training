@@ -9,7 +9,10 @@ import java.util.Objects;
 /**
  * Encapsulates basic information about phase.
  */
-@ApiModel(value = "BasicPhaseInfoDTO", description = "Basic information about the phase and its type.")
+@ApiModel(
+        value = "BasicPhaseInfoDTO",
+        description = "Basic information about the phase and its type."
+)
 public class BasicPhaseInfoDTO {
 
     @ApiModelProperty(value = "Main identifier of phase.", example = "1")

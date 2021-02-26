@@ -8,7 +8,10 @@ import java.util.Arrays;
 /**
  * Class encapsulating entity into file.
  */
-@ApiModel(value = "FileToReturnDTO", description = "Wrapping model which contains the content and title of the file.")
+@ApiModel(
+        value = "FileToReturnDTO",
+        description = "Wrapping model which contains the content and title of the file."
+)
 public class FileToReturnDTO {
 
     @ApiModelProperty(value = "Content of the file.", example = "[string]")

@@ -153,8 +153,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <release>${java.version}</release>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
@@ -203,7 +202,7 @@
                                 <location>cz.muni.ics.kypo.training.adaptive</location>
                             </locations>
                             <schemes>http,https</schemes>
-                            <host>localhost:8080</host>
+                            <host>localhost:8082</host>
                             <basePath>/kypo-adaptive-training/api/v1</basePath>
                             <info>
                                 <title>KYPO Adaptive Training Service - API Reference</title>

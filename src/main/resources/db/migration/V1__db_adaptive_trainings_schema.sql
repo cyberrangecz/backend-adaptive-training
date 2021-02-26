@@ -191,13 +191,22 @@ create table question_answers (
 );
 
 
-create table question_phase_result (
-    question_phase_result_id bigserial not null,
+create table questions_phase_relation_result (
+    questions_phase_relation_result_id bigserial not null,
     training_run_id int8 not null,
     question_phase_relation_id int8 not null,
     achieved_result double precision not null,
-    primary key (question_phase_result_id),
+    primary key (questions_phase_relation_result_id),
     foreign key (question_phase_relation_id) references question_phase_relation
+);
+
+create table adaptive_questions_fulfillment (
+    adaptive_questions_fulfillment_id bigserial not null,
+    training_run_id int8 not null,
+    training_phase_id int8 not null,
+    fulfilled boolean not null,
+    primary key (adaptive_questions_fulfillment_id),
+    foreign key (training_phase_id) references training_phase
 );
 
 -- ACCESS TOKEN

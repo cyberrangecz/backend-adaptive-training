@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
@@ -8,8 +9,9 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
+import cz.muni.ics.kypo.training.adaptive.repository.AdaptiveQuestionsFulfillmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionAnswerRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.QuestionPhaseResultRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.QuestionsPhaseRelationResultRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
@@ -31,7 +33,8 @@ public class QuestionnaireEvaluationService {
     private final QuestionRepository questionRepository;
     private final QuestionAnswerRepository questionAnswerRepository;
     private final QuestionPhaseRelationRepository questionPhaseRelationRepository;
-    private final QuestionPhaseResultRepository questionPhaseResultRepository;
+    private final QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository;
+    private final AdaptiveQuestionsFulfillmentRepository adaptiveQuestionsFulfillmentRepository;
     private final TrainingRunRepository trainingRunRepository;
     private final AuditEventsService auditEventsService;
 
@@ -39,13 +42,15 @@ public class QuestionnaireEvaluationService {
     public QuestionnaireEvaluationService(QuestionRepository questionRepository,
                                           QuestionAnswerRepository questionAnswerRepository,
                                           QuestionPhaseRelationRepository questionPhaseRelationRepository,
-                                          QuestionPhaseResultRepository questionPhaseResultRepository,
+                                          QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository,
+                                          AdaptiveQuestionsFulfillmentRepository adaptiveQuestionsFulfillmentRepository,
                                           TrainingRunRepository trainingRunRepository,
                                           AuditEventsService auditEventsService) {
         this.questionRepository = questionRepository;
         this.questionAnswerRepository = questionAnswerRepository;
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
-        this.questionPhaseResultRepository = questionPhaseResultRepository;
+        this.questionsPhaseRelationResultRepository = questionsPhaseRelationResultRepository;
+        this.adaptiveQuestionsFulfillmentRepository = adaptiveQuestionsFulfillmentRepository;
         this.trainingRunRepository = trainingRunRepository;
         this.auditEventsService = auditEventsService;
     }
@@ -67,7 +72,7 @@ public class QuestionnaireEvaluationService {
             storedQuestionsAnswers.add(saveQuestionAnswer(questionAnswers.getKey(), questionAnswers.getValue(), questionnaireId, trainingRun));
         }
         if (((QuestionnairePhase) trainingRun.getCurrentPhase()).getQuestionnaireType() == QuestionnaireType.ADAPTIVE) {
-            this.evaluateAnswersToQuestionnaire(trainingRun, storedQuestionsAnswers);
+            this.evaluateAnswersToAdaptiveQuestionnaire(trainingRun, storedQuestionsAnswers);
         }
         auditEventsService.auditPhaseCompletedAction(trainingRun);
         auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.stream()
@@ -93,7 +98,7 @@ public class QuestionnaireEvaluationService {
         return questionAnswerRepository.save(questionAnswer);
     }
 
-    private void evaluateAnswersToQuestionnaire(TrainingRun trainingRun, List<QuestionAnswer> questionAnswers) {
+    private void evaluateAnswersToAdaptiveQuestionnaire(TrainingRun trainingRun, List<QuestionAnswer> questionAnswers) {
         if (CollectionUtils.isEmpty(questionAnswers)) {
             return;
         }
@@ -101,31 +106,61 @@ public class QuestionnaireEvaluationService {
                 .map(QuestionAnswer::getQuestionAnswerId)
                 .map(QuestionAnswerId::getQuestionId)
                 .collect(Collectors.toSet());
-
         List<QuestionPhaseRelation> questionPhaseRelations = questionPhaseRelationRepository.findAllByQuestionIdList(questionIdList);
+        Map<Long, Boolean> trainingPhaseQuestionsFulfilledMap = new HashMap<>();
+        Map<Long, TrainingPhase> trainingPhasesMap = new HashMap<>();
+
         for (QuestionPhaseRelation questionPhaseRelation : questionPhaseRelations) {
-            double numberOfCorrectlyAnsweredQuestions = 0;
             if (CollectionUtils.isEmpty(questionPhaseRelation.getQuestions())) {
                 LOG.warn("No questions found for question phase relation {}", questionPhaseRelation.getId());
                 continue;
             }
+            TrainingPhase relatedTrainingPhase = questionPhaseRelation.getRelatedTrainingPhase();
+            trainingPhasesMap.putIfAbsent(relatedTrainingPhase.getId(), relatedTrainingPhase);
 
-            for (Question question : questionPhaseRelation.getQuestions()) {
-                Optional<QuestionAnswer> correspondingAnswer = findCorrespondingAnswer(question.getId(), questionAnswers);
-                if (correspondingAnswer.isPresent() && checkCorrectnessOfAnswersToQuestion(correspondingAnswer.get().getAnswers(), question)) {
-                    numberOfCorrectlyAnsweredQuestions++;
-                } else {
-                    LOG.debug("No answer found for question {}. It is assumed as a wrong answer", question.getId());
-                }
-            }
-            double achievedResult = numberOfCorrectlyAnsweredQuestions / questionPhaseRelation.getQuestions().size();
+            double achievedResult = evaluateQuestionPhaseRelation(questionPhaseRelation, questionAnswers);
+            boolean trainingPhaseQuestionsFulfilled = trainingPhaseQuestionsFulfilledMap.getOrDefault(relatedTrainingPhase.getId(), true);
+            trainingPhaseQuestionsFulfilledMap.put(questionPhaseRelation.getRelatedTrainingPhase().getId(), trainingPhaseQuestionsFulfilled && questionPhaseRelation.getSuccessRate() < (achievedResult * 100));
+            storeQuestionsPhaseRelationResult(questionPhaseRelation, trainingRun, achievedResult);
 
-            QuestionPhaseResult questionPhaseResult = new QuestionPhaseResult();
-            questionPhaseResult.setAchievedResult(achievedResult);
-            questionPhaseResult.setQuestionPhaseRelation(questionPhaseRelation);
-            questionPhaseResult.setTrainingRun(trainingRun);
-            questionPhaseResultRepository.save(questionPhaseResult);
         }
+        storeTrainingPhaseQuestionsFulfillment(trainingRun, trainingPhaseQuestionsFulfilledMap.entrySet(), trainingPhasesMap);
+    }
+
+    private double evaluateQuestionPhaseRelation(QuestionPhaseRelation questionPhaseRelation, List<QuestionAnswer> questionAnswers) {
+        double numberOfCorrectlyAnsweredQuestions = 0;
+        for (Question question : questionPhaseRelation.getQuestions()) {
+            Optional<QuestionAnswer> correspondingAnswer = findCorrespondingAnswer(question.getId(), questionAnswers);
+            if (correspondingAnswer.isPresent() && checkCorrectnessOfAnswersToQuestion(correspondingAnswer.get().getAnswers(), question)) {
+                numberOfCorrectlyAnsweredQuestions++;
+            } else {
+                LOG.debug("No answer found for question {}. It is assumed as a wrong answer", question.getId());
+            }
+        }
+        return numberOfCorrectlyAnsweredQuestions / questionPhaseRelation.getQuestions().size();
+
+    }
+
+    private void storeTrainingPhaseQuestionsFulfillment(TrainingRun trainingRun,
+                                                        Set<Map.Entry<Long, Boolean>> trainingPhasesQuestionsFulfillmentMap,
+                                                        Map<Long, TrainingPhase> trainingPhaseMap) {
+        for (Map.Entry<Long, Boolean> questionsFulfillment : trainingPhasesQuestionsFulfillmentMap) {
+            TrainingPhaseQuestionsFulfillment trainingPhaseQuestionsFulfillment = new TrainingPhaseQuestionsFulfillment();
+            trainingPhaseQuestionsFulfillment.setTrainingRun(trainingRun);
+            trainingPhaseQuestionsFulfillment.setTrainingPhase(trainingPhaseMap.get(questionsFulfillment.getKey()));
+            trainingPhaseQuestionsFulfillment.setFulfilled(questionsFulfillment.getValue());
+            this.adaptiveQuestionsFulfillmentRepository.save(trainingPhaseQuestionsFulfillment);
+        }
+    }
+
+    private void storeQuestionsPhaseRelationResult(QuestionPhaseRelation questionPhaseRelation,
+                                                   TrainingRun trainingRun,
+                                                   double achievedResult) {
+        QuestionsPhaseRelationResult questionPhaseResult = new QuestionsPhaseRelationResult();
+        questionPhaseResult.setAchievedResult(achievedResult);
+        questionPhaseResult.setQuestionPhaseRelation(questionPhaseRelation);
+        questionPhaseResult.setTrainingRun(trainingRun);
+        questionsPhaseRelationResultRepository.save(questionPhaseResult);
     }
 
     private Optional<QuestionAnswer> findCorrespondingAnswer(Long questionId, List<QuestionAnswer> answers) {

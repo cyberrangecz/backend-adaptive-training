@@ -1,0 +1,4562 @@
+---
+swagger: "2.0"
+info:
+  version: "Version: 1.0.0"
+  title: "KYPO Adaptive Training Service - API Reference"
+host: "localhost:8080"
+basePath: "/kypo-adaptive-training/api/v1"
+tags:
+- name: "Export Imports"
+- name: "Phases"
+- name: "Tasks"
+- name: "Training definitions"
+- name: "Training instances"
+- name: "Training runs"
+schemes:
+- "http"
+- "https"
+paths:
+  /exports/training-definitions/{definitionId}:
+    get:
+      tags:
+      - "Export Imports"
+      summary: "Get exported training definitions and phase."
+      description: ""
+      operationId: "getExportedTrainingDefinitionAndPhases"
+      produces:
+      - "application/octet-stream"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Id of training definition"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Training definitions and phase found and exported."
+          schema:
+            $ref: "#/definitions/TrainingDefinitionWithPhasesExportDTO"
+        404:
+          description: "Training definition not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /exports/training-instances/{instanceId}:
+    get:
+      tags:
+      - "Export Imports"
+      summary: "Archive training instance"
+      description: ""
+      operationId: "archiveTrainingInstance"
+      produces:
+      - "application/octet-stream"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Id of training instance"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Training instance archived."
+          schema:
+            $ref: "#/definitions/TrainingInstanceArchiveDTO"
+        404:
+          description: "Training instance not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot archive instance that is not finished."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /imports/training-definitions:
+    post:
+      tags:
+      - "Export Imports"
+      summary: "Import training definition with phase."
+      description: ""
+      operationId: "importTrainingDefinition"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Training definition to be imported"
+        required: true
+        schema:
+          $ref: "#/definitions/ImportTrainingDefinitionDTO"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Training definition imported."
+          schema:
+            $ref: "#/definitions/TrainingDefinitionByIdDTO"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get all Training Definitions."
+      description: ""
+      operationId: "findAllTrainingDefinitions"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The requested resources have been found."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TrainingDefinitionByIdDTO"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Training definitions"
+      summary: "Create Training Definition"
+      description: ""
+      operationId: "createTrainingDefinition"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Training Definition to be created"
+        required: false
+        schema:
+          $ref: "#/definitions/TrainingDefinitionCreateDTO"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The Training definition has been created."
+          schema:
+            $ref: "#/definitions/TrainingDefinitionByIdDTO"
+        400:
+          description: "The provided training definition is not valid"
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Training definitions"
+      summary: "Update Training Definition"
+      description: "Only unreleased training definition can be updated"
+      operationId: "updateTrainingDefinition"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Training definition to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/TrainingDefinitionUpdateDTO"
+      responses:
+        200:
+          description: "The training definition has been updated."
+        400:
+          description: "The provided training definition is not valid"
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot edit released or archived training definition."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/designers:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get designers."
+      description: ""
+      operationId: "getDesigners"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: false
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The designers have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/for-organizers:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get all Training Definitions for organizers."
+      description: ""
+      operationId: "findAllTrainingDefinitionsForOrganizers"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "state"
+        in: "query"
+        description: "State of the training definition"
+        required: true
+        type: "string"
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The Training definitions have been found."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TrainingDefinitionInfoDTO"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/organizers:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get organizers."
+      description: ""
+      operationId: "getOrganizers"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: false
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The organizers have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get Training Definition by Id."
+      description: ""
+      operationId: "findTrainingDefinitionById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "ID of training definition to be retrieved."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The Training definition has been found."
+          schema:
+            $ref: "#/definitions/TrainingDefinitionByIdDTO"
+        404:
+          description: "The Training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Training definitions"
+      summary: "Clone training definition"
+      description: "Only released and archived training definitions can be cloned"
+      operationId: "cloneTrainingDefinition"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Id of training definition to be cloned"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "title"
+        in: "query"
+        description: "Title of cloned definition"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "The Training definition has been cloned."
+          schema:
+            $ref: "#/definitions/TrainingDefinitionByIdDTO"
+        404:
+          description: "The Training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Training definitions"
+      summary: "Delete training definition"
+      description: "Released training definition cannot be deleted"
+      operationId: "deleteTrainingDefinition"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Id of training definition to be deleted"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The Training definition has been deleted."
+        404:
+          description: "The Training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot delete released training definition."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/authors:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get authors."
+      description: ""
+      operationId: "getAuthors"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "ID of the training definition which contains authors you want\
+          \ to retrieve."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: false
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The authors have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        404:
+          description: "The training definition has not been found"
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Training definitions"
+      summary: "Edit authors."
+      description: ""
+      operationId: "editAuthors"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "ID of training definition to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "authorsAddition"
+        in: "query"
+        description: "Ids of the users to be added to the training definition."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+        collectionFormat: "multi"
+      - name: "authorsRemoval"
+        in: "query"
+        description: "Ids of the users to be removed from the training definition."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+        collectionFormat: "multi"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The authors have been updated."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        404:
+          description: "The training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/designers-not-in-training-definition:
+    get:
+      tags:
+      - "Training definitions"
+      summary: "Get designers not in given training definition."
+      description: ""
+      operationId: "findDesignersNotInGivenTrainingDefinition"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "ID of the training definition which do not contains authors\
+          \ you want to retrieve."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: false
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The designers have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        404:
+          description: "The training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases:
+    get:
+      tags:
+      - "Phases"
+      summary: "Get all phase"
+      description: "Get all phase associated with specified training definition"
+      operationId: "getPhases"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Training definition ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Phases returned"
+          schema:
+            type: "object"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Phases"
+      summary: "Create a new phase"
+      description: "Creates a new default phase with a specified type"
+      operationId: "createPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Training definition ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Phase type"
+        required: true
+        schema:
+          $ref: "#/definitions/PhaseCreateDTO"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/AbstractLevelDTO"
+        201:
+          description: "Phase created"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseIdFrom}/move-to/{newPosition}:
+    put:
+      tags:
+      - "Phases"
+      summary: "Move phase to specified order"
+      description: ""
+      operationId: "movePhaseToSpecifiedOrder"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Training definition ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "phaseIdFrom"
+        in: "path"
+        description: "Phase ID - from"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "newPosition"
+        in: "path"
+        description: "Position (order) to which the phase should be moved"
+        required: true
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "Phase moved to specified order"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}:
+    get:
+      tags:
+      - "Phases"
+      summary: "Get phase by ID"
+      description: ""
+      operationId: "getPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Phase returned"
+          schema:
+            $ref: "#/definitions/AbstractLevelDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Phases"
+      summary: "Remove phase by ID"
+      description: ""
+      operationId: "getPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Phase removed"
+          schema:
+            $ref: "#/definitions/AbstractLevelDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/info:
+    put:
+      tags:
+      - "Phases"
+      summary: "Update info phase"
+      description: ""
+      operationId: "updateInfoPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Info phase to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/InfoPhaseUpdateDTO"
+      responses:
+        200:
+          description: "Info phase updated"
+          schema:
+            $ref: "#/definitions/InfoPhaseDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/questionnaire:
+    put:
+      tags:
+      - "Phases"
+      summary: "Update questionnaire phase"
+      description: ""
+      operationId: "updateQuestion"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Questionnaire to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/QuestionnaireUpdateDTO"
+      responses:
+        200:
+          description: "Questionnaire phase updated"
+          schema:
+            $ref: "#/definitions/QuestionnairePhaseDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/tasks:
+    post:
+      tags:
+      - "Tasks"
+      summary: "Create a new task in a phase"
+      description: "Creates a new default task in a specified training phase"
+      operationId: "createTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Training phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TaskDTO"
+        201:
+          description: "Task created"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/tasks/{taskIdFrom}/move-to/{newPosition}:
+    put:
+      tags:
+      - "Tasks"
+      summary: "Move task to specified order"
+      description: ""
+      operationId: "moveTaskToSpecifiedOrder"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "taskIdFrom"
+        in: "path"
+        description: "Task ID - from"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "newPosition"
+        in: "path"
+        description: "Position (order) to which the task should be moved"
+        required: true
+        type: "integer"
+        format: "int32"
+      responses:
+        200:
+          description: "Task moved to specified order"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/tasks/{taskId}:
+    get:
+      tags:
+      - "Tasks"
+      summary: "Get task"
+      description: "Get task detail associated with the specified training phase"
+      operationId: "getTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "taskId"
+        in: "path"
+        description: "Task ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Task returned"
+          schema:
+            $ref: "#/definitions/TaskDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Tasks"
+      summary: "Clone task inside of the training phase"
+      description: "Creates a new task with the same properties as the specified task\
+        \ (pattern)"
+      operationId: "cloneTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "taskId"
+        in: "path"
+        description: "Task ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "phaseId"
+        in: "path"
+        description: "Training phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          $ref: "#/definitions/TaskCopyDTO"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/TaskDTO"
+        201:
+          description: "Task cloned"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Tasks"
+      summary: "Update task"
+      description: "Update the specified task"
+      operationId: "updateTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "taskId"
+        in: "path"
+        description: "Task ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Task to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/TaskUpdateDTO"
+      responses:
+        200:
+          description: "Task updated"
+          schema:
+            $ref: "#/definitions/TaskDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Tasks"
+      summary: "Remove a task"
+      description: "Remove the specified task"
+      operationId: "removeTask"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "taskId"
+        in: "path"
+        description: "Task ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Task removed"
+          schema:
+            $ref: "#/definitions/TaskDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/phases/{phaseId}/training:
+    put:
+      tags:
+      - "Phases"
+      summary: "Update training phase"
+      description: ""
+      operationId: "updateTrainingPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Training phase to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/TrainingPhaseUpdateDTO"
+      responses:
+        200:
+          description: "Training phase updated"
+          schema:
+            $ref: "#/definitions/TrainingPhaseDTO"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-definitions/{definitionId}/states/{state}:
+    put:
+      tags:
+      - "Training definitions"
+      summary: "Switch state of training definition"
+      description: ""
+      operationId: "switchDefinitionState"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Id of definition"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "state"
+        in: "path"
+        description: "New state of definition"
+        required: true
+        type: "string"
+        enum:
+        - "RELEASED"
+        - "UNRELEASED"
+        - "ARCHIVED"
+      responses:
+        200:
+          description: "The training definition has been updated."
+        404:
+          description: "The training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot edit definition with created instances."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances:
+    get:
+      tags:
+      - "Training instances"
+      summary: "Get all training instances."
+      description: ""
+      operationId: "findAllTrainingInstances"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The training instances have been found."
+          schema:
+            $ref: "#/definitions/TrainingInstanceRestResource"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Training instances"
+      summary: "Create training instance"
+      description: "This can only be done by the organizer or administrator"
+      operationId: "createTrainingInstance"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Training instance to be created"
+        required: true
+        schema:
+          $ref: "#/definitions/TrainingInstanceCreateDTO"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The training instance has been created."
+          schema:
+            $ref: "#/definitions/TrainingInstanceDTO"
+        400:
+          description: "The provided training instance is not valid."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training definition has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "The training instance start time and end time are not valid."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Training instances"
+      summary: "Update training instance"
+      description: "This can only be done by organizer of training instance or administrator"
+      operationId: "updateTrainingInstance"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Training instance to be updated"
+        required: false
+        schema:
+          $ref: "#/definitions/TrainingInstanceUpdateDTO"
+      responses:
+        200:
+          description: "The training instance has been updated."
+          schema:
+            type: "string"
+        404:
+          description: "The training instance has not been found"
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "The training instance start time and end time are not valid."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}:
+    get:
+      tags:
+      - "Training instances"
+      summary: "Get training instance by id."
+      description: "Returns training instance by id and also contains particular training\
+        \ definition in it."
+      operationId: "findTrainingInstanceById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Training instance ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The training instance has been found"
+          schema:
+            $ref: "#/definitions/TrainingInstanceDTO"
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Training instances"
+      summary: "Delete training instance"
+      description: "This can only be done by organizer of training instance or administrator"
+      operationId: "deleteTrainingInstance"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Id of training instance to be deleted"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "forceDelete"
+        in: "query"
+        description: "Indication if this training run must be deleted no matter of\
+          \ any check (force it)"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "The training instance has been updated."
+        400:
+          description: "The provided training instance is not valid."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "The training instance cannot be deleted for the specific reason\
+            \ stated in the error message."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}/assign-pool:
+    patch:
+      tags:
+      - "Training instances"
+      summary: "Assign pool to the training instance"
+      description: "This can only be done by organizer of training instance or administrator"
+      operationId: "assignPool"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Id of training instance to be updated"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Id of pool to be assigned to training instance"
+        required: true
+        schema:
+          $ref: "#/definitions/TrainingInstanceAssignPoolIdDTO"
+      responses:
+        200:
+          description: "The training instance has been updated."
+          schema:
+            $ref: "#/definitions/TrainingInstanceBasicInfoDTO"
+        400:
+          description: "The provided training instance is not valid."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "The training instance cannot be updated for the specific reason\
+            \ stated in the error message."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}/organizers:
+    get:
+      tags:
+      - "Training instances"
+      summary: "Get organizers of training instance."
+      description: ""
+      operationId: "getOrganizersOfTrainingInstance"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of training instance for which to retrieve the organizers."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: true
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: true
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The organizers have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Training instances"
+      summary: "Edit organizers."
+      description: ""
+      operationId: "editOrganizers"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of training instance to be updated."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "organizersAddition"
+        in: "query"
+        description: "Ids of the organizers to be added to the training instance."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+        collectionFormat: "multi"
+      - name: "organizersRemoval"
+        in: "query"
+        description: "Ids of the organizers to be removed from the training instance."
+        required: false
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+        collectionFormat: "multi"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        204:
+          description: "The organizers of training instance have been edited."
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered. Probably error during\
+            \ calling other microservice."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}/organizers-not-in-training-instance:
+    get:
+      tags:
+      - "Training instances"
+      summary: "Get organizers not in given training instance."
+      description: ""
+      operationId: "findOrganizersNotInGivenTrainingInstance"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "ID of the training instance which do not contains organizers\
+          \ you want to retrieve."
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "givenName"
+        in: "query"
+        description: "Given name filter."
+        required: false
+        type: "string"
+      - name: "familyName"
+        in: "query"
+        description: "Family name filter."
+        required: false
+        type: "string"
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The organizers have been found."
+          schema:
+            $ref: "#/definitions/UserInfoRestResource"
+        404:
+          description: "The training instance has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}/training-runs:
+    get:
+      tags:
+      - "Training instances"
+      summary: "Get all training runs of specific training instance"
+      description: "This can only be done by organizer of training instance or administrator"
+      operationId: "findAllTrainingRunsByTrainingInstanceId"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Training Instance Id"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "isActive"
+        in: "query"
+        description: "If only active or not active training runs should be returned."
+        required: false
+        type: "boolean"
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The training runs have been found."
+          schema:
+            $ref: "#/definitions/TrainingRunRestResource"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-instances/{instanceId}/unassign-pool:
+    patch:
+      tags:
+      - "Training instances"
+      summary: "Unassign pool of training instance"
+      description: "This can only be done by organizer of training instance or administrator"
+      operationId: "unassignPool"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Id of training instance to unassign pool."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The pool has been unassigned."
+          schema:
+            $ref: "#/definitions/TrainingInstanceBasicInfoDTO"
+        409:
+          description: "The training instance has not assigned pool."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get all training runs."
+      description: ""
+      operationId: "findAllTrainingRuns"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The training runs have been found."
+          schema:
+            $ref: "#/definitions/TrainingRunRestResource"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    post:
+      tags:
+      - "Training runs"
+      summary: "Access training run."
+      description: ""
+      operationId: "createTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "accessToken"
+        in: "query"
+        description: "accessToken"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "The training run has been accessed."
+          schema:
+            $ref: "#/definitions/AccessTrainingRunDTO"
+        404:
+          description: "There is no training instance with given accessToken or first\
+            \ phase not found in database."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "No assigned pool to the training instance."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Some error occurred during getting info about sandboxes."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Training runs"
+      summary: "Delete training runs"
+      description: ""
+      operationId: "deleteTrainingRuns"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "trainingRunIds"
+        in: "query"
+        description: "Ids of training runs that will be deleted"
+        required: true
+        type: "array"
+        items:
+          type: "integer"
+          format: "int64"
+        collectionFormat: "multi"
+      - name: "forceDelete"
+        in: "query"
+        description: "Indication if this training run must be deleted no matter of\
+          \ any check (force it)"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "The training runs have been deleted."
+        500:
+          description: "Unexpected condition was encountered"
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/accessible:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get all accessed training runs."
+      description: "Returns training run which was accessed by logged in user"
+      operationId: "getAllAccessedTrainingRuns"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Pagination support."
+        required: false
+        schema:
+          $ref: "#/definitions/Pageable"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      - name: "sortByTitle"
+        in: "query"
+        description: "Sort by title attribute. As values us asc|desc"
+        required: false
+        type: "string"
+        x-example: "asc"
+      - name: "page"
+        in: "query"
+        description: "Results page you want to retrieve (0..N)"
+        required: false
+        type: "integer"
+        x-example: 0
+      - name: "size"
+        in: "query"
+        description: "Number of records per page."
+        required: false
+        type: "integer"
+        x-example: 20
+      - name: "sort"
+        in: "query"
+        description: "Sorting criteria in the format: property(,asc|desc). Default\
+          \ sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          example: "asc"
+        collectionFormat: "multi"
+        x-example: "asc"
+      responses:
+        200:
+          description: "The accessed training runs have been found."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/AccessedTrainingRunDTO"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get training run by ID."
+      description: ""
+      operationId: "findTrainingRunById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Id of training run"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The training run has been found."
+          schema:
+            $ref: "#/definitions/TrainingRunDTO"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Training runs"
+      summary: "Finish training run"
+      description: "Training run will be finished if the current phase is the last\
+        \ phase and it is answered."
+      operationId: "finishTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The training run has been finished."
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot finish training run because of the current state."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+    delete:
+      tags:
+      - "Training runs"
+      summary: "Delete training run"
+      description: ""
+      operationId: "deleteTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Id of training run that will be deleted"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "forceDelete"
+        in: "query"
+        description: "Indication if this training run must be deleted no matter of\
+          \ any check (force it)"
+        required: false
+        type: "boolean"
+      responses:
+        200:
+          description: "The training run has been deleted."
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "The training run is still running."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered"
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/archive:
+    patch:
+      tags:
+      - "Training runs"
+      summary: "Archive training run"
+      description: "The state of the Training run will be change to archived."
+      operationId: "archiveTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The training run has been archived."
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/is-correct-answer:
+    post:
+      tags:
+      - "Training runs"
+      summary: "Check answer of training phase"
+      description: "Current phase of given training run must be training phase"
+      operationId: "isCorrectAnswer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Submitted answer"
+        required: true
+        schema:
+          $ref: "#/definitions/ValidateAnswerDTO"
+      responses:
+        200:
+          description: "The answer has been checked."
+          schema:
+            $ref: "#/definitions/IsCorrectAnswerDTO"
+        400:
+          description: "Current phase is not training phase and does not have answer."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/next-phases:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get phase of given training run."
+      description: "Returns (questionnaire, training, info) phase if any next phase\
+        \ exists and training run as well"
+      operationId: "getNextPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The next phase has been found."
+          schema:
+            $ref: "#/definitions/AbstractLevelDTO"
+        404:
+          description: "The next phase has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/participant:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get participant."
+      description: ""
+      operationId: "getParticipant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Get participant for the given runId."
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The participant has been found."
+          schema:
+            $ref: "#/definitions/UserRefDTO"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/questionnaire-evaluation:
+    put:
+      tags:
+      - "Training runs"
+      summary: "Evaluate answers to a questionnaire phase"
+      description: ""
+      operationId: "evaluateAnswersToQuestionnaire"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Responses to questionnaire"
+        required: true
+        schema:
+          $ref: "#/definitions/QuestionnairePhaseAnswersDTO"
+      responses:
+        200:
+          description: "Answers evaluated"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/resumption:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get current phase of resumed training run"
+      description: ""
+      operationId: "resumeTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The training run has been resumed."
+          schema:
+            $ref: "#/definitions/AccessTrainingRunDTO"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        409:
+          description: "Cannot resume finished training run."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /training-runs/{runId}/solutions:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get solution of training phase."
+      description: "Returns solution if given training runs exists and current phase\
+        \ is training phase"
+      operationId: "getSolution"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The solution has been found."
+          schema:
+            type: "string"
+        400:
+          description: "Current phase is not training phase and does not have solution."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+securityDefinitions:
+  bearerAuth:
+    description: "Obtain bearer token from OIDC provider and enter the token in the\
+      \ following field. Use format 'Bearer {token}'"
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+definitions:
+  AbstractLevelDTO:
+    type: "object"
+    required:
+    - "id"
+    - "order"
+    - "phaseType"
+    - "title"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of task"
+      title:
+        type: "string"
+        example: "Training Phase 1"
+        description: "Short description of phase"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of phase in a training definition"
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of phase"
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+    description: "Abstract superclass for classes TrainingPhaseDTO, InfoPhaseDTO and\
+      \ QuestionnairePhaseDTO"
+  AbstractPhaseExportDTO:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "Training Phase"
+        description: "Short textual description of the phase."
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of the phase."
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 2
+        description: "Order of phase, starts with 0"
+    description: "Superclass for classes TrainingPhaseExportDTO, InfoPhaseExportDTO\
+      \ and QuestionnairePhaseExportDTO"
+  AbstractPhaseImportDTO:
+    type: "object"
+    required:
+    - "order"
+    - "phaseType"
+    discriminator: "phase_type"
+    properties:
+      title:
+        type: "string"
+        example: "Training phase description"
+        description: "Short textual description of the phase."
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        position: 1
+        description: "Type of the phase."
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 2
+        position: 2
+        description: "Order of phase, starts with 0"
+        minimum: 0
+    description: "Superclass for classes TrainingPhaseImportDTO, QuestionnairePhaseImportDTO\
+      \ and InfoPhaseImportDTO"
+  AccessTrainingRunDTO:
+    type: "object"
+    properties:
+      trainingRunID:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training run."
+      showStepperBar:
+        type: "boolean"
+        example: false
+        description: "Sign if stepper bar should be displayed."
+      sandboxInstanceRefId:
+        type: "integer"
+        format: "int64"
+        example: 2
+        description: "Main identifier of sandbox which is assigned to training run."
+      abstractPhaseDTO:
+        description: "First phase in the current training run."
+        $ref: "#/definitions/AbstractLevelDTO"
+      infoAboutPhases:
+        type: "array"
+        description: "Information about all phase in training instance."
+        items:
+          $ref: "#/definitions/BasicPhaseInfoDTO"
+      instanceId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of associated training instance"
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training run started."
+      takenSolution:
+        type: "string"
+        example: "true"
+        description: "Sign if solution of current training phase was taken"
+    description: "Just accessed training run."
+  AccessedTrainingRunDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training run."
+      title:
+        type: "string"
+        example: "Concluded Instance"
+        description: "Short textual description of the training instance."
+      trainingInstanceStartDate:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19T10:23:54"
+        description: "Start date of training instance for which the training run was\
+          \ created."
+      trainingInstanceEndDate:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19T10:23:54"
+        description: "End date of training instance for which the training run was\
+          \ created."
+      currentPhaseOrder:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Current phase order of training run."
+      numberOfPhases:
+        type: "integer"
+        format: "int32"
+        example: 3
+        description: "The number of phase in the training instance."
+      possibleAction:
+        type: "string"
+        example: "RESULTS"
+        description: "Possible action which can be executed with training Run."
+        enum:
+        - "NONE"
+        - "RESULTS"
+        - "RESUME"
+      instanceId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of associated training instance"
+    description: "Already accessed training run by some participant."
+  AccessedTrainingRunRestResource:
+    type: "object"
+    properties:
+      content:
+        type: "array"
+        description: "Retrieved Accessed Training Runs from databases."
+        items:
+          $ref: "#/definitions/AccessedTrainingRunDTO"
+      pagination:
+        description: "Pagination including: page number, number of elements in page,\
+          \ size, total elements and total pages."
+        $ref: "#/definitions/Pagination"
+    description: "Content (Retrieved data) and meta information about REST API result\
+      \ page. Including page number, number of elements in page, size of elements,\
+      \ total number of elements and total number of pages"
+  ApiEntityError:
+    allOf:
+    - $ref: "#/definitions/ApiError"
+    - type: "object"
+      properties:
+        entityErrorDetail:
+          description: "Detail of the entity which is related to the error."
+          $ref: "#/definitions/EntityErrorDetail"
+      description: "A detailed error information related to the entity."
+  ApiError:
+    type: "object"
+    properties:
+      timestamp:
+        type: "integer"
+        format: "int64"
+        example: "1574062900 (different for each type of exception)"
+        description: "The time when the exception occurred"
+      status:
+        type: "string"
+        example: "404 Not found (different for each type of exception)."
+        description: "The HTTP response status code"
+        enum:
+        - "CONTINUE"
+        - "SWITCHING_PROTOCOLS"
+        - "PROCESSING"
+        - "CHECKPOINT"
+        - "OK"
+        - "CREATED"
+        - "ACCEPTED"
+        - "NON_AUTHORITATIVE_INFORMATION"
+        - "NO_CONTENT"
+        - "RESET_CONTENT"
+        - "PARTIAL_CONTENT"
+        - "MULTI_STATUS"
+        - "ALREADY_REPORTED"
+        - "IM_USED"
+        - "MULTIPLE_CHOICES"
+        - "MOVED_PERMANENTLY"
+        - "FOUND"
+        - "MOVED_TEMPORARILY"
+        - "SEE_OTHER"
+        - "NOT_MODIFIED"
+        - "USE_PROXY"
+        - "TEMPORARY_REDIRECT"
+        - "PERMANENT_REDIRECT"
+        - "BAD_REQUEST"
+        - "UNAUTHORIZED"
+        - "PAYMENT_REQUIRED"
+        - "FORBIDDEN"
+        - "NOT_FOUND"
+        - "METHOD_NOT_ALLOWED"
+        - "NOT_ACCEPTABLE"
+        - "PROXY_AUTHENTICATION_REQUIRED"
+        - "REQUEST_TIMEOUT"
+        - "CONFLICT"
+        - "GONE"
+        - "LENGTH_REQUIRED"
+        - "PRECONDITION_FAILED"
+        - "PAYLOAD_TOO_LARGE"
+        - "REQUEST_ENTITY_TOO_LARGE"
+        - "URI_TOO_LONG"
+        - "REQUEST_URI_TOO_LONG"
+        - "UNSUPPORTED_MEDIA_TYPE"
+        - "REQUESTED_RANGE_NOT_SATISFIABLE"
+        - "EXPECTATION_FAILED"
+        - "I_AM_A_TEAPOT"
+        - "INSUFFICIENT_SPACE_ON_RESOURCE"
+        - "METHOD_FAILURE"
+        - "DESTINATION_LOCKED"
+        - "UNPROCESSABLE_ENTITY"
+        - "LOCKED"
+        - "FAILED_DEPENDENCY"
+        - "UPGRADE_REQUIRED"
+        - "PRECONDITION_REQUIRED"
+        - "TOO_MANY_REQUESTS"
+        - "REQUEST_HEADER_FIELDS_TOO_LARGE"
+        - "UNAVAILABLE_FOR_LEGAL_REASONS"
+        - "INTERNAL_SERVER_ERROR"
+        - "NOT_IMPLEMENTED"
+        - "BAD_GATEWAY"
+        - "SERVICE_UNAVAILABLE"
+        - "GATEWAY_TIMEOUT"
+        - "HTTP_VERSION_NOT_SUPPORTED"
+        - "VARIANT_ALSO_NEGOTIATES"
+        - "INSUFFICIENT_STORAGE"
+        - "LOOP_DETECTED"
+        - "BANDWIDTH_LIMIT_EXCEEDED"
+        - "NOT_EXTENDED"
+        - "NETWORK_AUTHENTICATION_REQUIRED"
+      message:
+        type: "string"
+        example: "The IDMGroup could not be found in database (different for each\
+          \ type of exception)."
+        description: "The specific description of the ApiError."
+      errors:
+        type: "array"
+        example: "[The requested resource was not found (different for each type of\
+          \ exception).]"
+        description: "The list of main reasons of the ApiError."
+        items:
+          type: "string"
+      path:
+        type: "string"
+        example: "/kypo2-rest-user-and-group/api/v1/groups/1000 (different for each\
+          \ type of exception)."
+        description: "The requested URI path which caused error."
+    description: "Superclass for classes ApiEntityError and ApiMicroserviceError"
+  ApiMicroserviceError:
+    allOf:
+    - $ref: "#/definitions/ApiError"
+    - type: "object"
+      properties:
+        apiSubError:
+          description: "Detailed error from another microservice."
+          $ref: "#/definitions/ApiSubError"
+      description: "A detailed error information related to the microservice."
+  ApiSubError:
+    type: "object"
+    properties:
+      status:
+        type: "string"
+        example: "404 Not found (different for each type of exception)."
+        description: "The HTTP response status code"
+        enum:
+        - "CONTINUE"
+        - "SWITCHING_PROTOCOLS"
+        - "PROCESSING"
+        - "CHECKPOINT"
+        - "OK"
+        - "CREATED"
+        - "ACCEPTED"
+        - "NON_AUTHORITATIVE_INFORMATION"
+        - "NO_CONTENT"
+        - "RESET_CONTENT"
+        - "PARTIAL_CONTENT"
+        - "MULTI_STATUS"
+        - "ALREADY_REPORTED"
+        - "IM_USED"
+        - "MULTIPLE_CHOICES"
+        - "MOVED_PERMANENTLY"
+        - "FOUND"
+        - "MOVED_TEMPORARILY"
+        - "SEE_OTHER"
+        - "NOT_MODIFIED"
+        - "USE_PROXY"
+        - "TEMPORARY_REDIRECT"
+        - "PERMANENT_REDIRECT"
+        - "BAD_REQUEST"
+        - "UNAUTHORIZED"
+        - "PAYMENT_REQUIRED"
+        - "FORBIDDEN"
+        - "NOT_FOUND"
+        - "METHOD_NOT_ALLOWED"
+        - "NOT_ACCEPTABLE"
+        - "PROXY_AUTHENTICATION_REQUIRED"
+        - "REQUEST_TIMEOUT"
+        - "CONFLICT"
+        - "GONE"
+        - "LENGTH_REQUIRED"
+        - "PRECONDITION_FAILED"
+        - "PAYLOAD_TOO_LARGE"
+        - "REQUEST_ENTITY_TOO_LARGE"
+        - "URI_TOO_LONG"
+        - "REQUEST_URI_TOO_LONG"
+        - "UNSUPPORTED_MEDIA_TYPE"
+        - "REQUESTED_RANGE_NOT_SATISFIABLE"
+        - "EXPECTATION_FAILED"
+        - "I_AM_A_TEAPOT"
+        - "INSUFFICIENT_SPACE_ON_RESOURCE"
+        - "METHOD_FAILURE"
+        - "DESTINATION_LOCKED"
+        - "UNPROCESSABLE_ENTITY"
+        - "LOCKED"
+        - "FAILED_DEPENDENCY"
+        - "UPGRADE_REQUIRED"
+        - "PRECONDITION_REQUIRED"
+        - "TOO_MANY_REQUESTS"
+        - "REQUEST_HEADER_FIELDS_TOO_LARGE"
+        - "UNAVAILABLE_FOR_LEGAL_REASONS"
+        - "INTERNAL_SERVER_ERROR"
+        - "NOT_IMPLEMENTED"
+        - "BAD_GATEWAY"
+        - "SERVICE_UNAVAILABLE"
+        - "GATEWAY_TIMEOUT"
+        - "HTTP_VERSION_NOT_SUPPORTED"
+        - "VARIANT_ALSO_NEGOTIATES"
+        - "INSUFFICIENT_STORAGE"
+        - "LOOP_DETECTED"
+        - "BANDWIDTH_LIMIT_EXCEEDED"
+        - "NOT_EXTENDED"
+        - "NETWORK_AUTHENTICATION_REQUIRED"
+    description: "Superclass for classes JavaApiError and PythonApiError"
+  BasicPhaseInfoDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of phase."
+      title:
+        type: "string"
+        example: "Training phase"
+        description: "Short textual description of the phase."
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of phase among phase in training definition."
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of the phase."
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+    description: "Basic information about the phase and its type."
+  DecisionMatrixRowDTO:
+    type: "object"
+    required:
+    - "completedInTime"
+    - "id"
+    - "keywordUsed"
+    - "order"
+    - "questionnaireAnswered"
+    - "solutionDisplayed"
+    - "wrongAnswers"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of decision matrix row"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of row in a decision matrix"
+      questionnaireAnswered:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the answers of the questions in\
+          \ questionnaires are"
+      keywordUsed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player used the\
+          \ keyword"
+      completedInTime:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player completed\
+          \ the task in time"
+      solutionDisplayed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player displayed\
+          \ the solution of the task they were solving"
+      wrongAnswers:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the number of wrong answers are"
+  DecisionMatrixRowExportDTO:
+    type: "object"
+    required:
+    - "completedInTime"
+    - "keywordUsed"
+    - "order"
+    - "questionnaireAnswered"
+    - "solutionDisplayed"
+    - "wrongAnswers"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of row in a decision matrix"
+      questionnaireAnswered:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the answers of the questions in\
+          \ questionnaires are"
+      keywordUsed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player used the\
+          \ keyword"
+      completedInTime:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player completed\
+          \ the task in time"
+      solutionDisplayed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player displayed\
+          \ the solution of the task they were solving"
+      wrongAnswers:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the number of wrong answers are"
+  DecisionMatrixRowImportDTO:
+    type: "object"
+    required:
+    - "completedInTime"
+    - "keywordUsed"
+    - "order"
+    - "questionnaireAnswered"
+    - "solutionDisplayed"
+    - "wrongAnswers"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of row in a decision matrix"
+      questionnaireAnswered:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the answers of the questions in\
+          \ questionnaires are"
+      keywordUsed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player used the\
+          \ keyword"
+      completedInTime:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player completed\
+          \ the task in time"
+      solutionDisplayed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player displayed\
+          \ the solution of the task they were solving"
+      wrongAnswers:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the number of wrong answers are"
+  EntityErrorDetail:
+    type: "object"
+    properties:
+      entity:
+        type: "string"
+        example: "IDMGroup"
+        description: "Class of the entity."
+      identifier:
+        type: "string"
+        example: "id"
+        description: "Identifier of the entity."
+      identifierValue:
+        type: "object"
+        example: "1"
+        description: "Value of the identifier."
+      reason:
+        type: "string"
+        example: "Group with same name already exists."
+        description: "Detailed message of the exception"
+  ImportTrainingDefinitionDTO:
+    type: "object"
+    required:
+    - "showStepperBar"
+    - "state"
+    properties:
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        position: 1
+        description: "Description of training definition that is visible to the participant."
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        position: 2
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      showStepperBar:
+        type: "boolean"
+        example: false
+        position: 3
+        description: "Sign if stepper bar should be displayed."
+      estimatedDuration:
+        type: "integer"
+        format: "int32"
+        example: 5
+        position: 4
+        description: "Estimated time it takes to finish runs created from this definition."
+      prerequisites:
+        type: "array"
+        position: 5
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        position: 6
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      phases:
+        type: "array"
+        position: 7
+        description: "Information about all phase in training definition."
+        items:
+          $ref: "#/definitions/AbstractPhaseImportDTO"
+    description: "A basic information about hint."
+  InfoPhaseDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractLevelDTO"
+    - type: "object"
+      required:
+      - "content"
+      properties:
+        content:
+          type: "string"
+          example: "Info phase title"
+          description: "Short description of info phase"
+  InfoPhaseExportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseExportDTO"
+    - type: "object"
+      properties:
+        content:
+          type: "string"
+          example: "Informational stuff"
+          description: "The information and experiences that are directed towards\
+            \ a participant."
+      description: "Exported info phase."
+  InfoPhaseImportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImportDTO"
+    - type: "object"
+      properties:
+        content:
+          type: "string"
+          example: "Informational stuff"
+          description: "The information and experiences that are directed towards\
+            \ a participant."
+      description: "An imported info phase."
+  InfoPhaseUpdateDTO:
+    type: "object"
+    required:
+    - "content"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Info phase title"
+        description: "Short description of info phase"
+      content:
+        type: "string"
+        example: "Read the info"
+        description: "The information of info phase that is displayed to a player"
+  IsCorrectAnswerDTO:
+    type: "object"
+    properties:
+      remainingAttempts:
+        type: "integer"
+        format: "int32"
+        example: 3
+        description: "Number of attempts to submit a bad answer."
+      solution:
+        type: "string"
+        example: "This is how you do it"
+        description: "Instruction how to get answer in training."
+      correct:
+        type: "boolean"
+    description: "A response for the request about the validation of the task answer.\
+      \ May also include solution if remaining attempts reach 0."
+  JavaApiError:
+    allOf:
+    - $ref: "#/definitions/ApiSubError"
+    - type: "object"
+      properties:
+        timestamp:
+          type: "integer"
+          format: "int64"
+          example: "1574062900 (different for each type of exception)"
+          description: "The time when the exception occurred"
+        message:
+          type: "string"
+          example: "The IDMGroup could not be found in database (different for each\
+            \ type of exception)."
+          description: "The specific description of the ApiError."
+        errors:
+          type: "array"
+          example: "[The requested resource was not found (different for each type\
+            \ of exception).]"
+          description: "The list of main reasons of the ApiError."
+          items:
+            type: "string"
+        path:
+          type: "string"
+          example: "/kypo2-rest-user-and-group/api/v1/groups/1000 (different for each\
+            \ type of exception)."
+          description: "The requested URI path which caused error."
+        entity_error_detail:
+          description: "Entity detail related to the error."
+          $ref: "#/definitions/EntityErrorDetail"
+      description: "A detailed error from another Java mircorservice."
+  Pageable:
+    type: "object"
+    properties:
+      offset:
+        type: "integer"
+        format: "int64"
+      sort:
+        $ref: "#/definitions/Sort"
+      pageSize:
+        type: "integer"
+        format: "int32"
+      unpaged:
+        type: "boolean"
+      paged:
+        type: "boolean"
+      pageNumber:
+        type: "integer"
+        format: "int32"
+  Pagination:
+    type: "object"
+    properties:
+      number:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Page number."
+      size:
+        type: "integer"
+        format: "int32"
+        example: 20
+        description: "Page size."
+      number_of_elements:
+        type: "integer"
+        format: "int32"
+        example: 20
+        description: "Number of elements in page."
+      total_elements:
+        type: "integer"
+        format: "int64"
+        example: 100
+        description: "Total number of elements in this resource (in all Pages)."
+      total_pages:
+        type: "integer"
+        format: "int32"
+        example: 5
+        description: "Total number of pages."
+  PhaseCreateDTO:
+    type: "object"
+    required:
+    - "phaseType"
+    properties:
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of phase."
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+      questionnaireType:
+        type: "string"
+        example: "ADAPTIVE"
+        description: "Type of questionnaire."
+        enum:
+        - "ADAPTIVE"
+        - "GENERAL"
+    description: "Specification of the phase to create."
+  PythonApiError:
+    allOf:
+    - $ref: "#/definitions/ApiSubError"
+    - type: "object"
+      properties:
+        detail:
+          type: "string"
+          example: "Sandbox could not be found."
+          description: "Detail message of the error."
+        parameters:
+          type: "object"
+          example: "name: sandbox"
+          description: "Parameters to specify details of the error."
+          additionalProperties:
+            type: "string"
+      description: "A detailed error from another Python mircorservice."
+  QuestionAnswerDTO:
+    type: "object"
+    required:
+    - "questionId"
+    properties:
+      questionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of answered question"
+      answers:
+        type: "array"
+        example: "An answer"
+        description: "Answer to the question"
+        uniqueItems: true
+        items:
+          type: "string"
+  QuestionChoiceDTO:
+    type: "object"
+    required:
+    - "correct"
+    - "id"
+    - "order"
+    - "text"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question choice ID. Leave blank if new choice is added"
+      text:
+        type: "string"
+        example: "An answer"
+        description: "Short description of question choice"
+      correct:
+        type: "boolean"
+        example: true
+        description: "It defines whether this answer is correct or not"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question choice"
+  QuestionChoiceExportDTO:
+    type: "object"
+    required:
+    - "correct"
+    - "order"
+    - "text"
+    properties:
+      text:
+        type: "string"
+        example: "An answer"
+        description: "Short description of question choice"
+      correct:
+        type: "boolean"
+        example: true
+        description: "It defines whether this answer is correct or not"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question choice"
+  QuestionChoiceImportDTO:
+    type: "object"
+    required:
+    - "correct"
+    - "order"
+    - "text"
+    properties:
+      text:
+        type: "string"
+        example: "An answer"
+        description: "Short description of question choice"
+      correct:
+        type: "boolean"
+        example: true
+        description: "It defines whether this answer is correct or not"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question choice"
+        minimum: 0
+  QuestionDTO:
+    type: "object"
+    required:
+    - "choices"
+    - "id"
+    - "order"
+    - "questionType"
+    - "text"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      questionType:
+        type: "string"
+        example: "MCQ"
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      choices:
+        type: "array"
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceDTO"
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question ID. Leave blank if a new question is added"
+  QuestionExportDTO:
+    type: "object"
+    required:
+    - "choices"
+    - "order"
+    - "questionType"
+    - "text"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      questionType:
+        type: "string"
+        example: "MCQ"
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      choices:
+        type: "array"
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceExportDTO"
+  QuestionImportDTO:
+    type: "object"
+    required:
+    - "choices"
+    - "order"
+    - "questionType"
+    - "text"
+    properties:
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      questionType:
+        type: "string"
+        example: "MCQ"
+        position: 1
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        position: 2
+        description: "Order of question"
+        minimum: 0
+      choices:
+        type: "array"
+        position: 3
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceImportDTO"
+  QuestionPhaseRelationDTO:
+    type: "object"
+    required:
+    - "id"
+    - "order"
+    - "phaseId"
+    - "successRate"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question-Phase relation ID. Leave blank if a new one is added"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      questionIds:
+        type: "array"
+        description: "Set of IDs of questions related to the specified questionnaire"
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int64"
+      phaseId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of training phase to which the questions are related of question"
+      successRate:
+        type: "integer"
+        format: "int32"
+        example: 50
+        description: "Percentage that defines whether a player was successful or not "
+        minimum: 0
+        maximum: 100
+  QuestionPhaseRelationExportDTO:
+    type: "object"
+    required:
+    - "order"
+    - "phaseId"
+    - "successRate"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      questionIds:
+        type: "array"
+        description: "Set of IDs of questions related to the specified questionnaire"
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int64"
+      phaseId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of training phase to which the questions are related of question"
+      successRate:
+        type: "integer"
+        format: "int32"
+        example: 50
+        description: "Percentage that defines whether a player was successful or not "
+  QuestionPhaseRelationImportDTO:
+    type: "object"
+    required:
+    - "order"
+    - "phaseId"
+    - "questionIds"
+    - "successRate"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+        minimum: 0
+      phaseId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        position: 1
+        description: "ID of training phase to which the questions are related of question"
+        minimum: 0
+      successRate:
+        type: "integer"
+        format: "int32"
+        example: 50
+        position: 2
+        description: "Percentage that defines whether a player was successful or not "
+        minimum: 0
+        maximum: 100
+      questionIds:
+        type: "array"
+        position: 3
+        description: "Set of IDs of questions related to the specified questionnaire"
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int64"
+        maxItems: 2147483647
+        minItems: 1
+  QuestionnairePhaseAnswersDTO:
+    type: "object"
+    required:
+    - "answers"
+    properties:
+      answers:
+        type: "array"
+        description: "Answers to the questionnaire provided by user"
+        items:
+          $ref: "#/definitions/QuestionAnswerDTO"
+  QuestionnairePhaseDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractLevelDTO"
+    - type: "object"
+      properties:
+        questions:
+          type: "array"
+          description: "List of questions associated with the questionnaire phase"
+          items:
+            $ref: "#/definitions/QuestionDTO"
+        questionnaireType:
+          type: "string"
+          example: "ADAPTIVE"
+          description: "Type of questionnaire phase"
+          enum:
+          - "ADAPTIVE"
+          - "GENERAL"
+        phaseRelations:
+          type: "array"
+          description: "List of relations between questions and a training phase"
+          items:
+            $ref: "#/definitions/QuestionPhaseRelationDTO"
+  QuestionnairePhaseExportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseExportDTO"
+    - type: "object"
+      properties:
+        questions:
+          type: "array"
+          description: "List of questions associated with the questionnaire phase"
+          items:
+            $ref: "#/definitions/QuestionExportDTO"
+        questionnaireType:
+          type: "string"
+          example: "ADAPTIVE"
+          description: "Type of questionnaire phase"
+          enum:
+          - "ADAPTIVE"
+          - "GENERAL"
+        phaseRelations:
+          type: "array"
+          description: "List of relations between questions and a training phase"
+          items:
+            $ref: "#/definitions/QuestionPhaseRelationExportDTO"
+      description: "Exported questionnaire phase."
+  QuestionnairePhaseImportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImportDTO"
+    - type: "object"
+      required:
+      - "phaseRelations"
+      - "questionnaireType"
+      - "questions"
+      properties:
+        questionnaireType:
+          type: "string"
+          example: "ADAPTIVE"
+          description: "The type of the questionnaire"
+          enum:
+          - "ADAPTIVE"
+          - "GENERAL"
+        questions:
+          type: "array"
+          position: 1
+          description: "Questions in the questionnaire"
+          items:
+            $ref: "#/definitions/QuestionImportDTO"
+        phaseRelations:
+          type: "array"
+          position: 2
+          description: "The relation between questions in the questionnaire and phase\
+            \ in the training definition"
+          items:
+            $ref: "#/definitions/QuestionPhaseRelationImportDTO"
+      description: "Imported questionnaire phase."
+  QuestionnaireUpdateDTO:
+    type: "object"
+    required:
+    - "phaseRelations"
+    - "questions"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Entrance test"
+        description: "Title of questionnaire"
+      questions:
+        type: "array"
+        description: "Questions in the questionnaire"
+        items:
+          $ref: "#/definitions/QuestionDTO"
+      phaseRelations:
+        type: "array"
+        description: "The relation between questions in the questionnaire and phase\
+          \ in the training definition"
+        items:
+          $ref: "#/definitions/QuestionPhaseRelationDTO"
+  RoleDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      role_type:
+        type: "string"
+      name_of_microservice:
+        type: "string"
+  Sort:
+    type: "object"
+    properties:
+      sorted:
+        type: "boolean"
+      unsorted:
+        type: "boolean"
+      empty:
+        type: "boolean"
+  TaskCopyDTO:
+    type: "object"
+    required:
+    - "answer"
+    - "content"
+    - "incorrectAnswerLimit"
+    - "solution"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Task title"
+        description: "Short description of task"
+      content:
+        type: "string"
+        example: "Capture the flag"
+        position: 1
+        description: "The information that are displayed to a player"
+      answer:
+        type: "string"
+        example: "secretFlag"
+        position: 2
+        description: "Keyword that must be found in the task. Necessary in order to\
+          \ get to the next phase"
+      solution:
+        type: "string"
+        example: "Open secret.txt"
+        position: 3
+        description: "Description how to get the answer"
+      incorrectAnswerLimit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        position: 4
+        description: "It defines the allowed number of incorrect answers submitted\
+          \ by the player"
+      modifySandbox:
+        type: "boolean"
+        example: true
+        position: 5
+        description: "It defines whether the sandbox can be modified"
+      sandboxChangeExpectedDuration:
+        type: "integer"
+        format: "int32"
+        example: 15
+        position: 6
+        description: "It defines the expected duration of sandbox change defined in\
+          \ seconds"
+  TaskDTO:
+    type: "object"
+    required:
+    - "answer"
+    - "content"
+    - "id"
+    - "incorrectAnswerLimit"
+    - "order"
+    - "solution"
+    - "title"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of task"
+      title:
+        type: "string"
+        example: "Task title"
+        description: "Short description of task"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of task in the training phase"
+      content:
+        type: "string"
+        example: "Capture the flag"
+        description: "The information that are displayed to a player"
+      answer:
+        type: "string"
+        example: "secretFlag"
+        description: "Keyword that must be found in the task. Necessary in order to\
+          \ get to the next phase"
+      solution:
+        type: "string"
+        example: "Open secret.txt"
+        description: "Description how to get the answer"
+      incorrectAnswerLimit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        description: "It defines the allowed number of incorrect answers submitted\
+          \ by the player"
+      modifySandbox:
+        type: "boolean"
+        example: true
+        description: "It defines whether the sandbox can be modified"
+      sandboxChangeExpectedDuration:
+        type: "integer"
+        format: "int32"
+        example: 15
+        description: "It defines the expected duration of sandbox change defined in\
+          \ seconds"
+  TaskExportDTO:
+    type: "object"
+    required:
+    - "answer"
+    - "content"
+    - "incorrectAnswerLimit"
+    - "order"
+    - "solution"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Task title"
+        description: "Short description of task"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of task in the training phase"
+      content:
+        type: "string"
+        example: "Capture the flag"
+        description: "The information that are displayed to a player"
+      answer:
+        type: "string"
+        example: "secretFlag"
+        description: "Keyword that must be found in the task. Necessary in order to\
+          \ get to the next phase"
+      solution:
+        type: "string"
+        example: "Open secret.txt"
+        description: "Description how to get the answer"
+      incorrectAnswerLimit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        description: "It defines the allowed number of incorrect answers submitted\
+          \ by the player"
+      modifySandbox:
+        type: "boolean"
+        example: true
+        description: "It defines whether the sandbox can be modified"
+      sandboxChangeExpectedDuration:
+        type: "integer"
+        format: "int32"
+        example: 15
+        description: "It defines the expected duration of sandbox change defined in\
+          \ seconds"
+  TaskImportDTO:
+    type: "object"
+    required:
+    - "incorrectAnswerLimit"
+    - "order"
+    properties:
+      title:
+        type: "string"
+        example: "Training phase title"
+        description: "Short textual description of the phase."
+      order:
+        type: "integer"
+        format: "int32"
+        example: 2
+        position: 1
+        description: "Order of phase, starts with 0"
+        minimum: 0
+      content:
+        type: "string"
+        example: "Play me"
+        position: 2
+        description: "The information and experiences that are directed towards a\
+          \ participant."
+      answer:
+        type: "string"
+        example: "secretFlag"
+        position: 3
+        description: "Keyword found in training, used for access next phase."
+        minLength: 0
+        maxLength: 50
+      solution:
+        type: "string"
+        example: "This is how you do it"
+        position: 4
+        description: "Instruction how to get answer in training."
+      incorrectAnswerLimit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        position: 5
+        description: "How many times player can submit incorrect answer before displaying\
+          \ solution."
+        minimum: 0
+        maximum: 100
+      modifySandbox:
+        type: "boolean"
+        example: true
+        position: 6
+        description: "Sign if sandbox should be modified if the task is picked."
+      sandboxChangeExpectedDuration:
+        type: "integer"
+        format: "int32"
+        example: 30
+        position: 7
+        description: "Expected duration of the sandbox change when the task is picked\
+          \ (in seconds)."
+        minimum: 0
+    description: "Imported task of the training phase."
+  TaskUpdateDTO:
+    type: "object"
+    required:
+    - "answer"
+    - "content"
+    - "incorrectAnswerLimit"
+    - "solution"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Task title"
+        description: "Short description of task"
+      content:
+        type: "string"
+        example: "Capture the flag"
+        position: 1
+        description: "The information that are displayed to a player"
+      sandboxChangeExpectedDuration:
+        type: "integer"
+        format: "int32"
+        example: 15
+        position: 1
+        description: "It defines the expected duration of sandbox change defined in\
+          \ seconds"
+      answer:
+        type: "string"
+        example: "secretFlag"
+        position: 2
+        description: "Keyword that must be found in the task. Necessary in order to\
+          \ get to the next phase"
+      solution:
+        type: "string"
+        example: "Open secret.txt"
+        position: 3
+        description: "Description how to get the answer"
+      incorrectAnswerLimit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        position: 4
+        description: "It defines the allowed number of incorrect answers submitted\
+          \ by the player"
+      modifySandbox:
+        type: "boolean"
+        example: true
+        position: 5
+        description: "It defines whether the sandbox can be modified"
+  TrainingDefinitionByIdDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training definition."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        description: "Description of training definition that is visible to the participant."
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      prerequisites:
+        type: "array"
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      phases:
+        type: "array"
+        description: "Information about all phase in training definition."
+        items:
+          $ref: "#/definitions/AbstractLevelDTO"
+      showStepperBar:
+        type: "boolean"
+        example: false
+        description: "Sign if stepper bar should be displayed."
+      estimatedDuration:
+        type: "integer"
+        format: "int64"
+        example: 5
+        description: "Estimated time it takes to finish runs created from this definition."
+      lastEdited:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Time of last edit done to definition."
+      canBeArchived:
+        type: "boolean"
+        example: true
+        position: 7
+        description: "Sign if training definition can be archived or not."
+    description: "A definition of the training with phases."
+  TrainingDefinitionCreateDTO:
+    type: "object"
+    required:
+    - "showStepperBar"
+    - "state"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Photo Hunter"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      prerequisites:
+        type: "array"
+        example: "[HTML, http protocol]"
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      description:
+        type: "string"
+        example: "Description of Photo Hunter"
+        position: 1
+        description: "Description of training definition that is visible to the participant."
+      outcomes:
+        type: "array"
+        example: "[outcomes]"
+        position: 1
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        position: 1
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      showStepperBar:
+        type: "boolean"
+        example: true
+        position: 1
+        description: "Sign if stepper bar should be displayed."
+    description: "Training definition to create."
+  TrainingDefinitionInfoDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training definition."
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+    description: "Basic training definition information."
+  TrainingDefinitionRestResource:
+    type: "object"
+    properties:
+      content:
+        type: "array"
+        description: "Retrieved Training Definitions from databases."
+        items:
+          $ref: "#/definitions/TrainingDefinitionByIdDTO"
+      pagination:
+        description: "Pagination including: page number, number of elements in page,\
+          \ size, total elements and total pages."
+        $ref: "#/definitions/Pagination"
+    description: "Content (Retrieved data) and meta information about REST API result\
+      \ page. Including page number, number of elements in page, size of elements,\
+      \ total number of elements and total number of pages"
+  TrainingDefinitionUpdateDTO:
+    type: "object"
+    required:
+    - "id"
+    - "showStepperBar"
+    - "state"
+    - "title"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 2
+        description: "Main identifier of training definition."
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        position: 1
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      showStepperBar:
+        type: "boolean"
+        example: false
+        position: 2
+        description: "Sign if stepper bar should be displayed."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        position: 3
+        description: "Description of training definition that is visible to the participant."
+      prerequisites:
+        type: "array"
+        example: "[phishing]"
+        position: 4
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        position: 5
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        position: 6
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+    description: "Training definition to update."
+  TrainingDefinitionWithPhasesExportDTO:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        description: "Description of training definition that is visible to the participant."
+      prerequisites:
+        type: "array"
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      showStepperBar:
+        type: "boolean"
+        example: false
+        description: "Sign if stepper bar should be displayed."
+      phases:
+        type: "array"
+        description: "Information about all phase in training definition."
+        items:
+          $ref: "#/definitions/AbstractPhaseExportDTO"
+      estimatedDuration:
+        type: "integer"
+        format: "int32"
+        example: 5
+        description: "Estimated time (minutes) taken by the player to finish run created\
+          \ from this definition."
+    description: "An exported detailed information about training definition which\
+      \ also include individual phase."
+  TrainingInstanceArchiveDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training instance."
+      definitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training definition associated with this\
+          \ instance."
+      title:
+        type: "string"
+        example: "Concluded Instance"
+        description: "Short textual description of the training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Date when training instance ends."
+      accessToken:
+        type: "string"
+        example: "pass-1234"
+        description: "Token needed to access runs created from this definition"
+      organizersRefIds:
+        type: "array"
+        description: "Reference to organizersRefIds which organize training instance."
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int64"
+    description: "The finished and archived instance of training definition which\
+      \ includes individual finished training runs of participants."
+  TrainingInstanceAssignPoolIdDTO:
+    type: "object"
+    required:
+    - "poolId"
+    properties:
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 2
+        description: "Pool associated with training instance."
+        minimum: 0
+    description: "Training Instance assign pool ID."
+  TrainingInstanceBasicInfoDTO:
+    type: "object"
+    required:
+    - "accessToken"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Date when training instance ends."
+      title:
+        type: "string"
+        example: "Concluded Instance"
+        description: "Short textual description of the training instance."
+      accessToken:
+        type: "string"
+        example: "hunter"
+        description: "Token used to access training run."
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox pool belonging to training instance"
+  TrainingInstanceCreateDTO:
+    type: "object"
+    required:
+    - "accessToken"
+    - "endTime"
+    - "startTime"
+    - "title"
+    - "trainingDefinitionId"
+    properties:
+      title:
+        type: "string"
+        example: "December instance"
+        description: "Short textual description of the training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2020-11-20T10:28:02.727Z"
+        position: 1
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2020-11-25T10:26:02.727Z"
+        position: 2
+        description: "Date when training instance ends."
+      accessToken:
+        type: "string"
+        example: "hunter"
+        position: 3
+        description: "AccessToken which will be modified and then used for accessing\
+          \ training run."
+      trainingDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        position: 4
+        description: "Reference to training definition from which is training instance\
+          \ created."
+        minimum: 0
+    description: "Training Instance to create."
+  TrainingInstanceDTO:
+    type: "object"
+    required:
+    - "accessToken"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Date when training instance ends."
+      title:
+        type: "string"
+        example: "Concluded Instance"
+        description: "Short textual description of the training instance."
+      trainingDefinition:
+        description: "Reference to training definition from which is training instance\
+          \ created."
+        $ref: "#/definitions/TrainingDefinitionByIdDTO"
+      accessToken:
+        type: "string"
+        example: "hunter"
+        description: "Token used to access training run."
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox pool belonging to training instance"
+      sandboxesWithTrainingRun:
+        type: "array"
+        example: "[3,15]"
+        description: "Ids of sandboxes which are assigned to training run."
+        items:
+          type: "integer"
+          format: "int64"
+    description: "A session of attending a concrete training, which involves a deployment\
+      \ of the training definition in one or more sandbox instances that are then\
+      \ assigned to participants. The instance comprises one or more game runs."
+  TrainingInstanceFindAllResponseDTO:
+    type: "object"
+    required:
+    - "accessToken"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Date when training instance ends."
+      title:
+        type: "string"
+        example: "Concluded Instance"
+        description: "Short textual description of the training instance."
+      trainingDefinition:
+        description: "Reference to training definition from which is training instance\
+          \ created."
+        $ref: "#/definitions/TrainingDefinitionByIdDTO"
+      accessToken:
+        type: "string"
+        example: "hunter"
+        description: "Token used to access training run."
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox pool belonging to training instance"
+    description: "Information about training instance returned in find all training\
+      \ instance response."
+  TrainingInstanceRestResource:
+    type: "object"
+    properties:
+      content:
+        type: "array"
+        description: "Retrieved Training Instances from databases."
+        items:
+          $ref: "#/definitions/TrainingInstanceFindAllResponseDTO"
+      pagination:
+        description: "Pagination including: page number, number of elements in page,\
+          \ size, total elements and total pages."
+        $ref: "#/definitions/Pagination"
+    description: "Content (Retrieved data) and meta information about REST API result\
+      \ page. Including page number, number of elements in page, size of elements,\
+      \ total number of elements and total number of pages"
+  TrainingInstanceUpdateDTO:
+    type: "object"
+    required:
+    - "accessToken"
+    - "endTime"
+    - "id"
+    - "startTime"
+    - "title"
+    - "trainingDefinitionId"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 2
+        description: "Main identifier of training instance."
+      title:
+        type: "string"
+        example: "Current Instance"
+        position: 1
+        description: "Short textual description of the training instance."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2019-10-19T10:28:02.727Z"
+        position: 2
+        description: "Date when training instance starts."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2019-10-25T10:28:02.727Z"
+        position: 2
+        description: "Date when training instance ends."
+      accessToken:
+        type: "string"
+        example: "hello-6578"
+        position: 3
+        description: "AccessToken which will be modified and then used for accessing\
+          \ training run."
+      trainingDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        position: 4
+        description: "Reference to training definition from which is training instance\
+          \ created."
+    description: "Training Instance to update."
+  TrainingPhaseDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractLevelDTO"
+    - type: "object"
+      required:
+      - "allowedCommands"
+      - "allowedWrongAnswers"
+      - "decisionMatrix"
+      - "tasks"
+      properties:
+        estimatedDuration:
+          type: "integer"
+          format: "int32"
+          example: 20
+          description: "Estimated time (minutes) taken by the player to solve the\
+            \ training phase"
+        allowedCommands:
+          type: "integer"
+          format: "int32"
+          example: 10
+          description: "Maximal number of allowed commands provided by played"
+        allowedWrongAnswers:
+          type: "integer"
+          format: "int32"
+          example: 10
+          description: "Maximal number of allowed wrong answers provided by played"
+        tasks:
+          type: "array"
+          description: "Tasks associated with the training phase"
+          items:
+            $ref: "#/definitions/TaskDTO"
+        decisionMatrix:
+          type: "array"
+          description: "Decision matrix associated with the training phase"
+          items:
+            $ref: "#/definitions/DecisionMatrixRowDTO"
+  TrainingPhaseExportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseExportDTO"
+    - type: "object"
+      required:
+      - "allowedCommands"
+      - "allowedWrongAnswers"
+      - "decisionMatrix"
+      - "tasks"
+      properties:
+        estimatedDuration:
+          type: "integer"
+          format: "int32"
+          example: 20
+          description: "Estimated time (minutes) taken by the player to solve the\
+            \ training phase"
+        allowedCommands:
+          type: "integer"
+          format: "int32"
+          example: 10
+          description: "Maximal number of allowed commands provided by played"
+        allowedWrongAnswers:
+          type: "integer"
+          format: "int32"
+          example: 10
+          description: "Maximal number of allowed wrong answers provided by played"
+        tasks:
+          type: "array"
+          description: "Tasks associated with the training phase"
+          items:
+            $ref: "#/definitions/TaskExportDTO"
+        decisionMatrix:
+          type: "array"
+          description: "Decision matrix associated with the training phase"
+          items:
+            $ref: "#/definitions/DecisionMatrixRowExportDTO"
+      description: "Exported training phase."
+  TrainingPhaseImportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImportDTO"
+    - type: "object"
+      required:
+      - "decisionMatrix"
+      - "tasks"
+      properties:
+        estimatedDuration:
+          type: "integer"
+          format: "int32"
+          example: 50
+          description: "Estimated time it takes to finish the phase (in seconds)."
+          minimum: 0
+        allowedCommands:
+          type: "integer"
+          format: "int32"
+          example: 10
+          position: 1
+          description: "Number of allowed commands that can be used to solve the task\
+            \ (used for data analysis)."
+          minimum: 0
+        allowedWrongAnswers:
+          type: "integer"
+          format: "int32"
+          example: 4
+          position: 2
+          description: "How many times player can submit incorrect answer before displaying\
+            \ solution."
+          minimum: 0
+        tasks:
+          type: "array"
+          position: 3
+          description: "Tasks associated with the training phase"
+          items:
+            $ref: "#/definitions/TaskImportDTO"
+        decisionMatrix:
+          type: "array"
+          position: 4
+          description: "Decision matrix associated with the training phase"
+          items:
+            $ref: "#/definitions/DecisionMatrixRowImportDTO"
+      description: "Imported training phase."
+  TrainingPhaseUpdateDTO:
+    type: "object"
+    required:
+    - "allowedCommands"
+    - "allowedWrongAnswers"
+    - "decisionMatrix"
+    - "estimatedDuration"
+    - "title"
+    properties:
+      title:
+        type: "string"
+        example: "Training phase title"
+        description: "Short description of training phase"
+      allowedWrongAnswers:
+        type: "integer"
+        format: "int32"
+        example: 10
+        position: 1
+        description: "Maximal number of allowed wrong answers provided by played"
+      allowedCommands:
+        type: "integer"
+        format: "int32"
+        example: 10
+        position: 2
+        description: "Maximal number of allowed commands provided by played"
+      estimatedDuration:
+        type: "integer"
+        format: "int32"
+        example: 20
+        position: 3
+        description: "Estimated time (minutes) taken by the player to solve the training\
+          \ phase"
+      decisionMatrix:
+        type: "array"
+        position: 4
+        description: "Decision matrix associated with the training phase"
+        items:
+          $ref: "#/definitions/DecisionMatrixRowDTO"
+    description: "Training phase to update."
+  TrainingRunByIdDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training run."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training run started."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2022-10-19 10:23:54+02"
+        description: "Date when training run ends."
+      state:
+        type: "string"
+        example: "ALLOCATED"
+        description: "Current state of training run."
+        enum:
+        - "RUNNING"
+        - "FINISHED"
+        - "ARCHIVED"
+      sandboxInstanceRefId:
+        type: "integer"
+        format: "int64"
+        description: "Reference to the received sandbox."
+      participantRef:
+        description: "Reference to participant of training run."
+        $ref: "#/definitions/UserRefDTO"
+      definitionId:
+        type: "integer"
+        format: "int64"
+        description: "Id of associated training definition"
+      instanceId:
+        type: "integer"
+        format: "int64"
+        description: "Id of associated training instance"
+      previousSandboxInstanceRefId:
+        type: "integer"
+        format: "int64"
+        example: 12
+        description: "Id of a previous sandbox instance assigned to the training run."
+    description: "The act, or a recording, of performing actions during training from\
+      \ a perspective of one concrete participant."
+  TrainingRunDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of training run."
+      startTime:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date when training run started."
+      endTime:
+        type: "string"
+        format: "date-time"
+        example: "2022-10-19 10:23:54+02"
+        description: "Date when training run ends."
+      state:
+        type: "string"
+        example: "ALLOCATED"
+        description: "Current state of training run."
+        enum:
+        - "RUNNING"
+        - "FINISHED"
+        - "ARCHIVED"
+      sandboxInstanceRefId:
+        type: "integer"
+        format: "int64"
+        description: "Reference to the received sandbox."
+      participantRef:
+        description: "Reference to participant of training run."
+        $ref: "#/definitions/UserRefDTO"
+    description: "The act, or a recording, of performing actions during training from\
+      \ a perspective of one concrete participant."
+  TrainingRunRestResource:
+    type: "object"
+    properties:
+      content:
+        type: "array"
+        description: "Retrieved Training Runs from databases."
+        items:
+          $ref: "#/definitions/TrainingRunDTO"
+      pagination:
+        description: "Pagination including: page number, number of elements in page,\
+          \ size, total elements and total pages."
+        $ref: "#/definitions/Pagination"
+    description: "Content (Retrieved data) and meta information about REST API result\
+      \ page. Including page number, number of elements in page, size of elements,\
+      \ total number of elements and total number of pages"
+  UserInfoDTO:
+    type: "object"
+    properties:
+      sub:
+        type: "string"
+      mail:
+        type: "string"
+      iss:
+        type: "string"
+      roles:
+        type: "array"
+        uniqueItems: true
+        items:
+          $ref: "#/definitions/RoleDTO"
+      id:
+        type: "integer"
+        format: "int64"
+      full_name:
+        type: "string"
+      given_name:
+        type: "string"
+      family_name:
+        type: "string"
+  UserInfoRestResource:
+    type: "object"
+    properties:
+      content:
+        type: "array"
+        description: "Retrieved Training Instances from databases."
+        items:
+          $ref: "#/definitions/UserInfoDTO"
+      pagination:
+        description: "Pagination including: page number, number of elements in page,\
+          \ size, total elements and total pages."
+        $ref: "#/definitions/Pagination"
+    description: "Content (Retrieved data) and meta information about REST API result\
+      \ page. Including page number, number of elements in page, size of elements,\
+      \ total number of elements and total number of pages"
+  UserRefDTO:
+    type: "object"
+    properties:
+      iss:
+        type: "string"
+        example: "https://oidc.muni.cz"
+        description: "Reference to user in another microservice and get his iss"
+      picture:
+        type: "array"
+        example: "iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAYAAAA4TnrqAAACIUlEQVR4Xu3YsY0dSQxAQQUlpXT5Z3CS/YgxSrQa4gLlEOBb9pj/x6//fv7/t/78/XhN3yBWyz3kBX2DWC33kBf0DWK13ENe0DeI1XIPeUHfIFbLPeQFfYNYLfeQF/QNYrXcQ17QN4jVcg95Qd8gVss95AV9g1gt95AX9A1itdxDXtA3iNVyD3lB3yBWyz3kBX2DWC33kBf0DWLERGOiLdGWaEuMgeghoi3RlmhLjIHoIaIt0ZZoS4yB6CGiLdGWaEuMgeghoi3RlmhLjIHoIaIt0ZZoS4yB6CGiLdGWaEuMgeghoi3RlmhLjIHoIaIt0ZZoS4yB6CGiLdGWaEuMgeghoi3RlmhLjIHoIaIt0ZZoS4yB6CGiLdGWaEuMgeghoi3RlmhLjIHoIaIt0ZZoS6z+8b/mPha4jwXuY4H7WOA+FriPBe5jgftY4D4WuI8F7mOB+1jgPha4jwXGbzbn2xicb2Nwvo3B+TYG59sYnG9jcL6Nwfk2BufbGJxvY3C+jcH5Ngbn2xicb2Nwvq1+z2pMtCXaEm2J1XIPEW2JtkRbYrXcQ0Rboi3Rllgt9xDRlmhLtCVWyz1EtCXaEm2J1XIPEW2JtkRbYrXcQ0Rboi3Rllgt9xDRlmhLtCVWyz1EtCXaEm2J1XIPEW2JtkRbYrXcQ0Rboi3Rllgt9xDRlmhLtCVWyz1EtCXaEm2J1XIPEW2JtkRbYrXcQ0Rboi3RlvgNt34wfeJElG8AAAAASUVORK5CYII="
+        description: "Identicon of a user."
+        items:
+          type: "string"
+          format: "byte"
+      user_ref_id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Reference to user in another microservice and get his id"
+      sub:
+        type: "string"
+        example: "john.doe@mail.com"
+        description: "Reference to user in another microservice."
+      full_name:
+        type: "string"
+        example: "Mgr. John Doe"
+        description: "Reference to user in another microservice and get his full name"
+      given_name:
+        type: "string"
+        example: "John"
+        description: "User given name"
+      family_name:
+        type: "string"
+        example: "Doe"
+        description: "User family name"
+    description: "User information from user-and-group microservice is mapped to this\
+      \ class and is also used to provide information about authors, participants,\
+      \ and organizers."
+  ValidateAnswerDTO:
+    type: "object"
+    required:
+    - "answer"
+    properties:
+      answer:
+        type: "string"
+        example: "answer"
+        description: "Answer to be validated."
+    description: "Encapsulation of the answer submitted in training phase."

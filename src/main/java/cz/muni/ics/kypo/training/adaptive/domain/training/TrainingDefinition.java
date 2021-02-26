@@ -29,24 +29,11 @@ import java.util.*;
 public class TrainingDefinition implements Serializable {
 
     @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "trainingDefinitionGenerator"
-    )
-    @SequenceGenerator(
-            name = "trainingDefinitionGenerator",
-            sequenceName = "training_definition_seq"
-    )
-    @Column(
-            name = "training_definition_id",
-            nullable = false,
-            unique = true
-    )
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingDefinitionGenerator")
+    @SequenceGenerator(name = "trainingDefinitionGenerator", sequenceName = "training_definition_seq")
+    @Column(name = "training_definition_id", nullable = false, unique = true)
     private Long id;
-    @Column(
-            name = "title",
-            nullable = false
-    )
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description")
     private String description;
@@ -54,11 +41,7 @@ public class TrainingDefinition implements Serializable {
     private String[] prerequisites;
     @Column(name = "outcomes")
     private String[] outcomes;
-    @Column(
-            name = "state",
-            length = 128,
-            nullable = false
-    )
+    @Column(name = "state", length = 128, nullable = false)
     @Enumerated(EnumType.STRING)
     private TDState state;
     @ManyToMany(

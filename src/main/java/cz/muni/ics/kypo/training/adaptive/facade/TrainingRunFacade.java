@@ -405,30 +405,12 @@ public class TrainingRunFacade {
     }
 
     private AbstractPhaseDTO getCorrectAbstractPhaseDTO(AbstractPhase abstractPhase) {
-        AbstractPhaseDTO abstractPhaseDTO;
         if (abstractPhase instanceof QuestionnairePhase) {
-            QuestionnairePhase questionnairePhase = (QuestionnairePhase) abstractPhase;
-            abstractPhaseDTO = phaseMapper.mapToDTO(questionnairePhase);
-            abstractPhaseDTO.setPhaseType(PhaseType.QUESTIONNAIRE);
-            deleteInfoAboutCorrectnessFromQuestions((QuestionnairePhaseDTO) abstractPhaseDTO);
+            return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) abstractPhase);
         } else if (abstractPhase instanceof TrainingPhase) {
-            TrainingPhase trainingPhase = (TrainingPhase) abstractPhase;
-            abstractPhaseDTO = phaseMapper.mapToDTO(trainingPhase);
-            //TODO change the DTO with one task and remove the correct answer
-            abstractPhaseDTO.setPhaseType(PhaseType.TRAINING);
+            return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) abstractPhase);
         } else {
-            InfoPhase infoPhase = (InfoPhase) abstractPhase;
-            abstractPhaseDTO = phaseMapper.mapToDTO(infoPhase);
-            abstractPhaseDTO.setPhaseType(PhaseType.INFO);
-        }
-        return abstractPhaseDTO;
-    }
-
-    private void deleteInfoAboutCorrectnessFromQuestions(QuestionnairePhaseDTO questionnairePhaseDTO) {
-        for (QuestionDTO questionDTO : questionnairePhaseDTO.getQuestions()) {
-            for (QuestionChoiceDTO questionChoiceDTO : questionDTO.getChoices()) {
-                questionChoiceDTO.setCorrect(null);
-            }
+            return phaseMapper.mapToDTO((InfoPhase) abstractPhase);
         }
     }
 }

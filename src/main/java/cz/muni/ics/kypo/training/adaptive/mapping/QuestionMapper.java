@@ -10,6 +10,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.Quest
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionChoiceViewDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionViewDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -34,6 +36,8 @@ public interface QuestionMapper extends ParentMapper {
 
     QuestionDTO mapToQuestionDTO(Question entity);
 
+    QuestionViewDTO mapToQuestionViewDTO(Question entity);
+
     List<Question> mapToList(Collection<QuestionDTO> dtos);
 
     List<QuestionDTO> mapToListDTO(Collection<Question> entities);
@@ -52,6 +56,8 @@ public interface QuestionMapper extends ParentMapper {
     QuestionChoiceExportDTO mapToQuestionExportDTO(QuestionChoice entity);
 
     QuestionChoiceDTO mapToQuestionDTO(QuestionChoice entity);
+
+    QuestionChoiceViewDTO mapToQuestionViewDTO(QuestionChoice entity);
 
     List<QuestionChoice> mapChoicesToList(Collection<QuestionChoiceDTO> dtos);
 

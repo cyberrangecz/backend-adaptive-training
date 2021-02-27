@@ -1,1 +1,1 @@
-1.0.6 Docker pushed to Gitlab CI Registry.
+1.0.7 Docker pushed to Gitlab CI Registry.

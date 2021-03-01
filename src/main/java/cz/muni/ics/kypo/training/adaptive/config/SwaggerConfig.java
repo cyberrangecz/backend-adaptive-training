@@ -33,7 +33,7 @@ public class SwaggerConfig {
     private List<String> clientIds;
     @Value("#{'${kypo.idp.4oauth.scopes}'.split(',')}")
     private Set<String> scopes;
-    @Value("${swagger.enabled}")
+    @Value("${swagger.enabled:true}")
     private boolean swaggerEnabled;
 
     /**

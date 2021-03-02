@@ -196,7 +196,7 @@ public class TrainingRunFacade {
     private AccessTrainingRunDTO convertToAccessTrainingRunDTO(TrainingRun trainingRun) {
         AccessTrainingRunDTO accessTrainingRunDTO = new AccessTrainingRunDTO();
         accessTrainingRunDTO.setTrainingRunID(trainingRun.getId());
-        accessTrainingRunDTO.setAbstractPhaseDTO(getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase()));
+        accessTrainingRunDTO.setCurrentPhase(getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase()));
         accessTrainingRunDTO.setShowStepperBar(trainingRun.getTrainingInstance().getTrainingDefinition().isShowStepperBar());
         accessTrainingRunDTO.setInfoAboutPhases(getInfoAboutPhases(trainingRun.getCurrentPhase().getTrainingDefinition().getId()));
         accessTrainingRunDTO.setSandboxInstanceRefId(trainingRun.getSandboxInstanceRefId());

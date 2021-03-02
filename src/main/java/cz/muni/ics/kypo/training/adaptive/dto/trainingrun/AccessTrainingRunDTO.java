@@ -25,8 +25,8 @@ public class AccessTrainingRunDTO {
     private boolean showStepperBar;
     @ApiModelProperty(value = "Main identifier of sandbox which is assigned to training run.", example = "2")
     private Long sandboxInstanceRefId;
-    @ApiModelProperty(value = "First phase in the current training run.")
-    private AbstractPhaseDTO abstractPhaseDTO;
+    @ApiModelProperty(value = "Current phase in the training run.")
+    private AbstractPhaseDTO currentPhase;
     @ApiModelProperty(value = "Information about all phase in training instance.")
     private List<BasicPhaseInfoDTO> infoAboutPhases;
     @ApiModelProperty(value = "Id of associated training instance", example = "1")
@@ -34,7 +34,7 @@ public class AccessTrainingRunDTO {
     @ApiModelProperty(value = "Date when training run started.", example = "2016-10-19 10:23:54+02")
     @JsonSerialize(using = LocalDateTimeUTCSerializer.class)
     private LocalDateTime startTime;
-    @ApiModelProperty(value = "Sign if solution of current training phase was taken", example = "true")
+    @ApiModelProperty(value = "Content of the taken solution of the current training phase.", example = "solution of the task")
     private String takenSolution;
 
     /**
@@ -96,17 +96,17 @@ public class AccessTrainingRunDTO {
      *
      * @return the {@link AbstractPhaseDTO}
      */
-    public AbstractPhaseDTO getAbstractPhaseDTO() {
-        return abstractPhaseDTO;
+    public AbstractPhaseDTO getCurrentPhase() {
+        return currentPhase;
     }
 
     /**
      * Sets current phase.
      *
-     * @param abstractPhaseDTO the {@link AbstractPhaseDTO}
+     * @param currentPhase the {@link AbstractPhaseDTO}
      */
-    public void setAbstractPhaseDTO(AbstractPhaseDTO abstractPhaseDTO) {
-        this.abstractPhaseDTO = abstractPhaseDTO;
+    public void setCurrentPhase(AbstractPhaseDTO currentPhase) {
+        this.currentPhase = currentPhase;
     }
 
     /**
@@ -188,7 +188,7 @@ public class AccessTrainingRunDTO {
                 "trainingRunID=" + trainingRunID +
                 ", showStepperBar=" + showStepperBar +
                 ", sandboxInstanceRefId=" + sandboxInstanceRefId +
-                ", abstractPhaseDTO=" + abstractPhaseDTO +
+                ", abstractPhaseDTO=" + currentPhase +
                 ", instanceId=" + instanceId +
                 ", startTime=" + startTime +
                 ", takenSolution='" + takenSolution + '\'' +

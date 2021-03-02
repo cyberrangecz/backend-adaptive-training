@@ -97,7 +97,7 @@ public class TrainingDefinitionFacade {
     private List<AbstractPhaseDTO> gatherPhases(Long definitionId) {
         List<AbstractPhase> phases = trainingDefinitionService.findAllPhasesFromDefinition(definitionId);
         return phases.stream()
-                .map(phase -> this.phaseMapper.mapToDTO(phase))
+                .map(this.phaseMapper::mapToDTO)
                 .collect(Collectors.toList());
     }
 

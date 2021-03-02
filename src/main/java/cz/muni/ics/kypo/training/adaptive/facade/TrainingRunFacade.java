@@ -410,7 +410,7 @@ public class TrainingRunFacade {
         } else if (abstractPhase instanceof TrainingPhase) {
             return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) abstractPhase);
         } else {
-            return phaseMapper.mapToDTO((InfoPhase) abstractPhase);
+            return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
         }
     }
 }

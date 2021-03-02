@@ -111,11 +111,11 @@ public interface PhaseMapper extends ParentMapper {
     default AbstractPhaseDTO mapToDTO(AbstractPhase entity) {
         AbstractPhaseDTO abstractPhaseDTO;
         if (entity instanceof TrainingPhase) {
-            abstractPhaseDTO = mapToTrainingPhaseViewDTO((TrainingPhase) entity);
+            abstractPhaseDTO = mapToTrainingPhaseDTO((TrainingPhase) entity);
         } else if (entity instanceof InfoPhase) {
             abstractPhaseDTO = mapToInfoPhaseDTO((InfoPhase) entity);
         } else if (entity instanceof QuestionnairePhase) {
-            abstractPhaseDTO = mapToQuestionnairePhaseViewDTO((QuestionnairePhase) entity);
+            abstractPhaseDTO = mapToQuestionnairePhaseDTO((QuestionnairePhase) entity);
         } else {
             throw new InternalServerErrorException("Phase with id: " + entity.getId() + " in given training definition with id: " + entity.getTrainingDefinition().getId() +
                     " is not instance of questionnaire, training or info phase.");

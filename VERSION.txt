@@ -1,1 +1,1 @@
-1.0.7 Docker pushed to Gitlab CI Registry.
+1.0.8 Rename attributes in DTOs, cache maven dependencies in CI/CD, docker entrypoint set to entrypoint.sh.

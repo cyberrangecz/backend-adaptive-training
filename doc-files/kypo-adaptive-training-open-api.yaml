@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.7"
+  version: "Version: 1.0.8"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2338,8 +2338,8 @@ definitions:
         format: "int64"
         example: 2
         description: "Main identifier of sandbox which is assigned to training run."
-      abstractPhaseDTO:
-        description: "First phase in the current training run."
+      currentPhase:
+        description: "Current phase in the training run."
         $ref: "#/definitions/AbstractLevelDTO"
       infoAboutPhases:
         type: "array"
@@ -2358,8 +2358,8 @@ definitions:
         description: "Date when training run started."
       takenSolution:
         type: "string"
-        example: "true"
-        description: "Sign if solution of current training phase was taken"
+        example: "solution of the task"
+        description: "Content of the taken solution of the current training phase."
     description: "Just accessed training run."
   AccessedTrainingRunDTO:
     type: "object"
@@ -2957,8 +2957,6 @@ definitions:
         format: "int64"
       sort:
         $ref: "#/definitions/Sort"
-      paged:
-        type: "boolean"
       unpaged:
         type: "boolean"
       pageNumber:
@@ -2967,6 +2965,8 @@ definitions:
       pageSize:
         type: "integer"
         format: "int32"
+      paged:
+        type: "boolean"
   Pagination:
     type: "object"
     properties:

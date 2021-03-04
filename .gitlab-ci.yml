@@ -30,7 +30,7 @@ create_tag:
     # generate swagger documentation
     - mvn clean compile $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=$PROPRIETARY_REPO_URL
     - git add doc-files/kypo-adaptive-training-open-api.yaml
-    - git commit -m "[CI/CD] Updated Swagger documentation generated"
+    - git commit -m "Updated Swagger documentation generated"
     - /app/tag-and-push.sh
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -46,7 +46,7 @@ build:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "[CI/CD] Updated Swagger documentation generated"'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ /Updated Swagger documentation generated/'
       when: always
 
 tests:
@@ -62,7 +62,7 @@ tests:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "[CI/CD] Updated Swagger documentation generated"'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ /Updated Swagger documentation generated/'
       when: always
 
 docker_image_push:

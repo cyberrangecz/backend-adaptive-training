@@ -22,7 +22,7 @@ create_tag:
   variables:
     GIT_STRATEGY: clone
   script:
-    - source /app/export-tag-vars.sh VERSION.txt
+    - source /app/export-tag-vars.sh $DEPLOYMENT_INFO_VERSION_FILE
     - echo $TAG_VERSION && echo $TAG_MESSAGE
     - /app/import-ssh-key.sh
     - /app/prepare-git.sh

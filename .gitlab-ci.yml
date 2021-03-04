@@ -46,6 +46,7 @@ build:
       changes:
         - pom.xml
       when: never
+    - if: '$CI_COMMIT_BRANCH'
 
 tests:
   stage: tests
@@ -60,6 +61,7 @@ tests:
       changes:
         - pom.xml
       when: never
+    - if: '$CI_COMMIT_BRANCH'
 
 docker_image_push:
   before_script: [ ] #prevent global before_script from running

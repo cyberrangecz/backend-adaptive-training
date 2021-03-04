@@ -46,7 +46,7 @@ build:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE =~ /^(?:(?!\[CI\/CD] Updated Swagger documentation generated).)*$/'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE =~ /^(?:(?![CI/CD] Updated Swagger documentation generated).)*$/'
       when: always
 
 tests:

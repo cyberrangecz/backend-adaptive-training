@@ -1,1 +1,1 @@
-1.0.10 Integration of commons-ci to our Gitlab CI configs.
+1.0.11 Gitlab CI configuration improvements.

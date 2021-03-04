@@ -8,7 +8,7 @@ variables:
   PROJECT_ARTIFACT_ID: kypo-adaptive-training
   DEPLOYMENT_INFO_VERSION_FILE: VERSION.txt
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
-  UPDATE_SWAGGER_MSG: "Updated Swagger documentation generated"
+  UPDATE_SWAGGER_MSG: "[CI/CD] Updated Swagger documentation generated"
 
 stages:
   - create_tag

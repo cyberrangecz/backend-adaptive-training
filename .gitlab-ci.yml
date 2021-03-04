@@ -47,7 +47,7 @@ build:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ /$UPDATE_SWAGGER_MSG/'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "$UPDATE_SWAGGER_MSG"'
       when: always
 
 tests:
@@ -63,7 +63,7 @@ tests:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ /$UPDATE_SWAGGER_MSG/'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "$UPDATE_SWAGGER_MSG"'
       when: always
 
 docker_image_push:

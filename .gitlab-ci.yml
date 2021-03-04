@@ -8,7 +8,6 @@ variables:
   PROJECT_ARTIFACT_ID: kypo-adaptive-training
   DEPLOYMENT_INFO_VERSION_FILE: VERSION.txt
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
-  UPDATE_SWAGGER_MSG: "[CI/CD] Updated Swagger documentation generated"
 
 stages:
   - create_tag
@@ -31,7 +30,7 @@ create_tag:
     # generate swagger documentation
     - mvn clean compile $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=$PROPRIETARY_REPO_URL
     - git add doc-files/kypo-adaptive-training-open-api.yaml
-    - git commit -m "$UPDATE_SWAGGER_MSG"
+    - git commit -m "[CI/CD] Updated Swagger documentation generated"
     - /app/tag-and-push.sh
   rules:
     - if: '$CI_COMMIT_BRANCH == "master"'
@@ -47,7 +46,7 @@ build:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "$UPDATE_SWAGGER_MSG"'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "[CI/CD] Updated Swagger documentation generated"'
       when: always
 
 tests:
@@ -63,7 +62,7 @@ tests:
       changes:
         - pom.xml
       when: never
-    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "$UPDATE_SWAGGER_MSG"'
+    - if: '$CI_COMMIT_BRANCH && $CI_COMMIT_MESSAGE !~ "[CI/CD] Updated Swagger documentation generated"'
       when: always
 
 docker_image_push:

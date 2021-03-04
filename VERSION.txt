@@ -1,1 +1,1 @@
-1.0.11 Gitlab CI configuration improvements.
+1.0.12 Gitlab CI configuration improvements.

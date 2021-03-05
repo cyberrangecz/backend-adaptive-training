@@ -13,11 +13,12 @@ import java.util.List;
 @Repository
 public interface ParticipantTaskAssignmentRepository extends JpaRepository<ParticipantTaskAssignment, Long>, QuerydslPredicateExecutor<ParticipantTaskAssignment> {
 
-    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO(t.id, ap.id) FROM ParticipantTaskAssignment p " +
+    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO(t.id, t.order, t.title, ap.id, ap.order, ap.title) FROM ParticipantTaskAssignment p " +
             "JOIN p.task t " +
             "JOIN p.abstractPhase ap " +
             "JOIN p.trainingInstance ti " +
-            "WHERE ti.id = :trainingInstanceId")
+            "WHERE ti.id = :trainingInstanceId " +
+            "ORDER BY ap.order, t.order ASC")
     List<NodeDTO> findAllVisitedTasks(@Param("trainingInstanceId") Long trainingInstanceId);
 
     //TODO provide a SQL commands that returns all the relations between task transitions

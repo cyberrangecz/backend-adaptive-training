@@ -1,15 +1,25 @@
 package cz.muni.ics.kypo.training.adaptive.dto.sankeygraph;
 
+import java.util.Objects;
+
 public class NodeDTO {
     private Long taskId;
+    private Long taskOrder;
+    private String taskTitle;
     private Long phaseId;
+    private Long phaseOrder;
+    private String phaseTitle;
 
     public NodeDTO() {
     }
 
-    public NodeDTO(Long taskId, Long phaseId) {
+    public NodeDTO(Long taskId, Long taskOrder, String taskTitle, Long phaseId, Long phaseOrder, String phaseTitle) {
         this.taskId = taskId;
+        this.taskOrder = taskOrder;
+        this.taskTitle = taskTitle;
         this.phaseId = phaseId;
+        this.phaseOrder = phaseOrder;
+        this.phaseTitle = phaseTitle;
     }
 
     public Long getTaskId() {
@@ -28,11 +38,61 @@ public class NodeDTO {
         this.phaseId = phaseId;
     }
 
+    public Long getTaskOrder() {
+        return taskOrder;
+    }
+
+    public void setTaskOrder(Long taskOrder) {
+        this.taskOrder = taskOrder;
+    }
+
+    public String getTaskTitle() {
+        return taskTitle;
+    }
+
+    public void setTaskTitle(String taskTitle) {
+        this.taskTitle = taskTitle;
+    }
+
+    public Long getPhaseOrder() {
+        return phaseOrder;
+    }
+
+    public void setPhaseOrder(Long phaseOrder) {
+        this.phaseOrder = phaseOrder;
+    }
+
+    public String getPhaseTitle() {
+        return phaseTitle;
+    }
+
+    public void setPhaseTitle(String phaseTitle) {
+        this.phaseTitle = phaseTitle;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof NodeDTO)) return false;
+        NodeDTO nodeDTO = (NodeDTO) o;
+        return Objects.equals(getTaskId(), nodeDTO.getTaskId()) &&
+                Objects.equals(getPhaseId(), nodeDTO.getPhaseId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getTaskId(), getPhaseId());
+    }
+
     @Override
     public String toString() {
         return "NodeDTO{" +
                 "taskId=" + taskId +
+                ", taskOrder=" + taskOrder +
+                ", taskTitle='" + taskTitle + '\'' +
                 ", phaseId=" + phaseId +
+                ", phaseOrder=" + phaseOrder +
+                ", phaseTitle='" + phaseTitle + '\'' +
                 '}';
     }
 }

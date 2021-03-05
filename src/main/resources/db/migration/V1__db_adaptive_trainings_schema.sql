@@ -48,7 +48,6 @@ create table training_instance (
     training_definition_id int8,
     primary key (training_instance_id),
     foreign key (training_definition_id) references training_definition
-
 );
 
 create table training_instance_user (
@@ -57,7 +56,6 @@ create table training_instance_user (
     primary key (training_instance_id, user_id),
     foreign key (training_instance_id) references training_instance,
     foreign key (user_id) references "user"
-
 );
 
 create table training_run (

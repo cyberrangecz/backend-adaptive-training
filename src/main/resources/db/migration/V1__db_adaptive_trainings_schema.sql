@@ -5,6 +5,17 @@ create table "user" (
     primary key (user_id)
 );
 
+create table participant_task_assignment (
+    participant_task_assignment_id bigserial not null,
+    phase_id int8 not null,
+    training_run_id int8 not null,
+    task_id int8,
+    primary key (participant_task_assignment_id),
+    foreign key (phase_id) references abstract_phase,
+    foreign key (training_run_id) references training_run,
+    foreign key (task_id) references task,
+);
+
 -- TRAINING
 create table training_definition (
     training_definition_id bigserial not null,

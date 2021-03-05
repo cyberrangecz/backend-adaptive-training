@@ -12,3 +12,4 @@ CREATE SEQUENCE training_run_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE access_token_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE tr_acquisition_lock_seq AS bigint INCREMENT 50 MINVALUE 1;
 CREATE SEQUENCE user_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE participant_task_assignment_seq AS bigint INCREMENT 50 MINVALUE 1;

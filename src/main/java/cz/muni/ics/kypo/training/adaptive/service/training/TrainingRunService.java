@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
+import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
@@ -10,6 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
+import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TRAcquisitionLockRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
@@ -51,6 +53,7 @@ public class TrainingRunService {
     private final ElasticsearchServiceApi elasticsearchServiceApi;
     private final UserManagementServiceApi userManagementServiceApi;
     private final TRAcquisitionLockRepository trAcquisitionLockRepository;
+    private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
 
     /**
      * Instantiates a new Training run service.
@@ -72,7 +75,8 @@ public class TrainingRunService {
                               AuditEventsService auditEventsService,
                               ElasticsearchServiceApi elasticsearchServiceApi,
                               UserManagementServiceApi userManagementServiceApi,
-                              TRAcquisitionLockRepository trAcquisitionLockRepository) {
+                              TRAcquisitionLockRepository trAcquisitionLockRepository,
+                              ParticipantTaskAssignmentRepository participantTaskAssignmentRepository) {
         this.sandboxServiceApi = sandboxServiceApi;
         this.trainingRunRepository = trainingRunRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
@@ -82,6 +86,7 @@ public class TrainingRunService {
         this.elasticsearchServiceApi = elasticsearchServiceApi;
         this.userManagementServiceApi = userManagementServiceApi;
         this.trAcquisitionLockRepository = trAcquisitionLockRepository;
+        this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
     }
 
     /**
@@ -201,9 +206,18 @@ public class TrainingRunService {
         trainingRun.setCurrentPhase(nextPhase);
         trainingRun.setIncorrectAnswerCount(0);
         trainingRunRepository.save(trainingRun);
+        participantTaskAssignmentRepository.save(prepareDataForSankeyGraph(trainingRun, nextPhase));
         auditEventsService.auditPhaseStartedAction(trainingRun);
 
         return nextPhase;
+    }
+
+    private ParticipantTaskAssignment prepareDataForSankeyGraph(TrainingRun trainingRun, AbstractPhase nextPhase) {
+        ParticipantTaskAssignment participantTaskAssignment = new ParticipantTaskAssignment();
+        participantTaskAssignment.setTrainingRun(trainingRun);
+        participantTaskAssignment.setAbstractPhase(nextPhase);
+        participantTaskAssignment.setTask(trainingRun.getCurrentTask());
+        return participantTaskAssignment;
     }
 
     /**

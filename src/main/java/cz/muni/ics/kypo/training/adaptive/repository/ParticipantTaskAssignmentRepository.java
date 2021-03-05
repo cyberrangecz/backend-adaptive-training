@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface ParticipantTaskAssignmentRepository extends JpaRepository<ParticipantTaskAssignment, Long>, QuerydslPredicateExecutor<ParticipantTaskAssignment> {
 
-    @Query("SELECT p.task FROM ParticipantTaskAssignment p")
+    @Query("SELECT DISTINCT(p.task) FROM ParticipantTaskAssignment p")
     List<Task> findAllVisitedTasks();
 
     //TODO provide a SQL commands that returns all the relations between task transitions

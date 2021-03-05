@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.domain;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 
 import javax.persistence.*;
@@ -25,6 +26,9 @@ public class ParticipantTaskAssignment implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_run_id")
     private TrainingRun trainingRun;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "training_instance_id")
+    private TrainingInstance trainingInstance;
 
     public Long getId() {
         return id;
@@ -56,6 +60,14 @@ public class ParticipantTaskAssignment implements Serializable {
 
     public void setTrainingRun(TrainingRun trainingRun) {
         this.trainingRun = trainingRun;
+    }
+
+    public TrainingInstance getTrainingInstance() {
+        return trainingInstance;
+    }
+
+    public void setTrainingInstance(TrainingInstance trainingInstance) {
+        this.trainingInstance = trainingInstance;
     }
 
     @Override

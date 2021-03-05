@@ -265,8 +265,7 @@ public class TrainingRunFacade {
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
     public AbstractPhaseDTO getNextPhase(Long trainingRunId) {
-        AbstractPhase abstractPhase;
-        abstractPhase = trainingRunService.getNextPhase(trainingRunId);
+        AbstractPhase abstractPhase = trainingRunService.getNextPhase(trainingRunId);
         return getCorrectAbstractPhaseDTO(abstractPhase);
     }
 

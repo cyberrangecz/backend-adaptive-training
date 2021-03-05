@@ -1,1 +1,1 @@
-1.0.20 Gitlab CI configuration improvements.
+1.0.21 Provide basic data for sankey visualization, still needs and improvements.

@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.20"
+  version: "Version: 1.0.21"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -12,6 +12,7 @@ tags:
 - name: "Training definitions"
 - name: "Training instances"
 - name: "Training runs"
+- name: "Visualizations"
 schemes:
 - "http"
 - "https"
@@ -2230,6 +2231,37 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /visualizations/training-instances/{instanceId}/sankey:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get necessary visualization info for training instance."
+      description: ""
+      operationId: "getSankeyGraphVisualization"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Training instance ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Data for visualization found."
+          schema:
+            $ref: "#/definitions/SankeyGraphDTO"
+        404:
+          description: "Training instance with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
 securityDefinitions:
   bearerAuth:
     description: "Obtain bearer token from OIDC provider and enter the token in the\
@@ -2949,6 +2981,25 @@ definitions:
           description: "Entity detail related to the error."
           $ref: "#/definitions/EntityErrorDetail"
       description: "A detailed error from another Java mircorservice."
+  NodeDTO:
+    type: "object"
+    properties:
+      taskId:
+        type: "integer"
+        format: "int64"
+      taskOrder:
+        type: "integer"
+        format: "int64"
+      taskTitle:
+        type: "string"
+      phaseId:
+        type: "integer"
+        format: "int64"
+      phaseOrder:
+        type: "integer"
+        format: "int64"
+      phaseTitle:
+        type: "string"
   Pageable:
     type: "object"
     properties:
@@ -3438,6 +3489,13 @@ definitions:
         type: "string"
       name_of_microservice:
         type: "string"
+  SankeyGraphDTO:
+    type: "object"
+    properties:
+      nodes:
+        type: "array"
+        items:
+          $ref: "#/definitions/NodeDTO"
   Sort:
     type: "object"
     properties:

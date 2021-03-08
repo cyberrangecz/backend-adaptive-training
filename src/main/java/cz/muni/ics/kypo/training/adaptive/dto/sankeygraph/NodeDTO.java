@@ -4,16 +4,16 @@ import java.util.Objects;
 
 public class NodeDTO {
     private Long taskId;
-    private Long taskOrder;
+    private Integer taskOrder;
     private String taskTitle;
     private Long phaseId;
-    private Long phaseOrder;
+    private Integer phaseOrder;
     private String phaseTitle;
 
     public NodeDTO() {
     }
 
-    public NodeDTO(Long taskId, Long taskOrder, String taskTitle, Long phaseId, Long phaseOrder, String phaseTitle) {
+    public NodeDTO(Long taskId, Integer taskOrder, String taskTitle, Long phaseId, Integer phaseOrder, String phaseTitle) {
         this.taskId = taskId;
         this.taskOrder = taskOrder;
         this.taskTitle = taskTitle;
@@ -38,11 +38,11 @@ public class NodeDTO {
         this.phaseId = phaseId;
     }
 
-    public Long getTaskOrder() {
+    public Integer getTaskOrder() {
         return taskOrder;
     }
 
-    public void setTaskOrder(Long taskOrder) {
+    public void setTaskOrder(Integer taskOrder) {
         this.taskOrder = taskOrder;
     }
 
@@ -54,11 +54,11 @@ public class NodeDTO {
         this.taskTitle = taskTitle;
     }
 
-    public Long getPhaseOrder() {
+    public Integer getPhaseOrder() {
         return phaseOrder;
     }
 
-    public void setPhaseOrder(Long phaseOrder) {
+    public void setPhaseOrder(Integer phaseOrder) {
         this.phaseOrder = phaseOrder;
     }
 

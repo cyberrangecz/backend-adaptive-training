@@ -26,9 +26,6 @@ public class ParticipantTaskAssignment implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "training_run_id")
     private TrainingRun trainingRun;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "training_instance_id")
-    private TrainingInstance trainingInstance;
 
     public Long getId() {
         return id;
@@ -60,14 +57,6 @@ public class ParticipantTaskAssignment implements Serializable {
 
     public void setTrainingRun(TrainingRun trainingRun) {
         this.trainingRun = trainingRun;
-    }
-
-    public TrainingInstance getTrainingInstance() {
-        return trainingInstance;
-    }
-
-    public void setTrainingInstance(TrainingInstance trainingInstance) {
-        this.trainingInstance = trainingInstance;
     }
 
     @Override

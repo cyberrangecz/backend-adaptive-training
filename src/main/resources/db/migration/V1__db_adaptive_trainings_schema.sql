@@ -62,7 +62,7 @@ create table training_run (
     sandbox_instance_ref_id int8 null,
     training_instance_id int8 not null,
     previous_sandbox_instance_ref_id int8 null,
-    primary key (training_instance_id),
+    primary key (training_run_id),
     foreign key (training_instance_id) references training_instance,
     foreign key (user_id) references "user"
 );
@@ -211,12 +211,10 @@ create table participant_task_assignment (
     participant_task_assignment_id bigserial not null,
     phase_id int8 not null,
     training_run_id int8 not null,
-    training_instance_id int8 not null,
     task_id int8,
     primary key (participant_task_assignment_id),
     foreign key (phase_id) references abstract_phase,
     foreign key (training_run_id) references training_run,
-    foreign key (training_instance_id) references training_instance,
     foreign key (task_id) references task
 );
 

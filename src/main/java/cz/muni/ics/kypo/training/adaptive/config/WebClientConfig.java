@@ -36,6 +36,8 @@ public class WebClientConfig {
     private String userAndGroupURI;
     @Value("${elasticsearch-service.uri}")
     private String elasticsearchServiceURI;
+    @Value("${smart-assistant-service.uri}")
+    private String smartAssistantServiceURI;
 
     private ObjectMapper objectMapper;
 
@@ -96,6 +98,27 @@ public class WebClientConfig {
     public WebClient elasticsearchServiceWebClient() {
         return WebClient.builder()
                 .baseUrl(elasticsearchServiceURI)
+                .defaultHeaders(headers -> {
+                    headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
+                    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+                })
+                .filters(exchangeFilterFunctions -> {
+                    exchangeFilterFunctions.add(addSecurityHeader());
+                    exchangeFilterFunctions.add(javaMicroserviceExceptionHandlingFunction());
+                })
+                .build();
+    }
+
+    /**
+     * Smart assistant service web client.
+     *
+     * @return the web client
+     */
+    @Bean
+    @Qualifier("smartAssistantServiceWebClient")
+    public WebClient smartAssistantServiceWebClient() {
+        return WebClient.builder()
+                .baseUrl(smartAssistantServiceURI)
                 .defaultHeaders(headers -> {
                     headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
                     headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

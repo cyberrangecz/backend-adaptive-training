@@ -15,8 +15,8 @@ public class DecisionMatrixRow implements Serializable {
     private Long id;
     @Column(name = "order_in_training_phase", nullable = false)
     private int order;
-    @Column(name = "assessment_answered")
-    private double assessmentAnswered;
+    @Column(name = "questionnaire_answered")
+    private double questionnaireAnswered;
     @Column(name = "keyword_used")
     private double keywordUsed;
     @Column(name = "completed_in_time")
@@ -45,12 +45,12 @@ public class DecisionMatrixRow implements Serializable {
         this.order = order;
     }
 
-    public double getAssessmentAnswered() {
-        return assessmentAnswered;
+    public double getQuestionnaireAnswered() {
+        return questionnaireAnswered;
     }
 
-    public void setAssessmentAnswered(double assessmentAnswered) {
-        this.assessmentAnswered = assessmentAnswered;
+    public void setQuestionnaireAnswered(double questionnaireAnswered) {
+        this.questionnaireAnswered = questionnaireAnswered;
     }
 
     public double getKeywordUsed() {
@@ -98,7 +98,7 @@ public class DecisionMatrixRow implements Serializable {
         return "DecisionMatrixRow{" +
                 "id=" + this.getId() +
                 ", order=" + this.getOrder() +
-                ", assessmentAnswered=" + this.getAssessmentAnswered() +
+                ", questionnaireAnswered=" + this.getQuestionnaireAnswered() +
                 ", keywordUsed=" + this.getKeywordUsed() +
                 ", completedInTime=" + this.getCompletedInTime() +
                 ", solutionDisplayed=" + this.getSolutionDisplayed() +

@@ -29,6 +29,7 @@ import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -37,9 +38,11 @@ import org.springframework.transaction.annotation.Propagation;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +53,8 @@ public class TrainingRunService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingRunService.class);
 
+    @Value("${smart-assistant-service.suitable-task-delay:5}")
+    private int findSuitableTaskDelay;
     private final SandboxServiceApi sandboxServiceApi;
     private final TrainingRunRepository trainingRunRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
@@ -192,7 +197,7 @@ public class TrainingRunService {
      * @return {@link AbstractPhase}
      * @throws EntityNotFoundException training run or phase is not found.
      */
-    public AbstractPhase getNextPhase(Long runId) {
+    public TrainingRun getNextPhase(Long runId) {
         TrainingRun trainingRun = findByIdWithPhase(runId);
         int currentPhaseOrder = trainingRun.getCurrentPhase().getOrder();
         int maxPhaseOrder = abstractPhaseRepository.getCurrentMaxOrder(trainingRun.getCurrentPhase().getTrainingDefinition().getId());
@@ -209,6 +214,7 @@ public class TrainingRunService {
             auditEventsService.auditPhaseCompletedAction(trainingRun);
         }
         if (nextPhase instanceof TrainingPhase) {
+            this.waitToPropagateEvents();
             AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
             int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput).getSuitableTask();
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask));
@@ -221,7 +227,15 @@ public class TrainingRunService {
         participantTaskAssignmentRepository.save(prepareDataForSankeyGraph(trainingRun, nextPhase));
         auditEventsService.auditPhaseStartedAction(trainingRun);
 
-        return nextPhase;
+        return trainingRun;
+    }
+
+    private void waitToPropagateEvents() {
+        try {
+            Thread.sleep(this.findSuitableTaskDelay * 1000);
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     private AdaptiveSmartAssistantInput gatherInputDataForSmartAssistant(TrainingRun trainingRun, TrainingPhase nextPhase, List<AbstractPhase> phases) {
@@ -232,12 +246,17 @@ public class TrainingRunService {
         adaptiveSmartAssistantInput.setPhaseIds(phases.stream()
                 .map(AbstractPhase::getId)
                 .collect(Collectors.toList()));
-        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(), nextPhase.getAllowedWrongAnswers()));
+        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(), nextPhase.getAllowedWrongAnswers(), phases));
         adaptiveSmartAssistantInput.setQuestionnaireCorrectlyAnswered(isQuestionnaireCorrectlyAnswered(nextPhase.getId(), trainingRun.getId()));
         return adaptiveSmartAssistantInput;
     }
 
-    private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands, int allowedWrongAnswers) {
+    private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands,
+                                                                                         int allowedWrongAnswers, List<AbstractPhase> phases) {
+        List<AbstractPhase> orderedTrainingPhases = phases.stream()
+                .filter(phase -> phase instanceof TrainingPhase)
+                .sorted(Comparator.comparing(AbstractPhase::getOrder))
+                .collect(Collectors.toList());
         return decisionMatrixRows.stream().map(row -> {
             DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
             decisionMatrixRowForAssistantDTO.setId(row.getId());
@@ -249,6 +268,7 @@ public class TrainingRunService {
             decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
             decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
             decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
+            decisionMatrixRowForAssistantDTO.setRelatedPhaseId(orderedTrainingPhases.get(row.getOrder()).getId());
             return decisionMatrixRowForAssistantDTO;
         }).collect(Collectors.toList());
     }

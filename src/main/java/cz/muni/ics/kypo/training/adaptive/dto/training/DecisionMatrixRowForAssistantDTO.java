@@ -24,6 +24,8 @@ public class DecisionMatrixRowForAssistantDTO {
     private double solutionDisplayed;
     @ApiModelProperty(value = "It determines how important the number of wrong answers are", required = true, example = "0.5")
     private double wrongAnswers;
+    @ApiModelProperty(value = "ID of phase (usually training phase) the decision matrix row is related to", required = true, example = "1")
+    private long relatedPhaseId;
     @ApiModelProperty(value = "Number of commands that are allowed to use in a training phase", example = "10")
     private long allowedCommands;
     @ApiModelProperty(value = "Number of wrong answers that are allowed in a training phase", example = "10")
@@ -83,6 +85,14 @@ public class DecisionMatrixRowForAssistantDTO {
 
     public void setWrongAnswers(double wrongAnswers) {
         this.wrongAnswers = wrongAnswers;
+    }
+
+    public long getRelatedPhaseId() {
+        return relatedPhaseId;
+    }
+
+    public void setRelatedPhaseId(long relatedPhaseId) {
+        this.relatedPhaseId = relatedPhaseId;
     }
 
     public long getAllowedCommands() {

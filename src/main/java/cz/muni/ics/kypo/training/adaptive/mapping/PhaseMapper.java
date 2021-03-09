@@ -1,9 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.mapping;
 
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
@@ -26,10 +23,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.NullValueCheckStrategy;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -97,7 +91,8 @@ public interface PhaseMapper extends ParentMapper {
     TrainingPhaseDTO mapToTrainingPhaseDTO(TrainingPhase entity);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
-    TrainingPhaseViewDTO mapToTrainingPhaseViewDTO(TrainingPhase entity);
+    @Mapping(source = "task", target = "task")
+    TrainingPhaseViewDTO mapToTrainingPhaseViewDTO(@Context TrainingPhase entity, Task task);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
     TrainingPhaseExportDTO mapToTrainingPhaseExportDTO(TrainingPhase entity);

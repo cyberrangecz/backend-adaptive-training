@@ -6,10 +6,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTrainee;
 import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTraineeOrAdmin;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
@@ -18,6 +15,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.*;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
+import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
@@ -25,6 +23,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.Actions;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.TaskMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
 import cz.muni.ics.kypo.training.adaptive.service.QuestionnaireEvaluationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
@@ -56,6 +55,7 @@ public class TrainingRunFacade {
     private final UserManagementServiceApi userManagementServiceApi;
     private final TrainingRunMapper trainingRunMapper;
     private final PhaseMapper phaseMapper;
+    private final TaskMapper taskMapper;
     private final QuestionnaireEvaluationService questionnaireEvaluationService;
 
     /**
@@ -70,12 +70,14 @@ public class TrainingRunFacade {
                              QuestionnaireEvaluationService questionnaireEvaluationService,
                              UserManagementServiceApi userManagementServiceApi,
                              TrainingRunMapper trainingRunMapper,
-                             PhaseMapper phaseMapper) {
+                             PhaseMapper phaseMapper,
+                             TaskMapper taskMapper) {
         this.trainingRunService = trainingRunService;
         this.questionnaireEvaluationService = questionnaireEvaluationService;
         this.userManagementServiceApi = userManagementServiceApi;
         this.trainingRunMapper = trainingRunMapper;
         this.phaseMapper = phaseMapper;
+        this.taskMapper = taskMapper;
     }
 
     /**
@@ -196,7 +198,7 @@ public class TrainingRunFacade {
     private AccessTrainingRunDTO convertToAccessTrainingRunDTO(TrainingRun trainingRun) {
         AccessTrainingRunDTO accessTrainingRunDTO = new AccessTrainingRunDTO();
         accessTrainingRunDTO.setTrainingRunID(trainingRun.getId());
-        accessTrainingRunDTO.setCurrentPhase(getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase()));
+        accessTrainingRunDTO.setCurrentPhase(getCorrectAbstractPhaseDTO(trainingRun));
         accessTrainingRunDTO.setShowStepperBar(trainingRun.getTrainingInstance().getTrainingDefinition().isShowStepperBar());
         accessTrainingRunDTO.setInfoAboutPhases(getInfoAboutPhases(trainingRun.getCurrentPhase().getTrainingDefinition().getId()));
         accessTrainingRunDTO.setSandboxInstanceRefId(trainingRun.getSandboxInstanceRefId());
@@ -265,8 +267,8 @@ public class TrainingRunFacade {
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
     public AbstractPhaseDTO getNextPhase(Long trainingRunId) {
-        AbstractPhase abstractPhase = trainingRunService.getNextPhase(trainingRunId);
-        return getCorrectAbstractPhaseDTO(abstractPhase);
+        TrainingRun trainingRun = trainingRunService.getNextPhase(trainingRunId);
+        return getCorrectAbstractPhaseDTO(trainingRun);
     }
 
     /**
@@ -403,13 +405,14 @@ public class TrainingRunFacade {
         }
     }
 
-    private AbstractPhaseDTO getCorrectAbstractPhaseDTO(AbstractPhase abstractPhase) {
-        if (abstractPhase instanceof QuestionnairePhase) {
-            return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) abstractPhase);
-        } else if (abstractPhase instanceof TrainingPhase) {
-            return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) abstractPhase);
+    private AbstractPhaseDTO getCorrectAbstractPhaseDTO(TrainingRun trainingRun) {
+        AbstractPhase currentPhase = trainingRun.getCurrentPhase();
+        if (currentPhase instanceof QuestionnairePhase) {
+            return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) currentPhase);
+        } else if (currentPhase instanceof TrainingPhase) {
+            return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) currentPhase, trainingRun.getCurrentTask());
         } else {
-            return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
+            return phaseMapper.mapToInfoPhaseDTO((InfoPhase) currentPhase);
         }
     }
 }

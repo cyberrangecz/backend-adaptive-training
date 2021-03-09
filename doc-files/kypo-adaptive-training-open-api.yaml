@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.21"
+  version: "Version: 1.0.22"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2981,6 +2981,18 @@ definitions:
           description: "Entity detail related to the error."
           $ref: "#/definitions/EntityErrorDetail"
       description: "A detailed error from another Java mircorservice."
+  LinkDTO:
+    type: "object"
+    properties:
+      source:
+        type: "integer"
+        format: "int32"
+      target:
+        type: "integer"
+        format: "int32"
+      value:
+        type: "integer"
+        format: "int64"
   NodeDTO:
     type: "object"
     properties:
@@ -2989,7 +3001,7 @@ definitions:
         format: "int64"
       taskOrder:
         type: "integer"
-        format: "int64"
+        format: "int32"
       taskTitle:
         type: "string"
       phaseId:
@@ -2997,7 +3009,7 @@ definitions:
         format: "int64"
       phaseOrder:
         type: "integer"
-        format: "int64"
+        format: "int32"
       phaseTitle:
         type: "string"
   Pageable:
@@ -3008,8 +3020,6 @@ definitions:
         format: "int64"
       sort:
         $ref: "#/definitions/Sort"
-      paged:
-        type: "boolean"
       unpaged:
         type: "boolean"
       pageNumber:
@@ -3018,6 +3028,8 @@ definitions:
       pageSize:
         type: "integer"
         format: "int32"
+      paged:
+        type: "boolean"
   Pagination:
     type: "object"
     properties:
@@ -3095,7 +3107,7 @@ definitions:
         description: "ID of answered question"
       answers:
         type: "array"
-        example: "An answer"
+        example: "[\"An answer\"]"
         description: "Answer to the question"
         uniqueItems: true
         items:
@@ -3496,6 +3508,11 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/NodeDTO"
+      links:
+        type: "array"
+        uniqueItems: true
+        items:
+          $ref: "#/definitions/LinkDTO"
   Sort:
     type: "object"
     properties:

@@ -59,7 +59,7 @@ public interface TrainingInstanceRepository extends JpaRepository<TrainingInstan
      * @return page of all {@link TrainingInstance}
      */
     @EntityGraph(
-            value = "TrainingInstance.findAllAuthorsOrganizersBetaTestingGroupBetaTestingGroupOrganizers",
+            value = "TrainingInstance.findAllAuthorsOrganizers",
             type = EntityGraph.EntityGraphType.FETCH
     )
     Page<TrainingInstance> findAll(Predicate predicate, Pageable pageable);

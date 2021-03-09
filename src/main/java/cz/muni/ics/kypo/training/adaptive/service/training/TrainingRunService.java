@@ -204,8 +204,7 @@ public class TrainingRunService {
             throw new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "There is no next phase for current training run (ID: " + runId + ")."));
         }
         List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingRun.getCurrentPhase().getTrainingDefinition().getId());
-        int nextPhaseIndex = phases.indexOf(trainingRun.getCurrentPhase()) + 1;
-        AbstractPhase nextPhase = phases.get(nextPhaseIndex);
+        AbstractPhase nextPhase = phases.get(currentPhaseOrder + 1);
         if (trainingRun.getCurrentPhase() instanceof InfoPhase) {
             auditEventsService.auditPhaseCompletedAction(trainingRun);
         }
@@ -229,7 +228,7 @@ public class TrainingRunService {
         AdaptiveSmartAssistantInput adaptiveSmartAssistantInput = new AdaptiveSmartAssistantInput();
         adaptiveSmartAssistantInput.setPhaseX(nextPhase.getId());
         adaptiveSmartAssistantInput.setTrainingRunId(trainingRun.getId());
-        adaptiveSmartAssistantInput.setPhaseXTasks(((TrainingPhase) nextPhase).getTasks().size());
+        adaptiveSmartAssistantInput.setPhaseXTasks(nextPhase.getTasks().size());
         adaptiveSmartAssistantInput.setPhaseIds(phases.stream()
                 .map(AbstractPhase::getId)
                 .collect(Collectors.toList()));

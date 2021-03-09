@@ -6,19 +6,24 @@ import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
+import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
+import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.TRAcquisitionLockRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseQuestionsFulfillmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
+import cz.muni.ics.kypo.training.adaptive.service.api.SmartAssistantServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
 import org.slf4j.Logger;
@@ -35,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The type Training run service.
@@ -48,9 +54,11 @@ public class TrainingRunService {
     private final TrainingRunRepository trainingRunRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final TrainingInstanceRepository trainingInstanceRepository;
+    private final TrainingPhaseQuestionsFulfillmentRepository trainingPhaseQuestionsFulfillmentRepository;
     private final UserRefRepository participantRefRepository;
     private final AuditEventsService auditEventsService;
     private final ElasticsearchServiceApi elasticsearchServiceApi;
+    private final SmartAssistantServiceApi smartAssistantServiceApi;
     private final UserManagementServiceApi userManagementServiceApi;
     private final TRAcquisitionLockRepository trAcquisitionLockRepository;
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
@@ -72,8 +80,10 @@ public class TrainingRunService {
                               AbstractPhaseRepository abstractPhaseRepository,
                               TrainingInstanceRepository trainingInstanceRepository,
                               UserRefRepository participantRefRepository,
+                              TrainingPhaseQuestionsFulfillmentRepository trainingPhaseQuestionsFulfillmentRepository,
                               AuditEventsService auditEventsService,
                               ElasticsearchServiceApi elasticsearchServiceApi,
+                              SmartAssistantServiceApi smartAssistantServiceApi,
                               UserManagementServiceApi userManagementServiceApi,
                               TRAcquisitionLockRepository trAcquisitionLockRepository,
                               ParticipantTaskAssignmentRepository participantTaskAssignmentRepository) {
@@ -82,8 +92,10 @@ public class TrainingRunService {
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.participantRefRepository = participantRefRepository;
+        this.trainingPhaseQuestionsFulfillmentRepository = trainingPhaseQuestionsFulfillmentRepository;
         this.auditEventsService = auditEventsService;
         this.elasticsearchServiceApi = elasticsearchServiceApi;
+        this.smartAssistantServiceApi = smartAssistantServiceApi;
         this.userManagementServiceApi = userManagementServiceApi;
         this.trAcquisitionLockRepository = trAcquisitionLockRepository;
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
@@ -192,14 +204,14 @@ public class TrainingRunService {
             throw new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "There is no next phase for current training run (ID: " + runId + ")."));
         }
         List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingRun.getCurrentPhase().getTrainingDefinition().getId());
-        int nextPhaseIndex = phases.indexOf(trainingRun.getCurrentPhase()) + 1;
-        AbstractPhase nextPhase = phases.get(nextPhaseIndex);
+        AbstractPhase nextPhase = phases.get(currentPhaseOrder + 1);
         if (trainingRun.getCurrentPhase() instanceof InfoPhase) {
             auditEventsService.auditPhaseCompletedAction(trainingRun);
         }
         if (nextPhase instanceof TrainingPhase) {
-            //TODO call the smart assistant
-            trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(0));
+            AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
+            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput).getSuitableTask();
+            trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask));
         } else {
             trainingRun.setCurrentTask(null);
         }
@@ -210,6 +222,42 @@ public class TrainingRunService {
         auditEventsService.auditPhaseStartedAction(trainingRun);
 
         return nextPhase;
+    }
+
+    private AdaptiveSmartAssistantInput gatherInputDataForSmartAssistant(TrainingRun trainingRun, TrainingPhase nextPhase, List<AbstractPhase> phases) {
+        AdaptiveSmartAssistantInput adaptiveSmartAssistantInput = new AdaptiveSmartAssistantInput();
+        adaptiveSmartAssistantInput.setPhaseX(nextPhase.getId());
+        adaptiveSmartAssistantInput.setTrainingRunId(trainingRun.getId());
+        adaptiveSmartAssistantInput.setPhaseXTasks(nextPhase.getTasks().size());
+        adaptiveSmartAssistantInput.setPhaseIds(phases.stream()
+                .map(AbstractPhase::getId)
+                .collect(Collectors.toList()));
+        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(), nextPhase.getAllowedWrongAnswers()));
+        adaptiveSmartAssistantInput.setQuestionnaireCorrectlyAnswered(isQuestionnaireCorrectlyAnswered(nextPhase.getId(), trainingRun.getId()));
+        return adaptiveSmartAssistantInput;
+    }
+
+    private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands, int allowedWrongAnswers) {
+        return decisionMatrixRows.stream().map(row -> {
+            DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
+            decisionMatrixRowForAssistantDTO.setId(row.getId());
+            decisionMatrixRowForAssistantDTO.setAllowedCommands(allowedCommands);
+            decisionMatrixRowForAssistantDTO.setAllowedWrongAnswers(allowedWrongAnswers);
+            decisionMatrixRowForAssistantDTO.setCompletedInTime(row.getCompletedInTime());
+            decisionMatrixRowForAssistantDTO.setKeywordUsed(row.getKeywordUsed());
+            decisionMatrixRowForAssistantDTO.setOrder(row.getOrder());
+            decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
+            decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
+            decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
+            return decisionMatrixRowForAssistantDTO;
+        }).collect(Collectors.toList());
+    }
+
+    private boolean isQuestionnaireCorrectlyAnswered(Long trainingPhaseId, Long trainingRunId) {
+        return this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhaseIdAndTrainingRunId(trainingPhaseId, trainingRunId)
+                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingPhaseQuestionsFulfillment.class,
+                        "Could not find if the questionnaire for phase (ID: " + trainingPhaseId + " ) and training run (ID: " + trainingRunId + ") hase been answered ")))
+                .isFulfilled();
     }
 
     private ParticipantTaskAssignment prepareDataForSankeyGraph(TrainingRun trainingRun, AbstractPhase nextPhase) {

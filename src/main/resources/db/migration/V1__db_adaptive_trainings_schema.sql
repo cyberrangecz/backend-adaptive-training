@@ -113,7 +113,7 @@ create table task (
 create table decision_matrix_row (
     decision_matrix_row_id bigserial not null,
     order_in_training_phase int4 not null,
-    assessment_answered double precision not null,
+    questionnaire_answered double precision not null,
     keyword_used double precision not null,
     completed_in_time double precision not null,
     solution_displayed double precision not null,

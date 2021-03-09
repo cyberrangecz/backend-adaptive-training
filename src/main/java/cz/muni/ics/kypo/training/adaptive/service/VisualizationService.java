@@ -19,8 +19,8 @@ public class VisualizationService {
 
     public SankeyGraphDTO getSankeyGraph(TrainingInstance trainingInstance) {
         SankeyGraphDTO sankeyGraphDTO = new SankeyGraphDTO();
-        List<NodeDTO> nodes = participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
-        sankeyGraphDTO.setNodes(nodes);
+        sankeyGraphDTO.setNodes(participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId()));
+        sankeyGraphDTO.setLinks(participantTaskAssignmentRepository.findAllTaskTransitions(trainingInstance.getTrainingDefinition().getId(), trainingInstance.getId()));
         return sankeyGraphDTO;
     }
 }

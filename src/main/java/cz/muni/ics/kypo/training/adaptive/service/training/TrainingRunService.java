@@ -232,7 +232,7 @@ public class TrainingRunService {
 
     private void waitToPropagateEvents() {
         try {
-            Thread.sleep(this.findSuitableTaskDelay * 1000);
+            TimeUnit.SECONDS.sleep(this.findSuitableTaskDelay);
         } catch(InterruptedException ex) {
             Thread.currentThread().interrupt();
         }

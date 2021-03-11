@@ -25,7 +25,7 @@ public class QuestionAnswer implements Serializable {
     @ElementCollection
     @CollectionTable(
             name = "question_answers",
-            joinColumns = {@JoinColumn(name = "training_run_id"), @JoinColumn(name = "question_id")}
+            joinColumns = {@JoinColumn(name = "question_id"), @JoinColumn(name = "training_run_id")}
     )
     @Column(name = "answer")
     private Set<String> answers = new HashSet<>();

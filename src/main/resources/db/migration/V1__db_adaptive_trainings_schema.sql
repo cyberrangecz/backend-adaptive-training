@@ -183,11 +183,8 @@ create table question_answers (
     question_id int8 not null,
     training_run_id int8 not null,
     answer varchar(255) not null,
-    primary key (question_id, training_run_id),
-    foreign key (question_id, training_run_id) references question_answer,
-    unique (question_id, training_run_id)
+    foreign key (question_id, training_run_id) references question_answer
 );
-
 
 create table questions_phase_relation_result (
     questions_phase_relation_result_id bigserial not null,

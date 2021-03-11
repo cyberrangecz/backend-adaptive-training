@@ -1,1 +1,1 @@
-1.0.22 Provide data for sankey diagram, call smart assistant for suitable task, fix DB schema, fix name of named entity graph.
+1.0.23 Save question answers bug fixed.

@@ -75,9 +75,7 @@ public class QuestionnaireEvaluationService {
             this.evaluateAnswersToAdaptiveQuestionnaire(trainingRun, storedQuestionsAnswers);
         }
         auditEventsService.auditPhaseCompletedAction(trainingRun);
-        auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.stream()
-                .collect(Collectors.toMap(questionAnswer -> questionAnswer.getQuestion().getText(), QuestionAnswer::getAnswers))
-                .toString());
+        auditEventsService.auditQuestionnaireAnswersAction(trainingRun, storedQuestionsAnswers.toString());
         trainingRun.setPhaseAnswered(true);
         return storedQuestionsAnswers;
     }

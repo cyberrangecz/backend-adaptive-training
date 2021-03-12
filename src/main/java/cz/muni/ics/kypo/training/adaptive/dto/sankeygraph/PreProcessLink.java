@@ -3,15 +3,52 @@ package cz.muni.ics.kypo.training.adaptive.dto.sankeygraph;
 import java.util.Objects;
 
 public class PreProcessLink {
-
+    private Integer source;
+    private Integer target;
     private Long sourceTaskId;
     private Long targetTaskId;
+    private Integer sourcePhaseOrder;
+    private Integer targetPhaseOrder;
     private Long value;
 
-    public PreProcessLink(Long sourceTaskId, Long targetTaskId, Long value) {
+    public PreProcessLink(Long sourceTaskId,
+                          Long targetTaskId,
+                          Long value,
+                          Integer sourcePhaseOrder,
+                          Integer targetPhaseOrder) {
         this.sourceTaskId = sourceTaskId;
         this.targetTaskId = targetTaskId;
         this.value = value;
+        this.sourcePhaseOrder = sourcePhaseOrder;
+        this.targetPhaseOrder = targetPhaseOrder;
+    }
+
+    public PreProcessLink(Integer source,
+                          Integer target,
+                          Long sourceTaskId,
+                          Long targetTaskId,
+                          Integer sourcePhaseOrder,
+                          Integer targetPhaseOrder,
+                          Long value) {
+        this(sourceTaskId, targetTaskId, value, sourcePhaseOrder, targetPhaseOrder);
+        this.source = source;
+        this.target = target;
+    }
+
+    public Integer getSource() {
+        return source;
+    }
+
+    public void setSource(Integer source) {
+        this.source = source;
+    }
+
+    public Integer getTarget() {
+        return target;
+    }
+
+    public void setTarget(Integer target) {
+        this.target = target;
     }
 
     public Long getSourceTaskId() {
@@ -38,6 +75,22 @@ public class PreProcessLink {
         this.value = value;
     }
 
+    public Integer getSourcePhaseOrder() {
+        return sourcePhaseOrder;
+    }
+
+    public void setSourcePhaseOrder(Integer sourcePhaseOrder) {
+        this.sourcePhaseOrder = sourcePhaseOrder;
+    }
+
+    public Integer getTargetPhaseOrder() {
+        return targetPhaseOrder;
+    }
+
+    public void setTargetPhaseOrder(Integer targetPhaseOrder) {
+        this.targetPhaseOrder = targetPhaseOrder;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -53,11 +106,16 @@ public class PreProcessLink {
         return Objects.hash(getSourceTaskId(), getTargetTaskId(), getValue());
     }
 
+
     @Override
     public String toString() {
         return "PreProcessLink{" +
-                "sourceTaskId=" + sourceTaskId +
+                "source=" + source +
+                ", target=" + target +
+                ", sourceTaskId=" + sourceTaskId +
                 ", targetTaskId=" + targetTaskId +
+                ", sourcePhaseOrder=" + sourcePhaseOrder +
+                ", targetPhaseOrder=" + targetPhaseOrder +
                 ", value=" + value +
                 '}';
     }

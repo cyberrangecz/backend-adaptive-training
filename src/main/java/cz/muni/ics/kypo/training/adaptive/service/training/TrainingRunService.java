@@ -197,7 +197,7 @@ public class TrainingRunService {
      * @return {@link AbstractPhase}
      * @throws EntityNotFoundException training run or phase is not found.
      */
-    public TrainingRun getNextPhase(Long runId) {
+    public TrainingRun moveToNextPhase(Long runId) {
         TrainingRun trainingRun = findByIdWithPhase(runId);
         int currentPhaseOrder = trainingRun.getCurrentPhase().getOrder();
         int maxPhaseOrder = abstractPhaseRepository.getCurrentMaxOrder(trainingRun.getCurrentPhase().getTrainingDefinition().getId());

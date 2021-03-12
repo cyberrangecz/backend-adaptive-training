@@ -1,7 +1,8 @@
-package cz.muni.ics.kypo.training.adaptive.persistence;
+package cz.muni.ics.kypo.training.adaptive.integration;
 
-import com.querydsl.core.Tuple;
-import cz.muni.ics.kypo.training.adaptive.config.PersistenceConfigTest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.muni.ics.kypo.training.adaptive.config.RestConfigTest;
+import cz.muni.ics.kypo.training.adaptive.controller.VisualizationRestController;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
@@ -11,43 +12,65 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
-import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
+import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
+import cz.muni.ics.kypo.training.adaptive.handler.CustomRestExceptionHandler;
+import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
+import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.data.querydsl.SimpleEntityPathResolver;
+import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.querydsl.QuerydslPredicateArgumentResolver;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import javax.persistence.EntityManager;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ContextConfiguration(classes = {
+        VisualizationRestController.class,
+        TestDataFactory.class,
+        VisualizationFacade.class,
+        VisualizationService.class,
+        TrainingInstanceService.class,
+        UserManagementServiceApi.class
+})
 @DataJpaTest
-@Import(PersistenceConfigTest.class)
-@ComponentScan(basePackages = "cz.muni.ics.kypo.training.adaptive.util")
-public class SankeyGraphDataTest {
+@Import(RestConfigTest.class)
+public class VisualizationIT {
+
+    private MockMvc mvc;
 
     @Autowired
-    private TestEntityManager entityManager;
+    private VisualizationRestController visualizationRestController;
     @Autowired
     private TestDataFactory testDataFactory;
     @Autowired
-    private ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
+    private EntityManager entityManager;
+    @Autowired
+    @Qualifier("objMapperRESTApi")
+    private ObjectMapper mapper;
 
     private TrainingDefinition trainingDefinition;
     private TrainingInstance trainingInstance;
@@ -63,16 +86,25 @@ public class SankeyGraphDataTest {
     private Task task21, task22, task23;
     private  Task task31, task32, task33;
 
-    private Pageable pageable;
-
     @SpringBootApplication
     static class TestConfiguration {
     }
 
     @BeforeEach
     public void init() {
+
+        MockitoAnnotations.initMocks(this);
+        this.mvc = MockMvcBuilders.standaloneSetup(visualizationRestController)
+                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
+                        new QuerydslPredicateArgumentResolver(
+                                new QuerydslBindingsFactory(SimpleEntityPathResolver.INSTANCE), Optional.empty()))
+                .setMessageConverters(new MappingJackson2HttpMessageConverter())
+                .setControllerAdvice(new CustomRestExceptionHandler())
+                .build();
+
         trainingDefinition = testDataFactory.getReleasedDefinition();
         trainingInstance = testDataFactory.getOngoingInstance();
+        trainingInstance.setTrainingDefinition(trainingDefinition);
 
         trainingPhase1 = testDataFactory.getTrainingPhase1();
         trainingPhase1.setTrainingDefinition(trainingDefinition);
@@ -116,25 +148,21 @@ public class SankeyGraphDataTest {
         trainingRun1.setParticipantRef(participant1);
         trainingRun1.setCurrentPhase(trainingPhase3);
         trainingRun1.setTrainingInstance(trainingInstance);
-        trainingRun1.setCurrentTask(task31);
 
         trainingRun2 = testDataFactory.getRunningRun();
         trainingRun2.setParticipantRef(participant2);
         trainingRun2.setCurrentPhase(trainingPhase3);
         trainingRun2.setTrainingInstance(trainingInstance);
-        trainingRun2.setCurrentTask(task33);
 
         trainingRun3 = testDataFactory.getRunningRun();
         trainingRun3.setParticipantRef(participant3);
         trainingRun3.setCurrentPhase(trainingPhase3);
         trainingRun3.setTrainingInstance(trainingInstance);
-        trainingRun3.setCurrentTask(task32);
 
         trainingRun4 = testDataFactory.getRunningRun();
         trainingRun4.setParticipantRef(participant4);
         trainingRun4.setCurrentPhase(trainingPhase3);
         trainingRun4.setTrainingInstance(trainingInstance);
-        trainingRun4.setCurrentTask(task33);
 
         participant1Task11 = getNewParticipantTaskAssignment(trainingPhase1, task11, trainingRun1);
         participant1Task22 = getNewParticipantTaskAssignment(trainingPhase2, task22, trainingRun1);
@@ -151,6 +179,12 @@ public class SankeyGraphDataTest {
         participant4Task12 = getNewParticipantTaskAssignment(trainingPhase1, task12, trainingRun4);
         participant4Task21 = getNewParticipantTaskAssignment(trainingPhase2, task21, trainingRun4);
         participant4Task31 = getNewParticipantTaskAssignment(trainingPhase3, task31, trainingRun4);
+
+        trainingRun1.setCurrentTask(participant1Task31.getTask());
+        trainingRun2.setCurrentTask(participant2Task33.getTask());
+        trainingRun3.setCurrentTask(participant3Task32.getTask());
+        trainingRun4.setCurrentTask(participant4Task31.getTask());
+
 
         entityManager.persist(trainingDefinition);
         entityManager.persist(trainingInstance);
@@ -195,61 +229,36 @@ public class SankeyGraphDataTest {
 
         entityManager.persist(participant4Task12);
         entityManager.persist(participant4Task21);
-        entityManager.persist(participant4Task31);
-
-        pageable = PageRequest.of(0, 10);
+        entityManager.persist(participant4Task31 );
     }
 
     @Test
-    public void testNodes() {
-        List<NodeDTO> nodes = this.participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
-        List<ParticipantTaskAssignment> assignments = this.participantTaskAssignmentRepository.findAllByTrainingRunTrainingInstanceId(trainingInstance.getId());
-        List<NodeDTO> sortedNodes = assignments.stream()
-                .sorted((assignment1, assignment2) -> {
-                    int result = assignment1.getAbstractPhase().getOrder().compareTo(assignment2.getAbstractPhase().getOrder());
-                    if (result == 0) {
-                        return assignment1.getTask().getOrder().compareTo(assignment2.getTask().getOrder());
-                    }
-                    return result;
-                })
-                .map(this::mapToNodeDTO)
-                .distinct()
-                .collect(Collectors.toList());
-        assertEquals(sortedNodes, nodes);
-    }
-
-    @Test
-    public void testLinks() {
-        List<PreProcessLink> links = this.participantTaskAssignmentRepository.findAllTaskTransitions(trainingDefinition.getId(), trainingInstance.getId());
-        List<PreProcessLink> expectedLinks = List.of(
-                new PreProcessLink(1,5, task11.getId(), task22.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
-                new PreProcessLink(2,4, task12.getId(), task21.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 2L),
-                new PreProcessLink(3,6, task13.getId(), task23.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
-                new PreProcessLink(4,7, task21.getId(), task31.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
-                new PreProcessLink(4,9, task21.getId(), task33.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
-                new PreProcessLink(5,7, task22.getId(), task31.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
-                new PreProcessLink(6,8, task23.getId(), task32.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L));
-        assertEquals(expectedLinks, links);
-    }
-
-    @Test
-    public void testNumberOfParticipantsInTasks() {
+    public void getDataForSankeyDiagram() throws Exception {
         trainingRun1.setState(TRState.FINISHED);
         entityManager.persist(trainingRun1);
-        Map<Long, Long> mapping = this.participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(trainingPhase3.getId());
-        assertEquals(2, mapping.size());
-        assertEquals(new HashMap<>(Map.of(task32.getId(),1L, task33.getId(), 2L)), mapping);
-    }
-
-    private NodeDTO mapToNodeDTO(ParticipantTaskAssignment participantTaskAssignment) {
-        NodeDTO nodeDTO = new NodeDTO();
-        nodeDTO.setTaskId(participantTaskAssignment.getTask().getId());
-        nodeDTO.setTaskOrder(participantTaskAssignment.getTask().getOrder());
-        nodeDTO.setTaskTitle(participantTaskAssignment.getTask().getTitle());
-        nodeDTO.setPhaseId(participantTaskAssignment.getAbstractPhase().getId());
-        nodeDTO.setPhaseOrder(participantTaskAssignment.getAbstractPhase().getOrder());
-        nodeDTO.setPhaseTitle(participantTaskAssignment.getAbstractPhase().getTitle());
-        return nodeDTO;
+        MockHttpServletResponse result =  mvc.perform(get("/visualizations/training-instances/{instanceId}/sankey", trainingInstance.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
+        NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
+        List<LinkDTO> linksFromStartToFirstPhase = List.of(
+                new LinkDTO(0, 1, 1L),
+                new LinkDTO(0, 2, 2L),
+                new LinkDTO(0, 3, 1L)
+        );
+        List<LinkDTO> linksFromLastPhaseToFinish = List.of(
+                new LinkDTO(7, 10, 1L),
+                new LinkDTO(8, 10, 0L),
+                new LinkDTO(9, 10, 0L)
+        );
+        assertTrue(sankeyData.getNodes().contains(startNode));
+        assertTrue(sankeyData.getNodes().contains(finishNode));
+        assertEquals(0, sankeyData.getNodes().indexOf(startNode));
+        assertEquals(10, sankeyData.getNodes().indexOf(finishNode));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromStartToFirstPhase));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromLastPhaseToFinish));
     }
 
     private ParticipantTaskAssignment getNewParticipantTaskAssignment(TrainingPhase trainingPhase, Task task, TrainingRun trainingRun) {

@@ -168,9 +168,9 @@ public class TestDataFactory {
     private Task task11 = generateTask("Task11", "Content of task11", 0, "answer11", 2, true, 20);
     private Task task12 = generateTask("Task12", "Content of task12", 1, "answer12", 5, false, 15);
     private Task task13 = generateTask("Task13", "Content of task13", 2, "answer13", 4, true, 10);
-    private Task task21 = generateTask("Task11", "Content of task21", 0, "answer21", 2, true, 35);
-    private Task task22 = generateTask("Task12", "Content of task22", 1, "answer22", 3, false, 22);
-    private Task task23 = generateTask("Task13", "Content of task23", 2, "answer23", 5, false, 50);
+    private Task task21 = generateTask("Task21", "Content of task21", 0, "answer21", 2, true, 35);
+    private Task task22 = generateTask("Task22", "Content of task22", 1, "answer22", 3, false, 22);
+    private Task task23 = generateTask("Task23", "Content of task23", 2, "answer23", 5, false, 50);
     private Task task31 = generateTask("Task31", "Content of task31", 0, "answer31", 9, true, 60);
     private Task task32 = generateTask("Task32", "Content of task32", 1, "answer32", 5, false, 40);
     private Task task33 = generateTask("Task33", "Content of task33", 2, "answer33", 3, true, 20);

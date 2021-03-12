@@ -76,7 +76,9 @@ public class NodeDTO {
         if (!(o instanceof NodeDTO)) return false;
         NodeDTO nodeDTO = (NodeDTO) o;
         return Objects.equals(getTaskId(), nodeDTO.getTaskId()) &&
-                Objects.equals(getPhaseId(), nodeDTO.getPhaseId());
+                Objects.equals(getTaskOrder(), nodeDTO.getTaskOrder()) &&
+                Objects.equals(getPhaseId(), nodeDTO.getPhaseId()) &&
+                Objects.equals(getPhaseOrder(), nodeDTO.getPhaseOrder());
     }
 
     @Override

@@ -1,6 +1,11 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Coalesce;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,12 +19,17 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.enums.TRState;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.querydsl.QuerydslUtils;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -45,7 +55,7 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
 
     @Override
     @Transactional
-    public Set<LinkDTO> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId) {
+    public List<PreProcessLink> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId) {
         Objects.requireNonNull(trainingInstanceId, "Input logged in user ID must not be null.");
         QParticipantTaskAssignment qParticipantTaskAssignment1 = new QParticipantTaskAssignment("participantTaskAssignment1");
         QTask task1 = new QTask("task1");
@@ -64,7 +74,7 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
         QTrainingDefinition trainingDefinition = new QTrainingDefinition("trainingDefinition");
 
         JPQLQuery<PreProcessLink> query = new JPAQueryFactory(entityManager)
-                .select(Projections.constructor(PreProcessLink.class, task1.id, task2.id, Wildcard.count))
+                .select(Projections.constructor(PreProcessLink.class, task1.id, task2.id, Wildcard.count, abstractPhase1.order, abstractPhase2.order))
                 .from(qParticipantTaskAssignment1)
                 .join(qParticipantTaskAssignment1.task, task1)
                 .join(qParticipantTaskAssignment1.abstractPhase, abstractPhase1)
@@ -93,10 +103,38 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
                 .stream()
                 .collect(Collectors.toMap(Function.identity(), taskId -> index.getAndIncrement()));
 
-        return query.fetch().stream()
-                .map(link -> new LinkDTO(taskOrderMap.get(link.getSourceTaskId()),
-                                         taskOrderMap.get(link.getTargetTaskId()),
-                                         link.getValue()))
-                .collect(Collectors.toSet());
+        List<PreProcessLink> result = query.fetch();
+        result.forEach(link -> {
+            link.setSource(taskOrderMap.get(link.getSourceTaskId()) + 1);
+            link.setTarget(taskOrderMap.get(link.getTargetTaskId()) + 1);
+        });
+        return result.stream().sorted((link1, link2) -> {
+            int cmp = link1.getSource().compareTo(link2.getSource());
+            if (cmp == 0) {
+                return link1.getTarget().compareTo(link2.getTarget());
+            }
+            return cmp;
+        }).collect(Collectors.toList());
+        }
+
+    @Override
+    @Transactional
+    public Map<Long, Long> findNumberOfParticipantsInTasksOfPhase(Long phaseId) {
+        Objects.requireNonNull(phaseId, "Input logged in user ID must not be null.");
+        QTask currentTask = new QTask("currentTask");
+        QTrainingPhase trainingPhase = new QTrainingPhase("trainingPhase");
+        QTrainingRun trainingRun = new QTrainingRun("trainingRun");
+
+        return new JPAQueryFactory(entityManager)
+                .select(currentTask.id, Wildcard.count)
+                .from(trainingRun)
+                .join(trainingRun.currentTask, currentTask)
+                .join(currentTask.trainingPhase, trainingPhase)
+                .where(trainingPhase.id.eq(phaseId)
+                        .and(trainingRun.state.eq(TRState.RUNNING)))
+                .groupBy(currentTask.id)
+                .fetch()
+                .stream().collect(Collectors.toMap(tuple -> tuple.get(0, Long.class),
+                                                   tuple -> tuple.get(1, Long.class) ));
     }
 }

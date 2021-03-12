@@ -1,8 +1,10 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -16,6 +18,8 @@ public interface ParticipantTaskAssignmentRepositoryCustom {
      * @param trainingInstanceId training instance id
      * @return the page of training definitions
      */
-    Set<LinkDTO> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId);
+    List<PreProcessLink> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId);
+
+    Map<Long, Long> findNumberOfParticipantsInTasksOfPhase(Long phaseId);
 
 }

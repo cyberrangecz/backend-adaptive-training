@@ -15,7 +15,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.*;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
-import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
@@ -198,7 +197,7 @@ public class TrainingRunFacade {
     private AccessTrainingRunDTO convertToAccessTrainingRunDTO(TrainingRun trainingRun) {
         AccessTrainingRunDTO accessTrainingRunDTO = new AccessTrainingRunDTO();
         accessTrainingRunDTO.setTrainingRunID(trainingRun.getId());
-        accessTrainingRunDTO.setCurrentPhase(getCorrectAbstractPhaseDTO(trainingRun));
+        accessTrainingRunDTO.setCurrentPhase(getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase(), trainingRun.getCurrentTask()));
         accessTrainingRunDTO.setShowStepperBar(trainingRun.getTrainingInstance().getTrainingDefinition().isShowStepperBar());
         accessTrainingRunDTO.setInfoAboutPhases(getInfoAboutPhases(trainingRun.getCurrentPhase().getTrainingDefinition().getId()));
         accessTrainingRunDTO.setSandboxInstanceRefId(trainingRun.getSandboxInstanceRefId());
@@ -267,8 +266,8 @@ public class TrainingRunFacade {
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
     public AbstractPhaseDTO getNextPhase(Long trainingRunId) {
-        TrainingRun trainingRun = trainingRunService.getNextPhase(trainingRunId);
-        return getCorrectAbstractPhaseDTO(trainingRun);
+        TrainingRun trainingRun = trainingRunService.moveToNextPhase(trainingRunId);
+        return getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase(), trainingRun.getCurrentTask());
     }
 
     /**
@@ -405,14 +404,13 @@ public class TrainingRunFacade {
         }
     }
 
-    private AbstractPhaseDTO getCorrectAbstractPhaseDTO(TrainingRun trainingRun) {
-        AbstractPhase currentPhase = trainingRun.getCurrentPhase();
-        if (currentPhase instanceof QuestionnairePhase) {
-            return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) currentPhase);
-        } else if (currentPhase instanceof TrainingPhase) {
-            return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) currentPhase, trainingRun.getCurrentTask());
+    private AbstractPhaseDTO getCorrectAbstractPhaseDTO(AbstractPhase abstractPhase, Task task) {
+        if (abstractPhase instanceof QuestionnairePhase) {
+            return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) abstractPhase);
+        } else if (abstractPhase instanceof TrainingPhase) {
+            return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) abstractPhase, task);
         } else {
-            return phaseMapper.mapToInfoPhaseDTO((InfoPhase) currentPhase);
+            return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
         }
     }
 }

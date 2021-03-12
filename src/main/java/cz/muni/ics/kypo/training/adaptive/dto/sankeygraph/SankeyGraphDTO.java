@@ -8,7 +8,7 @@ import java.util.Set;
 public class SankeyGraphDTO {
 
     private List<NodeDTO> nodes = new ArrayList<>();
-    private Set<LinkDTO> links = new HashSet<>();
+    private List<LinkDTO> links = new ArrayList<>();
 
     public SankeyGraphDTO() {
     }
@@ -21,11 +21,11 @@ public class SankeyGraphDTO {
         return nodes;
     }
 
-    public Set<LinkDTO> getLinks() {
+    public List<LinkDTO> getLinks() {
         return links;
     }
 
-    public void setLinks(Set<LinkDTO> links) {
+    public void setLinks(List<LinkDTO> links) {
         this.links = links;
     }
 

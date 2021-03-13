@@ -13,6 +13,8 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
@@ -20,18 +22,23 @@ import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.LockedPoolInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PoolInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxPoolInfo;
-import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.*;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionCreateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionInfoDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.traininginstance.TrainingInstanceCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.traininginstance.TrainingInstanceDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.traininginstance.TrainingInstanceUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
@@ -40,9 +47,15 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Set;
 
 @Component
 public class TestDataFactory {
+
+    public static final String CORRECT_QUESTION_CHOICE = "Correct answer";
+    public static final String WRONG_QUESTION_CHOICE = "Wrong answer";
+    public static final String ANOTHER_CORRECT_QUESTION_CHOICE = "Another correct answer";
 
     private SimpleModule simpleModule = new SimpleModule("SimpleModule").addSerializer(new LocalDateTimeUTCSerializer());
     private ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule())
@@ -52,6 +65,14 @@ public class TestDataFactory {
 
     private QuestionnairePhase general = generateQuestionnairePhase("Test", 50, QuestionnaireType.GENERAL);
     private QuestionnairePhase adaptive = generateQuestionnairePhase("Questionnaire", 0, QuestionnaireType.ADAPTIVE);
+
+    private Question freeFormQuestion = generateQuestion("Free form question", 0, QuestionType.FFQ);
+    private Question multipleChoiceQuestion = generateQuestion("Multiple choice question", 1, QuestionType.MCQ);
+    private Question ratingFormQuestion = generateQuestion("Rating form question", 0, QuestionType.RFQ);
+
+    private QuestionChoice correctQuestionChoice = generateQuestionChoice(CORRECT_QUESTION_CHOICE, 0, true);
+    private QuestionChoice incorrectQuestionChoice = generateQuestionChoice(WRONG_QUESTION_CHOICE, 1, false);
+    private QuestionChoice anotherCorrectQuestionChoice = generateQuestionChoice(ANOTHER_CORRECT_QUESTION_CHOICE, 2, true);
 
     private TrainingPhase trainingPhase1 = generateTrainingPhase("First Game Level", 100, 0, 3, 5);
     private TrainingPhase trainingPhase2 = generateTrainingPhase("Second Game Level", 100, 1, 3, 5);
@@ -153,6 +174,48 @@ public class TestDataFactory {
 
     public QuestionnairePhase getAdaptive(){
         return clone(adaptive, QuestionnairePhase.class);
+    }
+
+    public Question getFreeFormQuestion() {
+        return clone(freeFormQuestion, Question.class);
+    }
+
+    public Question getMultipleChoiceQuestion() {
+        return clone(multipleChoiceQuestion, Question.class);
+    }
+
+    public Question getRatingFormQuestion() {
+        return clone(ratingFormQuestion, Question.class);
+    }
+
+    public QuestionChoice getCorrectQuestionChoice() {
+        return clone(correctQuestionChoice, QuestionChoice.class);
+    }
+
+    public QuestionChoice getIncorrectQuestionChoice() {
+        return clone(incorrectQuestionChoice, QuestionChoice.class);
+    }
+
+    public QuestionChoice getAnotherCorrectQuestionChoice() {
+        return clone(anotherCorrectQuestionChoice, QuestionChoice.class);
+    }
+
+    public QuestionAnswerDTO getCorrectAnswer() {
+        QuestionAnswerDTO questionAnswerDTO = new QuestionAnswerDTO();
+        questionAnswerDTO.setAnswers(Set.of(CORRECT_QUESTION_CHOICE));
+        return questionAnswerDTO;
+    }
+
+    public QuestionAnswerDTO getWrongAnswer() {
+        QuestionAnswerDTO questionAnswerDTO = new QuestionAnswerDTO();
+        questionAnswerDTO.setAnswers(Set.of(WRONG_QUESTION_CHOICE));
+        return questionAnswerDTO;
+    }
+
+    public QuestionAnswerDTO getEmptyAnswer() {
+        QuestionAnswerDTO questionAnswerDTO = new QuestionAnswerDTO();
+        questionAnswerDTO.setAnswers(Collections.emptySet());
+        return questionAnswerDTO;
     }
 
     public TrainingPhase getTrainingPhase1(){
@@ -347,6 +410,22 @@ public class TestDataFactory {
         newInfoPhase.setOrder(order);
         newInfoPhase.setContent(content);
         return newInfoPhase;
+    }
+
+    private Question generateQuestion(String text, int order, QuestionType questionType) {
+        Question newQuestion = new Question();
+        newQuestion.setText(text);
+        newQuestion.setOrder(order);
+        newQuestion.setQuestionType(questionType);
+        return newQuestion;
+    }
+
+    private QuestionChoice generateQuestionChoice(String text, int order, boolean correct) {
+        QuestionChoice newQuestionChoice = new QuestionChoice();
+        newQuestionChoice.setText(text);
+        newQuestionChoice.setOrder(order);
+        newQuestionChoice.setCorrect(correct);
+        return newQuestionChoice;
     }
 
     private AccessToken generateAccessToken(String accessToken){

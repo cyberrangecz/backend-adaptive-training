@@ -1,1 +1,1 @@
-1.0.24 Improve callings to another services.
+1.0.25 Fix bugs in questionnaire evaluations.

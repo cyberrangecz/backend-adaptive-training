@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TrainingPhaseRepository extends JpaRepository<TrainingPhase, Long> , QuerydslPredicateExecutor<TrainingPhase> {
@@ -19,4 +20,6 @@ public interface TrainingPhaseRepository extends JpaRepository<TrainingPhase, Lo
     int getNumberOfExistingPhases(@Param("trainingDefinitionId") Long trainingDefinitionId);
 
     List<TrainingPhase> findAllByTrainingDefinitionIdOrderByOrder(Long trainingDefinitionId);
+
+    Optional<TrainingPhase> findByTrainingDefinitionIdAndOrder(Long trainingDefinitionId, Integer trainingPhaseOrder);
 }

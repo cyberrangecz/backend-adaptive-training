@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.repository.phases;
 
-import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,6 +13,6 @@ import java.util.Set;
 @Repository
 public interface QuestionPhaseRelationRepository extends JpaRepository<QuestionPhaseRelation, Long>, QuerydslPredicateExecutor<QuestionPhaseRelation> {
 
-    @Query("SELECT r FROM QuestionPhaseRelation r INNER JOIN r.questions q WHERE q.id IN :questionIdList")
+    @Query("SELECT DISTINCT r FROM QuestionPhaseRelation r INNER JOIN r.questions q WHERE q.id IN :questionIdList")
     List<QuestionPhaseRelation> findAllByQuestionIdList(@Param("questionIdList") Set<Long> questionIdList);
 }

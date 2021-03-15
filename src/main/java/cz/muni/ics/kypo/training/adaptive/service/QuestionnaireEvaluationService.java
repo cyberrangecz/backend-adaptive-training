@@ -2,8 +2,15 @@ package cz.muni.ics.kypo.training.adaptive.service;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.*;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswerId;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionsPhaseRelationResult;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
@@ -22,7 +29,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,7 +131,7 @@ public class QuestionnaireEvaluationService {
 
             double achievedResult = evaluateQuestionPhaseRelation(questionPhaseRelation, questionAnswers);
             boolean trainingPhaseQuestionsFulfilled = trainingPhaseQuestionsFulfilledMap.getOrDefault(relatedTrainingPhase.getId(), true);
-            trainingPhaseQuestionsFulfilledMap.put(questionPhaseRelation.getRelatedTrainingPhase().getId(), trainingPhaseQuestionsFulfilled && questionPhaseRelation.getSuccessRate() < (achievedResult * 100));
+            trainingPhaseQuestionsFulfilledMap.put(questionPhaseRelation.getRelatedTrainingPhase().getId(), trainingPhaseQuestionsFulfilled && questionPhaseRelation.getSuccessRate() <= (achievedResult * 100));
             storeQuestionsPhaseRelationResult(questionPhaseRelation, trainingRun, achievedResult);
 
         }
@@ -171,7 +184,14 @@ public class QuestionnaireEvaluationService {
         int numberOfCorrectAnswers = (int) question.getChoices().stream()
                 .filter(questionChoice -> answers.contains(questionChoice.getText()) && questionChoice.isCorrect())
                 .count();
-        return numberOfCorrectAnswers == answers.size();
+        if (QuestionType.MCQ.equals(question.getQuestionType())) {
+            int numberOfCorrectMCQChoices = (int) question.getChoices().stream()
+                    .filter(QuestionChoice::isCorrect)
+                    .count();
+            return numberOfCorrectMCQChoices == numberOfCorrectAnswers && numberOfCorrectAnswers == answers.size();
+        } else {
+            return numberOfCorrectAnswers == answers.size() && numberOfCorrectAnswers > 0;
+        }
     }
 
     private TrainingRun findByIdWithPhase(Long runId) {

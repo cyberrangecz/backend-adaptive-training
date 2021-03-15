@@ -7,9 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.connector.Request;
-import org.apache.http.HttpHost;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 @Configuration
-@ComponentScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.mapping"})
+@ComponentScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.mapping", "cz.muni.ics.kypo.training.adaptive.facade", "cz.muni.ics.kypo.training.adaptive.service"})
 @EntityScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.domain"},  basePackageClasses = Jsr310JpaConverters.class)
 @EnableJpaRepositories(basePackages = {"cz.muni.ics.kypo.training.adaptive.repository"})
 public class RestConfigTest {
@@ -95,6 +93,16 @@ public class RestConfigTest {
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		return mapper;
+	}
+
+	@Bean
+	@Qualifier("objMapperForElasticsearch")
+	public ObjectMapper elasticsearchObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+		objectMapper.registerModule(new JavaTimeModule());
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		return objectMapper;
 	}
 
 	@Bean

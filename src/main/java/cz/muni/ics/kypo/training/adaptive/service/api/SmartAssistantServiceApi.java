@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -50,12 +51,10 @@ public class SmartAssistantServiceApi {
             return smartAssistantServiceWebClient
                     .post()
                     .uri("/adaptive-phases")
-                    .body(Mono.just(objectMapper.writeValueAsString(smartAssistantInput)), String.class)
+                    .body(Mono.just(smartAssistantInput), AdaptiveSmartAssistantInput.class)
                     .retrieve()
                     .bodyToMono(SuitableTaskResponse.class)
                     .block();
-        } catch (IOException ex) {
-            throw new SecurityException("Error while parsing roles for microservices", ex);
         } catch (CustomWebClientException ex) {
             throw new MicroserviceApiException("Error when calling Smart Assistant Service API to obtain suitable task for phase (ID: " + smartAssistantInput.getPhaseX() + ")", ex.getApiSubError());
         }

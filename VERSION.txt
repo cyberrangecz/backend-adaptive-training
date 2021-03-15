@@ -1,1 +1,1 @@
-1.0.25 Fix bugs in questionnaire evaluations.
+1.0.26 Fix web client call to the smart-assistant service.

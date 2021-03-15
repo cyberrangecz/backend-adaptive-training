@@ -6,6 +6,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
@@ -14,10 +15,9 @@ import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
-import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.TRAcquisitionLockRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.*;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseQuestionsFulfillmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
@@ -67,6 +67,8 @@ public class TrainingRunService {
     private final UserManagementServiceApi userManagementServiceApi;
     private final TRAcquisitionLockRepository trAcquisitionLockRepository;
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
+    private final QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository;
+    private final QuestionAnswerRepository questionAnswerRepository;
 
     /**
      * Instantiates a new Training run service.
@@ -91,7 +93,9 @@ public class TrainingRunService {
                               SmartAssistantServiceApi smartAssistantServiceApi,
                               UserManagementServiceApi userManagementServiceApi,
                               TRAcquisitionLockRepository trAcquisitionLockRepository,
-                              ParticipantTaskAssignmentRepository participantTaskAssignmentRepository) {
+                              ParticipantTaskAssignmentRepository participantTaskAssignmentRepository,
+                              QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository,
+                              QuestionAnswerRepository questionAnswerRepository) {
         this.sandboxServiceApi = sandboxServiceApi;
         this.trainingRunRepository = trainingRunRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
@@ -104,6 +108,8 @@ public class TrainingRunService {
         this.userManagementServiceApi = userManagementServiceApi;
         this.trAcquisitionLockRepository = trAcquisitionLockRepository;
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
+        this.questionsPhaseRelationResultRepository = questionsPhaseRelationResultRepository;
+        this.questionAnswerRepository = questionAnswerRepository;
     }
 
     /**
@@ -156,6 +162,10 @@ public class TrainingRunService {
         }
         elasticsearchServiceApi.deleteEventsFromTrainingRun(trainingRun.getTrainingInstance().getId(), trainingRunId);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
+        questionAnswerRepository.deleteAllByTrainingRunId(trainingRunId);
+        questionsPhaseRelationResultRepository.deleteAllByTrainingRunId(trainingRunId);
+        trainingPhaseQuestionsFulfillmentRepository.deleteAllByTrainingRunId(trainingRunId);
+        participantTaskAssignmentRepository.deleteAllByTrainingRunId(trainingRunId);
         trainingRunRepository.delete(trainingRun);
     }
 

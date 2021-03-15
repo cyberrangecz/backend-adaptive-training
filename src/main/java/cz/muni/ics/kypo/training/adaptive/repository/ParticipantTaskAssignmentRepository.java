@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.repository;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
@@ -24,4 +25,7 @@ public interface ParticipantTaskAssignmentRepository extends
     List<NodeDTO> findAllVisitedTasks(@Param("trainingInstanceId") Long trainingInstanceId);
 
     List<ParticipantTaskAssignment> findAllByTrainingRunTrainingInstanceId(Long trainingInstanceId);
+
+    @Modifying
+    void deleteAllByTrainingRunId(Long trainingRunId);
 }

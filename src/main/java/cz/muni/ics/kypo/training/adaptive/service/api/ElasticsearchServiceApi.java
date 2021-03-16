@@ -41,7 +41,7 @@ public class ElasticsearchServiceApi {
         try {
             elasticsearchServiceWebClient
                     .delete()
-                    .uri("/training-platform-events/training-instances/{instanceId}", trainingInstanceId)
+                    .uri("/adaptive-training-platform-events/training-instances/{instanceId}", trainingInstanceId)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();
@@ -63,7 +63,7 @@ public class ElasticsearchServiceApi {
             Long instanceId = trainingRun.getTrainingInstance().getId();
             return elasticsearchServiceWebClient
                     .get()
-                    .uri("/training-platform-events/training-definitions/{definitionId}/training-instances/{instanceId}/training-runs/{runId}", definitionId, instanceId, trainingRun.getId())
+                    .uri("/adaptive-training-platform-events/training-definitions/{definitionId}/training-instances/{instanceId}/training-runs/{runId}", definitionId, instanceId, trainingRun.getId())
                     .retrieve()
                     .bodyToMono(new ParameterizedTypeReference<List<Map<String, Object>>>() {
                     })
@@ -84,7 +84,7 @@ public class ElasticsearchServiceApi {
         try {
             elasticsearchServiceWebClient
                     .delete()
-                    .uri("/training-platform-events/training-instances/{instanceId}/training-runs/{runId}", trainingInstanceId, trainingRunId)
+                    .uri("/adaptive-training-platform-events/training-instances/{instanceId}/training-runs/{runId}", trainingInstanceId, trainingRunId)
                     .retrieve()
                     .bodyToMono(Void.class)
                     .block();

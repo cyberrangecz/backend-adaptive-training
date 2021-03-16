@@ -6,18 +6,17 @@ import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
 import cz.muni.ics.kypo.training.adaptive.repository.*;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseQuestionsFulfillmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
@@ -226,8 +225,9 @@ public class TrainingRunService {
         if (nextPhase instanceof TrainingPhase) {
             this.waitToPropagateEvents();
             AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
+            // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
             int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput).getSuitableTask();
-            trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask));
+            trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
             trainingRun.setCurrentTask(null);
         }
@@ -264,7 +264,7 @@ public class TrainingRunService {
     private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands,
                                                                                          int allowedWrongAnswers, List<AbstractPhase> phases) {
         List<AbstractPhase> orderedTrainingPhases = phases.stream()
-                .filter(phase -> phase instanceof TrainingPhase)
+                .filter(phase -> phase instanceof TrainingPhase || (phase instanceof QuestionnairePhase && ((QuestionnairePhase) phase).getQuestionnaireType() == QuestionnaireType.ADAPTIVE))
                 .sorted(Comparator.comparing(AbstractPhase::getOrder))
                 .collect(Collectors.toList());
         return decisionMatrixRows.stream().map(row -> {

@@ -20,9 +20,9 @@ public class QuestionPhaseRelationImportDTO {
     @Min(value = 0, message = "{questionnairePhaseRelation.order.Min.message}")
     private Integer order;
     @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1", position = 1)
-    @NotNull(message = "{questionnairePhaseRelation.phaseId.NotNull.message}")
-    @Min(value = 0, message = "{questionnairePhaseRelation.phaseId.Min.message}")
-    private Long phaseId;
+    @NotNull(message = "{questionnairePhaseRelation.phaseOrder.NotNull.message}")
+    @Min(value = 0, message = "{questionnairePhaseRelation.phaseOrder.Min.message}")
+    private Integer phaseOrder;
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50", position = 2)
     @Min(value = 0, message = "{questionnairePhaseRelation.successRate.Min.message}")
     @Max(value = 100, message = "{questionnairePhaseRelation.successRate.Max.message}")
@@ -30,7 +30,7 @@ public class QuestionPhaseRelationImportDTO {
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire", position = 3)
     @NotNull(message = "{questionnairePhaseRelation.questionIds.NotNull.message}")
     @Size(min = 1, message = "{questionnairePhaseRelation.questionIds.Size.message}")
-    private Set<Long> questionIds;
+    private Set<Integer> questionOrders;
 
     public Integer getOrder() {
         return order;
@@ -40,20 +40,20 @@ public class QuestionPhaseRelationImportDTO {
         this.order = order;
     }
 
-    public Set<Long> getQuestionIds() {
-        return questionIds;
+    public Set<Integer> getQuestionOrders() {
+        return questionOrders;
     }
 
-    public void setQuestionIds(Set<Long> questionIds) {
-        this.questionIds = questionIds;
+    public void setQuestionOrders(Set<Integer> questionOrders) {
+        this.questionOrders = questionOrders;
     }
 
-    public Long getPhaseId() {
-        return phaseId;
+    public Integer getPhaseOrder() {
+        return phaseOrder;
     }
 
-    public void setPhaseId(Long phaseId) {
-        this.phaseId = phaseId;
+    public void setPhaseOrder(Integer phaseOrder) {
+        this.phaseOrder = phaseOrder;
     }
 
     public int getSuccessRate() {
@@ -71,21 +71,21 @@ public class QuestionPhaseRelationImportDTO {
         QuestionPhaseRelationImportDTO that = (QuestionPhaseRelationImportDTO) o;
         return getSuccessRate() == that.getSuccessRate() &&
                 getOrder().equals(that.getOrder()) &&
-                getQuestionIds().equals(that.getQuestionIds()) &&
-                getPhaseId().equals(that.getPhaseId());
+                getQuestionOrders().equals(that.getQuestionOrders()) &&
+                getPhaseOrder().equals(that.getPhaseOrder());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrder(), getQuestionIds(), getPhaseId(), getSuccessRate());
+        return Objects.hash(getOrder(), getQuestionOrders(), getPhaseOrder(), getSuccessRate());
     }
 
     @Override
     public String toString() {
         return "QuestionPhaseRelationImportDTO{" +
                 "order=" + order +
-                ", questionIds=" + questionIds +
-                ", phaseId=" + phaseId +
+                ", questionOrders=" + questionOrders +
+                ", phaseOrder=" + phaseOrder +
                 ", successRate=" + successRate +
                 '}';
     }

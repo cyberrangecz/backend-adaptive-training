@@ -69,7 +69,7 @@ public class TrainingPhaseViewDTO extends AbstractPhaseDTO {
                 "estimatedDuration=" + estimatedDuration +
                 ", allowedCommands=" + allowedCommands +
                 ", allowedWrongAnswers=" + allowedWrongAnswers +
-                ", tasks=" + task +
+                ", task=" + task +
                 "} " + super.toString();
     }
 }

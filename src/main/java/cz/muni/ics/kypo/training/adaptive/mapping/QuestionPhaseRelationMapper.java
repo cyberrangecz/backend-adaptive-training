@@ -32,8 +32,8 @@ public interface QuestionPhaseRelationMapper extends ParentMapper {
     @Mapping(target = "questionIds", source = "questions")
     QuestionPhaseRelationDTO mapToQuestionPhaseRelationDTO(QuestionPhaseRelation entity);
 
-    @Mapping(target = "phaseId", source = "relatedTrainingPhase")
-    @Mapping(target = "questionIds", source = "questions")
+    @Mapping(target = "phaseOrder", source = "relatedTrainingPhase")
+    @Mapping(target = "questionOrders", source = "questions")
     QuestionPhaseRelationExportDTO mapToQuestionPhaseRelationExportDTO(QuestionPhaseRelation entity);
 
     @Mapping(target = "phaseId", source = "relatedTrainingPhase")
@@ -56,11 +56,27 @@ public interface QuestionPhaseRelationMapper extends ParentMapper {
         }
     }
 
+    default Integer mapTrainingPhaseOrder(TrainingPhase trainingPhase) {
+        if (trainingPhase == null) {
+            return null;
+        } else {
+            return trainingPhase.getOrder();
+        }
+    }
+
     default Long mapQuestionId(Question question) {
         if (question == null) {
             return null;
         } else {
             return question.getId();
+        }
+    }
+
+    default Integer mapQuestionOrder(Question question) {
+        if (question == null) {
+            return null;
+        } else {
+            return question.getOrder();
         }
     }
 }

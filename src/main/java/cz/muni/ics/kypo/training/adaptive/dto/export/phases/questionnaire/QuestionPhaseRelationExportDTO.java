@@ -13,9 +13,9 @@ public class QuestionPhaseRelationExportDTO {
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     private Integer order;
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire")
-    private Set<Long> questionIds;
+    private Set<Integer> questionOrders;
     @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1")
-    private Long phaseId;
+    private Integer phaseOrder;
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50")
     private int successRate;
 
@@ -27,20 +27,20 @@ public class QuestionPhaseRelationExportDTO {
         this.order = order;
     }
 
-    public Set<Long> getQuestionIds() {
-        return questionIds;
+    public Set<Integer> getQuestionOrders() {
+        return questionOrders;
     }
 
-    public void setQuestionIds(Set<Long> questionIds) {
-        this.questionIds = questionIds;
+    public void setQuestionOrders(Set<Integer> questionOrders) {
+        this.questionOrders = questionOrders;
     }
 
-    public Long getPhaseId() {
-        return phaseId;
+    public Integer getPhaseOrder() {
+        return phaseOrder;
     }
 
-    public void setPhaseId(Long phaseId) {
-        this.phaseId = phaseId;
+    public void setPhaseOrder(Integer phaseOrder) {
+        this.phaseOrder = phaseOrder;
     }
 
     public int getSuccessRate() {
@@ -58,21 +58,21 @@ public class QuestionPhaseRelationExportDTO {
         QuestionPhaseRelationExportDTO that = (QuestionPhaseRelationExportDTO) o;
         return getSuccessRate() == that.getSuccessRate() &&
                 Objects.equals(getOrder(), that.getOrder()) &&
-                Objects.equals(getQuestionIds(), that.getQuestionIds()) &&
-                Objects.equals(getPhaseId(), that.getPhaseId());
+                Objects.equals(getQuestionOrders(), that.getQuestionOrders()) &&
+                Objects.equals(getPhaseOrder(), that.getPhaseOrder());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getOrder(), getQuestionIds(), getPhaseId(), getSuccessRate());
+        return Objects.hash(getOrder(), getQuestionOrders(), getPhaseOrder(), getSuccessRate());
     }
 
     @Override
     public String toString() {
         return "QuestionPhaseRelationExportDTO{" +
                 "order=" + order +
-                ", questionIds=" + questionIds +
-                ", phaseId=" + phaseId +
+                ", questionOrders=" + questionOrders +
+                ", phaseOrder=" + phaseOrder +
                 ", successRate=" + successRate +
                 '}';
     }

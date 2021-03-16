@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The type Export import service.
@@ -83,7 +84,7 @@ public class ExportImportService {
      * @param definition the {@link TrainingDefinition} to associate phase with.
      */
     public TrainingPhase createTrainingPhase(TrainingPhase phase, TrainingDefinition definition) {
-        phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
+        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         phase.getTasks().forEach(task -> task.setTrainingPhase(phase));
         phase.getDecisionMatrix().forEach(decisionMatrixRow -> decisionMatrixRow.setTrainingPhase(phase));
@@ -91,7 +92,7 @@ public class ExportImportService {
     }
 
     public QuestionnairePhase createQuestionnairePhase(QuestionnairePhase phase, TrainingDefinition definition) {
-        phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
+        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         phase.getQuestions().forEach(question -> {
             question.setQuestionnairePhase(phase);
@@ -102,16 +103,18 @@ public class ExportImportService {
 
     public void createQuestionPhaseRelationPhase(QuestionPhaseRelation questionPhaseRelation,
                                                  QuestionnairePhase questionnairePhase,
-                                                 Long relatedTrainingPhaseId,
-                                                 Set<Long> questionIds) {
+                                                 Integer relatedTrainingPhaseOrder,
+                                                 Set<Integer> questionOrders) {
         questionPhaseRelation.setQuestionnairePhase(questionnairePhase);
-        questionPhaseRelation.setRelatedTrainingPhase(findTrainingPhaseById(relatedTrainingPhaseId));
-        questionPhaseRelation.setQuestions(new HashSet<>(questionRepository.findAllById(questionIds)));
+        questionPhaseRelation.setRelatedTrainingPhase(findTrainingPhaseByDefinitionIdAndOrder(questionnairePhase.getTrainingDefinition().getId(), relatedTrainingPhaseOrder));
+        questionPhaseRelation.setQuestions(questionnairePhase.getQuestions().stream()
+                .filter(question -> questionOrders.contains(question.getOrder()))
+                .collect(Collectors.toSet()));
         questionPhaseRelationRepository.save(questionPhaseRelation);
     }
 
     public InfoPhase createInfoPhase(InfoPhase phase, TrainingDefinition definition) {
-        phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
+        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         return abstractPhaseRepository.save(phase);
     }
@@ -140,6 +143,20 @@ public class ExportImportService {
         return trainingPhaseRepository.findById(trainingPhaseId)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingPhase.class, "id", trainingPhaseId.getClass(),
                         trainingPhaseId)));
+    }
+
+    /**
+     * Finds training phase with given id.
+     *
+     * @param trainingDefinitionId the id of the training definition that is associated with training phase.
+     * @param trainingPhaseOrder the order of the training phase.
+     * @return the {@link TrainingPhase} with the given id.
+     * @throws EntityNotFoundException if training instance was not found.
+     */
+    public TrainingPhase findTrainingPhaseByDefinitionIdAndOrder(Long trainingDefinitionId, Integer trainingPhaseOrder) {
+        return trainingPhaseRepository.findByTrainingDefinitionIdAndOrder(trainingDefinitionId, trainingPhaseOrder)
+                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingPhase.class, "order", trainingPhaseOrder.getClass(),
+                        trainingPhaseOrder, "Training phase (order: " + trainingPhaseOrder + ") not found in training definition (ID: " + trainingDefinitionId + ").")));
     }
 
     /**

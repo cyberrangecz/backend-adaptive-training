@@ -181,8 +181,8 @@ public class ExportImportFacade {
                         exportImportService.createQuestionPhaseRelationPhase(
                                 questionPhaseRelationMapper.mapToEntity(questionPhaseRelation),
                                 createdQuestionnairePhase,
-                                questionPhaseRelation.getPhaseId(),
-                                questionPhaseRelation.getQuestionIds()));
+                                questionPhaseRelation.getPhaseOrder(),
+                                questionPhaseRelation.getQuestionOrders()));
             }
         });
         return trainingDefinitionMapper.mapToDTOById(newTrainingDefinition);

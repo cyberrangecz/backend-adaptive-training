@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
@@ -51,10 +52,12 @@ public class SmartAssistantServiceApi {
             return smartAssistantServiceWebClient
                     .post()
                     .uri("/adaptive-phases")
-                    .body(Mono.just(smartAssistantInput), AdaptiveSmartAssistantInput.class)
+                    .body(Mono.just(objectMapper.writeValueAsString(smartAssistantInput)), String.class)
                     .retrieve()
                     .bodyToMono(SuitableTaskResponse.class)
                     .block();
+        } catch (IOException ex) {
+            throw new SecurityException("Error while parsing roles for microservices", ex);
         } catch (CustomWebClientException ex) {
             throw new MicroserviceApiException("Error when calling Smart Assistant Service API to obtain suitable task for phase (ID: " + smartAssistantInput.getPhaseX() + ")", ex.getApiSubError());
         }

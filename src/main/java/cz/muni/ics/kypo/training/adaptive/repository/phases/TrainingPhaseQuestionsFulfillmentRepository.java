@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.repository.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,7 @@ public interface TrainingPhaseQuestionsFulfillmentRepository extends JpaReposito
 
     Optional<TrainingPhaseQuestionsFulfillment> findByTrainingPhaseIdAndTrainingRunId(@Param("trainingPhaseId") Long trainingPhaseId,
                                                                                       @Param("trainingRunId") Long trainingRunId);
+
+    @Modifying
+    void deleteAllByTrainingRunId(Long trainingRunId);
 }

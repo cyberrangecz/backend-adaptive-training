@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.responses;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class SuitableTaskResponse {
 
     @ApiModelProperty(value = "Returns the number representing the suitable task for a given participant", example = "1")
+    @JsonProperty("suitable_task")
     private int suitableTask;
 
     public int getSuitableTask() {

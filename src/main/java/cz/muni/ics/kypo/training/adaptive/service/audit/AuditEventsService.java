@@ -62,6 +62,7 @@ public class AuditEventsService {
         PhaseStarted phaseStarted = phaseStartedBuilder
                 .phaseType(getPhaseType(trainingRun.getCurrentPhase()))
                 .phaseTitle(trainingRun.getCurrentPhase().getTitle())
+                .taskId(trainingRun.getCurrentTask() == null ? null : trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(phaseStarted, 10L);
     }
@@ -77,6 +78,7 @@ public class AuditEventsService {
 
         PhaseCompleted phaseCompleted = phaseCompletedBuilder
                 .phaseType(getPhaseType(trainingRun.getCurrentPhase()))
+                .taskId(trainingRun.getCurrentTask() == null ? null : trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(phaseCompleted, 5L);
     }
@@ -91,6 +93,7 @@ public class AuditEventsService {
                 fillInCommonBuilderFields(trainingRun, SolutionDisplayed.builder());
 
         SolutionDisplayed solutionDisplayed = solutionDisplayedBuilder
+                .taskId(trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(solutionDisplayed, 0L);
     }
@@ -107,6 +110,7 @@ public class AuditEventsService {
 
         CorrectAnswerSubmitted correctAnswerSubmitted = correctAnswerSubmittedBuilder
                 .answerContent(answer)
+                .taskId(trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(correctAnswerSubmitted, 0L);
     }
@@ -123,6 +127,7 @@ public class AuditEventsService {
 
         WrongAnswerSubmitted wrongAnswerSubmitted = wrongAnswerSubmittedBuilder
                 .answerContent(answer)
+                .taskId(trainingRun.getCurrentTask().getId())
                 .count(trainingRun.getIncorrectAnswerCount())
                 .build();
         auditService.saveTrainingRunEvent(wrongAnswerSubmitted, 0L);
@@ -168,7 +173,8 @@ public class AuditEventsService {
     public void auditTrainingRunResumedAction(TrainingRun trainingRun) {
         TrainingRunResumed.TrainingRunResumedBuilder<?, ?> trainingRunResumedBuilder = (TrainingRunResumed.TrainingRunResumedBuilder<?, ?>)
                 fillInCommonBuilderFields(trainingRun, TrainingRunResumed.builder());
-        TrainingRunResumed trainingRunResumed = trainingRunResumedBuilder.build();
+        TrainingRunResumed trainingRunResumed = trainingRunResumedBuilder
+                .build();
         auditService.saveTrainingRunEvent(trainingRunResumed, 0L);
     }
 

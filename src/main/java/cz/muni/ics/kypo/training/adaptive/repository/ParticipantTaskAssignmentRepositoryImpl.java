@@ -69,9 +69,11 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
         QTrainingRun trainingRun2 = new QTrainingRun("trainingRun2");
         QTrainingInstance trainingInstance2 = new QTrainingInstance("trainingInstance2");
 
+        QParticipantTaskAssignment qParticipantTaskAssignment = new QParticipantTaskAssignment("participantTaskAssignment");
         QTask task = new QTask("task");
-        QTrainingPhase trainingPhase = new QTrainingPhase("trainingPhase");
-        QTrainingDefinition trainingDefinition = new QTrainingDefinition("trainingDefinition");
+        QTrainingRun trainingRun = new QTrainingRun("trainingRun");
+        QAbstractPhase abstractPhase = new QAbstractPhase("abstractPhase");
+        QTrainingInstance trainingInstance = new QTrainingInstance("trainingInstance");
 
         JPQLQuery<PreProcessLink> query = new JPAQueryFactory(entityManager)
                 .select(Projections.constructor(PreProcessLink.class, task1.id, task2.id, Wildcard.count, abstractPhase1.order, abstractPhase2.order))
@@ -92,21 +94,23 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
                 .groupBy(abstractPhase1.id, abstractPhase2.id, task1.id, task2.id);
 
         AtomicInteger index = new AtomicInteger();
-        Map<Long, Integer> taskOrderMap = new JPAQueryFactory(entityManager)
-                .select(task.id)
-                .from(task)
-                .join(task.trainingPhase, trainingPhase)
-                .join(trainingPhase.trainingDefinition, trainingDefinition)
-                .where(trainingDefinition.id.eq(trainingDefinitionId))
-                .orderBy(trainingPhase.order.asc(), task.order.asc())
+        Map<Long, Integer> orderedVisitedTasksMap = new JPAQueryFactory(entityManager)
+                .selectDistinct(task.id, abstractPhase.order, task.order)
+                .from(qParticipantTaskAssignment)
+                .join(qParticipantTaskAssignment.task, task)
+                .join(qParticipantTaskAssignment.abstractPhase, abstractPhase)
+                .join(qParticipantTaskAssignment.trainingRun, trainingRun)
+                .join(trainingRun.trainingInstance, trainingInstance)
+                .where(trainingInstance.id.eq(trainingInstanceId))
+                .orderBy(abstractPhase.order.asc(), task.order.asc())
                 .fetch()
                 .stream()
-                .collect(Collectors.toMap(Function.identity(), taskId -> index.getAndIncrement()));
+                .collect(Collectors.toMap(tuple -> tuple.get(0, Long.class), tuple -> index.getAndIncrement()));
 
         List<PreProcessLink> result = query.fetch();
         result.forEach(link -> {
-            link.setSource(taskOrderMap.get(link.getSourceTaskId()) + 1);
-            link.setTarget(taskOrderMap.get(link.getTargetTaskId()) + 1);
+            link.setSource(orderedVisitedTasksMap.get(link.getSourceTaskId()) + 1);
+            link.setTarget(orderedVisitedTasksMap.get(link.getTargetTaskId()) + 1);
         });
         return result.stream().sorted((link1, link2) -> {
             int cmp = link1.getSource().compareTo(link2.getSource());

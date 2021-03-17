@@ -7,6 +7,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,12 @@ import java.util.stream.Collectors;
 public class VisualizationService {
 
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
+    private final TaskRepository taskRepository;
 
-    public VisualizationService(ParticipantTaskAssignmentRepository participantTaskAssignmentRepository) {
+    public VisualizationService(ParticipantTaskAssignmentRepository participantTaskAssignmentRepository,
+                                TaskRepository taskRepository) {
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
+        this.taskRepository = taskRepository;
     }
 
     public SankeyGraphDTO getSankeyGraph(TrainingInstance trainingInstance) {
@@ -31,7 +35,7 @@ public class VisualizationService {
         List<PreProcessLink> preProcessedLinks = participantTaskAssignmentRepository.findAllTaskTransitions(trainingInstance.getTrainingDefinition().getId(), trainingInstance.getId());
         List<LinkDTO> resultLinks = new ArrayList<>();
 
-        this.addLinksFromStartNode(preProcessedLinks, resultLinks, nodes.get(0).getPhaseId());
+        this.addLinksFromStartNode(preProcessedLinks, resultLinks, nodes.get(0).getPhaseId(), nodes.get(0).getPhaseOrder());
         this.addLinksToFinishNode(preProcessedLinks, resultLinks, lastNodeDTO, nodes.size());
 
         resultLinks.addAll(preProcessedLinks.stream()
@@ -50,10 +54,13 @@ public class VisualizationService {
         nodes.add(new NodeDTO(null, null, null, null, -2, null));
     }
 
-    private void addLinksFromStartNode(List<PreProcessLink> preProcessedLinks, List<LinkDTO> resultLinks, Long firstPhaseId) {
+    private void addLinksFromStartNode(List<PreProcessLink> preProcessedLinks,
+                                       List<LinkDTO> resultLinks,
+                                       Long firstPhaseId,
+                                       Integer firstPhaseOrder) {
         Map<Long, Long> numberOfParticipantsInTaskOfFirstPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(firstPhaseId);
         for (PreProcessLink preProcessedLink: preProcessedLinks) {
-            if (!preProcessedLink.getSourcePhaseOrder().equals(0)) {
+            if (!preProcessedLink.getSourcePhaseOrder().equals(firstPhaseOrder)) {
                 break;
             }
             Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTaskOfFirstPhase.get(preProcessedLink.getSourceTaskId())).orElse(0L);

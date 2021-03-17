@@ -224,13 +224,11 @@ create table access_token (
 
 -- ACQUISITION LOCK
 create table training_run_acquisition_lock (
-    training_run_acquisition_lock_id bigserial not null,
-    participant_ref_id int8 not null,
-    training_instance_id int8 not null,
-    creation_time timestamp not null,
-    primary key (training_run_acquisition_lock_id),
-    foreign key (participant_ref_id) references "user",
-    foreign key (training_instance_id) references training_instance
+   training_run_acquisition_lock_id bigserial not null,
+   participant_ref_id bigserial not null,
+   training_instance_id bigserial not null,
+   creation_time timestamp not null,
+   primary key (training_run_acquisition_lock_id)
 );
 
 alter table training_run

@@ -25,6 +25,7 @@ import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SmartAssistantServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

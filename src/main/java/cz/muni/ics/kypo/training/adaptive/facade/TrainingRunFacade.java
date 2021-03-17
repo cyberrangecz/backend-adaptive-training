@@ -35,6 +35,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -335,7 +336,7 @@ public class TrainingRunFacade {
      */
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
-    @TransactionalWO
+    @TransactionalWO(propagation = Propagation.REQUIRES_NEW)
     public void evaluateAnswersToQuestionnaire(Long trainingRunId, QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
         Map<Long, Set<String>> questionsAnswersMapping = questionnairePhaseAnswersDTO.getAnswers().stream()
                 .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getAnswers));

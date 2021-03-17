@@ -55,7 +55,7 @@ public class SecurityService {
      * @return the boolean
      */
     public boolean isTraineeOfGivenTrainingRun(Long trainingRunId) {
-        TrainingRun trainingRun = trainingRunRepository.findById(trainingRunId)
+        TrainingRun trainingRun = trainingRunRepository.findByIdWithPhase(trainingRunId)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingRun.class, "id", trainingRunId.getClass(),
                         trainingRunId, "The necessary permissions are required for a resource.")));
         return trainingRun.getParticipantRef().getUserRefId().equals(userManagementServiceApi.getLoggedInUserRefId());

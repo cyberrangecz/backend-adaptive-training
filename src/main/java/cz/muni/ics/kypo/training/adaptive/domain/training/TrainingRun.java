@@ -46,8 +46,9 @@ import java.util.Objects;
                         "JOIN FETCH tr.currentPhase " +
                         "JOIN FETCH tr.trainingInstance ti " +
                         "JOIN FETCH ti.trainingDefinition " +
-                        "WHERE tr.id= :trainingRunId",
-                lockMode = LockModeType.PESSIMISTIC_WRITE
+                        "WHERE tr.id= :trainingRunId"
+                //TODO undo this and repair related issue
+//                lockMode = LockModeType.PESSIMISTIC_WRITE
         ),
         @NamedQuery(
                 name = "TrainingRun.deleteTrainingRunsByTrainingInstance",

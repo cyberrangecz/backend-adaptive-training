@@ -1,1 +1,1 @@
-1.0.28 Fix obtaining data for sankey diagram, fix table tr acquisition lock, correct mapping of phase to PhaseViewDTO, temporary fix for handling requests related to training run by trainee.
+1.0.29 Enable transaction management.

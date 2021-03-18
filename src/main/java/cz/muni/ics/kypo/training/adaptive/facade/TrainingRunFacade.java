@@ -336,7 +336,7 @@ public class TrainingRunFacade {
      */
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
-    @TransactionalWO(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalWO
     public void evaluateAnswersToQuestionnaire(Long trainingRunId, QuestionnairePhaseAnswersDTO questionnairePhaseAnswersDTO) {
         Map<Long, Set<String>> questionsAnswersMapping = questionnairePhaseAnswersDTO.getAnswers().stream()
                 .collect(Collectors.toMap(QuestionAnswerDTO::getQuestionId, QuestionAnswerDTO::getAnswers));

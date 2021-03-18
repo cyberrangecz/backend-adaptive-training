@@ -46,9 +46,8 @@ import java.util.Objects;
                         "JOIN FETCH tr.currentPhase " +
                         "JOIN FETCH tr.trainingInstance ti " +
                         "JOIN FETCH ti.trainingDefinition " +
-                        "WHERE tr.id= :trainingRunId"
-                //TODO undo this and repair related issue
-//                lockMode = LockModeType.PESSIMISTIC_WRITE
+                        "WHERE tr.id= :trainingRunId",
+                lockMode = LockModeType.PESSIMISTIC_WRITE
         ),
         @NamedQuery(
                 name = "TrainingRun.deleteTrainingRunsByTrainingInstance",
@@ -366,29 +365,29 @@ public class TrainingRun implements Serializable {
         this.previousSandboxInstanceRefId = previousSandboxInstanceRefId;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(currentPhase, startTime, endTime, state, trainingInstance, incorrectAnswerCount);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof TrainingRun))
-            return false;
-        TrainingRun other = (TrainingRun) obj;
-        return Objects.equals(currentPhase, other.getCurrentPhase())
-                && Objects.equals(startTime, other.getStartTime())
-                && Objects.equals(endTime, other.getEndTime())
-                && Objects.equals(state, other.getState())
-                && Objects.equals(incorrectAnswerCount, other.getIncorrectAnswerCount())
-                && Objects.equals(trainingInstance, other.getTrainingInstance())
-                && Objects.equals(participantRef, other.getParticipantRef())
-                && Objects.equals(solutionTaken, other.isSolutionTaken());
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(currentPhase, startTime, endTime, state, trainingInstance, incorrectAnswerCount);
+//    }
+//
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj)
+//            return true;
+//        if (obj == null)
+//            return false;
+//        if (!(obj instanceof TrainingRun))
+//            return false;
+//        TrainingRun other = (TrainingRun) obj;
+//        return Objects.equals(currentPhase, other.getCurrentPhase())
+//                && Objects.equals(startTime, other.getStartTime())
+//                && Objects.equals(endTime, other.getEndTime())
+//                && Objects.equals(state, other.getState())
+//                && Objects.equals(incorrectAnswerCount, other.getIncorrectAnswerCount())
+//                && Objects.equals(trainingInstance, other.getTrainingInstance())
+//                && Objects.equals(participantRef, other.getParticipantRef())
+//                && Objects.equals(solutionTaken, other.isSolutionTaken());
+//    }
 
     @Override
     public String toString() {

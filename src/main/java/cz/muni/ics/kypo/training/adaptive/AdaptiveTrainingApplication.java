@@ -8,6 +8,7 @@ import cz.muni.ics.kypo.training.adaptive.config.ValidationMessagesConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @SpringBootApplication
 @Import(value = {
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Import;
         AdaptiveTrainingWebMvcConfigurer.class,
         ResourceServerSecurityConfig.class
 })
+@EnableTransactionManagement
 public class AdaptiveTrainingApplication {
 
     public static void main(String[] args) {

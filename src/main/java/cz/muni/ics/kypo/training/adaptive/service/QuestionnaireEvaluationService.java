@@ -27,6 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
 import org.hibernate.Hibernate;
+import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

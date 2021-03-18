@@ -1,1 +1,1 @@
-1.0.27 Export and import implemented and tested, fix force delete of training instance, fix URI paths to ES service, audit taskId in particular events.
+1.0.28 Fix obtaining data for sankey diagram, fix table tr acquisition lock, correct mapping of phase to PhaseViewDTO, temporary fix for handling requests related to training run by trainee.

@@ -13,8 +13,9 @@ public class SankeyGraphDTO {
     public SankeyGraphDTO() {
     }
 
-    public SankeyGraphDTO(List<NodeDTO> nodes) {
+    public SankeyGraphDTO(List<NodeDTO> nodes, List<LinkDTO> links) {
         this.nodes = nodes;
+        this.links = links;
     }
 
     public List<NodeDTO> getNodes() {

@@ -1,12 +1,15 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import com.google.common.collect.Lists;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import org.springframework.boot.actuate.endpoint.web.Link;
@@ -19,74 +22,81 @@ import java.util.stream.Collectors;
 public class VisualizationService {
 
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
+    private final TrainingPhaseRepository trainingPhaseRepository;
     private final TaskRepository taskRepository;
 
     public VisualizationService(ParticipantTaskAssignmentRepository participantTaskAssignmentRepository,
+                                TrainingPhaseRepository trainingPhaseRepository,
                                 TaskRepository taskRepository) {
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
+        this.trainingPhaseRepository = trainingPhaseRepository;
         this.taskRepository = taskRepository;
     }
 
     public SankeyGraphDTO getSankeyGraph(TrainingInstance trainingInstance) {
-        SankeyGraphDTO sankeyGraphDTO = new SankeyGraphDTO();
+        List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
+        if (trainingPhases.isEmpty()) {
+            return new SankeyGraphDTO();
+        }
         List<NodeDTO> nodes = participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
-        NodeDTO lastNodeDTO = nodes.get(nodes.size() -1);
-
         List<PreProcessLink> preProcessedLinks = participantTaskAssignmentRepository.findAllTaskTransitions(trainingInstance.getTrainingDefinition().getId(), trainingInstance.getId());
         List<LinkDTO> resultLinks = new ArrayList<>();
 
-        this.addLinksFromStartNode(preProcessedLinks, resultLinks, nodes.get(0).getPhaseId(), nodes.get(0).getPhaseOrder());
-        this.addLinksToFinishNode(preProcessedLinks, resultLinks, lastNodeDTO, nodes.size());
+        this.addLinksFromStartNode(preProcessedLinks, resultLinks, nodes);
+        this.addLinksToFinishNode(preProcessedLinks, resultLinks, nodes, trainingPhases);
 
         resultLinks.addAll(preProcessedLinks.stream()
                 .map(link -> new LinkDTO(link.getSource(), link.getTarget(), link.getValue()))
                 .collect(Collectors.toList()));
 
         this.addStartAndFinishNode(nodes);
-
-        sankeyGraphDTO.setNodes(nodes);
-        sankeyGraphDTO.setLinks(resultLinks);
-        return sankeyGraphDTO;
-    }
-
-    private void addStartAndFinishNode(List<NodeDTO> nodes) {
-        nodes.add(0, new NodeDTO(null, null, null, null, -1, null));
-        nodes.add(new NodeDTO(null, null, null, null, -2, null));
+        return new SankeyGraphDTO(nodes, resultLinks);
     }
 
     private void addLinksFromStartNode(List<PreProcessLink> preProcessedLinks,
                                        List<LinkDTO> resultLinks,
-                                       Long firstPhaseId,
-                                       Integer firstPhaseOrder) {
+                                       List<NodeDTO> visitedNodes) {
+        Long firstPhaseId = visitedNodes.get(0).getPhaseId();
+        Integer firstPhaseOrder = visitedNodes.get(0).getPhaseOrder();
         Map<Long, Long> numberOfParticipantsInTaskOfFirstPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(firstPhaseId);
-        for (PreProcessLink preProcessedLink: preProcessedLinks) {
-            if (!preProcessedLink.getSourcePhaseOrder().equals(firstPhaseOrder)) {
+        int nodeIndex = 1;
+        for (NodeDTO visitedNode : visitedNodes) {
+            if (!visitedNode.getPhaseOrder().equals(firstPhaseOrder)) {
                 break;
             }
-            Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTaskOfFirstPhase.get(preProcessedLink.getSourceTaskId())).orElse(0L);
-            resultLinks.add(new LinkDTO(0, preProcessedLink.getSource(), preProcessedLink.getValue() + participantsSolvingTask));
+            Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTaskOfFirstPhase.get(visitedNode.getTaskId())).orElse(0L);
+            Long participantsFinishedTask = preProcessedLinks.stream()
+                    .filter(link -> link.getSourceTaskId().equals(visitedNode.getTaskId()))
+                    .map(PreProcessLink::getValue)
+                    .findFirst().orElseGet(() -> 0L);
+            resultLinks.add(new LinkDTO(0, nodeIndex, participantsSolvingTask + participantsFinishedTask));
+            nodeIndex++;
         }
     }
 
     private void addLinksToFinishNode(List<PreProcessLink> preProcessedLinks,
                                       List<LinkDTO> resultLinks,
-                                      NodeDTO lastNode,
-                                      Integer numberOfNodes) {
-        Map<Long, Long> numberOfParticipantsInTaskOfLastPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(lastNode.getPhaseId());
-        Map<Long, LinkDTO> linksFromLastPhaseToFinish = new HashMap<>();
-        for (PreProcessLink preProcessedLink: Lists.reverse(preProcessedLinks)) {
-            if (!preProcessedLink.getTargetPhaseOrder().equals(lastNode.getPhaseOrder())) {
+                                      List<NodeDTO> visitedNodes,
+                                      List<TrainingPhase> trainingPhases) {
+        int nodeIndex = visitedNodes.size();
+        Map<Long, Long> numberOfParticipantsInTaskOfLastPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(trainingPhases.get(trainingPhases.size() - 1).getId());
+        for (NodeDTO visitedNode: Lists.reverse(visitedNodes)) {
+            if (!visitedNode.getPhaseId().equals(trainingPhases.get(trainingPhases.size() - 1).getId())) {
                 break;
             }
-            linksFromLastPhaseToFinish.merge(preProcessedLink.getTargetTaskId(),
-                    new LinkDTO(preProcessedLink.getTarget(), numberOfNodes + 1, preProcessedLink.getValue()), (this::mergeLinkValues));
+            Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTaskOfLastPhase.get(visitedNode.getTaskId())).orElse(0L);
+            Long participantsVisitedTask = preProcessedLinks.stream()
+                    .filter(link -> link.getTargetTaskId().equals(visitedNode.getTaskId()))
+                    .mapToLong(PreProcessLink::getValue)
+                    .sum();
+            resultLinks.add(new LinkDTO(nodeIndex, visitedNodes.size() + 1, participantsVisitedTask - participantsSolvingTask));
+            nodeIndex--;
         }
-        numberOfParticipantsInTaskOfLastPhase.forEach((k, v) -> linksFromLastPhaseToFinish.get(k).setValue(linksFromLastPhaseToFinish.get(k).getValue() - v));
-        resultLinks.addAll(linksFromLastPhaseToFinish.values());
+        resultLinks.add(new LinkDTO(visitedNodes.size(), visitedNodes.size() + 1, 0L));
     }
 
-    private LinkDTO mergeLinkValues(LinkDTO link1, LinkDTO link2) {
-        link1.setValue(link1.getValue() + link2.getValue());
-        return link1;
+    private void addStartAndFinishNode(List<NodeDTO> nodes) {
+        nodes.add(0, new NodeDTO(null, null, null, null, -1, null));
+        nodes.add(new NodeDTO(null, null, null, null, -2, null));
     }
 }

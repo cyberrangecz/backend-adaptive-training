@@ -55,6 +55,8 @@ public interface AbstractPhaseRepository extends JpaRepository<AbstractPhase, Lo
             "WHERE ap.id = :phaseId")
     Optional<AbstractPhase> findByIdWithDefinition(@Param("phaseId") Long phaseId);
 
-    @Query("SELECT ap FROM AbstractPhase ap WHERE ap.trainingDefinition.id = :trainingDefinitionId AND ap.order = 0")
+    @Query("SELECT ap FROM AbstractPhase ap " +
+            "WHERE ap.trainingDefinition.id = :trainingDefinitionId " +
+            "AND ap.order = 0")
     Optional<AbstractPhase> findFirstPhaseOfTrainingDefinition(@Param("trainingDefinitionId") Long trainingDefinitionId);
 }

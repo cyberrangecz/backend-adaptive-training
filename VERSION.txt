@@ -1,1 +1,1 @@
-1.0.29 Enable transaction management.
+1.0.30 Fix obtainin data for sankey diagram.

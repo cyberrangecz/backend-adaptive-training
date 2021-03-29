@@ -231,6 +231,9 @@ create table training_run_acquisition_lock (
    primary key (training_run_acquisition_lock_id)
 );
 
+alter table training_run_acquisition_lock
+   add constraint UK_b81w12g91hiuhdasdgfcyel6m unique (participant_ref_id, training_instance_id);
+
 alter table training_run
    add constraint FKi9smgl25av8pb1yv3fl4ycby0
    foreign key (current_task_id)

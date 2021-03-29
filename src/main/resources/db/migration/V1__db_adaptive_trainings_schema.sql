@@ -231,6 +231,12 @@ create table training_run_acquisition_lock (
    primary key (training_run_acquisition_lock_id)
 );
 
+alter table training_instance
+   add constraint UK_b81w12g91hiuhdvsmoanyel6m unique (access_token);
+
+alter table access_token
+   add constraint UK_qglhb4xi0iwstguebaliifr1n unique (access_token);
+
 alter table training_run_acquisition_lock
    add constraint UK_b81w12g91hiuhdasdgfcyel6m unique (participant_ref_id, training_instance_id);
 

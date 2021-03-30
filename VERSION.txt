@@ -1,1 +1,1 @@
-1.0.31 Fix DB constraints in the DDL files generating the database.
+1.0.32 Fix waiting for X seconds between phases.

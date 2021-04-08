@@ -35,6 +35,12 @@ public class PreProcessLink {
         this.target = target;
     }
 
+    public PreProcessLink(Integer source,
+                          Integer target,
+                          Long value) {
+        this(source, target, null, null,  null, null, value);
+    }
+
     public Integer getSource() {
         return source;
     }

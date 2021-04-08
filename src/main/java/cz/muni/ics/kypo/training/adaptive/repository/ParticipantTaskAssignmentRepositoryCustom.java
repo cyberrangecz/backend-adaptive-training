@@ -13,12 +13,13 @@ import java.util.Set;
 public interface ParticipantTaskAssignmentRepositoryCustom {
 
     /**
-     * Find all training definitions.
+     * Find all task transitions between two phases.
      *
      * @param trainingInstanceId training instance id
      * @return the page of training definitions
      */
-    List<PreProcessLink> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId);
+    List<PreProcessLink> findTaskTransitionsBetweenTwoPhases(Long trainingDefinitionId, Long trainingInstanceId,
+                                                             Long firstPhaseId, Long secondPhaseId);
 
     Map<Long, Long> findNumberOfParticipantsInTasksOfPhase(Long phaseId);
 

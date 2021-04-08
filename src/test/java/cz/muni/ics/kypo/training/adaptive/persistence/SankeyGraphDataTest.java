@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.persistence;
 
-import com.querydsl.core.Tuple;
 import cz.muni.ics.kypo.training.adaptive.config.PersistenceConfigTest;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
@@ -9,7 +8,6 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
@@ -17,7 +15,6 @@ import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRe
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -26,12 +23,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -220,16 +215,20 @@ public class SankeyGraphDataTest {
 
     @Test
     public void testLinks() {
-        List<PreProcessLink> links = this.participantTaskAssignmentRepository.findAllTaskTransitions(trainingDefinition.getId(), trainingInstance.getId());
+        List<PreProcessLink> links = this.participantTaskAssignmentRepository.findTaskTransitionsBetweenTwoPhases(trainingDefinition.getId(),
+                trainingInstance.getId(), trainingPhase1.getId(), trainingPhase2.getId());
+        links.addAll(this.participantTaskAssignmentRepository.findTaskTransitionsBetweenTwoPhases(trainingDefinition.getId(),
+                trainingInstance.getId(), trainingPhase2.getId(), trainingPhase3.getId()));
         List<PreProcessLink> expectedLinks = List.of(
-                new PreProcessLink(1,5, task11.getId(), task22.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
-                new PreProcessLink(2,4, task12.getId(), task21.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 2L),
-                new PreProcessLink(3,6, task13.getId(), task23.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
+                new PreProcessLink(null,null, task11.getId(), task22.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
+                new PreProcessLink(null,null, task12.getId(), task21.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 2L),
+                new PreProcessLink(null,null, task13.getId(), task23.getId(), trainingPhase1.getOrder(), trainingPhase2.getOrder(), 1L),
                 new PreProcessLink(4,7, task21.getId(), task31.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
                 new PreProcessLink(4,9, task21.getId(), task33.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
                 new PreProcessLink(5,7, task22.getId(), task31.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L),
-                new PreProcessLink(6,8, task23.getId(), task32.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L));
-        assertEquals(expectedLinks, links);
+                new PreProcessLink(6,8, task23.getId(), task32.getId(), trainingPhase2.getOrder(), trainingPhase3.getOrder(), 1L)
+        );
+        assertTrue(links.containsAll(expectedLinks));
     }
 
     @Test

@@ -55,7 +55,10 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
 
     @Override
     @Transactional
-    public List<PreProcessLink> findAllTaskTransitions(Long trainingDefinitionId, Long trainingInstanceId) {
+    public List<PreProcessLink> findTaskTransitionsBetweenTwoPhases(Long trainingDefinitionId,
+                                                                    Long trainingInstanceId,
+                                                                    Long firstPhaseId,
+                                                                    Long secondPhaseId) {
         Objects.requireNonNull(trainingInstanceId, "Input logged in user ID must not be null.");
         QParticipantTaskAssignment qParticipantTaskAssignment1 = new QParticipantTaskAssignment("participantTaskAssignment1");
         QTask task1 = new QTask("task1");
@@ -68,12 +71,6 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
         QAbstractPhase abstractPhase2 = new QAbstractPhase("abstractPhase2");
         QTrainingRun trainingRun2 = new QTrainingRun("trainingRun2");
         QTrainingInstance trainingInstance2 = new QTrainingInstance("trainingInstance2");
-
-        QParticipantTaskAssignment qParticipantTaskAssignment = new QParticipantTaskAssignment("participantTaskAssignment");
-        QTask task = new QTask("task");
-        QTrainingRun trainingRun = new QTrainingRun("trainingRun");
-        QAbstractPhase abstractPhase = new QAbstractPhase("abstractPhase");
-        QTrainingInstance trainingInstance = new QTrainingInstance("trainingInstance");
 
         JPQLQuery<PreProcessLink> query = new JPAQueryFactory(entityManager)
                 .select(Projections.constructor(PreProcessLink.class, task1.id, task2.id, Wildcard.count, abstractPhase1.order, abstractPhase2.order))
@@ -90,36 +87,12 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
                 .where(trainingInstance1.id.eq(trainingInstanceId)
                         .and(trainingInstance2.id.eq(trainingInstanceId))
                         .and(trainingRun1.id.eq(trainingRun2.id))
-                        .and(abstractPhase1.order.add(1).eq(abstractPhase2.order)))
+                        .and(abstractPhase1.id.eq(firstPhaseId))
+                        .and(abstractPhase2.id.eq(secondPhaseId)))
                 .groupBy(abstractPhase1.id, abstractPhase2.id, task1.id, task2.id);
 
-        AtomicInteger index = new AtomicInteger();
-        Map<Long, Integer> orderedVisitedTasksMap = new JPAQueryFactory(entityManager)
-                .selectDistinct(task.id, abstractPhase.order, task.order)
-                .from(qParticipantTaskAssignment)
-                .join(qParticipantTaskAssignment.task, task)
-                .join(qParticipantTaskAssignment.abstractPhase, abstractPhase)
-                .join(qParticipantTaskAssignment.trainingRun, trainingRun)
-                .join(trainingRun.trainingInstance, trainingInstance)
-                .where(trainingInstance.id.eq(trainingInstanceId))
-                .orderBy(abstractPhase.order.asc(), task.order.asc())
-                .fetch()
-                .stream()
-                .collect(Collectors.toMap(tuple -> tuple.get(0, Long.class), tuple -> index.getAndIncrement()));
-
-        List<PreProcessLink> result = query.fetch();
-        result.forEach(link -> {
-            link.setSource(orderedVisitedTasksMap.get(link.getSourceTaskId()) + 1);
-            link.setTarget(orderedVisitedTasksMap.get(link.getTargetTaskId()) + 1);
-        });
-        return result.stream().sorted((link1, link2) -> {
-            int cmp = link1.getSource().compareTo(link2.getSource());
-            if (cmp == 0) {
-                return link1.getTarget().compareTo(link2.getTarget());
-            }
-            return cmp;
-        }).collect(Collectors.toList());
-        }
+        return query.fetch();
+    }
 
     @Override
     @Transactional

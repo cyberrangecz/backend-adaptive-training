@@ -257,17 +257,24 @@ public class TrainingRunService {
         adaptiveSmartAssistantInput.setPhaseIds(phases.stream()
                 .map(AbstractPhase::getId)
                 .collect(Collectors.toList()));
-        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(), nextPhase.getAllowedWrongAnswers(), phases));
-        adaptiveSmartAssistantInput.setQuestionnaireCorrectlyAnswered(isQuestionnaireCorrectlyAnswered(nextPhase.getId(), trainingRun.getId()));
+        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(),
+                nextPhase.getAllowedWrongAnswers(), phases, trainingRun.getId()));
         return adaptiveSmartAssistantInput;
     }
 
     private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands,
-                                                                                         int allowedWrongAnswers, List<AbstractPhase> phases) {
+                                                                                         int allowedWrongAnswers, List<AbstractPhase> phases, Long trainingRunId) {
         List<AbstractPhase> orderedTrainingPhases = phases.stream()
-                .filter(phase -> phase instanceof TrainingPhase || (phase instanceof QuestionnairePhase && ((QuestionnairePhase) phase).getQuestionnaireType() == QuestionnaireType.ADAPTIVE))
+                .filter(phase -> phase instanceof TrainingPhase)
+                .limit(decisionMatrixRows.size())
                 .sorted(Comparator.comparing(AbstractPhase::getOrder))
                 .collect(Collectors.toList());
+        List<Long> trainingPhasesIds = orderedTrainingPhases.stream()
+                .map(AbstractPhase::getId)
+                .collect(Collectors.toList());
+        List<TrainingPhaseQuestionsFulfillment> questionnairesFulfillment = this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhasesAndTrainingRun(trainingPhasesIds, trainingRunId);
+
+
         return decisionMatrixRows.stream().map(row -> {
             DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
             decisionMatrixRowForAssistantDTO.setId(row.getId());
@@ -279,16 +286,10 @@ public class TrainingRunService {
             decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
             decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
             decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
+            decisionMatrixRowForAssistantDTO.setQuestionnaireCorrectlyAnswered(questionnairesFulfillment.get(row.getOrder()).isFulfilled());
             decisionMatrixRowForAssistantDTO.setRelatedPhaseId(orderedTrainingPhases.get(row.getOrder()).getId());
             return decisionMatrixRowForAssistantDTO;
         }).collect(Collectors.toList());
-    }
-
-    private boolean isQuestionnaireCorrectlyAnswered(Long trainingPhaseId, Long trainingRunId) {
-        return this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhaseIdAndTrainingRunId(trainingPhaseId, trainingRunId)
-                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingPhaseQuestionsFulfillment.class,
-                        "Could not find if the questionnaire for phase (ID: " + trainingPhaseId + " ) and training run (ID: " + trainingRunId + ") hase been answered ")))
-                .isFulfilled();
     }
 
     private ParticipantTaskAssignment prepareDataForSankeyGraph(TrainingRun trainingRun, AbstractPhase nextPhase) {

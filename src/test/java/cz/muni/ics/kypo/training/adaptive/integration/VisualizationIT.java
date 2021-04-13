@@ -185,7 +185,6 @@ public class VisualizationIT {
         trainingRun3.setCurrentTask(participant3Task32.getTask());
         trainingRun4.setCurrentTask(participant4Task31.getTask());
 
-
         entityManager.persist(trainingDefinition);
         entityManager.persist(trainingInstance);
         entityManager.persist(trainingPhase1);
@@ -214,7 +213,10 @@ public class VisualizationIT {
         entityManager.persist(trainingRun2);
         entityManager.persist(trainingRun3);
         entityManager.persist(trainingRun4);
+    }
 
+    @Test
+    public void getDataForSankeyDiagramAllFinished() throws Exception {
         entityManager.persist(participant1Task11);
         entityManager.persist(participant1Task22);
         entityManager.persist(participant1Task31);
@@ -229,13 +231,16 @@ public class VisualizationIT {
 
         entityManager.persist(participant4Task12);
         entityManager.persist(participant4Task21);
-        entityManager.persist(participant4Task31 );
-    }
+        entityManager.persist(participant4Task31);
 
-    @Test
-    public void getDataForSankeyDiagram() throws Exception {
         trainingRun1.setState(TRState.FINISHED);
+        trainingRun2.setState(TRState.FINISHED);
+        trainingRun3.setState(TRState.FINISHED);
+        trainingRun4.setState(TRState.FINISHED);
         entityManager.persist(trainingRun1);
+        entityManager.persist(trainingRun2);
+        entityManager.persist(trainingRun3);
+        entityManager.persist(trainingRun4);
         MockHttpServletResponse result =  mvc.perform(get("/visualizations/training-instances/{instanceId}/sankey", trainingInstance.getId()))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -249,14 +254,104 @@ public class VisualizationIT {
                 new LinkDTO(0, 3, 1L)
         );
         List<LinkDTO> linksFromLastPhaseToFinish = List.of(
-                new LinkDTO(7, 10, 1L),
-                new LinkDTO(8, 10, 0L),
-                new LinkDTO(9, 10, 0L)
+                new LinkDTO(7, 10, 2L),
+                new LinkDTO(8, 10, 1L),
+                new LinkDTO(9, 10, 1L)
         );
         assertTrue(sankeyData.getNodes().contains(startNode));
         assertTrue(sankeyData.getNodes().contains(finishNode));
         assertEquals(0, sankeyData.getNodes().indexOf(startNode));
         assertEquals(10, sankeyData.getNodes().indexOf(finishNode));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromStartToFirstPhase));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromLastPhaseToFinish));
+    }
+
+    @Test
+    public void getDataForSankeyDiagramOneFinished() throws Exception {
+        entityManager.persist(participant1Task11);
+        entityManager.persist(participant1Task22);
+        entityManager.persist(participant1Task31);
+
+        entityManager.persist(participant2Task12);
+        entityManager.persist(participant2Task21);
+        participant2Task12.getTrainingRun().setCurrentTask(participant2Task21.getTask());
+
+        entityManager.persist(participant3Task13);
+        entityManager.persist(participant3Task23);
+        participant3Task23.getTrainingRun().setCurrentTask(participant3Task23.getTask());
+
+        entityManager.persist(participant4Task12);
+        entityManager.persist(participant4Task21);
+        participant4Task21.getTrainingRun().setCurrentTask(participant4Task21.getTask());
+
+        trainingRun1.setState(TRState.FINISHED);
+        entityManager.persist(trainingRun1);
+        entityManager.persist(participant2Task12.getTrainingRun());
+        entityManager.persist(participant3Task23.getTrainingRun());
+        MockHttpServletResponse result =  mvc.perform(get("/visualizations/training-instances/{instanceId}/sankey", trainingInstance.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
+        NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
+        List<LinkDTO> linksFromStartToFirstPhase = List.of(
+                new LinkDTO(0, 1, 1L),
+                new LinkDTO(0, 2, 2L),
+                new LinkDTO(0, 3, 1L)
+        );
+        List<LinkDTO> linksFromLastPhaseToFinish = List.of(
+                new LinkDTO(7, 8, 1L)
+        );
+        assertTrue(sankeyData.getNodes().contains(startNode));
+        assertTrue(sankeyData.getNodes().contains(finishNode));
+        assertEquals(0, sankeyData.getNodes().indexOf(startNode));
+        assertEquals(8, sankeyData.getNodes().indexOf(finishNode));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromStartToFirstPhase));
+        assertTrue(sankeyData.getLinks().containsAll(linksFromLastPhaseToFinish));
+    }
+
+    @Test
+    public void getDataForSankeyDiagramOneNotFinishedLastPhase() throws Exception {
+        entityManager.persist(participant1Task11);
+        entityManager.persist(participant1Task22);
+        entityManager.persist(participant1Task31);
+
+        entityManager.persist(participant2Task12);
+        entityManager.persist(participant2Task21);
+        participant2Task12.getTrainingRun().setCurrentTask(participant2Task21.getTask());
+
+        entityManager.persist(participant3Task13);
+        entityManager.persist(participant3Task23);
+        participant3Task23.getTrainingRun().setCurrentTask(participant3Task23.getTask());
+
+        entityManager.persist(participant4Task12);
+        entityManager.persist(participant4Task21);
+        entityManager.persist(participant4Task31);
+
+        trainingRun1.setState(TRState.FINISHED);
+        entityManager.persist(trainingRun1);
+        entityManager.persist(participant2Task12.getTrainingRun());
+        entityManager.persist(participant3Task23.getTrainingRun());
+        MockHttpServletResponse result =  mvc.perform(get("/visualizations/training-instances/{instanceId}/sankey", trainingInstance.getId()))
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andReturn().getResponse();
+        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
+        NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
+        List<LinkDTO> linksFromStartToFirstPhase = List.of(
+                new LinkDTO(0, 1, 1L),
+                new LinkDTO(0, 2, 2L),
+                new LinkDTO(0, 3, 1L)
+        );
+        List<LinkDTO> linksFromLastPhaseToFinish = List.of(
+                new LinkDTO(7, 8, 1L)
+        );
+        assertTrue(sankeyData.getNodes().contains(startNode));
+        assertTrue(sankeyData.getNodes().contains(finishNode));
+        assertEquals(0, sankeyData.getNodes().indexOf(startNode));
+        assertEquals(8, sankeyData.getNodes().indexOf(finishNode));
         assertTrue(sankeyData.getLinks().containsAll(linksFromStartToFirstPhase));
         assertTrue(sankeyData.getLinks().containsAll(linksFromLastPhaseToFinish));
     }

@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @ApiModel(
@@ -16,6 +17,8 @@ public class DecisionMatrixRowForAssistantDTO {
     private int order;
     @ApiModelProperty(value = "It determines how important the answers of the questions in questionnaires are", required = true, example = "0.5")
     private double questionnaireAnswered;
+    @ApiModelProperty(value = "The information if the questionnaire was correctly answered for a related phase.", example = "true")
+    private boolean questionnaireCorrectlyAnswered;
     @ApiModelProperty(value = "It determines how important it is whether the player used the keyword", required = true, example = "0.5")
     private double keywordUsed;
     @ApiModelProperty(value = "It determines how important it is whether the player completed the task in time", required = true, example = "0.5")
@@ -53,6 +56,14 @@ public class DecisionMatrixRowForAssistantDTO {
 
     public void setQuestionnaireAnswered(double questionnaireAnswered) {
         this.questionnaireAnswered = questionnaireAnswered;
+    }
+
+    public boolean isQuestionnaireCorrectlyAnswered() {
+        return questionnaireCorrectlyAnswered;
+    }
+
+    public void setQuestionnaireCorrectlyAnswered(boolean questionnaireCorrectlyAnswered) {
+        this.questionnaireCorrectlyAnswered = questionnaireCorrectlyAnswered;
     }
 
     public double getKeywordUsed() {

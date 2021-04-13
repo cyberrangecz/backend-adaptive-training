@@ -45,6 +45,14 @@ public class DecisionMatrixRow implements Serializable {
         this.order = order;
     }
 
+    public void incrementOrder(int incrementNumber) {
+        this.order += incrementNumber;
+    }
+
+    public void decrementOrder(int decrementNumber) {
+        this.order -= decrementNumber;
+    }
+
     public double getQuestionnaireAnswered() {
         return questionnaireAnswered;
     }

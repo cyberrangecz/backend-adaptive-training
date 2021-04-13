@@ -87,7 +87,7 @@ public class PhaseFacade {
     @TransactionalWO
     public List<AbstractPhaseDTO> deletePhase(Long phaseId) {
         Long definitionId = phaseService.deletePhase(phaseId);
-        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(definitionId);
+        trainingPhaseService.alignDecisionMatrixAfterDelete(definitionId);
         return this.getPhases(definitionId);
     }
 

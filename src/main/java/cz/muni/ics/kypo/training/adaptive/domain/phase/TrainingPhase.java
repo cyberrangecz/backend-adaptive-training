@@ -24,7 +24,7 @@ public class TrainingPhase extends AbstractPhase {
             fetch = FetchType.LAZY
     )
     private List<Task> tasks = new ArrayList<>();
-    @OrderBy
+    @OrderBy("order ASC")
     @OneToMany(
             mappedBy = "trainingPhase",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},

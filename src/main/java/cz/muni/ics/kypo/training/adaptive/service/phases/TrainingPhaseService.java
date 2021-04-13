@@ -98,76 +98,125 @@ public class TrainingPhaseService {
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, PHASE_NOT_FOUND)));
     }
 
-    public void alignDecisionMatrixForPhasesInTrainingDefinition(Long trainingDefinitionId) {
+    public void alignDecisionMatrixOfTrainingPhasesAfterMove(Long trainingDefinitionId, int trainingPhaseFromOrder, int trainingPhaseToOrder) {
+        List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
+        if(trainingPhaseToOrder > trainingPhaseFromOrder) {
+            this.alignDecisionMatricesLowerToUpper(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
+        } else {
+            this.alignDecisionMatricesUpperToLower(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
+        }
+    }
+
+    private void alignDecisionMatricesLowerToUpper(int trainingPhaseFromOrder, int trainingPhaseToOrder, List<TrainingPhase> trainingPhases) {
+        int currentPhaseOrder = trainingPhaseFromOrder;
+        for (TrainingPhase trainingPhase : trainingPhases.subList(trainingPhaseFromOrder, trainingPhaseToOrder + 1)) {
+            if(currentPhaseOrder == trainingPhaseToOrder) {
+                this.addMissingDecisionMatrixRowsAfterMove(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhase);
+            } else {
+                this.removeRedundantDecisionMatrixRows(trainingPhaseFromOrder, trainingPhaseFromOrder + 1, trainingPhase);
+            }
+            currentPhaseOrder++;
+        }
+        this.updateMatricesOfSubsequentTrainingPhasesLowerToUpper(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
+    }
+
+    private void alignDecisionMatricesUpperToLower(int trainingPhaseFromOrder, int trainingPhaseToOrder, List<TrainingPhase> trainingPhases) {
+        int currentPhaseOrder = trainingPhaseToOrder;
+
+        for (TrainingPhase trainingPhase : trainingPhases.subList(trainingPhaseToOrder, trainingPhaseFromOrder + 1)) {
+            if(currentPhaseOrder == trainingPhaseToOrder) {
+                this.removeRedundantDecisionMatrixRows(trainingPhaseToOrder, trainingPhaseFromOrder, trainingPhase);
+            } else {
+                this.addMissingDecisionMatrixRowsAfterMove(trainingPhaseToOrder, trainingPhaseToOrder + 1, trainingPhase);
+            }
+            currentPhaseOrder++;
+        }
+
+        this.updateMatricesOfSubsequentTrainingPhasesUpperToLower(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
+    }
+
+    private void updateMatricesOfSubsequentTrainingPhasesLowerToUpper(int fromOrder, int toOrder, List<TrainingPhase> trainingPhases) {
+        for(int j = toOrder + 1; j < trainingPhases.size(); j++) {
+            this.moveToIndex(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
+            this.decreaseRowOrdersByOne(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
+            trainingPhases.get(j).getDecisionMatrix().get(toOrder).incrementOrder(toOrder - fromOrder);
+        }
+    }
+
+    private void updateMatricesOfSubsequentTrainingPhasesUpperToLower(int fromOrder, int toOrder, List<TrainingPhase> trainingPhases) {
+        for(int j = fromOrder + 1; j < trainingPhases.size(); j++) {
+            this.moveToIndex(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
+            this.increaseRowOrdersByOne(toOrder + 1, fromOrder + 1, trainingPhases.get(j).getDecisionMatrix());
+            trainingPhases.get(j).getDecisionMatrix().get(toOrder).decrementOrder(fromOrder - toOrder);
+        }
+    }
+
+    private <T> void moveToIndex(int from, int to, List<T> list) {
+        T tmp = list.remove(from);
+        list.add(to, tmp);
+    }
+
+    private void decreaseRowOrdersByOne(int from, int to, List<DecisionMatrixRow> decisionMatrixRows) {
+        for(int k = from; k < to; k++) {
+            decisionMatrixRows.get(k).decrementOrder(1);
+        }
+    }
+
+    private void increaseRowOrdersByOne(int from, int to, List<DecisionMatrixRow> decisionMatrixRows) {
+        for(int k = from; k < to; k++) {
+            decisionMatrixRows.get(k).incrementOrder(1);
+        }
+    }
+
+    private void removeRedundantDecisionMatrixRows(int from, int to, TrainingPhase trainingPhase) {
+        List<DecisionMatrixRow> firstPartOfDecisionMatrix = new ArrayList<>(trainingPhase.getDecisionMatrix().subList(0, from));
+        List<DecisionMatrixRow> secondPartOfDecisionMatrix = new ArrayList<>(trainingPhase.getDecisionMatrix().subList(to, trainingPhase.getDecisionMatrix().size()));
+        secondPartOfDecisionMatrix.forEach(row -> row.setOrder(row.getOrder() - (to - from)));
+        firstPartOfDecisionMatrix.addAll(secondPartOfDecisionMatrix);
+        trainingPhase.getDecisionMatrix().clear();
+        trainingPhase.getDecisionMatrix().addAll(firstPartOfDecisionMatrix);
+    }
+
+    private void addMissingDecisionMatrixRowsAfterMove(int fromOrder, int toOrder, TrainingPhase trainingPhase) {
+        List<DecisionMatrixRow> missingMatrixRows = new ArrayList<>();
+        for (int i = fromOrder; i < toOrder; i++) {
+            DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
+            decisionMatrixRow.setTrainingPhase(trainingPhase);
+            decisionMatrixRow.setOrder(i);
+            missingMatrixRows.add(decisionMatrixRow);
+        }
+        trainingPhase.getDecisionMatrix().addAll(fromOrder, missingMatrixRows);
+        trainingPhase.getDecisionMatrix().subList(toOrder, trainingPhase.getDecisionMatrix().size()).forEach(row -> row.incrementOrder(toOrder - fromOrder));
+    }
+
+    public void alignDecisionMatrixAfterDelete(Long trainingDefinitionId) {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
 
         int currentPhaseOrder = 0;
+        int deletedPhaseOrder = 0;
         for (TrainingPhase trainingPhase : trainingPhases) {
-            alignDecisionMatrixForPhase(trainingPhase, currentPhaseOrder);
+            if (trainingPhase.getDecisionMatrix().size() - 1 != currentPhaseOrder) {
+                deletedPhaseOrder = currentPhaseOrder;
+                break;
+            }
             currentPhaseOrder++;
+        }
+        for (int i = currentPhaseOrder; i < trainingPhases.size(); i++) {
+            trainingPhases.get(i).getDecisionMatrix().remove(deletedPhaseOrder);
         }
     }
 
     private List<DecisionMatrixRow> prepareDefaultDecisionMatrix(Long trainingDefinitionId, TrainingPhase trainingPhase) {
         List<DecisionMatrixRow> result = new ArrayList<>();
-
         int numberOfExistingPhases = trainingPhaseRepository.getNumberOfExistingPhases(trainingDefinitionId);
-
         // number of rows should be equal to number of existing phase + 1
         for (int i = 0; i <= numberOfExistingPhases; i++) {
             DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
             decisionMatrixRow.setTrainingPhase(trainingPhase);
             decisionMatrixRow.setOrder(i);
-
             result.add(decisionMatrixRow);
         }
         return result;
-    }
-
-    private void alignDecisionMatrixForPhase(TrainingPhase trainingPhase, int currentPhaseOrder) {
-        if (Objects.isNull(trainingPhase)) {
-            return;
-        }
-
-        int numberOfRows = 0;
-        if (!CollectionUtils.isEmpty(trainingPhase.getDecisionMatrix())) {
-            numberOfRows = trainingPhase.getDecisionMatrix().size();
-        }
-
-        final int expectedNumberOfRows = currentPhaseOrder + 1;
-        if (numberOfRows == expectedNumberOfRows) {
-            return;
-        } else if (numberOfRows < expectedNumberOfRows) {
-            List<DecisionMatrixRow> newDecisionMatrixRows = getNewDecisionMatrixRows(numberOfRows, expectedNumberOfRows, trainingPhase);
-            trainingPhase.getDecisionMatrix().addAll(newDecisionMatrixRows);
-        } else {
-            List<DecisionMatrixRow> neededDecisionMatrixRows = getOnlyNeededDecisionMatrixRows(expectedNumberOfRows, trainingPhase);
-            trainingPhase.getDecisionMatrix().clear();
-            trainingPhase.getDecisionMatrix().addAll(neededDecisionMatrixRows);
-        }
-
-        trainingPhaseRepository.save(trainingPhase);
-    }
-
-    private List<DecisionMatrixRow> getNewDecisionMatrixRows(int currentNumberOfNewRows, int expectedNumberOfRows, TrainingPhase trainingPhase) {
-        List<DecisionMatrixRow> result = new ArrayList<>();
-        for (int i = currentNumberOfNewRows; i < expectedNumberOfRows; i++) {
-            DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
-            decisionMatrixRow.setTrainingPhase(trainingPhase);
-            decisionMatrixRow.setOrder(i);
-
-            result.add(decisionMatrixRow);
-        }
-        return result;
-    }
-
-    private List<DecisionMatrixRow> getOnlyNeededDecisionMatrixRows(int expectedNumberOfRows, TrainingPhase trainingPhase) {
-        List<DecisionMatrixRow> decisionMatrix = trainingPhase.getDecisionMatrix();
-        return decisionMatrix.stream()
-                .sorted(Comparator.comparingInt(DecisionMatrixRow::getOrder))
-                .limit(expectedNumberOfRows)
-                .collect(Collectors.toList());
-
     }
 
     private TrainingDefinition findDefinitionById(Long id) {

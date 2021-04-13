@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
@@ -98,11 +99,30 @@ public class PhaseService {
             abstractPhaseRepository.decreaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), fromOrder, newPosition);
         }
         phaseFrom.setOrder(newPosition);
+        if (phaseFrom instanceof TrainingPhase) {
+            List<AbstractPhase> abstractPhases = getPhases(phaseFrom.getTrainingDefinition().getId());
+            int trainingPhaseFromOrder = this.getTrainingPhaseOrder(fromOrder, abstractPhases);
+            int trainingPhaseToOrder = this.getTrainingPhaseOrder(newPosition, abstractPhases);
+            trainingPhaseService.alignDecisionMatrixOfTrainingPhasesAfterMove(phaseFrom.getTrainingDefinition().getId(), trainingPhaseFromOrder, trainingPhaseToOrder);
+        }
         abstractPhaseRepository.save(phaseFrom);
-        trainingPhaseService.alignDecisionMatrixForPhasesInTrainingDefinition(phaseFrom.getTrainingDefinition().getId());
+
     }
 
     private LocalDateTime getCurrentTimeInUTC() {
         return LocalDateTime.now(Clock.systemUTC());
+    }
+
+    private int getTrainingPhaseOrder(int phaseOrder, List<AbstractPhase> abstractPhases) {
+        int trainingPhaseCounter = 0;
+        for (AbstractPhase abstractPhase : abstractPhases) {
+            if (abstractPhase.getOrder() == phaseOrder) {
+                return abstractPhase instanceof TrainingPhase ? trainingPhaseCounter : trainingPhaseCounter - 1;
+            }
+            if (abstractPhase instanceof TrainingPhase) {
+                trainingPhaseCounter++;
+            }
+        }
+        return -1;
     }
 }

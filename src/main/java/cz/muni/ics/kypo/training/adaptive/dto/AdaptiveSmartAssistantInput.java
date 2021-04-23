@@ -1,13 +1,9 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,7 +17,7 @@ public class AdaptiveSmartAssistantInput {
     private Long phaseX;
     @ApiModelProperty(value = "The number of tasks in a phase X.", example = "3")
     private Integer phaseXTasks;
-    @ApiModelProperty(value = "The list of phaseIds (the given phase including the given phases).", example = "[1,2,3,4,5]")
+    @ApiModelProperty(value = "The list of phaseIds (phaseX and previous phases).", example = "[1,2,3,4,5]")
     private List<Long> phaseIds = new ArrayList<>();
     @ApiModelProperty(value = "The decision matrix with weights to compute the students' performance.")
     private List<DecisionMatrixRowForAssistantDTO> decisionMatrix = new ArrayList<>();
@@ -89,7 +85,6 @@ public class AdaptiveSmartAssistantInput {
                 "trainingRunId=" + trainingRunId +
                 ", phaseX=" + phaseX +
                 ", phaseXTasks=" + phaseXTasks +
-                ", phaseIds=" + phaseIds +
                 ", decisionMatrix=" + decisionMatrix +
                 '}';
     }

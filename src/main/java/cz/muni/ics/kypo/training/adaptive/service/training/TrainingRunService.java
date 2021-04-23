@@ -11,8 +11,8 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
+import cz.muni.ics.kypo.training.adaptive.dto.RelatedPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
-import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
 import cz.muni.ics.kypo.training.adaptive.repository.*;
@@ -25,7 +25,6 @@ import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SmartAssistantServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +37,7 @@ import org.springframework.transaction.annotation.Propagation;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -286,10 +282,19 @@ public class TrainingRunService {
             decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
             decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
             decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
-            decisionMatrixRowForAssistantDTO.setQuestionnaireCorrectlyAnswered(questionnairesFulfillment.get(row.getOrder()).isFulfilled());
-            decisionMatrixRowForAssistantDTO.setRelatedPhaseId(orderedTrainingPhases.get(row.getOrder()).getId());
+            decisionMatrixRowForAssistantDTO.setRelatedPhaseInfo(getPhaseInfo(orderedTrainingPhases.get(row.getOrder()), questionnairesFulfillment.get(row.getOrder()).isFulfilled()));
             return decisionMatrixRowForAssistantDTO;
         }).collect(Collectors.toList());
+    }
+
+    private RelatedPhaseInfoDTO getPhaseInfo(AbstractPhase abstractPhase, Boolean trainingPhaseQuestionsFulfillment) {
+        RelatedPhaseInfoDTO relatedPhaseInfoDTO = new RelatedPhaseInfoDTO();
+        relatedPhaseInfoDTO.setId(abstractPhase.getId());
+        if (abstractPhase instanceof TrainingPhase) {
+            relatedPhaseInfoDTO.setCorrectlyAnsweredRelatedQuestions(trainingPhaseQuestionsFulfillment);
+            relatedPhaseInfoDTO.setEstimatedPhaseTime(((TrainingPhase) abstractPhase).getEstimatedDuration());
+        }
+        return relatedPhaseInfoDTO;
     }
 
     private ParticipantTaskAssignment prepareDataForSankeyGraph(TrainingRun trainingRun, AbstractPhase nextPhase) {

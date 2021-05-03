@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 @ApiModel(
@@ -23,7 +24,7 @@ public abstract class AbstractQuestionDTO {
     @NotNull(message = "Question type must be specified")
     private QuestionType questionType;
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
-    private List<QuestionChoiceDTO> choices;
+    private List<QuestionChoiceDTO> choices = new ArrayList<>();
 
     public int getOrder() {
         return order;

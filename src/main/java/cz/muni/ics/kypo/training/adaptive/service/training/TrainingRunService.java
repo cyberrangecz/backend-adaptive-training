@@ -567,7 +567,7 @@ public class TrainingRunService {
      * @throws EntityNotFoundException training run is not found.
      */
     public void finishTrainingRun(Long trainingRunId) {
-        TrainingRun trainingRun = findById(trainingRunId);
+        TrainingRun trainingRun = findByIdWithPhase(trainingRunId);
         int maxOrder = abstractPhaseRepository.getCurrentMaxOrder(trainingRun.getCurrentPhase().getTrainingDefinition().getId());
         if (trainingRun.getCurrentPhase().getOrder() != maxOrder) {
             throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", trainingRunId.getClass(), trainingRunId,

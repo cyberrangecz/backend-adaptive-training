@@ -14,7 +14,7 @@ import java.util.Objects;
         subTypes = {TrainingPhaseDTO.class, InfoPhaseDTO.class, QuestionnairePhaseDTO.class},
         description = "Abstract superclass for classes TrainingPhaseDTO, InfoPhaseDTO and QuestionnairePhaseDTO"
 )
-public abstract class AbstractPhaseDTO {
+public class AbstractPhaseDTO {
 
     @ApiModelProperty(value = "ID of task", required = true, example = "1")
     private Long id;

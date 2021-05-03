@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 @ApiModel(
@@ -17,10 +18,10 @@ public class QuestionnaireUpdateDTO {
     private String title;
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)
-    private List<QuestionDTO> questions;
+    private List<QuestionDTO> questions = new ArrayList<>();
     @Valid
     @ApiModelProperty(value = "The relation between questions in the questionnaire and phase in the training definition", required = true)
-    private List<QuestionPhaseRelationDTO> phaseRelations;
+    private List<QuestionPhaseRelationDTO> phaseRelations = new ArrayList<>();
 
     public String getTitle() {
         return title;

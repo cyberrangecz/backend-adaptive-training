@@ -22,11 +22,19 @@ import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.LockedPoolInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PoolInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxPoolInfo;
+import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionDTO;
@@ -68,15 +76,28 @@ public class TestDataFactory {
 
     private Question freeFormQuestion = generateQuestion("Free form question", 0, QuestionType.FFQ);
     private Question multipleChoiceQuestion = generateQuestion("Multiple choice question", 1, QuestionType.MCQ);
-    private Question ratingFormQuestion = generateQuestion("Rating form question", 0, QuestionType.RFQ);
+    private Question ratingFormQuestion = generateQuestion("Rating form question", 2, QuestionType.RFQ);
 
     private QuestionChoice correctQuestionChoice = generateQuestionChoice(CORRECT_QUESTION_CHOICE, 0, true);
     private QuestionChoice incorrectQuestionChoice = generateQuestionChoice(WRONG_QUESTION_CHOICE, 1, false);
     private QuestionChoice anotherCorrectQuestionChoice = generateQuestionChoice(ANOTHER_CORRECT_QUESTION_CHOICE, 2, true);
 
+    private QuestionnaireUpdateDTO questionnaireUpdateDTO = generateQuestionnaireUpdateDTO("Updated questionnaire phase title");
+    private QuestionDTO freeFormQuestionDTO = generateQuestionDTO("Free form question", 0, QuestionType.FFQ);
+    private QuestionDTO multipleChoiceQuestionDTO = generateQuestionDTO("Multiple choice question", 1, QuestionType.MCQ);
+    private QuestionDTO ratingFormQuestionDTO = generateQuestionDTO("Rating form question", 2, QuestionType.RFQ);
+
+    private QuestionChoiceDTO correctQuestionChoiceDTO = generateQuestionChoiceDTO(CORRECT_QUESTION_CHOICE, 0, true);
+    private QuestionChoiceDTO incorrectQuestionChoiceDTO = generateQuestionChoiceDTO(WRONG_QUESTION_CHOICE, 1, false);
+    private QuestionChoiceDTO anotherCorrectQuestionChoiceDTO = generateQuestionChoiceDTO(ANOTHER_CORRECT_QUESTION_CHOICE, 2, true);
+
     private TrainingPhase trainingPhase1 = generateTrainingPhase("First Game Level", 100, 0, 3, 5);
     private TrainingPhase trainingPhase2 = generateTrainingPhase("Second Game Level", 100, 1, 3, 5);
     private TrainingPhase trainingPhase3 = generateTrainingPhase("Third Game Level", 100, 2, 3, 5);
+
+    private TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = generateTrainingPhaseUpdateDTO("Updated training phase title", 20, 5, 10);
+
+    private DecisionMatrixRowDTO decisionMatrixRowDTO1 = generateDecisionMatrixRowDTO(0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
     public Task getTask11() { return clone(task11, Task.class);}
     public Task getTask12() { return clone(task12, Task.class);}
@@ -88,8 +109,13 @@ public class TestDataFactory {
     public Task getTask32() { return clone(task32, Task.class);}
     public Task getTask33() { return clone(task33, Task.class);}
 
+    public TaskUpdateDTO getTaskUpdateDTO() { return clone(taskUpdateDTO, TaskUpdateDTO.class);}
+    public TaskCopyDTO getTaskCopyDTO() { return clone(taskCopyDTO, TaskCopyDTO.class);}
+
     private InfoPhase infoPhase1 = generateInfoPhase("Info phase 1", 7,  "Information");
     private InfoPhase infoPhase2 = generateInfoPhase("Info phase 2", 9,  "Content");
+
+    private InfoPhaseUpdateDTO infoPhaseUpdateDTO = generateInfoPhaseUpdateDTO("Updated info phase title", "Updated info phase content");
 
     private BasicPhaseInfoDTO basicTrainingPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Game phase info", PhaseType.TRAINING);
     private BasicPhaseInfoDTO basicInfoPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Info phase info", PhaseType.INFO);
@@ -218,6 +244,34 @@ public class TestDataFactory {
         return questionAnswerDTO;
     }
 
+    public QuestionnaireUpdateDTO getQuestionnaireUpdateDTO() {
+        return clone(questionnaireUpdateDTO, QuestionnaireUpdateDTO.class);
+    }
+
+    public QuestionDTO getFreeFormQuestionDTO() {
+        return clone(freeFormQuestionDTO, QuestionDTO.class);
+    }
+
+    public QuestionDTO getMultipleChoiceQuestionDTO() {
+        return clone(multipleChoiceQuestionDTO, QuestionDTO.class);
+    }
+
+    public QuestionDTO getRatingFormQuestionDTO() {
+        return clone(ratingFormQuestionDTO, QuestionDTO.class);
+    }
+
+    public QuestionChoiceDTO getCorrectQuestionChoiceDTO() {
+        return clone(correctQuestionChoiceDTO, QuestionChoiceDTO.class);
+    }
+
+    public QuestionChoiceDTO getIncorrectQuestionChoiceDTO() {
+        return clone(incorrectQuestionChoiceDTO, QuestionChoiceDTO.class);
+    }
+
+    public QuestionChoiceDTO getAnotherCorrectQuestionChoiceDTO() {
+        return clone(anotherCorrectQuestionChoiceDTO, QuestionChoiceDTO.class);
+    }
+
     public TrainingPhase getTrainingPhase1(){
         return clone(trainingPhase1, TrainingPhase.class);
     }
@@ -228,22 +282,37 @@ public class TestDataFactory {
         return clone(trainingPhase3, TrainingPhase.class);
     }
 
-    private Task task11 = generateTask("Task11", "Content of task11", 0, "answer11", 2, true, 20);
-    private Task task12 = generateTask("Task12", "Content of task12", 1, "answer12", 5, false, 15);
-    private Task task13 = generateTask("Task13", "Content of task13", 2, "answer13", 4, true, 10);
-    private Task task21 = generateTask("Task21", "Content of task21", 0, "answer21", 2, true, 35);
-    private Task task22 = generateTask("Task22", "Content of task22", 1, "answer22", 3, false, 22);
-    private Task task23 = generateTask("Task23", "Content of task23", 2, "answer23", 5, false, 50);
-    private Task task31 = generateTask("Task31", "Content of task31", 0, "answer31", 9, true, 60);
-    private Task task32 = generateTask("Task32", "Content of task32", 1, "answer32", 5, false, 40);
-    private Task task33 = generateTask("Task33", "Content of task33", 2, "answer33", 3, true, 20);
+    public TrainingPhaseUpdateDTO getTrainingPhaseUpdateDTO() {
+        return clone(trainingPhaseUpdateDTO, TrainingPhaseUpdateDTO.class);
+    }
 
-    public InfoPhase getInfoLevel1(){
+    public DecisionMatrixRowDTO getDecisionMatrixRowDTO1() {
+        return clone(decisionMatrixRowDTO1, DecisionMatrixRowDTO.class);
+    }
+
+    private Task task11 = generateTask("Task11", "Content of task11", 0, "answer11","solution11", 2, true, 20);
+    private Task task12 = generateTask("Task12", "Content of task12", 1, "answer12", "solution12", 5, false, 15);
+    private Task task13 = generateTask("Task13", "Content of task13", 2, "answer13", "solution13", 4, true, 10);
+    private Task task21 = generateTask("Task21", "Content of task21", 0, "answer21", "solution21", 2, true, 35);
+    private Task task22 = generateTask("Task22", "Content of task22", 1, "answer22", "solution22", 3, false, 22);
+    private Task task23 = generateTask("Task23", "Content of task23", 2, "answer23", "solution23", 5, false, 50);
+    private Task task31 = generateTask("Task31", "Content of task31", 0, "answer31", "solution31", 9, true, 60);
+    private Task task32 = generateTask("Task32", "Content of task32", 1, "answer32", "solution32", 5, false, 40);
+    private Task task33 = generateTask("Task33", "Content of task33", 2, "answer33", "solution33", 3, true, 20);
+
+    private TaskUpdateDTO taskUpdateDTO = generateTaskUpdateDTO("Updated task title", "Updated task content", "Updated answer","Updated solution", 10, false, 10);
+    private TaskCopyDTO taskCopyDTO = generateTaskCopyDTO("Copied task title", "Copied task content", "Copied answer","Copied solution", 5, true, 20);
+
+    public InfoPhase getInfoPhase1(){
         return clone(infoPhase1, InfoPhase.class);
     }
 
-    public InfoPhase getInfoLevel2(){
+    public InfoPhase getInfoPhase2(){
         return clone(infoPhase2 , InfoPhase.class);
+    }
+
+    public InfoPhaseUpdateDTO getInfoPhaseUpdateDTO() {
+        return clone(infoPhaseUpdateDTO, InfoPhaseUpdateDTO.class);
     }
 
     public AccessToken getAccessToken1(){
@@ -412,6 +481,33 @@ public class TestDataFactory {
         return newInfoPhase;
     }
 
+    private InfoPhaseUpdateDTO generateInfoPhaseUpdateDTO(String title, String content) {
+        InfoPhaseUpdateDTO infoPhaseUpdateDTO = new InfoPhaseUpdateDTO();
+        infoPhaseUpdateDTO.setTitle(title);
+        infoPhaseUpdateDTO.setContent(content);
+        return infoPhaseUpdateDTO;
+    }
+
+    private TrainingPhaseUpdateDTO generateTrainingPhaseUpdateDTO(String title, int allowedCommands, int allowedWrongAnswers, int estimatedDuration) {
+        TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = new TrainingPhaseUpdateDTO();
+        trainingPhaseUpdateDTO.setTitle(title);
+        trainingPhaseUpdateDTO.setAllowedCommands(allowedCommands);
+        trainingPhaseUpdateDTO.setAllowedWrongAnswers(allowedWrongAnswers);
+        trainingPhaseUpdateDTO.setEstimatedDuration(estimatedDuration);
+        return trainingPhaseUpdateDTO;
+    }
+
+    private DecisionMatrixRowDTO generateDecisionMatrixRowDTO(int order, double completedInTime, double keywordUser, double questionnaireAnswered, double solutionDisplayed, double wrongAnswers) {
+        DecisionMatrixRowDTO decisionMatrixRowDTO = new DecisionMatrixRowDTO();
+        decisionMatrixRowDTO.setOrder(order);
+        decisionMatrixRowDTO.setCompletedInTime(completedInTime);
+        decisionMatrixRowDTO.setKeywordUsed(keywordUser);
+        decisionMatrixRowDTO.setQuestionnaireAnswered(questionnaireAnswered);
+        decisionMatrixRowDTO.setSolutionDisplayed(solutionDisplayed);
+        decisionMatrixRowDTO.setWrongAnswers(wrongAnswers);
+        return decisionMatrixRowDTO;
+    }
+
     private Question generateQuestion(String text, int order, QuestionType questionType) {
         Question newQuestion = new Question();
         newQuestion.setText(text);
@@ -428,22 +524,69 @@ public class TestDataFactory {
         return newQuestionChoice;
     }
 
+    private QuestionnaireUpdateDTO generateQuestionnaireUpdateDTO(String title) {
+        QuestionnaireUpdateDTO questionnaireUpdateDTO = new QuestionnaireUpdateDTO();
+        questionnaireUpdateDTO.setTitle(title);
+        return questionnaireUpdateDTO;
+    }
+
+    private QuestionDTO generateQuestionDTO(String text, int order, QuestionType questionType) {
+        QuestionDTO questionDTO = new QuestionDTO();
+        questionDTO.setText(text);
+        questionDTO.setOrder(order);
+        questionDTO.setQuestionType(questionType);
+        return questionDTO;
+    }
+
+    private QuestionChoiceDTO generateQuestionChoiceDTO(String text, int order, boolean correct) {
+        QuestionChoiceDTO questionChoiceDTO = new QuestionChoiceDTO();
+        questionChoiceDTO.setText(text);
+        questionChoiceDTO.setOrder(order);
+        questionChoiceDTO.setCorrect(correct);
+        return questionChoiceDTO;
+    }
+
     private AccessToken generateAccessToken(String accessToken){
         AccessToken newAccessToken = new AccessToken();
         newAccessToken.setAccessToken(accessToken);
         return newAccessToken;
     }
 
-    private Task generateTask(String title, String content, Integer order, String answer, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+    private Task generateTask(String title, String content, Integer order, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
         Task newTask = new Task();
         newTask.setTitle(title);
         newTask.setContent(content);
         newTask.setOrder(order);
         newTask.setAnswer(answer);
+        newTask.setSolution(solution);
         newTask.setIncorrectAnswerLimit(incorrectAnswerLimit);
         newTask.setModifySandbox(modifySandbox);
         newTask.setSandboxChangeExpectedDuration(sandboxChangeExpectedDuration);
         return newTask;
+    }
+
+    private TaskUpdateDTO generateTaskUpdateDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+        TaskUpdateDTO taskUpdateDTO = new TaskUpdateDTO();
+        taskUpdateDTO.setTitle(title);
+        taskUpdateDTO.setContent(content);
+        taskUpdateDTO.setAnswer(answer);
+        taskUpdateDTO.setSolution(solution);
+        taskUpdateDTO.setIncorrectAnswerLimit(incorrectAnswerLimit);
+        taskUpdateDTO.setModifySandbox(modifySandbox);
+        taskUpdateDTO.setSandboxChangeExpectedDuration(sandboxChangeExpectedDuration);
+        return taskUpdateDTO;
+    }
+
+    private TaskCopyDTO generateTaskCopyDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+        TaskCopyDTO taskCopyDTO = new TaskCopyDTO();
+        taskCopyDTO.setTitle(title);
+        taskCopyDTO.setContent(content);
+        taskCopyDTO.setAnswer(answer);
+        taskCopyDTO.setSolution(solution);
+        taskCopyDTO.setIncorrectAnswerLimit(incorrectAnswerLimit);
+        taskCopyDTO.setModifySandbox(modifySandbox);
+        taskCopyDTO.setSandboxChangeExpectedDuration(sandboxChangeExpectedDuration);
+        return taskCopyDTO;
     }
 
     private TrainingDefinition generateTrainingDefinition(String title, String description, String[] prerequisites,

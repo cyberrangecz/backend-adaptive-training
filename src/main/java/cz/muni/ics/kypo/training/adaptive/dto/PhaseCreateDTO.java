@@ -17,7 +17,7 @@ import java.util.Objects;
 public class PhaseCreateDTO {
 
     @ApiModelProperty(value = "Type of phase.", required = true, allowableValues = "QUESTIONNAIRE, INFO, TRAINING", example = "TRAINING")
-    @NotNull(message = "Phase type must be specified")
+    @NotNull(message = "{phase.phaseType.NotNull.message}")
     private PhaseType phaseType;
 
     @ApiModelProperty(value = "Type of questionnaire.", allowableValues = "ADAPTIVE, GENERAL", example = "ADAPTIVE")

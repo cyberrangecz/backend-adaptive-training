@@ -14,13 +14,13 @@ public class QuestionChoiceDTO {
     @ApiModelProperty(value = "Question choice ID. Leave blank if new choice is added", required = true, example = "1")
     private Long id;
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")
-    @NotEmpty(message = "Task title must not be blank")
+    @NotEmpty(message = "{questionChoice.text.NotEmpty.message}")
     private String text;
     @ApiModelProperty(value = "It defines whether this answer is correct or not", required = true, example = "true")
-    @NotNull(message = "It must be specified whether a question choice is correct")
+    @NotNull(message = "{questionChoice.correct.NotNull.message}")
     private Boolean correct;
     @ApiModelProperty(value = "Order of question choice", required = true, example = "0")
-    @NotNull(message = "Question choice order must be specified")
+    @NotNull(message = "{questionChoice.order.NotNull.message}")
     private Integer order;
 
     public Long getId() {

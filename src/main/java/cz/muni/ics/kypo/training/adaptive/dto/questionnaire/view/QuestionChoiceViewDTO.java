@@ -2,8 +2,6 @@ package cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view;
 
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class QuestionChoiceViewDTO {
@@ -11,10 +9,8 @@ public class QuestionChoiceViewDTO {
     @ApiModelProperty(value = "Question choice ID. Leave blank if new choice is added", required = true, example = "1")
     private Long id;
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")
-    @NotEmpty(message = "Task title must not be blank")
     private String text;
     @ApiModelProperty(value = "Order of question choice", required = true, example = "0")
-    @NotNull(message = "Question choice order must be specified")
     private Integer order;
 
     public Long getId() {

@@ -12,7 +12,7 @@ import java.util.Set;
 public class QuestionAnswerDTO {
 
     @ApiModelProperty(value = "ID of answered question", example = "1")
-    @NotNull(message = "ID of the answered question must not be null")
+    @NotNull(message = "{questionAnswer.questionId.NotNull.message}")
     private Long questionId;
     @ApiModelProperty(value = "Answer to the question", example = "[\"An answer\"]")
     private Set<String> answers;

@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 import java.util.Set;
 @ApiModel(
@@ -14,21 +13,20 @@ import java.util.Set;
 )
 public class QuestionPhaseRelationImportDTO {
 
-    @ApiModelProperty(value = "Order of question", required = true, example = "0"
-    )
-    @NotNull(message = "{questionnairePhaseRelation.order.NotNull.message}")
-    @Min(value = 0, message = "{questionnairePhaseRelation.order.Min.message}")
+    @ApiModelProperty(value = "Order of question", required = true, example = "0")
+    @NotNull(message = "{questionPhaseRelation.order.NotNull.message}")
+    @Min(value = 0, message = "{questionPhaseRelation.order.Min.message}")
     private Integer order;
     @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1", position = 1)
-    @NotNull(message = "{questionnairePhaseRelation.phaseOrder.NotNull.message}")
-    @Min(value = 0, message = "{questionnairePhaseRelation.phaseOrder.Min.message}")
+    @NotNull(message = "{questionPhaseRelation.phaseOrder.NotNull.message}")
+    @Min(value = 0, message = "{questionPhaseRelation.phaseOrder.Min.message}")
     private Integer phaseOrder;
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50", position = 2)
-    @Min(value = 0, message = "{questionnairePhaseRelation.successRate.Min.message}")
-    @Max(value = 100, message = "{questionnairePhaseRelation.successRate.Max.message}")
+    @Min(value = 0, message = "{questionPhaseRelation.successRate.Min.message}")
+    @Max(value = 100, message = "{questionPhaseRelation.successRate.Max.message}")
     private int successRate;
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire", position = 3)
-    @NotNull(message = "{questionnairePhaseRelation.questionOrders.NotNull.message}")
+    @NotNull(message = "{questionPhaseRelation.questionOrders.NotNull.message}")
     private Set<Integer> questionOrders;
 
     public Integer getOrder() {

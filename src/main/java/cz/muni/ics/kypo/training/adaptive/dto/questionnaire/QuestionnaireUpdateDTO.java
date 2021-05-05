@@ -14,7 +14,7 @@ import java.util.Objects;
 public class QuestionnaireUpdateDTO {
 
     @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")
-    @NotEmpty(message = "Questionnaire title must not be blank")
+    @NotEmpty(message = "{questionnairePhase.title.NotEmpty.message}")
     private String title;
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
 )
 public class TrainingPhaseImportDTO extends AbstractPhaseImportDTO {
 
-    @ApiModelProperty(value = "Estimated time it takes to finish the phase (in seconds).", example = "50")
+    @ApiModelProperty(value = "Estimated time it takes to finish the phase (in minutes).", example = "50")
     @Min(value = 0, message = "{trainingPhase.estimatedDuration.Size.message}")
     private int estimatedDuration;
     @ApiModelProperty(value = "Number of allowed commands that can be used to solve the task (used for data analysis).", example = "10", position = 1)
@@ -33,6 +34,7 @@ public class TrainingPhaseImportDTO extends AbstractPhaseImportDTO {
     private List<TaskImportDTO> tasks = new ArrayList<>();
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true, position = 4)
     @Valid
+    @NotEmpty(message = "{trainingPhase.decisionMatrix.NotEmpty.message}")
     private List<DecisionMatrixRowImportDTO> decisionMatrix;
 
     /**

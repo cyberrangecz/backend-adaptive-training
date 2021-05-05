@@ -4,8 +4,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,20 +18,23 @@ import java.util.Objects;
 public class TrainingPhaseUpdateDTO {
 
     @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
-    @NotEmpty(message = "Training phase title must not be blank")
+    @NotEmpty(message = "{trainingPhase.title.NotEmpty.message}")
     private String title;
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10", position = 1)
-    @NotNull(message = "Maximal number of allowed wrong answers must be set")
+    @NotNull(message = "{trainingPhase.allowedWrongAnswers.NotNull.message}")
+    @Min(value = 0, message = "{trainingPhase.allowedWrongAnswers.Min.message}")
     private Integer allowedWrongAnswers;
     @ApiModelProperty(value = "Maximal number of allowed commands provided by played", required = true, example = "10", position = 2)
-    @NotNull(message = "Maximal number of allowed commands must be set")
+    @NotNull(message = "{trainingPhase.allowedCommands.NotNull.message}")
+    @Min(value = 0, message = "{trainingPhase.allowedCommands.Min.message}")
     private Integer allowedCommands;
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to solve the training phase", example = "20", position = 3)
-    @NotNull(message = "Estimated duration of training phase must be set")
+    @NotNull(message = "{trainingPhase.estimatedDuration.NotNull.message}")
+    @Min(value = 0, message = "{trainingPhase.estimatedDuration.Min.message}")
     private Integer estimatedDuration;
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true, position = 4)
     @Valid
-    @NotNull(message = "Decision matrix of training phase must be set")
+    @NotEmpty(message = "{trainingPhase.decisionMatrix.NotEmpty.message}")
     private List<DecisionMatrixRowDTO> decisionMatrix;
 
     public String getTitle() {

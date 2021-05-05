@@ -32,7 +32,7 @@ public class TaskImportDTO {
     @NotEmpty(message = "{task.solution.NotEmpty.message}")
     private String solution;
     @ApiModelProperty(value = "How many times player can submit incorrect answer before displaying solution.", example = "5", position = 5)
-    @NotNull(message = "{task.incorrectAnswerLimit.NotEmpty.message}")
+    @NotNull(message = "{task.incorrectAnswerLimit.NotNull.message}")
     @Min(value = 0, message = "{task.incorrectAnswerLimit.Min.message}")
     @Max(value = 100, message = "{task.incorrectAnswerLimit.Max.message}")
     private int incorrectAnswerLimit;

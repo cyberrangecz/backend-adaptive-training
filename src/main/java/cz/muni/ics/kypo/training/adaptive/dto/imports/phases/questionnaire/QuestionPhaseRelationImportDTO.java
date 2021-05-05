@@ -28,8 +28,7 @@ public class QuestionPhaseRelationImportDTO {
     @Max(value = 100, message = "{questionnairePhaseRelation.successRate.Max.message}")
     private int successRate;
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire", position = 3)
-    @NotNull(message = "{questionnairePhaseRelation.questionIds.NotNull.message}")
-    @Size(min = 1, message = "{questionnairePhaseRelation.questionIds.Size.message}")
+    @NotNull(message = "{questionnairePhaseRelation.questionOrders.NotNull.message}")
     private Set<Integer> questionOrders;
 
     public Integer getOrder() {

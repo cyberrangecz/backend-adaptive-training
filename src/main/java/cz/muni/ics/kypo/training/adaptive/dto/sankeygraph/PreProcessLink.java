@@ -37,6 +37,22 @@ public class PreProcessLink {
 
     public PreProcessLink(Integer source,
                           Integer target,
+                          Long targetTaskId,
+                          Integer targetPhaseOrder,
+                          Long value) {
+        this(source, target, null, targetTaskId,  null, targetPhaseOrder, value);
+    }
+
+    public PreProcessLink(Integer source,
+                          Long sourceTaskId,
+                          Integer sourcePhaseOrder,
+                          Integer target,
+                          Long value) {
+        this(source, target, sourceTaskId, null,  sourcePhaseOrder, null, value);
+    }
+
+    public PreProcessLink(Integer source,
+                          Integer target,
                           Long value) {
         this(source, target, null, null,  null, null, value);
     }

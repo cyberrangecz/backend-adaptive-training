@@ -19,67 +19,132 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+/**
+ * The Visualization service for adaptive training.
+ */
 @Service
 public class VisualizationService {
 
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
     private final TrainingPhaseRepository trainingPhaseRepository;
 
+    /**
+     * Instantiates a new Visualization service.
+     *
+     * @param participantTaskAssignmentRepository the participant task assignment repository
+     * @param trainingPhaseRepository             the training phase repository
+     */
     public VisualizationService(ParticipantTaskAssignmentRepository participantTaskAssignmentRepository,
                                 TrainingPhaseRepository trainingPhaseRepository) {
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
     }
 
+
+    /**
+     * Gets sankey graph. To visualize sankey graph, the list of nodes and links must be defined.
+     *
+     * @param trainingInstance the training instance
+     * @return the sankey graph data
+     */
     public SankeyGraphDTO getSankeyGraph(TrainingInstance trainingInstance) {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
-        if (trainingPhases.isEmpty()) {
-            return new SankeyGraphDTO();
-        }
         List<NodeDTO> nodes = participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
-        List<PreProcessLink> preProcessedLinks = this.getAllTasksTransitions(trainingInstance, trainingPhases);
-        this.addSourcesAndTargetsToLinks(preProcessedLinks, nodes);
+        if (trainingPhases.isEmpty() || nodes.isEmpty()) {
+            return new SankeyGraphDTO(List.of( new NodeDTO(null, null, null, null, -1, null)), new ArrayList<>());
+        }
+        List<PreProcessLink> preProcessedLinks = this.getAllTasksTransitions(trainingInstance, trainingPhases, nodes);
         this.addLinksFromStartNode(preProcessedLinks, nodes);
-        this.addLinksToNextNotVisitedPhase(preProcessedLinks, nodes, trainingPhases);
-
+        if (nodes.get(nodes.size() - 1).getPhaseOrder().equals(trainingPhases.get(trainingPhases.size() - 1).getOrder())) {
+            this.addLinksToFinishNode(preProcessedLinks, nodes);
+        } else {
+            this.addLinksToNextNotVisitedPhase(preProcessedLinks, nodes);
+        }
+        this.addEmptyLinksFromInnerNodes(preProcessedLinks);
+        this.addStartNodeAndNextNotVisitedPhaseNode(nodes, trainingPhases);
         List<LinkDTO> resultLinks = preProcessedLinks.stream()
                 .map(link -> new LinkDTO(link.getSource(), link.getTarget(), link.getValue()))
                 .collect(Collectors.toList());
-
-        this.addEmptyLinksFromInnerNodes(resultLinks, preProcessedLinks);
-        this.addStartNodeAndNextNotVisitedPhaseNode(nodes, trainingPhases);
         return new SankeyGraphDTO(nodes, resultLinks);
     }
 
+    /**
+     * Obtain all task transitions between specified training phases.
+     *
+     * @param trainingInstance the training instance
+     * @param trainingPhases training phases between which transitions are to be obtained
+     * @param nodes list of ordered visited tasks
+     * @return the list of links with complement info
+     */
+    private List<PreProcessLink> getAllTasksTransitions(TrainingInstance trainingInstance, List<TrainingPhase> trainingPhases, List<NodeDTO> nodes) {
+        Long definitionId = trainingInstance.getTrainingDefinition().getId();
+        List<PreProcessLink> preProcessedLinks = new ArrayList<>();
+        for (int i = 1; i < trainingPhases.size(); i++) {
+            preProcessedLinks.addAll(participantTaskAssignmentRepository.findTaskTransitionsBetweenTwoPhases(definitionId, trainingInstance.getId(),
+                    trainingPhases.get(i-1).getId(), trainingPhases.get(i).getId()));
+            if (preProcessedLinks.isEmpty()) {
+                break;
+            }
+        }
+        this.addSourcesAndTargetsToLinks(preProcessedLinks, nodes);
+        return preProcessedLinks;
+    }
+
+    /**
+     * Set source and target attributes of the obtained links. Source/target is the order of the task in list of nodes.
+     *
+     * @param preProcessedLinks obtained links between training phases
+     * @param nodes list of ordered visited tasks
+     */
+    private void addSourcesAndTargetsToLinks(List<PreProcessLink> preProcessedLinks, List<NodeDTO> nodes) {
+        AtomicInteger index = new AtomicInteger();
+        Map<Long, Integer> orderedVisitedTasksIds = nodes.stream()
+                .collect(Collectors.toMap(NodeDTO::getTaskId, tuple -> index.getAndIncrement()));
+        preProcessedLinks.forEach(link -> {
+            link.setSource(orderedVisitedTasksIds.get(link.getSourceTaskId()) + 1);
+            link.setTarget(orderedVisitedTasksIds.get(link.getTargetTaskId()) + 1);
+        });
+    }
+
+    /**
+     * Add links from the start node to other tasks in the first training phase.
+     *
+     * @param preProcessedLinks obtained links between training phases
+     * @param visitedNodes list of ordered visited tasks
+     */
     private void addLinksFromStartNode(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
         Long firstPhaseId = visitedNodes.get(0).getPhaseId();
-        Integer firstPhaseOrder = visitedNodes.get(0).getPhaseOrder();
         Map<Long, Long> numberOfParticipantsInTaskOfFirstPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(firstPhaseId);
         List<PreProcessLink> linksToAdd = new ArrayList<>();
         int nodeIndex = 1;
         for (NodeDTO visitedNode : visitedNodes) {
-            if (!visitedNode.getPhaseOrder().equals(firstPhaseOrder)) {
+            if (!visitedNode.getPhaseId().equals(firstPhaseId)) {
                 break;
             }
             Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTaskOfFirstPhase.get(visitedNode.getTaskId())).orElse(0L);
             Long participantsFinishedTask = preProcessedLinks.stream()
                     .filter(link -> link.getSourceTaskId().equals(visitedNode.getTaskId()))
-                    .map(PreProcessLink::getValue)
-                    .reduce(0L, Long::sum);
-            linksToAdd.add(new PreProcessLink(0, nodeIndex, participantsSolvingTask + participantsFinishedTask));
+                    .mapToLong(PreProcessLink::getValue)
+                    .sum();
+            linksToAdd.add(new PreProcessLink(0, nodeIndex, visitedNode.getTaskId(), visitedNode.getPhaseOrder(), participantsSolvingTask + participantsFinishedTask));
             nodeIndex++;
         }
         preProcessedLinks.addAll(linksToAdd);
     }
 
-    private void addLinksToNextNotVisitedPhase(List<PreProcessLink> preProcessedLinks,
-                                      List<NodeDTO> visitedNodes,
-                                      List<TrainingPhase> trainingPhases) {
+    /**
+     * Add links from the tasks in the last training phase to the finish node.
+     *
+     * @param preProcessedLinks obtained links between training phases
+     * @param visitedNodes list of ordered visited tasks
+     */
+    private void addLinksToFinishNode(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
         int nodeIndex = visitedNodes.size();
-        Map<Long, Long> numberOfParticipantsInTasksOfLastPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(trainingPhases.get(trainingPhases.size() - 1).getId());
+        Long lastPhaseId = visitedNodes.get(visitedNodes.size() - 1).getPhaseId();
+        Map<Long, Long> numberOfParticipantsInTasksOfLastPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(lastPhaseId);
         List<PreProcessLink> linksToAdd = new ArrayList<>();
         for (NodeDTO visitedNode: Lists.reverse(visitedNodes)) {
-            if (!visitedNode.getPhaseId().equals(trainingPhases.get(trainingPhases.size() - 1).getId())) {
+            if (!visitedNode.getPhaseId().equals(lastPhaseId)) {
                 break;
             }
             Long participantsSolvingTask = Optional.ofNullable(numberOfParticipantsInTasksOfLastPhase.get(visitedNode.getTaskId())).orElse(0L);
@@ -87,13 +152,58 @@ public class VisualizationService {
                     .filter(link -> link.getTargetTaskId() != null && link.getTargetTaskId().equals(visitedNode.getTaskId()))
                     .mapToLong(PreProcessLink::getValue)
                     .sum();
-            linksToAdd.add(new PreProcessLink(nodeIndex, visitedNodes.size() + 1, participantsVisitedTask - participantsSolvingTask));
+            linksToAdd.add(new PreProcessLink(nodeIndex, visitedNode.getTaskId(), visitedNode.getPhaseOrder(), visitedNodes.size() + 1, participantsVisitedTask - participantsSolvingTask));
             nodeIndex--;
         }
-        preProcessedLinks.add(new PreProcessLink(visitedNodes.size(), visitedNodes.size() + 1, 0L));
         preProcessedLinks.addAll(linksToAdd);
     }
 
+    /**
+     * Add empty links from the tasks in the last visited training phase to the next not visited phase.
+     *
+     * @param preProcessedLinks obtained links between training phases
+     * @param visitedNodes list of ordered visited tasks
+     */
+    private void addLinksToNextNotVisitedPhase(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
+        int nodeIndex = visitedNodes.size();
+        Integer lastPhaseOrder = visitedNodes.get(visitedNodes.size() - 1).getPhaseOrder();
+        for (NodeDTO visitedNode: Lists.reverse(visitedNodes)) {
+            if (!visitedNode.getPhaseOrder().equals(lastPhaseOrder)) {
+                break;
+            }
+            preProcessedLinks.add(new PreProcessLink(nodeIndex, visitedNode.getTaskId(), visitedNode.getPhaseOrder(), visitedNodes.size() + 1, 0L));
+            nodeIndex--;
+        }
+    }
+
+    /**
+     * Add empty links from tasks that haven't been completed by anyone to the random task in the next phase.
+     * @param preProcessedLinks obtained links between training phases
+     */
+    private void addEmptyLinksFromInnerNodes(List<PreProcessLink> preProcessedLinks) {
+        // key = phase order, value = overall order of the task in the next phase
+        Map<Integer, Integer> phaseToNextPhaseTaskOrder = new HashMap<>();
+        preProcessedLinks.forEach(link -> phaseToNextPhaseTaskOrder.put(link.getSourcePhaseOrder(), link.getTarget()));
+        Set<Integer> sources = new HashSet<>();
+        // key = overall order of visited task, value = phase order
+        Map<Integer, Integer> targets = new HashMap<>();
+        preProcessedLinks.forEach(link -> {
+            sources.add(link.getSource());
+            targets.putIfAbsent(link.getTarget(), link.getTargetPhaseOrder());
+
+        });
+        targets.forEach((targetTaskOrder, targetPhaseOrder) -> {
+            if (!sources.contains(targetTaskOrder) && targetPhaseOrder != null && phaseToNextPhaseTaskOrder.get(targetPhaseOrder) != null) {
+                preProcessedLinks.add(new PreProcessLink(targetTaskOrder, phaseToNextPhaseTaskOrder.get(targetPhaseOrder), 0L));
+            }
+        });
+    }
+
+    /**
+     * Add start and finish to the list of nodes. If the training have been finished by no one, add next phase node instead of finish node.
+     * @param nodes list of visited phases
+     * @param trainingPhases all training phase in the training
+     */
     private void addStartNodeAndNextNotVisitedPhaseNode(List<NodeDTO> nodes, List<TrainingPhase> trainingPhases) {
         nodes.add(0, new NodeDTO(null, null, null, null, -1, null));
         NodeDTO lastNode = nodes.get(nodes.size() -1);
@@ -109,47 +219,5 @@ public class VisualizationService {
             TrainingPhase nextNotVisitedPhase = trainingPhases.get(uniqueTrainingPhaseOrders.size()-1);
             nodes.add(new NodeDTO(null, null, null, nextNotVisitedPhase.getId(), nextNotVisitedPhase.getOrder(), nextNotVisitedPhase.getTitle()));
         }
-    }
-
-    private List<PreProcessLink> getAllTasksTransitions(TrainingInstance trainingInstance, List<TrainingPhase> trainingPhases) {
-        Long definitionId = trainingInstance.getTrainingDefinition().getId();
-        List<PreProcessLink> preProcessedLinks = new ArrayList<>();
-        for (int i = 1; i < trainingPhases.size(); i++) {
-            preProcessedLinks.addAll(participantTaskAssignmentRepository.findTaskTransitionsBetweenTwoPhases(definitionId, trainingInstance.getId(),
-                    trainingPhases.get(i-1).getId(), trainingPhases.get(i).getId()));
-            if (preProcessedLinks.isEmpty()) {
-                break;
-            }
-        }
-        return preProcessedLinks;
-    }
-
-    private void addSourcesAndTargetsToLinks(List<PreProcessLink> preProcessedLinks, List<NodeDTO> nodes) {
-        AtomicInteger index = new AtomicInteger();
-        Map<Long, Integer> orderedVisitedTasksIds = nodes.stream()
-                .collect(Collectors.toMap(NodeDTO::getTaskId, tuple -> index.getAndIncrement()));
-        preProcessedLinks.forEach(link -> {
-            link.setSource(orderedVisitedTasksIds.get(link.getSourceTaskId()) + 1);
-            link.setTarget(orderedVisitedTasksIds.get(link.getTargetTaskId()) + 1);
-        });
-    }
-
-    private void addEmptyLinksFromInnerNodes(List<LinkDTO> resultLinks, List<PreProcessLink> preProcessedLinks) {
-        // key = phase order, value = first task overall order in the next phase
-        Map<Integer, Integer> phaseToNextPhaseTaskOrder = new HashMap<>();
-        preProcessedLinks.forEach(link -> phaseToNextPhaseTaskOrder.put(link.getSourcePhaseOrder(), link.getTarget()));
-        // key = overall visited task order, value = phase order
-        Map<Integer, Integer> sources = new HashMap<>();
-        Map<Integer, Integer> targets = new HashMap<>();
-        preProcessedLinks.forEach(link -> {
-            sources.putIfAbsent(link.getSource(), link.getSourcePhaseOrder());
-            targets.putIfAbsent(link.getTarget(), link.getTargetPhaseOrder());
-
-        });
-        targets.forEach((targetTaskOrder, targetPhaseOrder) -> {
-            if (!sources.containsKey(targetTaskOrder) && targetPhaseOrder != null && phaseToNextPhaseTaskOrder.get(targetPhaseOrder) != null) {
-                resultLinks.add(new LinkDTO(targetTaskOrder, phaseToNextPhaseTaskOrder.get(targetPhaseOrder), 0L));
-            }
-        });
     }
 }

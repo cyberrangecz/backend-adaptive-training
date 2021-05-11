@@ -3382,8 +3382,6 @@ definitions:
         items:
           type: "integer"
           format: "int32"
-        maxItems: 2147483647
-        minItems: 1
   QuestionnairePhaseAnswersDTO:
     type: "object"
     required:

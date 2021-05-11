@@ -220,7 +220,7 @@
                                 </securityDefinition>
                             </securityDefinitions>
                             <swaggerDirectory>${swagger.directory}</swaggerDirectory>
-                            <swaggerFileName>kypo-adaptive-training-open-api</swaggerFileName>
+                            <swaggerFileName>kypo-adaptive-training-swagger-open-api</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
                         </apiSource>
                     </apiSources>

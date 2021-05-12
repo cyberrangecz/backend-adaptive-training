@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
 
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.errors.ApiError;
 import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
 import io.swagger.annotations.*;
@@ -43,19 +43,19 @@ public class VisualizationRestController {
      */
     @ApiOperation(httpMethod = "GET",
             value = "Get necessary visualization info for training instance.",
-            response = SankeyGraphDTO.class,
-            nickname = "getSankeyGraphVisualization",
+            response = SankeyDiagramDTO.class,
+            nickname = "getSankeyDiagramVisualization",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Data for visualization found.", response = SankeyGraphDTO.class),
+            @ApiResponse(code = 200, message = "Data for visualization found.", response = SankeyDiagramDTO.class),
             @ApiResponse(code = 404, message = "Training instance with given id not found.", response = ApiError.class),
             @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
     })
     @GetMapping(path = "/training-instances/{instanceId}/sankey", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<SankeyGraphDTO> getSankeyGraphVisualization(@ApiParam(value = "Training instance ID", required = true)
+    public ResponseEntity<SankeyDiagramDTO> getSankeyDiagramVisualization(@ApiParam(value = "Training instance ID", required = true)
                                                                       @PathVariable("instanceId") Long trainingInstanceId) {
-        SankeyGraphDTO clusteringVisualizationDTO = visualizationFacade.getSankeyGraph(trainingInstanceId);
+        SankeyDiagramDTO clusteringVisualizationDTO = visualizationFacade.getSankeyDiagram(trainingInstanceId);
         return ResponseEntity.ok(clusteringVisualizationDTO);
     }
 

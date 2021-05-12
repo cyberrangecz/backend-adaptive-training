@@ -1,18 +1,14 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import com.google.common.collect.Lists;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.LinkDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.TaskRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
-import org.springframework.boot.actuate.endpoint.web.Link;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -47,11 +43,11 @@ public class VisualizationService {
      * @param trainingInstance the training instance
      * @return the sankey graph data
      */
-    public SankeyGraphDTO getSankeyGraph(TrainingInstance trainingInstance) {
+    public SankeyDiagramDTO getSankeyDiagram(TrainingInstance trainingInstance) {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
         List<NodeDTO> nodes = participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
         if (trainingPhases.isEmpty() || nodes.isEmpty()) {
-            return new SankeyGraphDTO(List.of( new NodeDTO(null, null, null, null, -1, null)), new ArrayList<>());
+            return new SankeyDiagramDTO(List.of( new NodeDTO(null, null, null, null, -1, null)), new ArrayList<>());
         }
         List<PreProcessLink> preProcessedLinks = this.getAllTasksTransitions(trainingInstance, trainingPhases, nodes);
         this.addLinksFromStartNode(preProcessedLinks, nodes);
@@ -65,7 +61,7 @@ public class VisualizationService {
         List<LinkDTO> resultLinks = preProcessedLinks.stream()
                 .map(link -> new LinkDTO(link.getSource(), link.getTarget(), link.getValue()))
                 .collect(Collectors.toList());
-        return new SankeyGraphDTO(nodes, resultLinks);
+        return new SankeyDiagramDTO(nodes, resultLinks);
     }
 
     /**

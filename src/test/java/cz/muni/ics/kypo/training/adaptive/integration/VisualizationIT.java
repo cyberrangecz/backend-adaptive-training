@@ -10,9 +10,9 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.LinkDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
 import cz.muni.ics.kypo.training.adaptive.handler.CustomRestExceptionHandler;
@@ -245,7 +245,7 @@ public class VisualizationIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
-        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        SankeyDiagramDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyDiagramDTO.class);
         NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
         NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
         List<LinkDTO> linksFromStartToFirstPhase = List.of(
@@ -292,7 +292,7 @@ public class VisualizationIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
-        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        SankeyDiagramDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyDiagramDTO.class);
         NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
         NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
         List<LinkDTO> linksFromStartToFirstPhase = List.of(
@@ -337,7 +337,7 @@ public class VisualizationIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
-        SankeyGraphDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyGraphDTO.class);
+        SankeyDiagramDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyDiagramDTO.class);
         NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
         NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);
         List<LinkDTO> linksFromStartToFirstPhase = List.of(

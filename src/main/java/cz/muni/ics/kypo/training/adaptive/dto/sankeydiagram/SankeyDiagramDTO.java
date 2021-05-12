@@ -1,19 +1,17 @@
-package cz.muni.ics.kypo.training.adaptive.dto.sankeygraph;
+package cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class SankeyGraphDTO {
+public class SankeyDiagramDTO {
 
     private List<NodeDTO> nodes = new ArrayList<>();
     private List<LinkDTO> links = new ArrayList<>();
 
-    public SankeyGraphDTO() {
+    public SankeyDiagramDTO() {
     }
 
-    public SankeyGraphDTO(List<NodeDTO> nodes, List<LinkDTO> links) {
+    public SankeyDiagramDTO(List<NodeDTO> nodes, List<LinkDTO> links) {
         this.nodes = nodes;
         this.links = links;
     }

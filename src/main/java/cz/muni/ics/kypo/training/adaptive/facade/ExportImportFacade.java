@@ -27,6 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImpor
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -36,6 +37,7 @@ import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.QuestionPhaseRelationMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.ExportImportService;
+import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
@@ -67,6 +69,7 @@ public class ExportImportFacade {
 
     private final ExportImportService exportImportService;
     private final TrainingDefinitionService trainingDefinitionService;
+    private final VisualizationService visualizationService;
     private final SandboxServiceApi sandboxServiceApi;
     private final ElasticsearchServiceApi elasticsearchServiceApi;
     private final ExportImportMapper exportImportMapper;
@@ -88,6 +91,7 @@ public class ExportImportFacade {
     @Autowired
     public ExportImportFacade(ExportImportService exportImportService,
                               TrainingDefinitionService trainingDefinitionService,
+                              VisualizationService visualizationService,
                               SandboxServiceApi sandboxServiceApi,
                               ElasticsearchServiceApi elasticsearchServiceApi,
                               ExportImportMapper exportImportMapper,
@@ -97,6 +101,7 @@ public class ExportImportFacade {
                               ObjectMapper objectMapper) {
         this.exportImportService = exportImportService;
         this.trainingDefinitionService = trainingDefinitionService;
+        this.visualizationService = visualizationService;
         this.sandboxServiceApi = sandboxServiceApi;
         this.elasticsearchServiceApi = elasticsearchServiceApi;
         this.exportImportMapper = exportImportMapper;
@@ -212,6 +217,7 @@ public class ExportImportFacade {
             writeTrainingDefinitionInfo(zos, trainingInstance);
             writeTrainingRunsInfo(zos, trainingInstance);
             writeSandboxDefinitionInfo(zos, trainingInstance);
+            writeSankeyGraphData(zos, trainingInstance);
 
             zos.closeEntry();
             zos.close();
@@ -315,6 +321,13 @@ public class ExportImportFacade {
             zos.putNextEntry(definitionEntry);
             zos.write(objectMapper.writeValueAsBytes(tD));
         }
+    }
+
+    private void writeSankeyGraphData(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {
+        SankeyGraphDTO sankeyGraph = visualizationService.getSankeyGraph(trainingInstance);
+        ZipEntry sankeyGraphEntry = new ZipEntry("sankey_graph_data" + AbstractFileExtensions.JSON_FILE_EXTENSION);
+        zos.putNextEntry(sankeyGraphEntry);
+        zos.write(objectMapper.writeValueAsBytes(sankeyGraph));
     }
 
     private void writeSandboxDefinitionInfo(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {

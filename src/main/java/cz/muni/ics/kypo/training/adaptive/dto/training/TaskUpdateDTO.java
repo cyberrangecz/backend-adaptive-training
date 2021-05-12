@@ -3,9 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.*;
 import java.util.Objects;
 
 @ApiModel(
@@ -14,25 +12,27 @@ import java.util.Objects;
 public class TaskUpdateDTO {
 
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")
-    @NotEmpty(message = "Task title must not be blank")
+    @NotEmpty(message = "{task.title.NotEmpty.message}")
     private String title;
     @ApiModelProperty(value = "The information that are displayed to a player", required = true, example = "Capture the flag", position = 1)
-    @NotEmpty(message = "Task content must not be blank")
+    @NotEmpty(message = "{task.content.NotEmpty.message}")
     private String content;
     @ApiModelProperty(value = "Keyword that must be found in the task. Necessary in order to get to the next phase", required = true, example = "secretFlag", position = 2)
-    @NotEmpty(message = "Answer of task cannot be null")
+    @NotEmpty(message = "{task.answer.NotEmpty.message}")
+    @Size(max = 50, message = "{task.answer.Size.message}")
     private String answer;
     @ApiModelProperty(value = "Description how to get the answer", required = true, example = "Open secret.txt", position = 3)
-    @NotEmpty(message = "Solution of task cannot be null")
+    @NotEmpty(message = "{task.solution.NotEmpty.message}")
     private String solution;
     @ApiModelProperty(value = "It defines the allowed number of incorrect answers submitted by the player", required = true, example = "5", position = 4)
-    @NotNull(message = "Limit of the number of provided incorrect answers must be specified")
-    @PositiveOrZero(message = "Limit of the number of provided incorrect answers must not be a negative number")
+    @NotNull(message = "{task.incorrectAnswerLimit.NotNull.message}")
+    @Min(value = 0, message = "{task.incorrectAnswerLimit.Min.message}")
+    @Max(value = 100, message = "{task.incorrectAnswerLimit.Max.message}")
     private Integer incorrectAnswerLimit;
     @ApiModelProperty(value = "It defines whether the sandbox can be modified", example = "true", position = 5)
     private boolean modifySandbox;
     @ApiModelProperty(value = "It defines the expected duration of sandbox change defined in seconds", example = "15", position = 1)
-    @PositiveOrZero(message = "Estimated duration of sandbox change must not be a negative number")
+    @Min(value = 0, message = "{task.sandboxChangeExpectedDuration.Min.message}")
     private int sandboxChangeExpectedDuration;
 
     public String getTitle() {

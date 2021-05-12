@@ -13,14 +13,14 @@ import java.util.Objects;
 public class QuestionChoiceImportDTO {
 
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")
-    @NotEmpty(message = "{questionChoices.text.NotEmpty.message}")
+    @NotEmpty(message = "{questionChoice.text.NotEmpty.message}")
     private String text;
     @ApiModelProperty(value = "It defines whether this answer is correct or not", required = true, example = "true")
-    @NotNull(message = "{questionChoices.correct.NotNull.message}")
+    @NotNull(message = "{questionChoice.correct.NotNull.message}")
     private Boolean correct;
     @ApiModelProperty(value = "Order of question choice", required = true, example = "0")
-    @NotNull(message = "{questionChoices.order.NotNull.message}")
-    @Min(value = 0, message = "{questionChoices.order.Min.message}")
+    @NotNull(message = "{questionChoice.order.NotNull.message}")
+    @Min(value = 0, message = "{questionChoice.order.Min.message}")
     private Integer order;
 
     public String getText() {

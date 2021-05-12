@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import org.springframework.stereotype.Service;
@@ -21,8 +21,8 @@ public class VisualizationFacade {
     }
 
     @Transactional(readOnly = true)
-    public SankeyGraphDTO getSankeyGraph(Long trainingInstanceId) {
+    public SankeyDiagramDTO getSankeyDiagram(Long trainingInstanceId) {
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceId);
-        return visualizationService.getSankeyGraph(trainingInstance);
+        return visualizationService.getSankeyDiagram(trainingInstance);
     }
 }

@@ -1,11 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
-import com.querydsl.core.Tuple;
-import com.querydsl.core.group.GroupBy;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Coalesce;
 import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,16 +9,11 @@ import cz.muni.ics.kypo.training.adaptive.domain.QParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QAbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QTask;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QTrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.querydsl.QuerydslUtils;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,9 +22,6 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**

@@ -1,11 +1,9 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.LinkDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * The interface Training definition repository custom.

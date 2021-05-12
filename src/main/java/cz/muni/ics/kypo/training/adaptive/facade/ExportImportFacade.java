@@ -27,7 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImpor
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.SankeyGraphDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -217,7 +217,7 @@ public class ExportImportFacade {
             writeTrainingDefinitionInfo(zos, trainingInstance);
             writeTrainingRunsInfo(zos, trainingInstance);
             writeSandboxDefinitionInfo(zos, trainingInstance);
-            writeSankeyGraphData(zos, trainingInstance);
+            writeSankeyDiagramData(zos, trainingInstance);
 
             zos.closeEntry();
             zos.close();
@@ -323,11 +323,11 @@ public class ExportImportFacade {
         }
     }
 
-    private void writeSankeyGraphData(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {
-        SankeyGraphDTO sankeyGraph = visualizationService.getSankeyGraph(trainingInstance);
-        ZipEntry sankeyGraphEntry = new ZipEntry("sankey_graph_data" + AbstractFileExtensions.JSON_FILE_EXTENSION);
-        zos.putNextEntry(sankeyGraphEntry);
-        zos.write(objectMapper.writeValueAsBytes(sankeyGraph));
+    private void writeSankeyDiagramData(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {
+        SankeyDiagramDTO sankeyDiagram = visualizationService.getSankeyDiagram(trainingInstance);
+        ZipEntry sankeyDiagramEntry = new ZipEntry("sankey_diagram_data" + AbstractFileExtensions.JSON_FILE_EXTENSION);
+        zos.putNextEntry(sankeyDiagramEntry);
+        zos.write(objectMapper.writeValueAsBytes(sankeyDiagram));
     }
 
     private void writeSandboxDefinitionInfo(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {

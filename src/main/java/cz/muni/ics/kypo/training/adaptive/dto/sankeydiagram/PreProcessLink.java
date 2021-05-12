@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.dto.sankeygraph;
+package cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram;
 
 import java.util.Objects;
 

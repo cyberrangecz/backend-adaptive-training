@@ -8,8 +8,8 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.NodeDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeygraph.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 @DataJpaTest
 @Import(PersistenceConfigTest.class)
 @ComponentScan(basePackages = "cz.muni.ics.kypo.training.adaptive.util")
-public class SankeyGraphDataTest {
+public class SankeyDiagramDataTest {
 
     @Autowired
     private TestEntityManager entityManager;

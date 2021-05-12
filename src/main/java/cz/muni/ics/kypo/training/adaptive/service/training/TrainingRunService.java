@@ -231,7 +231,7 @@ public class TrainingRunService {
         trainingRun.setCurrentPhase(nextPhase);
         trainingRun.setIncorrectAnswerCount(0);
         trainingRunRepository.save(trainingRun);
-        participantTaskAssignmentRepository.save(prepareDataForSankeyGraph(trainingRun, nextPhase));
+        participantTaskAssignmentRepository.save(prepareDataForSankeyDiagram(trainingRun, nextPhase));
         auditEventsService.auditPhaseStartedAction(trainingRun);
 
         return trainingRun;
@@ -297,7 +297,7 @@ public class TrainingRunService {
         return relatedPhaseInfoDTO;
     }
 
-    private ParticipantTaskAssignment prepareDataForSankeyGraph(TrainingRun trainingRun, AbstractPhase nextPhase) {
+    private ParticipantTaskAssignment prepareDataForSankeyDiagram(TrainingRun trainingRun, AbstractPhase nextPhase) {
         ParticipantTaskAssignment participantTaskAssignment = new ParticipantTaskAssignment();
         participantTaskAssignment.setTrainingRun(trainingRun);
         participantTaskAssignment.setAbstractPhase(nextPhase);

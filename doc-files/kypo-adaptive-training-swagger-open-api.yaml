@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.34"
+  version: "Version: 1.0.35"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2237,7 +2237,7 @@ paths:
       - "Visualizations"
       summary: "Get necessary visualization info for training instance."
       description: ""
-      operationId: "getSankeyGraphVisualization"
+      operationId: "getSankeyDiagramVisualization"
       produces:
       - "application/json"
       parameters:
@@ -2251,7 +2251,7 @@ paths:
         200:
           description: "Data for visualization found."
           schema:
-            $ref: "#/definitions/SankeyGraphDTO"
+            $ref: "#/definitions/SankeyDiagramDTO"
         404:
           description: "Training instance with given id not found."
           schema:
@@ -3193,6 +3193,7 @@ definitions:
         format: "int32"
         example: 0
         description: "Order of question"
+        minimum: 0
       text:
         type: "string"
         example: "What's the capital of Canada?"
@@ -3285,6 +3286,7 @@ definitions:
     - "id"
     - "order"
     - "phaseId"
+    - "questionIds"
     - "successRate"
     properties:
       id:
@@ -3297,6 +3299,7 @@ definitions:
         format: "int32"
         example: 0
         description: "Order of question"
+        minimum: 0
       questionIds:
         type: "array"
         description: "Set of IDs of questions related to the specified questionnaire"
@@ -3499,7 +3502,7 @@ definitions:
         type: "string"
       name_of_microservice:
         type: "string"
-  SankeyGraphDTO:
+  SankeyDiagramDTO:
     type: "object"
     properties:
       nodes:
@@ -3555,6 +3558,8 @@ definitions:
         position: 4
         description: "It defines the allowed number of incorrect answers submitted\
           \ by the player"
+        minimum: 0
+        maximum: 100
       modifySandbox:
         type: "boolean"
         example: true
@@ -3567,6 +3572,7 @@ definitions:
         position: 6
         description: "It defines the expected duration of sandbox change defined in\
           \ seconds"
+        minimum: 0
   TaskDTO:
     type: "object"
     required:
@@ -3752,12 +3758,15 @@ definitions:
         position: 1
         description: "It defines the expected duration of sandbox change defined in\
           \ seconds"
+        minimum: 0
       answer:
         type: "string"
         example: "secretFlag"
         position: 2
         description: "Keyword that must be found in the task. Necessary in order to\
           \ get to the next phase"
+        minLength: 0
+        maxLength: 50
       solution:
         type: "string"
         example: "Open secret.txt"
@@ -3770,6 +3779,8 @@ definitions:
         position: 4
         description: "It defines the allowed number of incorrect answers submitted\
           \ by the player"
+        minimum: 0
+        maximum: 100
       modifySandbox:
         type: "boolean"
         example: true
@@ -4378,7 +4389,7 @@ definitions:
           type: "integer"
           format: "int32"
           example: 50
-          description: "Estimated time it takes to finish the phase (in seconds)."
+          description: "Estimated time it takes to finish the phase (in minutes)."
           minimum: 0
         allowedCommands:
           type: "integer"
@@ -4428,12 +4439,14 @@ definitions:
         example: 10
         position: 1
         description: "Maximal number of allowed wrong answers provided by played"
+        minimum: 0
       allowedCommands:
         type: "integer"
         format: "int32"
         example: 10
         position: 2
         description: "Maximal number of allowed commands provided by played"
+        minimum: 0
       estimatedDuration:
         type: "integer"
         format: "int32"
@@ -4441,6 +4454,7 @@ definitions:
         position: 3
         description: "Estimated time (minutes) taken by the player to solve the training\
           \ phase"
+        minimum: 0
       decisionMatrix:
         type: "array"
         position: 4

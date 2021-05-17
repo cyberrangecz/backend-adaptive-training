@@ -1,1 +1,1 @@
-1.0.34 Send estimated time of training phases to smart assistant.
+1.0.35 Fix Sankey diagram

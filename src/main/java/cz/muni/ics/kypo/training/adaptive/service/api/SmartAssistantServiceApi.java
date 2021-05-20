@@ -59,7 +59,7 @@ public class SmartAssistantServiceApi {
         } catch (IOException ex) {
             throw new SecurityException("Error while parsing roles for microservices", ex);
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Smart Assistant Service API to obtain suitable task for phase (ID: " + smartAssistantInput.getPhaseX() + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Smart Assistant Service API to obtain suitable task for phase (ID: " + smartAssistantInput.getPhaseX() + ").", ex);
         }
     }
 }

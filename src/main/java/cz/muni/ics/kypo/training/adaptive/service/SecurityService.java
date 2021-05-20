@@ -143,18 +143,4 @@ public class SecurityService {
         }
         return false;
     }
-
-    /**
-     * Check if response from external API is not null.
-     *
-     * @param object  object to check
-     * @param message exception message if response is null
-     * @throws MicroserviceApiException if response is null
-     */
-    private void checkNonNull(Object object, String message) {
-        if (object == null) {
-            throw new MicroserviceApiException(message);
-        }
-    }
-
 }

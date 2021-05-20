@@ -50,7 +50,7 @@ public class SandboxServiceApi {
             if (ex.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");
             }
-            throw new MicroserviceApiException("Error when calling OpenStack Sandbox Service API to get unlocked sandbox from pool (ID: " + poolId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling OpenStack Sandbox Service API to get unlocked sandbox from pool (ID: " + poolId + ").", ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class SandboxServiceApi {
                     .bodyToMono(LockedPoolInfo.class)
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Currently, it is not possible to lock and assign pool with (ID: " + poolId + ").", ex.getApiSubError());
+            throw new MicroserviceApiException("Currently, it is not possible to lock and assign pool with (ID: " + poolId + ").", ex);
         }
     }
 
@@ -99,7 +99,7 @@ public class SandboxServiceApi {
             }
         } catch (CustomWebClientException ex) {
             if (ex.getStatusCode() != HttpStatus.NOT_FOUND) {
-                throw new MicroserviceApiException("Currently, it is not possible to unlock a pool with (ID: " + poolId + ").", ex.getApiSubError());
+                throw new MicroserviceApiException("Currently, it is not possible to unlock a pool with (ID: " + poolId + ").", ex);
             }
         }
     }
@@ -122,7 +122,7 @@ public class SandboxServiceApi {
             if (ex.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new ForbiddenException("There is no available sandbox definition for particular pool (ID: " + poolId + ").");
             }
-            throw new MicroserviceApiException("Error when calling Python API to sandbox for particular pool (ID: " + poolId + ")", new PythonApiError(ex.getMessage()));
+            throw new MicroserviceApiException("Error when calling Python API to sandbox for particular pool (ID: " + poolId + ").", ex);
         }
     }
 }

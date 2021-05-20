@@ -46,7 +46,7 @@ public class ElasticsearchServiceApi {
                     .bodyToMono(Void.class)
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete events for particular instance (ID: " + trainingInstanceId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete events for particular instance (ID: " + trainingInstanceId + ").", ex);
         }
     }
 
@@ -69,7 +69,7 @@ public class ElasticsearchServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular run (ID: " + trainingRun.getId() + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular run (ID: " + trainingRun.getId() + ").", ex);
         }
     }
 
@@ -89,7 +89,7 @@ public class ElasticsearchServiceApi {
                     .bodyToMono(Void.class)
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete events for particular training run (ID: " + trainingRunId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete events for particular training run (ID: " + trainingRunId + ").", ex);
         }
     }
 
@@ -103,7 +103,7 @@ public class ElasticsearchServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular sandbox (ID: " + sandboxId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular sandbox (ID: " + sandboxId + ").", ex);
         }
     }
 
@@ -121,7 +121,7 @@ public class ElasticsearchServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular commands of sandbox (ID: " + sandboxId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API for particular commands of sandbox (ID: " + sandboxId + ").", ex);
         }
     }
 
@@ -134,7 +134,7 @@ public class ElasticsearchServiceApi {
                     .bodyToMono(Void.class)
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete bash commands for particular pool (ID: " + poolId + ")", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling Elasticsearch API to delete bash commands for particular pool (ID: " + poolId + ").", ex);
         }
     }
 }

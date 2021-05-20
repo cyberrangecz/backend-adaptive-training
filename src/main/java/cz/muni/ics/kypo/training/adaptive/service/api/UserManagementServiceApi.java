@@ -54,7 +54,7 @@ public class UserManagementServiceApi {
                     .bodyToMono(UserRefDTO.class)
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to obtain info about user(ID: " + id + ").", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to obtain info about user(ID: " + id + ").", ex);
         }
     }
 
@@ -87,7 +87,7 @@ public class UserManagementServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to obtain users by IDs: " + userRefIds + ".", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to obtain users by IDs: " + userRefIds + ".", ex);
         }
     }
 
@@ -117,7 +117,7 @@ public class UserManagementServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to obtain users with role " + roleType.name() + ".", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to obtain users with role " + roleType.name() + ".", ex);
         }
     }
 
@@ -149,7 +149,7 @@ public class UserManagementServiceApi {
                     })
                     .block();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to obtain users with role " + roleType.name() + " and IDs: " + userRefIds + ".", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to obtain users with role " + roleType.name() + " and IDs: " + userRefIds + ".", ex);
         }
     }
 
@@ -166,10 +166,9 @@ public class UserManagementServiceApi {
                     .retrieve()
                     .bodyToMono(UserRefDTO.class)
                     .block();
-            checkNonNull(userRefDTO, "Returned null response when calling user management service API to get info about logged in user.");
             return userRefDTO.getUserRefId();
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to get info about logged in user.", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to get info about logged in user.", ex);
         }
     }
 
@@ -186,10 +185,9 @@ public class UserManagementServiceApi {
                     .retrieve()
                     .bodyToMono(UserRefDTO.class)
                     .block();
-            checkNonNull(userRefDTO, "Returned null response when calling user management service API to get info about logged in user.");
             return userRefDTO;
         } catch (CustomWebClientException ex) {
-            throw new MicroserviceApiException("Error when calling user management service API to get info about logged in user.", ex.getApiSubError());
+            throw new MicroserviceApiException("Error when calling user management service API to get info about logged in user.", ex);
         }
     }
 
@@ -202,18 +200,5 @@ public class UserManagementServiceApi {
         }
         builder.queryParam("page", pageable.getPageNumber());
         builder.queryParam("size", pageable.getPageSize());
-    }
-
-    /**
-     * Check if response from external API is not null.
-     *
-     * @param object  object to check
-     * @param message exception message if response is null
-     * @throws MicroserviceApiException if response is null
-     */
-    private void checkNonNull(Object object, String message) {
-        if (object == null) {
-            throw new MicroserviceApiException(message);
-        }
     }
 }

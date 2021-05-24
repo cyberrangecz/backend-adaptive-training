@@ -1,1 +1,1 @@
-1.0.35 Fix Sankey diagram
+1.0.36 Export questionnaire answers in archived training instance ZIP file.  

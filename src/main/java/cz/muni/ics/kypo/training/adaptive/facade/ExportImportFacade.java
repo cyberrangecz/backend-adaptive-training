@@ -11,10 +11,13 @@ import cz.muni.ics.kypo.training.adaptive.annotations.transactions.Transactional
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire.QuestionAnswerArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingDefinitionArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingRunArchiveDTO;
@@ -65,6 +68,7 @@ public class ExportImportFacade {
     private static final Logger LOG = LoggerFactory.getLogger(ExportImportFacade.class);
     private static final String LOGS_FOLDER = "logs";
     private static final String EVENTS_FOLDER = "training_events";
+    private static final String QUESTIONNAIRES_ANSWERS_FOLDER = "questionnaires_answers";
     private static final String RUNS_FOLDER = "training_runs";
 
     private final ExportImportService exportImportService;
@@ -246,6 +250,7 @@ public class ExportImportFacade {
             zos.putNextEntry(runEntry);
             zos.write(objectMapper.writeValueAsBytes(archivedRun));
 
+            writeQuestionsAnswers(zos, run);
             List<Map<String, Object>> events = elasticsearchServiceApi.findAllEventsFromTrainingRun(run);
             Map<Integer, Long> phaseStartTimestampMapping = writeEventsAndGetPhaseStartTimestampMapping(zos, run, events);
             writeEventsByPhases(zos, run, events);
@@ -285,6 +290,18 @@ public class ExportImportFacade {
             }
             zos.write(objectMapper.writer(new MinimalPrettyPrinter()).writeValueAsBytes(event));
             zos.write(System.lineSeparator().getBytes());
+        }
+    }
+
+    private void writeQuestionsAnswers(ZipOutputStream zos, TrainingRun run) throws IOException {
+        Map<Long, List<QuestionAnswer>> questionsAnswersByQuestionnaires = exportImportService.findQuestionsAnswersOfQuestionnaires(run.getId());
+        for (Map.Entry<Long, List<QuestionAnswer>> questionAnswersByQuestionnaire : questionsAnswersByQuestionnaires.entrySet()) {
+            ZipEntry eventsDetailEntry = new ZipEntry(QUESTIONNAIRES_ANSWERS_FOLDER + "/training_run-id" + run.getId() + "-questionnaires" + "/questionnaire_id" + questionAnswersByQuestionnaire.getKey() + "-answers" + AbstractFileExtensions.JSON_FILE_EXTENSION);
+            zos.putNextEntry(eventsDetailEntry);
+            for(QuestionAnswer questionAnswer : questionAnswersByQuestionnaire.getValue()) {
+                zos.write(objectMapper.writer(new MinimalPrettyPrinter()).writeValueAsBytes(new QuestionAnswerArchiveDTO(questionAnswer.getQuestion().getText(), questionAnswer.getAnswers())));
+                zos.write(System.lineSeparator().getBytes());
+            }
         }
     }
 

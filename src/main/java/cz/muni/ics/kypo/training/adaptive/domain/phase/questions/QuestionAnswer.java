@@ -77,7 +77,7 @@ public class QuestionAnswer implements Serializable {
     @Override
     public String toString() {
         return "QuestionAnswer{" +
-                "questionAnswerId=" + this.getQuestionAnswerId() +
+                "questionAnswerId=" + this.getQuestionAnswerId().getQuestionId() +
                 ", answers='" + this.getAnswers() + '\'' +
                 '}';
     }

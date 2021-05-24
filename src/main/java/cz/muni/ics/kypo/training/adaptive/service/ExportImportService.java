@@ -4,20 +4,25 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
+import cz.muni.ics.kypo.training.adaptive.repository.QuestionAnswerRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -30,7 +35,7 @@ public class ExportImportService {
     private final TrainingDefinitionRepository trainingDefinitionRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final QuestionPhaseRelationRepository questionPhaseRelationRepository;
-    private final QuestionRepository questionRepository;
+    private final QuestionAnswerRepository questionAnswerRepository;
     private final TrainingPhaseRepository trainingPhaseRepository;
     private final TrainingInstanceRepository trainingInstanceRepository;
     private final TrainingRunRepository trainingRunRepository;
@@ -41,7 +46,6 @@ public class ExportImportService {
      * @param trainingDefinitionRepository    the training definition repository
      * @param abstractPhaseRepository         the abstract phase repository
      * @param questionPhaseRelationRepository the questionnaire phase repository
-     * @param infoPhaseRepository             the info phase repository
      * @param trainingPhaseRepository         the training phase repository
      * @param trainingInstanceRepository      the training instance repository
      * @param trainingRunRepository           the training run repository
@@ -50,15 +54,14 @@ public class ExportImportService {
     public ExportImportService(TrainingDefinitionRepository trainingDefinitionRepository,
                                AbstractPhaseRepository abstractPhaseRepository,
                                QuestionPhaseRelationRepository questionPhaseRelationRepository,
-                               QuestionRepository questionRepository,
-                               InfoPhaseRepository infoPhaseRepository,
+                               QuestionAnswerRepository questionAnswerRepository,
                                TrainingPhaseRepository trainingPhaseRepository,
                                TrainingInstanceRepository trainingInstanceRepository,
                                TrainingRunRepository trainingRunRepository) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
-        this.questionRepository = questionRepository;
+        this.questionAnswerRepository = questionAnswerRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.trainingRunRepository = trainingRunRepository;
@@ -84,7 +87,6 @@ public class ExportImportService {
      * @param definition the {@link TrainingDefinition} to associate phase with.
      */
     public TrainingPhase createTrainingPhase(TrainingPhase phase, TrainingDefinition definition) {
-        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         phase.getTasks().forEach(task -> task.setTrainingPhase(phase));
         phase.getDecisionMatrix().forEach(decisionMatrixRow -> decisionMatrixRow.setTrainingPhase(phase));
@@ -92,7 +94,6 @@ public class ExportImportService {
     }
 
     public QuestionnairePhase createQuestionnairePhase(QuestionnairePhase phase, TrainingDefinition definition) {
-        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         phase.getQuestions().forEach(question -> {
             question.setQuestionnairePhase(phase);
@@ -114,7 +115,6 @@ public class ExportImportService {
     }
 
     public InfoPhase createInfoPhase(InfoPhase phase, TrainingDefinition definition) {
-        //phase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(definition.getId()) + 1);
         phase.setTrainingDefinition(definition);
         return abstractPhaseRepository.save(phase);
     }
@@ -168,4 +168,9 @@ public class ExportImportService {
     public Set<TrainingRun> findRunsByInstanceId(Long trainingInstanceId) {
         return trainingRunRepository.findAllByTrainingInstanceId(trainingInstanceId);
     }
+    public Map<Long, List<QuestionAnswer>> findQuestionsAnswersOfQuestionnaires(Long trainingRunId) {
+        return questionAnswerRepository.getAllByTrainingRunId(trainingRunId).stream()
+                .collect(Collectors.groupingBy(questionAnswer -> questionAnswer.getQuestion().getQuestionnairePhase().getId()));
+    }
+
 }

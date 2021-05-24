@@ -270,7 +270,6 @@ public class TrainingRunService {
                 .collect(Collectors.toList());
         List<TrainingPhaseQuestionsFulfillment> questionnairesFulfillment = this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhasesAndTrainingRun(trainingPhasesIds, trainingRunId);
 
-
         return decisionMatrixRows.stream().map(row -> {
             DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
             decisionMatrixRowForAssistantDTO.setId(row.getId());
@@ -282,9 +281,15 @@ public class TrainingRunService {
             decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
             decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
             decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
-            decisionMatrixRowForAssistantDTO.setRelatedPhaseInfo(getPhaseInfo(orderedTrainingPhases.get(row.getOrder()), questionnairesFulfillment.get(row.getOrder()).isFulfilled()));
+            decisionMatrixRowForAssistantDTO.setRelatedPhaseInfo(getPhaseInfo(orderedTrainingPhases.get(row.getOrder()), getFulfilled(questionnairesFulfillment, row.getOrder())));
             return decisionMatrixRowForAssistantDTO;
         }).collect(Collectors.toList());
+    }
+
+    private boolean getFulfilled(List<TrainingPhaseQuestionsFulfillment> questionnairesFulfillment, int order){
+        if (questionnairesFulfillment.isEmpty())
+            return true;
+        return questionnairesFulfillment.get(order).isFulfilled();
     }
 
     private RelatedPhaseInfoDTO getPhaseInfo(AbstractPhase abstractPhase, Boolean trainingPhaseQuestionsFulfillment) {

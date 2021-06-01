@@ -77,47 +77,54 @@ public class PhaseService {
      * Move phase to the different position and modify orders of phase between moved phase and new position.
      *
      * @param phaseIdFrom - id of the phase to be moved to the new position
-     * @param newPosition - position where phase will be moved
+     * @param toOrder - position where phase will be moved
      * @throws EntityNotFoundException training definition or one of the phase is not found.
      * @throws EntityConflictException released or archived training definition cannot be modified.
      */
-    public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
+    public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int toOrder) {
         AbstractPhase phaseFrom = abstractPhaseRepository.findById(phaseIdFrom)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", phaseIdFrom.getClass(), phaseIdFrom, PHASE_NOT_FOUND)));
-        Integer maxOrderOfPhase = abstractPhaseRepository.getCurrentMaxOrder(phaseFrom.getTrainingDefinition().getId());
-        if (newPosition < 0) {
-            newPosition = 0;
-        } else if (newPosition > maxOrderOfPhase) {
-            newPosition = maxOrderOfPhase;
-        }
+        toOrder = getCorrectToOrder(phaseFrom.getTrainingDefinition().getId(), toOrder);
         int fromOrder = phaseFrom.getOrder();
-        if (fromOrder == newPosition) {
-            return;
-        } else if (fromOrder > newPosition) {
-            abstractPhaseRepository.increaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), newPosition, fromOrder);
-        } else {
-            abstractPhaseRepository.decreaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), fromOrder, newPosition);
-        }
-        phaseFrom.setOrder(newPosition);
+        int trainingPhaseFromOrder = 0;
+        int trainingPhaseToOrder = 0;
         if (phaseFrom instanceof TrainingPhase) {
             List<AbstractPhase> abstractPhases = getPhases(phaseFrom.getTrainingDefinition().getId());
-            int trainingPhaseFromOrder = this.getTrainingPhaseOrder(fromOrder, abstractPhases);
-            int trainingPhaseToOrder = this.getTrainingPhaseOrder(newPosition, abstractPhases);
-            trainingPhaseService.alignDecisionMatrixOfTrainingPhasesAfterMove(phaseFrom.getTrainingDefinition().getId(), trainingPhaseFromOrder, trainingPhaseToOrder);
+            trainingPhaseFromOrder = this.getTrainingPhaseOrder(fromOrder, abstractPhases, false);
+            trainingPhaseToOrder = this.getTrainingPhaseOrder(toOrder, abstractPhases, fromOrder < toOrder);
         }
-        abstractPhaseRepository.save(phaseFrom);
 
+        if (fromOrder == toOrder) {
+            return;
+        } else if (fromOrder > toOrder) {
+            abstractPhaseRepository.increaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), toOrder, fromOrder);
+        } else {
+            abstractPhaseRepository.decreaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), fromOrder, toOrder);
+        }
+        phaseFrom.setOrder(toOrder);
+        trainingPhaseService.alignDecisionMatrixOfTrainingPhasesAfterMove(phaseFrom.getTrainingDefinition().getId(), trainingPhaseFromOrder, trainingPhaseToOrder);
+        abstractPhaseRepository.save(phaseFrom);
     }
 
     private LocalDateTime getCurrentTimeInUTC() {
         return LocalDateTime.now(Clock.systemUTC());
     }
 
-    private int getTrainingPhaseOrder(int phaseOrder, List<AbstractPhase> abstractPhases) {
+    private int getCorrectToOrder(Long trainingDefinitionId, int order) {
+        Integer maxOrderOfPhase = abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId);
+        if (order < 0) {
+            order = 0;
+        } else if (order > maxOrderOfPhase) {
+            order = maxOrderOfPhase;
+        }
+        return order;
+    }
+
+    private int getTrainingPhaseOrder(int phaseOrder, List<AbstractPhase> abstractPhases, boolean lowerToUpper) {
         int trainingPhaseCounter = 0;
         for (AbstractPhase abstractPhase : abstractPhases) {
             if (abstractPhase.getOrder() == phaseOrder) {
-                return abstractPhase instanceof TrainingPhase ? trainingPhaseCounter : trainingPhaseCounter - 1;
+                return !lowerToUpper || abstractPhase instanceof TrainingPhase ? trainingPhaseCounter : trainingPhaseCounter - 1;
             }
             if (abstractPhase instanceof TrainingPhase) {
                 trainingPhaseCounter++;

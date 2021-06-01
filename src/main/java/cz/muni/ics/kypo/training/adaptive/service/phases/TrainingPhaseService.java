@@ -102,7 +102,7 @@ public class TrainingPhaseService {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
         if(trainingPhaseToOrder > trainingPhaseFromOrder) {
             this.alignDecisionMatricesLowerToUpper(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
-        } else {
+        } else if (trainingPhaseToOrder < trainingPhaseFromOrder) {
             this.alignDecisionMatricesUpperToLower(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
         }
     }

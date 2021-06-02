@@ -18,6 +18,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire.QuestionAnswerArchiveDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire.QuestionAnswersDetailsDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingDefinitionArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingRunArchiveDTO;
@@ -242,6 +243,7 @@ public class ExportImportFacade {
 
     private void writeTrainingRunsInfo(ZipOutputStream zos, TrainingInstance trainingInstance) throws IOException {
         Set<TrainingRun> runs = exportImportService.findRunsByInstanceId(trainingInstance.getId());
+        Map<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnairesDetails = new HashMap<>();
         for (TrainingRun run : runs) {
             TrainingRunArchiveDTO archivedRun = exportImportMapper.mapToArchiveDTO(run);
             archivedRun.setInstanceId(trainingInstance.getId());
@@ -250,8 +252,11 @@ public class ExportImportFacade {
             zos.putNextEntry(runEntry);
             zos.write(objectMapper.writeValueAsBytes(archivedRun));
 
-            writeQuestionsAnswers(zos, run);
+            writeQuestionsAnswers(zos, run, questionnairesDetails);
             List<Map<String, Object>> events = elasticsearchServiceApi.findAllEventsFromTrainingRun(run);
+            if (events.isEmpty()) {
+                continue;
+            }
             Map<Integer, Long> phaseStartTimestampMapping = writeEventsAndGetPhaseStartTimestampMapping(zos, run, events);
             writeEventsByPhases(zos, run, events);
 
@@ -260,6 +265,7 @@ public class ExportImportFacade {
             writeConsoleCommands(zos, sandboxId, consoleCommands);
             writeConsoleCommandsDetails(zos, sandboxId, phaseStartTimestampMapping);
         }
+        writeQuestionnairesDetails(zos, questionnairesDetails);
     }
 
     private Map<Integer, Long> writeEventsAndGetPhaseStartTimestampMapping(ZipOutputStream zos, TrainingRun run, List<Map<String, Object>> events) throws IOException {
@@ -293,15 +299,32 @@ public class ExportImportFacade {
         }
     }
 
-    private void writeQuestionsAnswers(ZipOutputStream zos, TrainingRun run) throws IOException {
-        Map<Long, List<QuestionAnswer>> questionsAnswersByQuestionnaires = exportImportService.findQuestionsAnswersOfQuestionnaires(run.getId());
-        for (Map.Entry<Long, List<QuestionAnswer>> questionAnswersByQuestionnaire : questionsAnswersByQuestionnaires.entrySet()) {
-            ZipEntry eventsDetailEntry = new ZipEntry(QUESTIONNAIRES_ANSWERS_FOLDER + "/training_run-id" + run.getId() + "-questionnaires" + "/questionnaire_id" + questionAnswersByQuestionnaire.getKey() + "-answers" + AbstractFileExtensions.JSON_FILE_EXTENSION);
+    private void writeQuestionsAnswers(ZipOutputStream zos, TrainingRun run, Map<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnairesDetails) throws IOException {
+        Map<Long, List<QuestionAnswer>> questionsAnswersByAssessments = exportImportService.findQuestionsAnswersOfQuestionnaires(run.getId());
+        for (Map.Entry<Long, List<QuestionAnswer>> questionAnswersByQuestionnaire : questionsAnswersByAssessments.entrySet()) {
+            ZipEntry eventsDetailEntry = new ZipEntry(QUESTIONNAIRES_ANSWERS_FOLDER + "/training_run-id-" + run.getId() + "-questionnaires" + "/questionnaire_id-" + questionAnswersByQuestionnaire.getKey() + "-answers" + AbstractFileExtensions.JSON_FILE_EXTENSION);
             zos.putNextEntry(eventsDetailEntry);
+
+            Map<Long, QuestionAnswersDetailsDTO> questionAnswersDetails = questionnairesDetails.getOrDefault(questionAnswersByQuestionnaire.getKey(), new HashMap<>());
             for(QuestionAnswer questionAnswer : questionAnswersByQuestionnaire.getValue()) {
-                zos.write(objectMapper.writer(new MinimalPrettyPrinter()).writeValueAsBytes(new QuestionAnswerArchiveDTO(questionAnswer.getQuestion().getText(), questionAnswer.getAnswers())));
+                Question question = questionAnswer.getQuestion();
+                if (!questionAnswersDetails.containsKey(question.getId())) {
+                    questionAnswersDetails.put(question.getId(), new QuestionAnswersDetailsDTO(questionAnswer.getQuestion().getText()));
+                }
+                questionAnswersDetails.get(question.getId()).addAnswers(questionAnswer.getAnswers());
+                zos.write(objectMapper.writer(new MinimalPrettyPrinter()).writeValueAsBytes(new QuestionAnswerArchiveDTO(question.getText(), questionAnswer.getAnswers())));
                 zos.write(System.lineSeparator().getBytes());
             }
+            questionnairesDetails.putIfAbsent(questionAnswersByQuestionnaire.getKey(), questionAnswersDetails);
+
+        }
+    }
+
+    private void writeQuestionnairesDetails(ZipOutputStream zos, Map<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnairesDetails) throws IOException {
+        for(Map.Entry<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnaireDetails: questionnairesDetails.entrySet()) {
+            ZipEntry assessmentDetailsEntry = new ZipEntry(QUESTIONNAIRES_ANSWERS_FOLDER + "/questionnaire-id-" + questionnaireDetails.getKey() + "-details" + AbstractFileExtensions.JSON_FILE_EXTENSION);
+            zos.putNextEntry(assessmentDetailsEntry);
+            zos.write(objectMapper.writer().writeValueAsBytes(questionnaireDetails.getValue().values()));
         }
     }
 

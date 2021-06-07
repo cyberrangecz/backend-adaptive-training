@@ -39,6 +39,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -268,7 +269,9 @@ public class TrainingRunService {
         List<Long> trainingPhasesIds = orderedTrainingPhases.stream()
                 .map(AbstractPhase::getId)
                 .collect(Collectors.toList());
-        List<TrainingPhaseQuestionsFulfillment> questionnairesFulfillment = this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhasesAndTrainingRun(trainingPhasesIds, trainingRunId);
+        Map<Integer, TrainingPhaseQuestionsFulfillment> questionnairesFulfillment = this.trainingPhaseQuestionsFulfillmentRepository.findByTrainingPhasesAndTrainingRun(trainingPhasesIds, trainingRunId)
+                .stream()
+                .collect(Collectors.toMap(fulfillment -> trainingPhasesIds.indexOf(fulfillment.getTrainingPhase().getId()), Function.identity()));
 
         return decisionMatrixRows.stream().map(row -> {
             DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
@@ -286,10 +289,9 @@ public class TrainingRunService {
         }).collect(Collectors.toList());
     }
 
-    private boolean getFulfilled(List<TrainingPhaseQuestionsFulfillment> questionnairesFulfillment, int order){
-        if (questionnairesFulfillment.isEmpty())
-            return true;
-        return questionnairesFulfillment.get(order).isFulfilled();
+    private boolean getFulfilled(Map<Integer, TrainingPhaseQuestionsFulfillment> questionnairesFulfillment, int order){
+        TrainingPhaseQuestionsFulfillment fulfillment = questionnairesFulfillment.get(order);
+        return fulfillment == null || fulfillment.isFulfilled();
     }
 
     private RelatedPhaseInfoDTO getPhaseInfo(AbstractPhase abstractPhase, Boolean trainingPhaseQuestionsFulfillment) {

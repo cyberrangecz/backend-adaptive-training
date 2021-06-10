@@ -1,1 +1,1 @@
-1.0.36 Export questionnaire answers in archived training instance ZIP file.  
+1.0.37 Fixed change of phases order and subsequent correction of matrices, training phase questions are fulfilled if no question phase relation is set. 

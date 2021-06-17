@@ -1,1 +1,1 @@
-1.0.37 Fixed change of phases order and subsequent correction of matrices, training phase questions are fulfilled if no question phase relation is set. 
+1.0.38 Export answers to the questions in an aggregated way. 

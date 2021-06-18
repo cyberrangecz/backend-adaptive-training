@@ -1,1 +1,2 @@
+1.0.39 Temporary return Actions.NONE instead of the Actions.RESULT for all accessed training runs, new version 1.0.27 of elasticsearch documents. 
 1.0.38 Export answers to the questions in an aggregated way. 

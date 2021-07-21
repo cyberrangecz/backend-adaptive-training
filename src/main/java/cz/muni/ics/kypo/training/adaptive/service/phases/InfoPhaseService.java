@@ -46,6 +46,7 @@ public class InfoPhaseService {
     public InfoPhase createDefaultInfoPhase(Long trainingDefinitionId) {
         TrainingDefinition trainingDefinition = findDefinitionById(trainingDefinitionId);
         checkIfCanBeUpdated(trainingDefinition);
+        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
 
         InfoPhase infoPhase = new InfoPhase();
         infoPhase.setContent("Content of info phase");
@@ -53,15 +54,14 @@ public class InfoPhaseService {
         infoPhase.setTrainingDefinition(trainingDefinition);
         infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
 
-        InfoPhase persistedEntity = infoPhaseRepository.save(infoPhase);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
-        return persistedEntity;
+        return infoPhaseRepository.save(infoPhase);
     }
 
     public InfoPhase updateInfoPhase(Long phaseId, InfoPhase infoPhaseToUpdate) {
         InfoPhase persistedInfoPhase = findInfoPhaseById(phaseId);
         TrainingDefinition trainingDefinition = persistedInfoPhase.getTrainingDefinition();
         checkIfCanBeUpdated(trainingDefinition);
+        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         infoPhaseToUpdate.setId(phaseId);
         infoPhaseToUpdate.setTrainingDefinition(trainingDefinition);
         infoPhaseToUpdate.setOrder(persistedInfoPhase.getOrder());

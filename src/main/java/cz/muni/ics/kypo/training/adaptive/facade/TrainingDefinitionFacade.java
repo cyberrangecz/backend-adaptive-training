@@ -309,6 +309,7 @@ public class TrainingDefinitionFacade {
         if (authorsAddition != null && !authorsAddition.isEmpty()) {
             addAuthorsToTrainingDefinition(trainingDefinition, authorsAddition);
         }
+        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
     }
 
     private void addAuthorsToTrainingDefinition(TrainingDefinition trainingDefinition, Set<Long> userRefIds) {
@@ -331,6 +332,9 @@ public class TrainingDefinitionFacade {
                 }
             }
         } while (authors.getPagination().getTotalPages() != page);
+    }
 
+    private LocalDateTime getCurrentTimeInUTC() {
+        return LocalDateTime.now(Clock.systemUTC());
     }
 }

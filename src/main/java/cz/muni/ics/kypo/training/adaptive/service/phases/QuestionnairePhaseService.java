@@ -76,6 +76,7 @@ public class QuestionnairePhaseService {
     public QuestionnairePhase updateQuestionnairePhase(Long phaseId, QuestionnairePhase questionnairePhaseToUpdate) {
         QuestionnairePhase persistedQuestionnairePhase = findQuestionnairePhaseById(phaseId);
         checkIfCanBeUpdated(persistedQuestionnairePhase.getTrainingDefinition());
+        persistedQuestionnairePhase.getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
 
         questionnairePhaseToUpdate.setId(phaseId);
         questionnairePhaseToUpdate.setTrainingDefinition(persistedQuestionnairePhase.getTrainingDefinition());

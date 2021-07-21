@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 @Service
 public class TaskService {
 
@@ -32,11 +35,13 @@ public class TaskService {
         task.setContent("Task content ...");
         task.setSolution("Task solution ...");
         task.setIncorrectAnswerLimit(1);
+        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(task);
     }
 
     public Task createTask(Task task) {
         task.setOrder(taskRepository.getCurrentMaxOrder(task.getTrainingPhase().getId()) + 1);
+        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(task);
     }
 
@@ -50,10 +55,12 @@ public class TaskService {
         updatedTask.setId(taskId);
         updatedTask.setTrainingPhase(persistedTask.getTrainingPhase());
         updatedTask.setOrder(persistedTask.getOrder());
+        updatedTask.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(updatedTask);
     }
 
     public void removeTask(Task task) {
+        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         taskRepository.decreaseOrderAfterTaskWasDeleted(task.getTrainingPhase().getId(), task.getOrder());
         taskRepository.delete(task);
     }
@@ -71,7 +78,12 @@ public class TaskService {
             return;
         }
 
+        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         task.setOrder(newPosition);
         taskRepository.save(task);
+    }
+
+    private LocalDateTime getCurrentTimeInUTC() {
+        return LocalDateTime.now(Clock.systemUTC());
     }
 }

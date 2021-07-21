@@ -103,6 +103,7 @@ public class PhaseService {
         }
         phaseFrom.setOrder(toOrder);
         trainingPhaseService.alignDecisionMatrixOfTrainingPhasesAfterMove(phaseFrom.getTrainingDefinition().getId(), trainingPhaseFromOrder, trainingPhaseToOrder);
+        phaseFrom.getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         abstractPhaseRepository.save(phaseFrom);
     }
 

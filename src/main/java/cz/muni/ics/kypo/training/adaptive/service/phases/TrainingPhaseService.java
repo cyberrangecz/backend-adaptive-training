@@ -76,6 +76,7 @@ public class TrainingPhaseService {
         TrainingPhase persistedTrainingPhase = findPhaseById(phaseId);
         TrainingDefinition trainingDefinition = persistedTrainingPhase.getTrainingDefinition();
         checkIfCanBeUpdated(trainingDefinition);
+        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         trainingPhaseToUpdate.setId(phaseId);
         trainingPhaseToUpdate.setTrainingDefinition(persistedTrainingPhase.getTrainingDefinition());
         trainingPhaseToUpdate.setOrder(persistedTrainingPhase.getOrder());

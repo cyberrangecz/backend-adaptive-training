@@ -3,6 +3,8 @@ package cz.muni.ics.kypo.training.adaptive.domain.phase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 
 import javax.persistence.*;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 

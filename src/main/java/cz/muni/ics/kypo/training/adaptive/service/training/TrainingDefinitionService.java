@@ -147,6 +147,7 @@ public class TrainingDefinitionService {
      */
     public TrainingDefinition create(TrainingDefinition trainingDefinition) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
+        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
         return trainingDefinitionRepository.save(trainingDefinition);
     }
@@ -163,6 +164,7 @@ public class TrainingDefinitionService {
         checkIfCanBeUpdated(trainingDefinition);
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinitionToUpdate);
         trainingDefinitionToUpdate.setEstimatedDuration(trainingDefinition.getEstimatedDuration());
+        trainingDefinitionToUpdate.setLastEdited(getCurrentTimeInUTC());
         trainingDefinitionRepository.save(trainingDefinitionToUpdate);
         LOG.info("Training definition with id: {} updated.", trainingDefinitionToUpdate.getId());
     }
@@ -181,6 +183,7 @@ public class TrainingDefinitionService {
         TrainingDefinition clonedTrainingDefinition = cloneMapper.clone(trainingDefinition);
         clonedTrainingDefinition.setTitle(title);
         addLoggedInUserToTrainingDefinitionAsAuthor(clonedTrainingDefinition);
+        clonedTrainingDefinition.setLastEdited(getCurrentTimeInUTC());
         clonedTrainingDefinition = trainingDefinitionRepository.save(clonedTrainingDefinition);
 
         clonePhasesFromTrainingDefinition(trainingDefinition.getId(), clonedTrainingDefinition);
@@ -428,6 +431,5 @@ public class TrainingDefinitionService {
             User newUser = new User(userManagementServiceApi.getLoggedInUserRefId());
             trainingDefinition.addAuthor(newUser);
         }
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
     }
 }

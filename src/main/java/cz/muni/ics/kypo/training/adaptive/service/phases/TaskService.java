@@ -34,7 +34,7 @@ public class TaskService {
         task.setAnswer("Secret flag");
         task.setContent("Task content ...");
         task.setSolution("Task solution ...");
-        task.setIncorrectAnswerLimit(1);
+        task.setIncorrectAnswerLimit(10);
         task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(task);
     }

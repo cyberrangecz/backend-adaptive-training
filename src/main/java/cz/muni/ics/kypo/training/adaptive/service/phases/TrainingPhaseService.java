@@ -58,6 +58,9 @@ public class TrainingPhaseService {
         trainingPhase.setTrainingDefinition(trainingDefinition);
         trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
         trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinitionId, trainingPhase));
+        trainingPhase.setAllowedWrongAnswers(10);
+        trainingPhase.setAllowedCommands(10);
+        trainingPhase.setEstimatedDuration(10);
         TrainingPhase persistedEntity = trainingPhaseRepository.save(trainingPhase);
         trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         return persistedEntity;

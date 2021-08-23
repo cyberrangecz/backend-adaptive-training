@@ -38,6 +38,11 @@ public class TrainingInstanceDTO {
     private Long poolId;
     @ApiModelProperty(value = "Ids of sandboxes which are assigned to training run.", example = "[3,15]")
     private List<Long> sandboxesWithTrainingRun = new ArrayList<>();
+    @ApiModelProperty(value = "Time of last edit done to instance.", example = "2017-10-19 10:23:54+02")
+    @JsonSerialize(using = LocalDateTimeUTCSerializer.class)
+    private LocalDateTime lastEdited;
+    @ApiModelProperty(value = "Name of the user who has done the last edit in instance.", example = "John Doe")
+    private String lastEditedBy;
 
     /**
      * Gets id.
@@ -183,6 +188,44 @@ public class TrainingInstanceDTO {
         this.sandboxesWithTrainingRun = sandboxesWithTrainingRun;
     }
 
+    /**
+     * Gets time of last edit.
+     *
+     * @return the last edited
+     */
+    public LocalDateTime getLastEdited() {
+        return lastEdited;
+    }
+
+    /**
+     * Sets time of last edit.
+     *
+     * @param lastEdited the last edited
+     */
+    public void setLastEdited(LocalDateTime lastEdited) {
+        this.lastEdited = lastEdited;
+    }
+
+    /**
+     * Gets the name of the user who has done the last edit in Training Instance
+     *
+     * @return the name of the user
+     */
+    public String getLastEditedBy() {
+        return lastEditedBy;
+    }
+
+    /**
+     * Sets the name of the user who has done the last edit in Training Instance
+     *
+     * @param lastEditedBy the name of the user
+     */
+    public void setLastEditedBy(String lastEditedBy) {
+        this.lastEditedBy = lastEditedBy;
+    }
+
+
+
 
 
     @Override
@@ -210,6 +253,8 @@ public class TrainingInstanceDTO {
                 ", accessToken='" + accessToken + '\'' +
                 ", poolId=" + poolId +
                 ", sandboxesWithTrainingRun=" + sandboxesWithTrainingRun +
+                ", lastEdited=" + lastEdited +
+                ", lastEditedBy='" + lastEditedBy + '\'' +
                 '}';
     }
 }

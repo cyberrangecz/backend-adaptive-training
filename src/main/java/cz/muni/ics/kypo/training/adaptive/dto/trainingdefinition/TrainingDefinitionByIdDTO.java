@@ -45,6 +45,8 @@ public class TrainingDefinitionByIdDTO {
     @ApiModelProperty(value = "Time of last edit done to definition.", example = "2017-10-19 10:23:54+02")
     @JsonSerialize(using = LocalDateTimeUTCSerializer.class)
     private LocalDateTime lastEdited;
+    @ApiModelProperty(value = "Name of the user who has done the last edit in definition.", example = "John Doe")
+    private String lastEditedBy;
 
     /**
      * Gets id.
@@ -242,6 +244,24 @@ public class TrainingDefinitionByIdDTO {
      */
     public void setLastEdited(LocalDateTime lastEdited) {
         this.lastEdited = lastEdited;
+    }
+
+    /**
+     * Gets the name of the user who has done the last edit in Training Definition
+     *
+     * @return the name of the user
+     */
+    public String getLastEditedBy() {
+        return lastEditedBy;
+    }
+
+    /**
+     * Sets the name of the user who has done the last edit in Training Definition
+     *
+     * @param lastEditedBy the name of the user
+     */
+    public void setLastEditedBy(String lastEditedBy) {
+        this.lastEditedBy = lastEditedBy;
     }
 
     @Override

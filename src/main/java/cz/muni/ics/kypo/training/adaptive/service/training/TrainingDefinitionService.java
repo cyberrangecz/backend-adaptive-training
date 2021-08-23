@@ -147,9 +147,8 @@ public class TrainingDefinitionService {
      */
     public TrainingDefinition create(TrainingDefinition trainingDefinition) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
-        return trainingDefinitionRepository.save(trainingDefinition);
+        return this.auditAndSave(trainingDefinition);
     }
 
     /**
@@ -164,8 +163,7 @@ public class TrainingDefinitionService {
         checkIfCanBeUpdated(trainingDefinition);
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinitionToUpdate);
         trainingDefinitionToUpdate.setEstimatedDuration(trainingDefinition.getEstimatedDuration());
-        trainingDefinitionToUpdate.setLastEdited(getCurrentTimeInUTC());
-        trainingDefinitionRepository.save(trainingDefinitionToUpdate);
+        this.auditAndSave(trainingDefinitionToUpdate);
         LOG.info("Training definition with id: {} updated.", trainingDefinitionToUpdate.getId());
     }
 
@@ -183,11 +181,9 @@ public class TrainingDefinitionService {
         TrainingDefinition clonedTrainingDefinition = cloneMapper.clone(trainingDefinition);
         clonedTrainingDefinition.setTitle(title);
         addLoggedInUserToTrainingDefinitionAsAuthor(clonedTrainingDefinition);
-        clonedTrainingDefinition.setLastEdited(getCurrentTimeInUTC());
-        clonedTrainingDefinition = trainingDefinitionRepository.save(clonedTrainingDefinition);
+        clonedTrainingDefinition = this.auditAndSave(clonedTrainingDefinition);
 
         clonePhasesFromTrainingDefinition(trainingDefinition.getId(), clonedTrainingDefinition);
-
         LOG.info("Training definition with id: {} cloned.", trainingDefinition.getId());
         return clonedTrainingDefinition;
     }
@@ -294,7 +290,18 @@ public class TrainingDefinitionService {
                 throw new EntityConflictException(new EntityErrorDetail(TrainingDefinition.class, "id", definitionId.getClass(), definitionId,
                         "Cannot switch from " + trainingDefinition.getState() + " to " + state));
         }
+        this.auditAndSave(trainingDefinition);
+    }
+
+    /**
+     * Sets audit attributes to training definition and save.
+     *
+     * @param trainingDefinition the training definition to be saved.
+     */
+    public TrainingDefinition auditAndSave(TrainingDefinition trainingDefinition) {
         trainingDefinition.setLastEdited(getCurrentTimeInUTC());
+        trainingDefinition.setLastEditedBy(userManagementServiceApi.getUserRefDTO().getUserRefFullName());
+        return trainingDefinitionRepository.save(trainingDefinition);
     }
 
     private void clonePhasesFromTrainingDefinition(Long trainingDefinitionId, TrainingDefinition clonedTrainingDefinition) {

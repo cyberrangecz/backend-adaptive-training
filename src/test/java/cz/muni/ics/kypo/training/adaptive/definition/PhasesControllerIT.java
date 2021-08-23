@@ -10,6 +10,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionChoiceDTO;
@@ -26,6 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.handler.CustomRestExceptionHandler;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionnairePhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -54,6 +56,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -80,11 +83,14 @@ class PhasesControllerIT {
     private TrainingPhaseRepository trainingPhaseRepository;
     @Autowired
     private QuestionnairePhaseRepository questionnairePhaseRepository;
+    @Autowired
+    private UserManagementServiceApi userManagementServiceApi;
 
     private TrainingDefinition trainingDefinition;
     private TrainingPhase trainingPhase;
     private QuestionnairePhase questionnairePhase;
     private InfoPhase infoPhase;
+    private UserRefDTO designer;
 
     @BeforeEach
     public void init() {
@@ -93,6 +99,8 @@ class PhasesControllerIT {
                 .build();
 
         trainingDefinition = testDataFactory.getUnreleasedDefinition();
+
+        designer = testDataFactory.getUserRefDTO1();
 
         trainingPhase = testDataFactory.getTrainingPhase1();
         trainingPhase.setOrder(0);
@@ -107,6 +115,7 @@ class PhasesControllerIT {
         infoPhase.setTrainingDefinition(trainingDefinition);
 
         entityManager.persist(trainingDefinition);
+        doReturn(designer).when(userManagementServiceApi).getUserRefDTO();
     }
 
 

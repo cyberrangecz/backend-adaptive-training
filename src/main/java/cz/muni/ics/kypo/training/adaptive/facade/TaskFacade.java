@@ -5,6 +5,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.transactions.Transactional
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
@@ -14,13 +15,11 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.mapping.TaskMapper;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.TaskService;
+import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
 
 
 @Service
@@ -29,14 +28,17 @@ public class TaskFacade {
 
     private final TaskService taskService;
     private final PhaseService phaseService;
+    private final TrainingDefinitionService trainingDefinitionService;
     private final TaskMapper taskMapper;
 
     @Autowired
     public TaskFacade(TaskService taskService,
                       PhaseService phaseService,
+                      TrainingDefinitionService trainingDefinitionService,
                       TaskMapper taskMapper) {
         this.taskService = taskService;
         this.phaseService = phaseService;
+        this.trainingDefinitionService = trainingDefinitionService;
         this.taskMapper = taskMapper;
     }
 
@@ -54,7 +56,9 @@ public class TaskFacade {
         if (!(trainingPhase instanceof TrainingPhase)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "The specified phase isn't training phase."));
         }
-        return taskMapper.mapToTaskDTO(this.taskService.createDefaultTask((TrainingPhase) trainingPhase));
+        Task task = this.taskService.createDefaultTask((TrainingPhase) trainingPhase);
+        trainingDefinitionService.auditAndSave(trainingPhase.getTrainingDefinition());
+        return taskMapper.mapToTaskDTO(task);
     }
 
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
@@ -67,7 +71,9 @@ public class TaskFacade {
         }
         Task taskToCreate = this.taskMapper.mapToEntity(taskCopyDTO);
         taskToCreate.setTrainingPhase((TrainingPhase) trainingPhase);
-        return this.taskMapper.mapToTaskDTO(this.taskService.createTask(taskToCreate));
+        Task createdTask = this.taskService.createTask(taskToCreate);
+        trainingDefinitionService.auditAndSave(trainingPhase.getTrainingDefinition());
+        return this.taskMapper.mapToTaskDTO(createdTask);
     }
 
     /**
@@ -93,7 +99,9 @@ public class TaskFacade {
             "or @securityService.isDesignerOfGivenTask(#taskId)")
     @TransactionalWO
     public TaskDTO updateTask(Long taskId, TaskUpdateDTO taskUpdateDto) {
-        return this.taskMapper.mapToTaskDTO(this.taskService.updateTask(taskId, this.taskMapper.mapToEntity(taskUpdateDto)));
+        Task updatedTask = this.taskService.updateTask(taskId, this.taskMapper.mapToEntity(taskUpdateDto));
+        trainingDefinitionService.auditAndSave(updatedTask.getTrainingPhase().getTrainingDefinition());
+        return this.taskMapper.mapToTaskDTO(updatedTask);
     }
 
     /**
@@ -106,7 +114,9 @@ public class TaskFacade {
     @TransactionalWO
     public void removeTask(Long taskId) {
         Task taskToRemove = this.taskService.getTask(taskId);
+        TrainingDefinition relatedTrainingDefinition = taskToRemove.getTrainingPhase().getTrainingDefinition();
         this.taskService.removeTask(taskToRemove);
+        trainingDefinitionService.auditAndSave(relatedTrainingDefinition);
     }
 
     /**
@@ -119,6 +129,7 @@ public class TaskFacade {
             "or @securityService.isDesignerOfGivenTask(#taskIdFrom)")
     @TransactionalWO
     public void moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
-        taskService.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
+        Task task = taskService.moveTaskToSpecifiedOrder(taskIdFrom, newPosition);
+        trainingDefinitionService.auditAndSave(task.getTrainingPhase().getTrainingDefinition());
     }
 }

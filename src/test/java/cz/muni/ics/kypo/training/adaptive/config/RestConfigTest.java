@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import org.apache.catalina.connector.Connector;
 import org.apache.catalina.connector.Request;
 import org.hibernate.validator.internal.constraintvalidators.bv.EmailValidator;
@@ -34,30 +35,17 @@ public class RestConfigTest {
 
 
 	@Bean
-	@Qualifier("userManagementExchangeFunction")
-	public ExchangeFunction userManagementExchangeFunction(){
-		return Mockito.mock(ExchangeFunction.class);
-	}
-
-	@Bean
-	@Qualifier("sandboxManagementExchangeFunction")
-	public ExchangeFunction sandboxManagementExchangeFunction(){
-		return Mockito.mock(ExchangeFunction.class);
-	}
-
-	@Bean
-	@Qualifier("elasticsearchExchangeFunction")
-	public ExchangeFunction elasticsearchExchangeFunction(){
-		return Mockito.mock(ExchangeFunction.class);
-	}
-
-	@Bean
 	@Primary
 	@Qualifier("userManagementServiceWebClient")
 	public WebClient userManagementServiceWebClient(){
 		return WebClient.builder()
 				.exchangeFunction(userManagementExchangeFunction())
 				.build();
+	}
+
+	@Bean
+	public ExchangeFunction userManagementExchangeFunction(){
+		return Mockito.mock(ExchangeFunction.class);
 	}
 
 	@Bean
@@ -69,6 +57,11 @@ public class RestConfigTest {
 	}
 
 	@Bean
+	public ExchangeFunction sandboxManagementExchangeFunction(){
+		return Mockito.mock(ExchangeFunction.class);
+	}
+
+	@Bean
 	@Qualifier("elasticsearchServiceWebClient")
 	public WebClient elasticsearchServiceWebClient(){
 		return WebClient.builder()
@@ -77,11 +70,21 @@ public class RestConfigTest {
 	}
 
 	@Bean
+	public ExchangeFunction elasticsearchExchangeFunction(){
+		return Mockito.mock(ExchangeFunction.class);
+	}
+
+	@Bean
 	@Qualifier("smartAssistantServiceWebClient")
 	public WebClient smartAssistantServiceWebClient(){
 		return WebClient.builder()
 				.exchangeFunction(elasticsearchExchangeFunction())
 				.build();
+	}
+
+	@Bean
+	public ExchangeFunction smartAssistantExchangeFunction(){
+		return Mockito.mock(ExchangeFunction.class);
 	}
 
 	@Bean
@@ -109,6 +112,12 @@ public class RestConfigTest {
 	@Primary
 	public ElasticsearchServiceApi elasticsearchApiServiceMock(){
 		return Mockito.mock(ElasticsearchServiceApi.class);
+	}
+
+	@Bean
+	@Primary
+	public UserManagementServiceApi userManagementServiceApiMock(){
+		return Mockito.mock(UserManagementServiceApi.class);
 	}
 
 	@Bean

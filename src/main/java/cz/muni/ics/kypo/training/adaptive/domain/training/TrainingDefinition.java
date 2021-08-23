@@ -5,6 +5,7 @@ import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -60,6 +61,9 @@ public class TrainingDefinition implements Serializable {
     private long estimatedDuration;
     @Column(name = "last_edited", nullable = false)
     private LocalDateTime lastEdited;
+    @Column(name = "last_edited_by", nullable = false)
+    private String lastEditedBy;
+
 
     /**
      * Gets unique identification number of Training definition
@@ -262,6 +266,24 @@ public class TrainingDefinition implements Serializable {
      */
     public void setLastEdited(LocalDateTime lastEdited) {
         this.lastEdited = lastEdited;
+    }
+
+    /**
+     * Gets the name of the user who has done the last edit in Training Definition
+     *
+     * @return the name of the user
+     */
+    public String getLastEditedBy() {
+        return lastEditedBy;
+    }
+
+    /**
+     * Sets the name of the user who has done the last edit in Training Definition
+     *
+     * @param lastEditedBy the name of the user
+     */
+    public void setLastEditedBy(String lastEditedBy) {
+        this.lastEditedBy = lastEditedBy;
     }
 
     @Override

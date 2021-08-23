@@ -2,8 +2,12 @@ package cz.muni.ics.kypo.training.adaptive.facade;
 
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
@@ -22,6 +26,7 @@ import cz.muni.ics.kypo.training.adaptive.service.phases.InfoPhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.QuestionnairePhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.phases.TrainingPhaseService;
+import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -39,6 +44,7 @@ public class PhaseFacade {
     private final InfoPhaseService infoPhaseService;
     private final QuestionnairePhaseService questionnairePhaseService;
     private final TrainingPhaseService trainingPhaseService;
+    private final TrainingDefinitionService trainingDefinitionService;
     private final PhaseMapper phaseMapper;
     private final QuestionPhaseRelationMapper questionPhaseRelationMapper;
 
@@ -47,12 +53,14 @@ public class PhaseFacade {
                        InfoPhaseService infoPhaseService,
                        QuestionnairePhaseService questionnairePhaseService,
                        TrainingPhaseService trainingPhaseService,
+                       TrainingDefinitionService trainingDefinitionService,
                        PhaseMapper phaseMapper,
                        QuestionPhaseRelationMapper questionPhaseRelationMapper) {
         this.phaseService = phaseService;
         this.infoPhaseService = infoPhaseService;
         this.questionnairePhaseService = questionnairePhaseService;
         this.trainingPhaseService = trainingPhaseService;
+        this.trainingDefinitionService = trainingDefinitionService;
         this.phaseMapper = phaseMapper;
         this.questionPhaseRelationMapper = questionPhaseRelationMapper;
     }
@@ -67,13 +75,17 @@ public class PhaseFacade {
             "or @securityService.isDesignerOfGivenTrainingDefinition(#definitionId)")
     @TransactionalWO
     public AbstractPhaseDTO createPhase(Long definitionId, PhaseCreateDTO phaseCreateDTO) {
+        TrainingDefinition trainingDefinition = this.trainingDefinitionService.findById(definitionId);
+        AbstractPhase abstractPhase;
         if (phaseCreateDTO.getPhaseType() == PhaseType.INFO) {
-            return phaseMapper.mapToDTO(infoPhaseService.createDefaultInfoPhase(definitionId));
+            abstractPhase = infoPhaseService.createDefaultInfoPhase(trainingDefinition);
         } else if (phaseCreateDTO.getPhaseType() == PhaseType.TRAINING) {
-            return phaseMapper.mapToDTO(trainingPhaseService.createDefaultTrainingPhase(definitionId));
+            abstractPhase = trainingPhaseService.createDefaultTrainingPhase(trainingDefinition);
         } else {
-            return phaseMapper.mapToDTO(questionnairePhaseService.createDefaultQuestionnairePhase(definitionId, phaseCreateDTO.getQuestionnaireType()));
+            abstractPhase = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinition, phaseCreateDTO.getQuestionnaireType());
         }
+        this.trainingDefinitionService.auditAndSave(trainingDefinition);
+        return phaseMapper.mapToDTO(abstractPhase);
     }
 
     /**
@@ -86,9 +98,10 @@ public class PhaseFacade {
             "or @securityService.isDesignerOfGivenPhase(#phaseId)")
     @TransactionalWO
     public List<AbstractPhaseDTO> deletePhase(Long phaseId) {
-        Long definitionId = phaseService.deletePhase(phaseId);
-        trainingPhaseService.alignDecisionMatrixAfterDelete(definitionId);
-        return this.getPhases(definitionId);
+        TrainingDefinition trainingDefinition = phaseService.deletePhase(phaseId);
+        trainingPhaseService.alignDecisionMatrixAfterDelete(trainingDefinition.getId());
+        trainingDefinitionService.auditAndSave(trainingDefinition);
+        return this.getPhases(trainingDefinition.getId());
     }
 
     /**
@@ -121,7 +134,9 @@ public class PhaseFacade {
             "or @securityService.isDesignerOfGivenPhase(#phaseId)")
     @TransactionalWO
     public InfoPhaseDTO updateInfoPhase(Long phaseId, InfoPhaseUpdateDTO infoPhaseUpdateDTO) {
-        return this.phaseMapper.mapToInfoPhaseDTO(infoPhaseService.updateInfoPhase(phaseId, phaseMapper.mapToEntity(infoPhaseUpdateDTO)));
+        InfoPhase infoPhase = infoPhaseService.updateInfoPhase(phaseId, phaseMapper.mapToEntity(infoPhaseUpdateDTO));
+        trainingDefinitionService.auditAndSave(infoPhase.getTrainingDefinition());
+        return this.phaseMapper.mapToInfoPhaseDTO(infoPhase);
     }
 
     /**
@@ -134,7 +149,9 @@ public class PhaseFacade {
             "or @securityService.isDesignerOfGivenPhase(#phaseId)")
     @TransactionalWO
     public TrainingPhaseDTO updateTrainingPhase(Long phaseId, TrainingPhaseUpdateDTO trainingPhaseUpdateDTO) {
-        return this.phaseMapper.mapToTrainingPhaseDTO(trainingPhaseService.updateTrainingPhase(phaseId, phaseMapper.mapToEntity(trainingPhaseUpdateDTO)));
+        TrainingPhase trainingPhase = trainingPhaseService.updateTrainingPhase(phaseId, phaseMapper.mapToEntity(trainingPhaseUpdateDTO));
+        trainingDefinitionService.auditAndSave(trainingPhase.getTrainingDefinition());
+        return this.phaseMapper.mapToTrainingPhaseDTO(trainingPhase);
     }
 
     /**
@@ -161,6 +178,7 @@ public class PhaseFacade {
                 .collect(Collectors.toList());
         questionnairePhaseToUpdate.getQuestionPhaseRelations().clear();
         questionnairePhaseToUpdate.getQuestionPhaseRelations().addAll(updatedQuestionPhaseRelations);
+        trainingDefinitionService.auditAndSave(questionnairePhaseToUpdate.getTrainingDefinition());
         return phaseMapper.mapToQuestionnairePhaseDTO(questionnairePhaseToUpdate);
     }
 
@@ -186,6 +204,7 @@ public class PhaseFacade {
             "or @securityService.isDesignerOfGivenPhase(#phaseIdFrom)")
     @TransactionalWO
     public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int newPosition) {
-        phaseService.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
+        AbstractPhase abstractPhase = phaseService.movePhaseToSpecifiedOrder(phaseIdFrom, newPosition);
+        trainingDefinitionService.auditAndSave(abstractPhase.getTrainingDefinition());
     }
 }

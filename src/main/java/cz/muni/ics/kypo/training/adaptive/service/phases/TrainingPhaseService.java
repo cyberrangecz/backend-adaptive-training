@@ -49,21 +49,18 @@ public class TrainingPhaseService {
         this.abstractPhaseRepository = abstractPhaseRepository;
     }
 
-    public TrainingPhase createDefaultTrainingPhase(Long trainingDefinitionId) {
-        TrainingDefinition trainingDefinition = findDefinitionById(trainingDefinitionId);
+    public TrainingPhase createDefaultTrainingPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
 
         TrainingPhase trainingPhase = new TrainingPhase();
         trainingPhase.setTitle("Title of training phase");
         trainingPhase.setTrainingDefinition(trainingDefinition);
-        trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
-        trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinitionId, trainingPhase));
+        trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
+        trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinition.getId(), trainingPhase));
         trainingPhase.setAllowedWrongAnswers(10);
         trainingPhase.setAllowedCommands(10);
         trainingPhase.setEstimatedDuration(10);
-        TrainingPhase persistedEntity = trainingPhaseRepository.save(trainingPhase);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
-        return persistedEntity;
+        return trainingPhaseRepository.save(trainingPhase);
     }
 
 
@@ -79,7 +76,6 @@ public class TrainingPhaseService {
         TrainingPhase persistedTrainingPhase = findPhaseById(phaseId);
         TrainingDefinition trainingDefinition = persistedTrainingPhase.getTrainingDefinition();
         checkIfCanBeUpdated(trainingDefinition);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         trainingPhaseToUpdate.setId(phaseId);
         trainingPhaseToUpdate.setTrainingDefinition(persistedTrainingPhase.getTrainingDefinition());
         trainingPhaseToUpdate.setOrder(persistedTrainingPhase.getOrder());
@@ -238,9 +234,5 @@ public class TrainingPhaseService {
                     "Cannot update training definition with already created training instance. " +
                             "Remove training instance/s before updating training definition."));
         }
-    }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
     }
 }

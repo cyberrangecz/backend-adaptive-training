@@ -125,13 +125,13 @@ public class TestDataFactory {
 
     private TrainingDefinition unreleasedDefinition = generateTrainingDefinition("Unreleased definition", "Unreleased description",
             new String[]{"p1", "p2"}, new String[]{"o1", "o2"}, TDState.UNRELEASED, true,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(1));
+            LocalDateTime.now(Clock.systemUTC()).minusHours(1), "John Doe");
     private TrainingDefinition releasedDefinition = generateTrainingDefinition("Released definition", "Released description",
             new String[]{"p3", "p4"}, new String[]{"o3"}, TDState.RELEASED, true,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(5));
+            LocalDateTime.now(Clock.systemUTC()).minusHours(5), "John Doe");
     private TrainingDefinition archivedDefinition = generateTrainingDefinition("Archived definition", "Archived description",
             new String[]{"p5"}, new String[]{"o4", "o5", "o6"}, TDState.ARCHIVED, false,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(10));
+            LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Jane Doe");
     private TrainingDefinitionDTO unreleasedDefinitionDTO = generateTrainingDefinitionDTO(unreleasedDefinition);
     private TrainingDefinitionDTO releasedDefinitionDTO = generateTrainingDefinitionDTO(releasedDefinition);
     private TrainingDefinitionDTO archivedDefinitionDTO = generateTrainingDefinitionDTO(archivedDefinition);
@@ -151,11 +151,14 @@ public class TestDataFactory {
             20L, LocalDateTime.now(Clock.systemUTC()).minusHours(15));
 
     private TrainingInstance futureInstance = generateTrainingInstance(LocalDateTime.now(Clock.systemUTC()).plusHours(10),
-            LocalDateTime.now(Clock.systemUTC()).plusHours(20), "Future Instance", 1L, "future-1111");
+            LocalDateTime.now(Clock.systemUTC()).plusHours(20), "Future Instance", 1L, "future-1111",
+            LocalDateTime.now(Clock.systemUTC()).minusHours(12), "Peter White");
     private TrainingInstance ongoingInstance = generateTrainingInstance(LocalDateTime.now(Clock.systemUTC()).minusHours(10),
-            LocalDateTime.now(Clock.systemUTC()).plusHours(10), "Ongoing Instance", 2L, "ongoing-2222");
+            LocalDateTime.now(Clock.systemUTC()).plusHours(10), "Ongoing Instance", 2L, "ongoing-2222",
+            LocalDateTime.now(Clock.systemUTC()).minusHours(14), "Michael Black");
     private TrainingInstance concludedInstance = generateTrainingInstance(LocalDateTime.now(Clock.systemUTC()).minusHours(20),
-            LocalDateTime.now(Clock.systemUTC()).minusHours(5), "Concluded Instance", 3L, "concluded-3333");
+            LocalDateTime.now(Clock.systemUTC()).minusHours(5), "Concluded Instance", 3L, "concluded-3333",
+            LocalDateTime.now(Clock.systemUTC()).minusHours(11), "John Doe");
     private TrainingInstanceCreateDTO trainingInstanceCreateDTO = generateTrainingInstanceCreateDTO(LocalDateTime.now(Clock.systemUTC()).plusHours(15),
             LocalDateTime.now(Clock.systemUTC()).plusHours(22), "Create Instance", "create");
     private TrainingInstanceUpdateDTO trainingInstanceUpdateDTO = generateTrainingInstanceUpdateDTO(LocalDateTime.now(Clock.systemUTC()).plusHours(5),
@@ -591,7 +594,7 @@ public class TestDataFactory {
 
     private TrainingDefinition generateTrainingDefinition(String title, String description, String[] prerequisites,
                                                           String[] outcomes, TDState state, boolean showStepperBar,
-                                                          LocalDateTime lastEdited){
+                                                          LocalDateTime lastEdited, String lastEditedBy){
         TrainingDefinition newTrainingDefinition = new TrainingDefinition();
         newTrainingDefinition.setTitle(title);
         newTrainingDefinition.setDescription(description);
@@ -599,6 +602,7 @@ public class TestDataFactory {
         newTrainingDefinition.setState(state);
         newTrainingDefinition.setShowStepperBar(showStepperBar);
         newTrainingDefinition.setLastEdited(lastEdited);
+        newTrainingDefinition.setLastEditedBy(lastEditedBy);
         return newTrainingDefinition;
     }
 
@@ -621,13 +625,15 @@ public class TestDataFactory {
     }
 
     private TrainingInstance generateTrainingInstance(LocalDateTime starTime, LocalDateTime endTime, String title,
-                                                      Long poolId, String accessToken){
+                                                      Long poolId, String accessToken, LocalDateTime lastEdited, String lastEditedBy){
         TrainingInstance newTrainingInstance = new TrainingInstance();
         newTrainingInstance.setStartTime(starTime);
         newTrainingInstance.setEndTime(endTime);
         newTrainingInstance.setTitle(title);
         newTrainingInstance.setPoolId(poolId);
         newTrainingInstance.setAccessToken(accessToken);
+        newTrainingInstance.setLastEdited(lastEdited);
+        newTrainingInstance.setLastEditedBy(lastEditedBy);
         return newTrainingInstance;
     }
 

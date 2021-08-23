@@ -35,13 +35,11 @@ public class TaskService {
         task.setContent("Task content ...");
         task.setSolution("Task solution ...");
         task.setIncorrectAnswerLimit(10);
-        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(task);
     }
 
     public Task createTask(Task task) {
         task.setOrder(taskRepository.getCurrentMaxOrder(task.getTrainingPhase().getId()) + 1);
-        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(task);
     }
 
@@ -55,17 +53,15 @@ public class TaskService {
         updatedTask.setId(taskId);
         updatedTask.setTrainingPhase(persistedTask.getTrainingPhase());
         updatedTask.setOrder(persistedTask.getOrder());
-        updatedTask.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         return taskRepository.save(updatedTask);
     }
 
     public void removeTask(Task task) {
-        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         taskRepository.decreaseOrderAfterTaskWasDeleted(task.getTrainingPhase().getId(), task.getOrder());
         taskRepository.delete(task);
     }
 
-    public void moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
+    public Task moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
         Task task = this.getTask(taskIdFrom);
         int fromOrder = task.getOrder();
 
@@ -75,15 +71,9 @@ public class TaskService {
             taskRepository.increaseOrderOfTasksOnInterval(task.getTrainingPhase().getId(), newPosition, fromOrder);
         } else {
             // nothing should be changed, no further actions needed
-            return;
+            return task;
         }
-
-        task.getTrainingPhase().getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
         task.setOrder(newPosition);
-        taskRepository.save(task);
-    }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
+        return taskRepository.save(task);
     }
 }

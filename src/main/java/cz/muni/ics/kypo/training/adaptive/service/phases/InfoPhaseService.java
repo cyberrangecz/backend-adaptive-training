@@ -11,6 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseReposit
 import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,17 +44,14 @@ public class InfoPhaseService {
         this.abstractPhaseRepository = abstractPhaseRepository;
     }
 
-    public InfoPhase createDefaultInfoPhase(Long trainingDefinitionId) {
-        TrainingDefinition trainingDefinition = findDefinitionById(trainingDefinitionId);
+    public InfoPhase createDefaultInfoPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
 
         InfoPhase infoPhase = new InfoPhase();
         infoPhase.setContent("Content of info phase");
         infoPhase.setTitle("Title of info phase");
         infoPhase.setTrainingDefinition(trainingDefinition);
-        infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
-
+        infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
         return infoPhaseRepository.save(infoPhase);
     }
 
@@ -61,11 +59,9 @@ public class InfoPhaseService {
         InfoPhase persistedInfoPhase = findInfoPhaseById(phaseId);
         TrainingDefinition trainingDefinition = persistedInfoPhase.getTrainingDefinition();
         checkIfCanBeUpdated(trainingDefinition);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         infoPhaseToUpdate.setId(phaseId);
         infoPhaseToUpdate.setTrainingDefinition(trainingDefinition);
         infoPhaseToUpdate.setOrder(persistedInfoPhase.getOrder());
-
         return infoPhaseRepository.save(infoPhaseToUpdate);
     }
 
@@ -90,9 +86,4 @@ public class InfoPhaseService {
                             "Remove training instance/s before updating training definition."));
         }
     }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
-    }
-
 }

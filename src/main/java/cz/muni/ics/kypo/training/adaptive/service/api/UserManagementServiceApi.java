@@ -179,13 +179,12 @@ public class UserManagementServiceApi {
      */
     public UserRefDTO getUserRefDTO() {
         try {
-            UserRefDTO userRefDTO = userManagementServiceWebClient
+            return userManagementServiceWebClient
                     .get()
                     .uri("/users/info")
                     .retrieve()
                     .bodyToMono(UserRefDTO.class)
                     .block();
-            return userRefDTO;
         } catch (CustomWebClientException ex) {
             throw new MicroserviceApiException("Error when calling user management service API to get info about logged in user.", ex);
         }

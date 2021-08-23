@@ -9,6 +9,7 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,11 +47,11 @@ public class PhaseService {
      * Deletes specific phase based on id
      *
      * @param phaseId - id of phase to be deleted
-     * @return ID of the training definition from which the phase has been deleted.
+     * @return training definition from which the phase has been deleted.
      * @throws EntityNotFoundException training definition or phase is not found.
      * @throws EntityConflictException phase cannot be deleted in released or archived training definition.
      */
-    public Long deletePhase(Long phaseId) {
+    public TrainingDefinition deletePhase(Long phaseId) {
         AbstractPhase phaseToDelete = this.getPhase(phaseId);
         TrainingDefinition trainingDefinition = phaseToDelete.getTrainingDefinition();
         if (!trainingDefinition.getState().equals(TDState.UNRELEASED)) {
@@ -60,8 +61,7 @@ public class PhaseService {
         abstractPhaseRepository.delete(phaseToDelete);
         int phaseOrder = phaseToDelete.getOrder();
         abstractPhaseRepository.decreaseOrderAfterPhaseWasDeleted(trainingDefinition.getId(), phaseOrder);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
-        return trainingDefinition.getId();
+        return trainingDefinition;
     }
 
     public AbstractPhase getPhase(Long phaseId) {
@@ -78,10 +78,11 @@ public class PhaseService {
      *
      * @param phaseIdFrom - id of the phase to be moved to the new position
      * @param toOrder - position where phase will be moved
+     * @return phase that has been moved to the specific position
      * @throws EntityNotFoundException training definition or one of the phase is not found.
      * @throws EntityConflictException released or archived training definition cannot be modified.
      */
-    public void movePhaseToSpecifiedOrder(Long phaseIdFrom, int toOrder) {
+    public AbstractPhase movePhaseToSpecifiedOrder(Long phaseIdFrom, int toOrder) {
         AbstractPhase phaseFrom = abstractPhaseRepository.findById(phaseIdFrom)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", phaseIdFrom.getClass(), phaseIdFrom, PHASE_NOT_FOUND)));
         toOrder = getCorrectToOrder(phaseFrom.getTrainingDefinition().getId(), toOrder);
@@ -95,7 +96,7 @@ public class PhaseService {
         }
 
         if (fromOrder == toOrder) {
-            return;
+            return phaseFrom;
         } else if (fromOrder > toOrder) {
             abstractPhaseRepository.increaseOrderOfPhasesOnInterval(phaseFrom.getTrainingDefinition().getId(), toOrder, fromOrder);
         } else {
@@ -103,12 +104,7 @@ public class PhaseService {
         }
         phaseFrom.setOrder(toOrder);
         trainingPhaseService.alignDecisionMatrixOfTrainingPhasesAfterMove(phaseFrom.getTrainingDefinition().getId(), trainingPhaseFromOrder, trainingPhaseToOrder);
-        phaseFrom.getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
-        abstractPhaseRepository.save(phaseFrom);
-    }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
+        return abstractPhaseRepository.save(phaseFrom);
     }
 
     private int getCorrectToOrder(Long trainingDefinitionId, int order) {

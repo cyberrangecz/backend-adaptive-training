@@ -59,24 +59,20 @@ public class QuestionnairePhaseService {
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
     }
 
-    public QuestionnairePhase createDefaultQuestionnairePhase(Long trainingDefinitionId, QuestionnaireType questionnaireType) {
-        TrainingDefinition trainingDefinition = findDefinitionById(trainingDefinitionId);
+    public QuestionnairePhase createDefaultQuestionnairePhase(TrainingDefinition trainingDefinition, QuestionnaireType questionnaireType) {
         checkIfCanBeUpdated(trainingDefinition);
 
         QuestionnairePhase questionnairePhase = new QuestionnairePhase();
         questionnairePhase.setTitle("Title of questionnaire phase");
         questionnairePhase.setTrainingDefinition(trainingDefinition);
-        questionnairePhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinitionId) + 1);
+        questionnairePhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
         questionnairePhase.setQuestionnaireType(questionnaireType);
-        QuestionnairePhase persistedEntity = questionnairePhaseRepository.save(questionnairePhase);
-        trainingDefinition.setLastEdited(getCurrentTimeInUTC());
-        return persistedEntity;
+        return questionnairePhaseRepository.save(questionnairePhase);
     }
 
     public QuestionnairePhase updateQuestionnairePhase(Long phaseId, QuestionnairePhase questionnairePhaseToUpdate) {
         QuestionnairePhase persistedQuestionnairePhase = findQuestionnairePhaseById(phaseId);
         checkIfCanBeUpdated(persistedQuestionnairePhase.getTrainingDefinition());
-        persistedQuestionnairePhase.getTrainingDefinition().setLastEdited(getCurrentTimeInUTC());
 
         questionnairePhaseToUpdate.setId(phaseId);
         questionnairePhaseToUpdate.setTrainingDefinition(persistedQuestionnairePhase.getTrainingDefinition());
@@ -149,9 +145,4 @@ public class QuestionnairePhaseService {
                             "Remove training instance/s before updating training definition."));
         }
     }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
-    }
-
 }

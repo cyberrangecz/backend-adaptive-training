@@ -6,16 +6,19 @@ import cz.muni.ics.kypo.training.adaptive.controller.TasksController;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
+import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.handler.CustomRestExceptionHandler;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TaskRepository;
+import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
@@ -25,6 +28,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.reactive.function.client.ClientRequest;
 
 import javax.persistence.EntityManager;
 import java.util.Optional;
@@ -34,6 +38,9 @@ import static cz.muni.ics.kypo.training.adaptive.util.ObjectConverter.convertObj
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -56,10 +63,13 @@ class TasksControllerIT {
     private TasksController tasksController;
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private UserManagementServiceApi userManagementServiceApi;
 
     private TrainingDefinition trainingDefinition;
     private TrainingPhase trainingPhase;
     private Task task, task2, task3;
+    private UserRefDTO designer;
 
     @BeforeEach
     public void init() {
@@ -72,6 +82,8 @@ class TasksControllerIT {
         trainingPhase.setOrder(0);
         trainingPhase.setTrainingDefinition(trainingDefinition);
 
+        designer = testDataFactory.getUserRefDTO1();
+
         task = testDataFactory.getTask11();
         task.setTrainingPhase(trainingPhase);
         task2 = testDataFactory.getTask12();
@@ -81,6 +93,8 @@ class TasksControllerIT {
 
         entityManager.persist(trainingDefinition);
         entityManager.persist(trainingPhase);
+
+        doReturn(designer).when(userManagementServiceApi).getUserRefDTO();
     }
 
     @Test
@@ -97,7 +111,7 @@ class TasksControllerIT {
         assertThat(createdTask.getContent(), is("Task content ..."));
         assertThat(createdTask.getAnswer(), is("Secret flag"));
         assertThat(createdTask.getSolution(), is("Task solution ..."));
-        assertThat(createdTask.getIncorrectAnswerLimit(), is(1));
+        assertThat(createdTask.getIncorrectAnswerLimit(), is(10));
         assertThat(createdTask.isModifySandbox(), is(false));
         assertThat(createdTask.getSandboxChangeExpectedDuration(), is(0));
 
@@ -170,7 +184,6 @@ class TasksControllerIT {
     void cloneTask() throws Exception {
         entityManager.persist(task);
         TaskCopyDTO taskCopyDTO = testDataFactory.getTaskCopyDTO();
-
         MockHttpServletResponse response = mvc.perform(post(URIPath.TASKS_ID.getUri(), trainingDefinition.getId(), trainingPhase.getId(), task.getId())
                 .content(convertObjectToJson(taskCopyDTO))
                 .contentType(MediaType.APPLICATION_JSON_VALUE))

@@ -124,7 +124,7 @@ public class TrainingInstanceService {
                     "End time must be later than start time."));
         }
         addLoggedInUserAsOrganizerToTrainingInstance(trainingInstance);
-        return trainingInstanceRepository.save(trainingInstance);
+        return this.auditAndSave(trainingInstance);
     }
 
     /**
@@ -153,8 +153,22 @@ public class TrainingInstanceService {
                 trainingInstanceToUpdate.setAccessToken(trainingInstance.getAccessToken());
             }
         }
-        trainingInstanceRepository.save(trainingInstanceToUpdate);
-        return trainingInstanceToUpdate.getAccessToken();
+        return this.auditAndSave(trainingInstanceToUpdate).getAccessToken();
+    }
+
+    /**
+     * Sets audit attributes to training instance and save.
+     *
+     * @param trainingInstance the training instance to be saved.
+     */
+    public TrainingInstance auditAndSave(TrainingInstance trainingInstance) {
+        trainingInstance.setLastEdited(getCurrentTimeInUTC());
+        trainingInstance.setLastEditedBy(userManagementServiceApi.getUserRefDTO().getUserRefFullName());
+        return trainingInstanceRepository.save(trainingInstance);
+    }
+
+    private LocalDateTime getCurrentTimeInUTC() {
+        return LocalDateTime.now(Clock.systemUTC());
     }
 
     private void validateStartAndEndTime(TrainingInstance trainingInstance) {
@@ -225,7 +239,7 @@ public class TrainingInstanceService {
     }
 
     /**
-     * deletes training instance
+     * Deletes training instance
      *
      * @param id the training instance to be deleted.
      * @throws EntityNotFoundException training instance is not found.
@@ -234,16 +248,6 @@ public class TrainingInstanceService {
     public void deleteById(Long id) {
         trainingInstanceRepository.deleteById(id);
         LOG.debug("Training instance with id: {} deleted.", id);
-    }
-
-    /**
-     * Update training instance pool training instance.
-     *
-     * @param trainingInstance the training instance
-     * @return the training instance
-     */
-    public TrainingInstance updateTrainingInstancePool(TrainingInstance trainingInstance) {
-        return trainingInstanceRepository.saveAndFlush(trainingInstance);
     }
 
     /**

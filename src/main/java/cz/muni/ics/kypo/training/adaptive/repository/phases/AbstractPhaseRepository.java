@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.repository.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -59,4 +60,12 @@ public interface AbstractPhaseRepository extends JpaRepository<AbstractPhase, Lo
             "WHERE ap.trainingDefinition.id = :trainingDefinitionId " +
             "AND ap.order = 0")
     Optional<AbstractPhase> findFirstPhaseOfTrainingDefinition(@Param("trainingDefinitionId") Long trainingDefinitionId);
+
+    /**
+     * Find all levels by level ids.
+     *
+     * @param phaseIds the ids of the levels
+     * @return list of {@link AbstractPhase}s with the given ids
+     */
+    List<AbstractPhase> findAllByIdIsInAndTrainingDefinitionId(List<Long> phaseIds, Long trainingDefinitionId);
 }

@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -18,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -71,6 +75,10 @@ public class PhaseService {
 
     public List<AbstractPhase> getPhases(Long trainingDefinitionId) {
         return abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
+    }
+
+    public List<AbstractPhase> getPhasesByIdsAndTrainingDefinition(List<Long> phaseIds, Long trainingDefinitionId) {
+        return abstractPhaseRepository.findAllByIdIsInAndTrainingDefinitionId(phaseIds, trainingDefinitionId);
     }
 
     /**
@@ -128,5 +136,9 @@ public class PhaseService {
             }
         }
         return -1;
+    }
+
+    private LocalDateTime getCurrentTimeInUTC() {
+        return LocalDateTime.now(Clock.systemUTC());
     }
 }

@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.training;
 
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,11 +16,8 @@ import java.util.Objects;
         value = "TrainingPhaseUpdateDTO",
         description = "Training phase to update."
 )
-public class TrainingPhaseUpdateDTO {
+public class TrainingPhaseUpdateDTO extends AbstractPhaseUpdateDTO {
 
-    @ApiModelProperty(value = "Short description of training phase", required = true, example = "Training phase title")
-    @NotEmpty(message = "{trainingPhase.title.NotEmpty.message}")
-    private String title;
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10", position = 1)
     @NotNull(message = "{trainingPhase.allowedWrongAnswers.NotNull.message}")
     @Min(value = 0, message = "{trainingPhase.allowedWrongAnswers.Min.message}")
@@ -36,14 +34,9 @@ public class TrainingPhaseUpdateDTO {
     @Valid
     @NotEmpty(message = "{trainingPhase.decisionMatrix.NotEmpty.message}")
     private List<DecisionMatrixRowDTO> decisionMatrix;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    @ApiModelProperty(value = "Tasks associated with the training phase", required = true, position = 5)
+    @Valid
+    private List<TaskUpdateDTO> tasks;
 
     public Integer getAllowedWrongAnswers() {
         return allowedWrongAnswers;
@@ -77,27 +70,35 @@ public class TrainingPhaseUpdateDTO {
         this.decisionMatrix = decisionMatrix;
     }
 
+    public List<TaskUpdateDTO> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskUpdateDTO> tasks) {
+        this.tasks = tasks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         TrainingPhaseUpdateDTO that = (TrainingPhaseUpdateDTO) o;
-        return Objects.equals(title, that.title) &&
-                Objects.equals(allowedWrongAnswers, that.allowedWrongAnswers) &&
-                Objects.equals(allowedCommands, that.allowedCommands) &&
-                Objects.equals(estimatedDuration, that.estimatedDuration) &&
-                Objects.equals(decisionMatrix, that.decisionMatrix);
+        return Objects.equals(getAllowedWrongAnswers(), that.getAllowedWrongAnswers()) && Objects.equals(getAllowedCommands(), that.getAllowedCommands()) && Objects.equals(getEstimatedDuration(), that.getEstimatedDuration());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, allowedWrongAnswers, allowedCommands, estimatedDuration, decisionMatrix);
+        return Objects.hash(super.hashCode(), getAllowedWrongAnswers(), getAllowedCommands(), getEstimatedDuration());
     }
+
 
     @Override
     public String toString() {
         return "TrainingPhaseUpdateDTO{" +
-                "title='" + title + '\'' +
+                "id=" + getId() +
+                ", title='" + getTitle() + '\'' +
+                ", phaseType=" + getPhaseType() +
                 ", allowedWrongAnswers=" + allowedWrongAnswers +
                 ", allowedCommands=" + allowedCommands +
                 ", estimatedDuration=" + estimatedDuration +

@@ -49,4 +49,6 @@ public interface TaskRepository extends JpaRepository<Task, Long>, QuerydslPredi
             "WHERE td.id = :trainingDefinitionId " +
             "ORDER BY tp.order, t.order ASC")
     List<NodeDTO> findAllTasksByTrainingDefinitionId(@Param("trainingDefinitionId") Long trainingDefinitionId);
+
+    List<Task> findAllByIdIsInAndTrainingPhaseId(List<Long> taskIds, Long phaseId);
 }

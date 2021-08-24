@@ -67,30 +67,32 @@ public class TrainingPhaseService {
     /**
      * Updates training phase in training definition
      *
-     * @param phaseId               - id of the phase to be updated
-     * @param trainingPhaseToUpdate phase to be updated
+     * @param persistedTrainingPhase               - id of the phase to be updated
+     * @param updatedTrainingPhase phase to be updated
      * @throws EntityNotFoundException training definition is not found.
      * @throws EntityConflictException phase cannot be updated in released or archived training definition.
      */
-    public TrainingPhase updateTrainingPhase(Long phaseId, TrainingPhase trainingPhaseToUpdate) {
-        TrainingPhase persistedTrainingPhase = findPhaseById(phaseId);
+    public TrainingPhase updateTrainingPhase(TrainingPhase persistedTrainingPhase, TrainingPhase updatedTrainingPhase) {
         TrainingDefinition trainingDefinition = persistedTrainingPhase.getTrainingDefinition();
-        checkIfCanBeUpdated(trainingDefinition);
-        trainingPhaseToUpdate.setId(phaseId);
-        trainingPhaseToUpdate.setTrainingDefinition(persistedTrainingPhase.getTrainingDefinition());
-        trainingPhaseToUpdate.setOrder(persistedTrainingPhase.getOrder());
-        trainingPhaseToUpdate.setTasks(persistedTrainingPhase.getTasks());
-        if (!CollectionUtils.isEmpty(trainingPhaseToUpdate.getDecisionMatrix())) {
+        updatedTrainingPhase.setId(persistedTrainingPhase.getId());
+        updatedTrainingPhase.setTrainingDefinition(persistedTrainingPhase.getTrainingDefinition());
+        updatedTrainingPhase.setOrder(persistedTrainingPhase.getOrder());
+        updatedTrainingPhase.setTasks(persistedTrainingPhase.getTasks());
+
+        trainingDefinition.setEstimatedDuration(trainingDefinition.getEstimatedDuration() -
+                persistedTrainingPhase.getEstimatedDuration() +
+                updatedTrainingPhase.getEstimatedDuration());
+        if (!CollectionUtils.isEmpty(updatedTrainingPhase.getDecisionMatrix())) {
             Set<Long> persistedMatrixRows = persistedTrainingPhase.getDecisionMatrix()
                     .stream()
                     .map(DecisionMatrixRow::getId)
                     .collect(Collectors.toSet());
-            trainingPhaseToUpdate.getDecisionMatrix()
+            updatedTrainingPhase.getDecisionMatrix()
                     .stream()
                     .filter(matrixRow -> matrixRow.getId() == null || persistedMatrixRows.contains(matrixRow.getId()))
-                    .forEach(matrixRow -> matrixRow.setTrainingPhase(trainingPhaseToUpdate));
+                    .forEach(matrixRow -> matrixRow.setTrainingPhase(updatedTrainingPhase));
         }
-        return trainingPhaseRepository.save(trainingPhaseToUpdate);
+        return trainingPhaseRepository.save(updatedTrainingPhase);
     }
 
     public TrainingPhase findPhaseById(Long phaseId) {

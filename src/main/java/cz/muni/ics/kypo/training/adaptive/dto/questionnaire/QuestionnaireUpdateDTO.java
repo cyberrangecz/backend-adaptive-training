@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,25 +12,14 @@ import java.util.Objects;
 @ApiModel(
         value = "QuestionnaireUpdateDTO"
 )
-public class QuestionnaireUpdateDTO {
+public class QuestionnaireUpdateDTO extends AbstractPhaseUpdateDTO {
 
-    @ApiModelProperty(value = "Title of questionnaire", required = true, example = "Entrance test")
-    @NotEmpty(message = "{questionnairePhase.title.NotEmpty.message}")
-    private String title;
     @Valid
     @ApiModelProperty(value = "Questions in the questionnaire", required = true)
     private List<QuestionDTO> questions = new ArrayList<>();
     @Valid
     @ApiModelProperty(value = "The relation between questions in the questionnaire and phase in the training definition", required = true)
     private List<QuestionPhaseRelationDTO> phaseRelations = new ArrayList<>();
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
     public List<QuestionDTO> getQuestions() {
         return questions;
@@ -51,23 +41,24 @@ public class QuestionnaireUpdateDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         QuestionnaireUpdateDTO that = (QuestionnaireUpdateDTO) o;
-        return Objects.equals(title, that.title) &&
-                Objects.equals(questions, that.questions) &&
-                Objects.equals(phaseRelations, that.phaseRelations);
+        return Objects.equals(getQuestions(), that.getQuestions());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, questions, phaseRelations);
+        return Objects.hash(super.hashCode(), getQuestions());
     }
+
 
     @Override
     public String toString() {
-        return "QuestionnaireUpdateDto{" +
-                "title='" + title + '\'' +
+        return "QuestionnaireUpdateDTO{" +
+                "id=" + getId() +
+                ", title='" + getTitle() + '\'' +
+                ", phaseType=" + getPhaseType() +
                 ", questions=" + questions +
-                ", phaseRelations=" + phaseRelations +
                 '}';
     }
 }

@@ -19,9 +19,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @ApiModel(
-        value = "AbstractLevelDTO",
-        subTypes = {TrainingPhaseDTO.class, InfoPhaseDTO.class, QuestionnairePhaseDTO.class},
-        description = "Abstract superclass for classes TrainingPhaseDTO, InfoPhaseDTO and QuestionnairePhaseDTO"
+        value = "AbstractPhaseUpdateDTO",
+        subTypes = {TrainingPhaseUpdateDTO.class, InfoPhaseUpdateDTO.class, QuestionnaireUpdateDTO.class},
+        description = "Abstract superclass for classes TrainingPhaseUpdateDTO, InfoPhaseUpdateDTO and QuestionnaireUpdateDTO"
 )
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "phase_type", visible = true)
 @JsonSubTypes({

@@ -77,10 +77,6 @@ public class PhaseService {
         return abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
     }
 
-    public List<AbstractPhase> getPhasesByIdsAndTrainingDefinition(List<Long> phaseIds, Long trainingDefinitionId) {
-        return abstractPhaseRepository.findAllByIdIsInAndTrainingDefinitionId(phaseIds, trainingDefinitionId);
-    }
-
     /**
      * Move phase to the different position and modify orders of phase between moved phase and new position.
      *

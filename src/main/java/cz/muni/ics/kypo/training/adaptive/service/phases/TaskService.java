@@ -82,10 +82,6 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
-    public List<Task> getTasksByIdsAndPhase(List<Long> taskIds, Long phaseId) {
-        return taskRepository.findAllByIdIsInAndTrainingPhaseId(taskIds, phaseId);
-    }
-
     public Task moveTaskToSpecifiedOrder(Long taskIdFrom, int newPosition) {
         Task task = this.getTask(taskIdFrom);
         int fromOrder = task.getOrder();

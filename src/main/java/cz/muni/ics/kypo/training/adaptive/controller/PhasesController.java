@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
@@ -108,6 +109,26 @@ public class PhasesController {
             @PathVariable("phaseId") Long phaseId) {
         List<AbstractPhaseDTO> remainingPhases = phaseFacade.deletePhase(phaseId);
         return new ResponseEntity<>(remainingPhases, HttpStatus.OK);
+    }
+
+    @ApiOperation(httpMethod = "PUT",
+            value = "Update phases",
+            nickname = "updatePhases",
+            response = Void.class,
+            consumes = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Phases updated"),
+            @ApiResponse(code = 500, message = "Unexpected application error")
+    })
+    @PutMapping
+    public ResponseEntity<Void> updatePhases(
+            @ApiParam(value = "Phase ID", required = true)
+            @PathVariable("definitionId") Long definitionId,
+            @ApiParam(value = "List of phases to be updated")
+            @RequestBody @Valid List<AbstractPhaseUpdateDTO> phaseUpdateDTOS) {
+        phaseFacade.updatePhases(definitionId, phaseUpdateDTOS);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation(httpMethod = "PUT",

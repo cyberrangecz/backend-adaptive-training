@@ -55,17 +55,14 @@ public class InfoPhaseService {
         return infoPhaseRepository.save(infoPhase);
     }
 
-    public InfoPhase updateInfoPhase(Long phaseId, InfoPhase infoPhaseToUpdate) {
-        InfoPhase persistedInfoPhase = findInfoPhaseById(phaseId);
-        TrainingDefinition trainingDefinition = persistedInfoPhase.getTrainingDefinition();
-        checkIfCanBeUpdated(trainingDefinition);
-        infoPhaseToUpdate.setId(phaseId);
-        infoPhaseToUpdate.setTrainingDefinition(trainingDefinition);
-        infoPhaseToUpdate.setOrder(persistedInfoPhase.getOrder());
-        return infoPhaseRepository.save(infoPhaseToUpdate);
+    public InfoPhase updateInfoPhase(InfoPhase persistedInfoPhase, InfoPhase updatedInfoPhase) {
+        updatedInfoPhase.setId(persistedInfoPhase.getId());
+        updatedInfoPhase.setTrainingDefinition(persistedInfoPhase.getTrainingDefinition());
+        updatedInfoPhase.setOrder(persistedInfoPhase.getOrder());
+        return infoPhaseRepository.save(updatedInfoPhase);
     }
 
-    private InfoPhase findInfoPhaseById(Long phaseId) {
+    public InfoPhase findInfoPhaseById(Long phaseId) {
         return infoPhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, PHASE_NOT_FOUND)));
     }

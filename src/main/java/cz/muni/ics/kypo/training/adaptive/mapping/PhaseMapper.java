@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.mapping;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.info.InfoPhaseArchiveDTO;

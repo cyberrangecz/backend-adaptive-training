@@ -404,7 +404,7 @@ public class TrainingDefinitionService {
         return clonedQuestionPhaseRelation;
     }
 
-    private void checkIfCanBeUpdated(TrainingDefinition trainingDefinition) {
+    public void checkIfCanBeUpdated(TrainingDefinition trainingDefinition) {
         if (!trainingDefinition.getState().equals(TDState.UNRELEASED)) {
             throw new EntityConflictException(new EntityErrorDetail(TrainingDefinition.class, "id", trainingDefinition.getId().getClass(), trainingDefinition.getId(),
                     ARCHIVED_OR_RELEASED));

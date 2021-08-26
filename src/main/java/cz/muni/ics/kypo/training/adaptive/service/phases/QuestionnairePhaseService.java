@@ -5,6 +5,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionPhaseRelationDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
@@ -22,9 +23,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 import static cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService.PHASE_NOT_FOUND;
 import static cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService.ARCHIVED_OR_RELEASED;
@@ -70,11 +69,10 @@ public class QuestionnairePhaseService {
         return questionnairePhaseRepository.save(questionnairePhase);
     }
 
-    public QuestionnairePhase updateQuestionnairePhase(Long phaseId, QuestionnairePhase questionnairePhaseToUpdate) {
-        QuestionnairePhase persistedQuestionnairePhase = findQuestionnairePhaseById(phaseId);
-        checkIfCanBeUpdated(persistedQuestionnairePhase.getTrainingDefinition());
+    public QuestionnairePhase updateQuestionnairePhase(QuestionnairePhase persistedQuestionnairePhase, QuestionnairePhase questionnairePhaseToUpdate) {
+        this.checkOrderOfPhaseRelations(questionnairePhaseToUpdate.getQuestionPhaseRelations());
 
-        questionnairePhaseToUpdate.setId(phaseId);
+        questionnairePhaseToUpdate.setId(persistedQuestionnairePhase.getId());
         questionnairePhaseToUpdate.setTrainingDefinition(persistedQuestionnairePhase.getTrainingDefinition());
         questionnairePhaseToUpdate.setOrder(persistedQuestionnairePhase.getOrder());
         questionnairePhaseToUpdate.setQuestionnaireType(persistedQuestionnairePhase.getQuestionnaireType());
@@ -119,7 +117,7 @@ public class QuestionnairePhaseService {
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(QuestionPhaseRelation.class, "id", questionPhaseRelation.getClass(), questionPhaseRelation, "Question phase relation not found.")));
     }
 
-    private QuestionnairePhase findQuestionnairePhaseById(Long phaseId) {
+    public QuestionnairePhase findQuestionnairePhaseById(Long phaseId) {
         return questionnairePhaseRepository.findById(phaseId)
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(QuestionnairePhase.class, "id", phaseId.getClass(), phaseId, PHASE_NOT_FOUND)));
     }
@@ -143,6 +141,18 @@ public class QuestionnairePhaseService {
             throw new EntityConflictException(new EntityErrorDetail(TrainingDefinition.class, "id", trainingDefinition.getId().getClass(), trainingDefinition.getId(),
                     "Cannot update training definition with already created training instance. " +
                             "Remove training instance/s before updating training definition."));
+        }
+    }
+
+    private void checkOrderOfPhaseRelations(List<QuestionPhaseRelation> questionPhaseRelations) {
+        questionPhaseRelations.sort(Comparator.comparing(QuestionPhaseRelation::getOrder));
+        Integer order = 0;
+        for (QuestionPhaseRelation questionPhaseRelation : questionPhaseRelations) {
+            if (!questionPhaseRelation.getOrder().equals(order)) {
+                throw new BadRequestException("The question phase relation has wrong order. The current order is " + questionPhaseRelation.getOrder() +
+                        " but should be " + order);
+            }
+            order++;
         }
     }
 }

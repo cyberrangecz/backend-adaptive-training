@@ -11,6 +11,9 @@ import java.util.Objects;
 )
 public class TaskUpdateDTO {
 
+    @ApiModelProperty(value = "Main identifier of the task", required = true, example = "1")
+    @NotNull(message = "{task.id.NotNull.message}")
+    private Long id;
     @ApiModelProperty(value = "Short description of task", required = true, example = "Task title")
     @NotEmpty(message = "{task.title.NotEmpty.message}")
     private String title;
@@ -34,6 +37,14 @@ public class TaskUpdateDTO {
     @ApiModelProperty(value = "It defines the expected duration of sandbox change defined in seconds", example = "15", position = 1)
     @Min(value = 0, message = "{task.sandboxChangeExpectedDuration.Min.message}")
     private int sandboxChangeExpectedDuration;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -96,24 +107,20 @@ public class TaskUpdateDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TaskUpdateDTO that = (TaskUpdateDTO) o;
-        return modifySandbox == that.modifySandbox &&
-                sandboxChangeExpectedDuration == that.sandboxChangeExpectedDuration &&
-                Objects.equals(title, that.title) &&
-                Objects.equals(content, that.content) &&
-                Objects.equals(answer, that.answer) &&
-                Objects.equals(solution, that.solution) &&
-                Objects.equals(incorrectAnswerLimit, that.incorrectAnswerLimit);
+        return Objects.equals(getId(), that.getId()) && Objects.equals(getTitle(), that.getTitle());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, content, answer, solution, incorrectAnswerLimit, modifySandbox, sandboxChangeExpectedDuration);
+        return Objects.hash(getId(), getTitle());
     }
+
 
     @Override
     public String toString() {
         return "TaskUpdateDTO{" +
-                "title='" + title + '\'' +
+                "id=" + id +
+                ", title='" + title + '\'' +
                 ", content='" + content + '\'' +
                 ", answer='" + answer + '\'' +
                 ", solution='" + solution + '\'' +

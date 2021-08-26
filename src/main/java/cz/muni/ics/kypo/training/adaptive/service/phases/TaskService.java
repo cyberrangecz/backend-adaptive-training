@@ -13,6 +13,10 @@ import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -48,9 +52,26 @@ public class TaskService {
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", taskId.getClass(), taskId, TASK_NOT_FOUND)));
     }
 
+    public void updateTasks(List<Task> updatedTasks, List<Task> persistedTasks, Long trainingPhaseId) {
+        Map<Long, Task> persistedTaskById = persistedTasks.stream()
+                .collect(Collectors.toMap(Task::getId, Function.identity()));
+        updatedTasks.forEach(updatedTask -> {
+            Task persistedTask = persistedTaskById.get(updatedTask.getId());
+            if(persistedTask == null) {
+                throw new EntityNotFoundException(new EntityErrorDetail(Task.class, "id", Long.class,
+                        updatedTask.getId(), "Task was not found in phase (id: " + trainingPhaseId + ")."));
+            }
+            this.updateTask(persistedTask, updatedTask);
+        });
+    }
+
     public Task updateTask(Long taskId, Task updatedTask) {
         Task persistedTask = this.getTask(taskId);
-        updatedTask.setId(taskId);
+        return updateTask(persistedTask, updatedTask);
+    }
+
+    public Task updateTask(Task persistedTask, Task updatedTask) {
+        updatedTask.setId(persistedTask.getId());
         updatedTask.setTrainingPhase(persistedTask.getTrainingPhase());
         updatedTask.setOrder(persistedTask.getOrder());
         return taskRepository.save(updatedTask);

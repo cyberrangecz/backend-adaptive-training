@@ -139,8 +139,30 @@ public class TrainingInstanceFacade {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", Long.class, trainingInstance.getId(),
                     "The training definition assigned to running training instance cannot be changed."));
         }
+        if(isPoolIdChanged(trainingInstance.getPoolId(), trainingInstanceToUpdate.getPoolId())) {
+            handlePoolIdModification(trainingInstance.getPoolId(), trainingInstanceToUpdate.getPoolId(), trainingInstance);
+        }
         trainingInstanceToUpdate.setTrainingDefinition(trainingDefinitionService.findById(trainingInstanceUpdateDTO.getTrainingDefinitionId()));
         return trainingInstanceService.update(trainingInstanceToUpdate);
+    }
+
+    private void handlePoolIdModification(Long currentPoolId, Long newPoolId, TrainingInstance trainingInstance) {
+        if(currentPoolId == null) {
+            sandboxServiceApi.lockPool(newPoolId);
+            trainingInstance.setPoolId(newPoolId);
+        } else if (newPoolId == null) {
+            sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
+            deleteBashCommandsFromPool(trainingInstance.getPoolId());
+        } else {
+            sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
+            deleteBashCommandsFromPool(trainingInstance.getPoolId());
+            sandboxServiceApi.lockPool(newPoolId);
+            trainingInstance.setPoolId(newPoolId);
+        }
+    }
+
+    private boolean isPoolIdChanged(Long currentPoolId, Long updatedPoolId) {
+        return (currentPoolId == null && updatedPoolId != null) || (currentPoolId != null && (!currentPoolId.equals(updatedPoolId)));
     }
 
     /**
@@ -155,7 +177,11 @@ public class TrainingInstanceFacade {
         TrainingInstance trainingInstance = trainingInstanceMapper.mapCreateToEntity(trainingInstanceCreateDTO);
         trainingInstance.setTrainingDefinition(trainingDefinitionService.findById(trainingInstanceCreateDTO.getTrainingDefinitionId()));
         trainingInstance.setId(null);
-        return trainingInstanceMapper.mapToDTO(trainingInstanceService.create(trainingInstance));
+        TrainingInstance createdTrainingInstance = trainingInstanceService.create(trainingInstance);
+        if(trainingInstance.getPoolId() != null) {
+            handlePoolIdModification(null, trainingInstance.getPoolId(), trainingInstance);
+        }
+        return trainingInstanceMapper.mapToDTO(createdTrainingInstance);
     }
 
     private void addOrganizersToTrainingInstance(TrainingInstance trainingInstance, Set<Long> userRefIdsOfOrganizers) {

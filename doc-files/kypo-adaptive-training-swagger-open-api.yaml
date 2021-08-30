@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.39"
+  version: "Version: 1.0.40"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -781,6 +781,36 @@ paths:
             $ref: "#/definitions/AbstractLevelDTO"
         201:
           description: "Phase created"
+        500:
+          description: "Unexpected application error"
+      security:
+      - bearerAuth: []
+    put:
+      tags:
+      - "Phases"
+      summary: "Update phases"
+      description: ""
+      operationId: "updatePhases"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "definitionId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "List of phases to be updated"
+        required: false
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/AbstractPhaseUpdateDTO"
+      responses:
+        200:
+          description: "Phases updated"
         500:
           description: "Unexpected application error"
       security:
@@ -2353,6 +2383,33 @@ definitions:
         minimum: 0
     description: "Superclass for classes TrainingPhaseImportDTO, QuestionnairePhaseImportDTO\
       \ and InfoPhaseImportDTO"
+  AbstractPhaseUpdateDTO:
+    type: "object"
+    required:
+    - "id"
+    - "phaseType"
+    - "title"
+    discriminator: "phase_type"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of phase"
+      title:
+        type: "string"
+        example: "Training phase title"
+        description: "Short description of training phase"
+      phaseType:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of phase"
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+    description: "Abstract superclass for classes TrainingPhaseUpdateDTO, InfoPhaseUpdateDTO\
+      \ and QuestionnaireUpdateDTO"
   AccessTrainingRunDTO:
     type: "object"
     properties:
@@ -2851,19 +2908,16 @@ definitions:
             \ a participant."
       description: "An imported info phase."
   InfoPhaseUpdateDTO:
-    type: "object"
-    required:
-    - "content"
-    - "title"
-    properties:
-      title:
-        type: "string"
-        example: "Info phase title"
-        description: "Short description of info phase"
-      content:
-        type: "string"
-        example: "Read the info"
-        description: "The information of info phase that is displayed to a player"
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseUpdateDTO"
+    - type: "object"
+      required:
+      - "content"
+      properties:
+        content:
+          type: "string"
+          example: "Read the info"
+          description: "The information of info phase that is displayed to a player"
   IsCorrectAnswerDTO:
     type: "object"
     properties:
@@ -3473,27 +3527,24 @@ definitions:
             $ref: "#/definitions/QuestionPhaseRelationImportDTO"
       description: "Imported questionnaire phase."
   QuestionnaireUpdateDTO:
-    type: "object"
-    required:
-    - "phaseRelations"
-    - "questions"
-    - "title"
-    properties:
-      title:
-        type: "string"
-        example: "Entrance test"
-        description: "Title of questionnaire"
-      questions:
-        type: "array"
-        description: "Questions in the questionnaire"
-        items:
-          $ref: "#/definitions/QuestionDTO"
-      phaseRelations:
-        type: "array"
-        description: "The relation between questions in the questionnaire and phase\
-          \ in the training definition"
-        items:
-          $ref: "#/definitions/QuestionPhaseRelationDTO"
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseUpdateDTO"
+    - type: "object"
+      required:
+      - "phaseRelations"
+      - "questions"
+      properties:
+        questions:
+          type: "array"
+          description: "Questions in the questionnaire"
+          items:
+            $ref: "#/definitions/QuestionDTO"
+        phaseRelations:
+          type: "array"
+          description: "The relation between questions in the questionnaire and phase\
+            \ in the training definition"
+          items:
+            $ref: "#/definitions/QuestionPhaseRelationDTO"
   RoleDTO:
     type: "object"
     properties:
@@ -3740,10 +3791,16 @@ definitions:
     required:
     - "answer"
     - "content"
+    - "id"
     - "incorrectAnswerLimit"
     - "solution"
     - "title"
     properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of the task"
       title:
         type: "string"
         example: "Task title"
@@ -3843,6 +3900,10 @@ definitions:
         format: "date-time"
         example: "2017-10-19 10:23:54+02"
         description: "Time of last edit done to definition."
+      lastEditedBy:
+        type: "string"
+        example: "John Doe"
+        description: "Name of the user who has done the last edit in definition."
       canBeArchived:
         type: "boolean"
         example: true
@@ -4132,6 +4193,11 @@ definitions:
         type: "string"
         example: "December instance"
         description: "Short textual description of the training instance."
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox pool assigned to training instance"
       startTime:
         type: "string"
         format: "date-time"
@@ -4203,6 +4269,15 @@ definitions:
         items:
           type: "integer"
           format: "int64"
+      lastEdited:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Time of last edit done to instance."
+      lastEditedBy:
+        type: "string"
+        example: "John Doe"
+        description: "Name of the user who has done the last edit in instance."
     description: "A session of attending a concrete training, which involves a deployment\
       \ of the training definition in one or more sandbox instances that are then\
       \ assigned to participants. The instance comprises one or more game runs."
@@ -4243,6 +4318,15 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox pool belonging to training instance"
+      lastEdited:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Time of last edit done to instance."
+      lastEditedBy:
+        type: "string"
+        example: "John Doe"
+        description: "Name of the user who has done the last edit in instance."
     description: "Information about training instance returned in find all training\
       \ instance response."
   TrainingInstanceRestResource:
@@ -4275,6 +4359,11 @@ definitions:
         format: "int64"
         example: 2
         description: "Main identifier of training instance."
+      poolId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox pool assigned to training instance"
       title:
         type: "string"
         example: "Current Instance"
@@ -4423,47 +4512,51 @@ definitions:
             $ref: "#/definitions/DecisionMatrixRowImportDTO"
       description: "Imported training phase."
   TrainingPhaseUpdateDTO:
-    type: "object"
-    required:
-    - "allowedCommands"
-    - "allowedWrongAnswers"
-    - "decisionMatrix"
-    - "estimatedDuration"
-    - "title"
-    properties:
-      title:
-        type: "string"
-        example: "Training phase title"
-        description: "Short description of training phase"
-      allowedWrongAnswers:
-        type: "integer"
-        format: "int32"
-        example: 10
-        position: 1
-        description: "Maximal number of allowed wrong answers provided by played"
-        minimum: 0
-      allowedCommands:
-        type: "integer"
-        format: "int32"
-        example: 10
-        position: 2
-        description: "Maximal number of allowed commands provided by played"
-        minimum: 0
-      estimatedDuration:
-        type: "integer"
-        format: "int32"
-        example: 20
-        position: 3
-        description: "Estimated time (minutes) taken by the player to solve the training\
-          \ phase"
-        minimum: 0
-      decisionMatrix:
-        type: "array"
-        position: 4
-        description: "Decision matrix associated with the training phase"
-        items:
-          $ref: "#/definitions/DecisionMatrixRowDTO"
-    description: "Training phase to update."
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseUpdateDTO"
+    - type: "object"
+      required:
+      - "allowedCommands"
+      - "allowedWrongAnswers"
+      - "decisionMatrix"
+      - "estimatedDuration"
+      - "tasks"
+      properties:
+        allowedWrongAnswers:
+          type: "integer"
+          format: "int32"
+          example: 10
+          position: 1
+          description: "Maximal number of allowed wrong answers provided by played"
+          minimum: 0
+        allowedCommands:
+          type: "integer"
+          format: "int32"
+          example: 10
+          position: 2
+          description: "Maximal number of allowed commands provided by played"
+          minimum: 0
+        estimatedDuration:
+          type: "integer"
+          format: "int32"
+          example: 20
+          position: 3
+          description: "Estimated time (minutes) taken by the player to solve the\
+            \ training phase"
+          minimum: 0
+        decisionMatrix:
+          type: "array"
+          position: 4
+          description: "Decision matrix associated with the training phase"
+          items:
+            $ref: "#/definitions/DecisionMatrixRowDTO"
+        tasks:
+          type: "array"
+          position: 5
+          description: "Tasks associated with the training phase"
+          items:
+            $ref: "#/definitions/TaskUpdateDTO"
+      description: "Training phase to update."
   TrainingRunByIdDTO:
     type: "object"
     properties:

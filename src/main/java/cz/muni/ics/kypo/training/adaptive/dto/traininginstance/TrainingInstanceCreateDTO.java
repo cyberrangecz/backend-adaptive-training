@@ -37,6 +37,8 @@ public class TrainingInstanceCreateDTO {
     @NotNull(message = "{trainingInstance.trainingDefinitionId.NotNull.message}")
     @Min(value = 0, message = "{trainingInstance.trainingDefinitionId.Min.message}")
     private Long trainingDefinitionId;
+    @ApiModelProperty(value = "Id of sandbox pool assigned to training instance", example = "1")
+    private Long poolId;
 
     /**
      * Gets start time.
@@ -128,6 +130,24 @@ public class TrainingInstanceCreateDTO {
         this.trainingDefinitionId = trainingDefinitionId;
     }
 
+    /**
+     * Gets pool id.
+     *
+     * @return the pool id
+     */
+    public Long getPoolId() {
+        return poolId;
+    }
+
+    /**
+     * Sets pool id.
+     *
+     * @param poolId the pool id
+     */
+    public void setPoolId(Long poolId) {
+        this.poolId = poolId;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceCreateDTO{" +
@@ -136,6 +156,7 @@ public class TrainingInstanceCreateDTO {
                 ", title='" + title + '\'' +
                 ", accessToken='" + accessToken + '\'' +
                 ", trainingDefinitionId=" + trainingDefinitionId +
+                ", poolId=" + poolId +
                 '}';
     }
 }

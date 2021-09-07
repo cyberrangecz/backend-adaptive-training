@@ -42,11 +42,6 @@ public class PhaseService {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
     }
 
-    private TrainingDefinition findDefinitionById(Long id) {
-        return trainingDefinitionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingDefinition.class, "id", Long.class, id)));
-    }
-
     /**
      * Deletes specific phase based on id
      *
@@ -61,7 +56,9 @@ public class PhaseService {
         if (!trainingDefinition.getState().equals(TDState.UNRELEASED)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", trainingDefinition.getId().getClass(), trainingDefinition.getId(), TrainingDefinitionService.ARCHIVED_OR_RELEASED));
         }
-
+        if (phaseToDelete instanceof TrainingPhase) {
+            trainingDefinition.setEstimatedDuration(trainingDefinition.getEstimatedDuration() - ((TrainingPhase) phaseToDelete).getEstimatedDuration());
+        }
         abstractPhaseRepository.delete(phaseToDelete);
         int phaseOrder = phaseToDelete.getOrder();
         abstractPhaseRepository.decreaseOrderAfterPhaseWasDeleted(trainingDefinition.getId(), phaseOrder);
@@ -132,9 +129,5 @@ public class PhaseService {
             }
         }
         return -1;
-    }
-
-    private LocalDateTime getCurrentTimeInUTC() {
-        return LocalDateTime.now(Clock.systemUTC());
     }
 }

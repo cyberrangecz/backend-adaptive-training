@@ -19,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +30,9 @@ import static cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefini
 public class TrainingPhaseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingPhaseService.class);
+    private static int DEFAULT_ALLOWED_WRONG_ANSWERS = 10;
+    private static int DEFAULT_ALLOWED_COMMANDS = 10;
+    private static int DEFAULT_ESTIMATED_DURATION = 10;
 
     private final TrainingPhaseRepository trainingPhaseRepository;
     private final TrainingInstanceRepository trainingInstanceRepository;
@@ -57,9 +58,10 @@ public class TrainingPhaseService {
         trainingPhase.setTrainingDefinition(trainingDefinition);
         trainingPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
         trainingPhase.setDecisionMatrix(prepareDefaultDecisionMatrix(trainingDefinition.getId(), trainingPhase));
-        trainingPhase.setAllowedWrongAnswers(10);
-        trainingPhase.setAllowedCommands(10);
-        trainingPhase.setEstimatedDuration(10);
+        trainingPhase.setAllowedWrongAnswers(DEFAULT_ALLOWED_WRONG_ANSWERS);
+        trainingPhase.setAllowedCommands(DEFAULT_ALLOWED_COMMANDS);
+        trainingPhase.setEstimatedDuration(DEFAULT_ESTIMATED_DURATION);
+        trainingDefinition.setEstimatedDuration(trainingDefinition.getEstimatedDuration() + DEFAULT_ESTIMATED_DURATION);
         return trainingPhaseRepository.save(trainingPhase);
     }
 

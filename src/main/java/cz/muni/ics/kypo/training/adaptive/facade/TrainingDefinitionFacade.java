@@ -8,15 +8,19 @@ import cz.muni.ics.kypo.training.adaptive.annotations.transactions.Transactional
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.AbstractQuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
+import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.*;
-import cz.muni.ics.kypo.training.adaptive.enums.RoleType;
-import cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity;
-import cz.muni.ics.kypo.training.adaptive.enums.TDState;
+import cz.muni.ics.kypo.training.adaptive.enums.*;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
@@ -35,11 +39,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.flatMapping;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * The type Training definition facade.
@@ -96,9 +100,33 @@ public class TrainingDefinitionFacade {
 
     private List<AbstractPhaseDTO> gatherPhases(Long definitionId) {
         List<AbstractPhase> phases = trainingDefinitionService.findAllPhasesFromDefinition(definitionId);
-        return phases.stream()
+        Map<Long, Set<Question>> relatedQuestions = phases.stream()
+                .filter(questionnaire -> questionnaire instanceof QuestionnairePhase && ((QuestionnairePhase) questionnaire).getQuestionnaireType() == QuestionnaireType.ADAPTIVE)
+                .flatMap(questionnaire -> ((QuestionnairePhase) questionnaire).getQuestions().stream())
+                .flatMap(question -> question.getQuestionPhaseRelations().stream())
+                .collect(groupingBy(phaseRelation -> phaseRelation.getRelatedTrainingPhase().getId(),
+                                        flatMapping(phaseRelation -> phaseRelation.getQuestions().stream(), Collectors.toSet()))
+                );
+        List<AbstractPhaseDTO> phaseDTOs = phases.stream()
                 .map(this.phaseMapper::mapToDTO)
                 .collect(Collectors.toList());
+        phaseDTOs.forEach(phase -> {
+            if(phase.getPhaseType() == PhaseType.TRAINING) {
+                ((TrainingPhaseDTO) phase).setRelatedQuestions(relatedQuestions.getOrDefault(phase.getId(), Collections.emptySet()).stream()
+                        .map(this::mapToQuestionDTO)
+                        .collect(Collectors.toList()));
+            }
+        });
+        return phaseDTOs;
+    }
+
+    private QuestionDTO mapToQuestionDTO(Question question) {
+        QuestionDTO questionDTO = new QuestionDTO();
+        questionDTO.setId(question.getId());
+        questionDTO.setQuestionType(question.getQuestionType());
+        questionDTO.setOrder(question.getOrder());
+        questionDTO.setText(question.getText());
+        return questionDTO;
     }
 
     /**

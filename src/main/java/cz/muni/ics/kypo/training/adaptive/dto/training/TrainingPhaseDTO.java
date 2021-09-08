@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.AbstractQuestionDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -23,6 +24,8 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
     private List<TaskDTO> tasks = new ArrayList<>();
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
     private List<DecisionMatrixRowDTO> decisionMatrix;
+    @ApiModelProperty(value = "Questions related to the training phase.", required = true)
+    private List<AbstractQuestionDTO> relatedQuestions;
 
     public int getEstimatedDuration() {
         return estimatedDuration;
@@ -64,6 +67,14 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
         this.decisionMatrix = decisionMatrix;
     }
 
+    public List<AbstractQuestionDTO> getRelatedQuestions() {
+        return relatedQuestions;
+    }
+
+    public void setRelatedQuestions(List<AbstractQuestionDTO> relatedQuestions) {
+        this.relatedQuestions = relatedQuestions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,6 +100,7 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
                 ", allowedWrongAnswers=" + allowedWrongAnswers +
                 ", tasks=" + tasks +
                 ", decisionMatrix=" + decisionMatrix +
+                ", relatedQuestions=" + relatedQuestions +
                 "} " + super.toString();
     }
 }

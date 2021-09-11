@@ -193,7 +193,7 @@ public class TrainingDefinitionFacade {
     @TransactionalWO
     public TrainingDefinitionByIdDTO create(TrainingDefinitionCreateDTO trainingDefinition) {
         TrainingDefinition newTrainingDefinition = trainingDefinitionMapper.mapCreateToEntity(trainingDefinition);
-        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition);
+        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition, trainingDefinition.isDefaultContent());
         return trainingDefinitionMapper.mapToDTOById(createdTrainingDefinition);
     }
 

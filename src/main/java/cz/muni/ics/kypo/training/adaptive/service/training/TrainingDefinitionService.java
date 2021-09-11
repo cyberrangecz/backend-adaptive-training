@@ -1,6 +1,12 @@
 package cz.muni.ics.kypo.training.adaptive.service.training;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.deser.BeanDeserializer;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.querydsl.core.types.Predicate;
+import cz.muni.ics.kypo.training.adaptive.config.BeanValidationDeserializer;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
@@ -8,23 +14,36 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionChoiceImportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionImportDTO;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
+import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import cz.muni.ics.kypo.training.adaptive.mapping.CloneMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
+import cz.muni.ics.kypo.training.adaptive.startup.DefaultPhases;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import java.io.File;
+import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -48,6 +67,10 @@ public class TrainingDefinitionService {
     private final UserRefRepository userRefRepository;
     private final UserManagementServiceApi userManagementServiceApi;
     private final CloneMapper cloneMapper;
+    private final Validator validator;
+    @Value("${path.to.default.phases:}")
+    private String pathToDefaultPhases;
+    private DefaultPhases defaultPhases;
 
     /**
      * Instantiates a new Training definition service.
@@ -70,7 +93,8 @@ public class TrainingDefinitionService {
                                      TrainingInstanceRepository trainingInstanceRepository,
                                      UserRefRepository userRefRepository,
                                      UserManagementServiceApi userManagementServiceApi,
-                                     CloneMapper cloneMapper) {
+                                     CloneMapper cloneMapper,
+                                     Validator validator) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
@@ -80,6 +104,26 @@ public class TrainingDefinitionService {
         this.userRefRepository = userRefRepository;
         this.userManagementServiceApi = userManagementServiceApi;
         this.cloneMapper = cloneMapper;
+        this.validator = validator;
+    }
+
+    @PostConstruct
+    private void loadDefaultPhases() {
+        pathToDefaultPhases = pathToDefaultPhases.isBlank() ? getClass().getResource("/default-phases.json").getPath() : pathToDefaultPhases;
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
+        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        try {
+            defaultPhases = mapper.readValue(new File(pathToDefaultPhases), DefaultPhases.class);
+            Set<ConstraintViolation<DefaultPhases>> violations = this.validator.validate(defaultPhases);
+            if(!violations.isEmpty()){
+                throw new InternalServerErrorException("Could not load the default phases. Reason: " + violations.stream()
+                        .map(ConstraintViolation::getMessage).collect(Collectors.toList()));
+            }
+        } catch (IOException e) {
+            throw new InternalServerErrorException("Could not load file with the default phases.", e);
+        }
     }
 
     /**
@@ -145,8 +189,11 @@ public class TrainingDefinitionService {
      * @param trainingDefinition to be created
      * @return new {@link TrainingDefinition}
      */
-    public TrainingDefinition create(TrainingDefinition trainingDefinition) {
+    public TrainingDefinition create(TrainingDefinition trainingDefinition, boolean createDefaultContent) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
+        if(createDefaultContent && defaultPhases != null) {
+            this.createDefaultPhases(trainingDefinition);
+        }
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
         return this.auditAndSave(trainingDefinition);
     }
@@ -439,4 +486,103 @@ public class TrainingDefinitionService {
             trainingDefinition.addAuthor(newUser);
         }
     }
+
+    private void createDefaultPhases(TrainingDefinition trainingDefinition) {
+        InfoPhase introInfoPhase = new InfoPhase();
+        introInfoPhase.setTitle(defaultPhases.getIntroInfoPhase().getTitle());
+        introInfoPhase.setOrder(0);
+        introInfoPhase.setTrainingDefinition(trainingDefinition);
+        introInfoPhase.setContent(defaultPhases.getIntroInfoPhase().getContent());
+        infoPhaseRepository.save(introInfoPhase);
+
+        QuestionnairePhase questionnairePhase = new QuestionnairePhase();
+        questionnairePhase.setQuestionnaireType(QuestionnaireType.ADAPTIVE);
+        questionnairePhase.setOrder(1);
+        questionnairePhase.setTrainingDefinition(trainingDefinition);
+        questionnairePhase.setTitle("Pre-training questionnaire");
+        questionnairePhase.setQuestions(new ArrayList<>(List.of(
+                defaultMCQ(0, questionnairePhase),
+                defaultFFQ(1, questionnairePhase),
+                defaultRFQ(2, questionnairePhase)
+        )));
+        questionnairePhaseRepository.save(questionnairePhase);
+
+        TrainingPhase getAccessPhase = new TrainingPhase();
+        getAccessPhase.setTitle(defaultPhases.getGetAccessPhase().getTitle());
+        getAccessPhase.setOrder(2);
+        getAccessPhase.setTrainingDefinition(trainingDefinition);
+        getAccessPhase.setEstimatedDuration(defaultPhases.getGetAccessPhase().getEstimatedDuration());
+        getAccessPhase.setAllowedWrongAnswers(100);
+        getAccessPhase.setAllowedCommands(100);
+
+        DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
+        decisionMatrixRow.setTrainingPhase(getAccessPhase);
+        decisionMatrixRow.setOrder(0);
+
+        Task accessPhaseTask = new Task();
+        accessPhaseTask.setTitle(defaultPhases.getGetAccessPhase().getTitle());
+        accessPhaseTask.setAnswer(defaultPhases.getGetAccessPhase().getAnswer());
+        accessPhaseTask.setSolution(defaultPhases.getGetAccessPhase().getSolution());
+        accessPhaseTask.setIncorrectAnswerLimit(100);
+        accessPhaseTask.setContent(defaultPhases.getGetAccessPhase().getContent());
+        accessPhaseTask.setOrder(0);
+        accessPhaseTask.setTrainingPhase(getAccessPhase);
+
+        getAccessPhase.setDecisionMatrix(new ArrayList<>(List.of(decisionMatrixRow)));
+        getAccessPhase.setTasks(new ArrayList<>(List.of(accessPhaseTask)));
+        trainingPhaseRepository.save(getAccessPhase);
+        trainingDefinition.setEstimatedDuration(trainingDefinition.getEstimatedDuration() + getAccessPhase.getEstimatedDuration());
+    }
+
+    private Question defaultMCQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question mcq = new Question();
+        mcq.setQuestionType(QuestionType.MCQ);
+        mcq.setQuestionnairePhase(questionnairePhase);
+        mcq.setText("The city known as the \"IT capital of India\" is ");
+        mcq.setOrder(order);
+        mcq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("Bangalore", 0, true, mcq),
+                createQuestionChoice("Karachi", 1, false, mcq),
+                createQuestionChoice("Mumbai", 2, false, mcq)
+        )));
+        return mcq;
+     }
+
+    private Question defaultFFQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question ffq = new Question();
+        ffq.setQuestionType(QuestionType.FFQ);
+        ffq.setQuestionnairePhase(questionnairePhase);
+        ffq.setText("What is the example of the transport layer protocol?");
+        ffq.setOrder(order);
+        ffq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("SPX", 0, true, ffq),
+                createQuestionChoice("TCP", 1, true, ffq),
+                createQuestionChoice("UDP", 2, true, ffq)
+        )));
+        return ffq;
+    }
+
+    private Question defaultRFQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question rfq = new Question();
+        rfq.setQuestionType(QuestionType.RFQ);
+        rfq.setQuestionnairePhase(questionnairePhase);
+        rfq.setText("What is your level of skill in zip and unzip files in CLI?");
+        rfq.setOrder(order);
+        rfq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("High", 0, true, rfq),
+                createQuestionChoice("Medium", 1, true, rfq),
+                createQuestionChoice("Low", 3, false, rfq),
+                createQuestionChoice("None", 2, false, rfq)
+        )));
+        return rfq;
+    }
+
+     private QuestionChoice createQuestionChoice(String text, Integer order, boolean correct, Question question) {
+         QuestionChoice choice = new QuestionChoice();
+         choice.setText(text);
+         choice.setOrder(order);
+         choice.setCorrect(correct);
+         choice.setQuestion(question);
+         return choice;
+     }
 }

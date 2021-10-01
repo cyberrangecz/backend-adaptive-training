@@ -37,13 +37,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -109,13 +112,13 @@ public class TrainingDefinitionService {
 
     @PostConstruct
     private void loadDefaultPhases() {
-        pathToDefaultPhases = pathToDefaultPhases.isBlank() ? getClass().getResource("/default-phases.json").getPath() : pathToDefaultPhases;
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
         mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         try {
-            defaultPhases = mapper.readValue(new File(pathToDefaultPhases), DefaultPhases.class);
+            InputStream inputStream = pathToDefaultPhases.isBlank() ? getClass().getResourceAsStream("/default-phases.json") : new FileInputStream(pathToDefaultPhases);
+            defaultPhases = mapper.readValue(inputStream, DefaultPhases.class);
             Set<ConstraintViolation<DefaultPhases>> violations = this.validator.validate(defaultPhases);
             if(!violations.isEmpty()){
                 throw new InternalServerErrorException("Could not load the default phases. Reason: " + violations.stream()

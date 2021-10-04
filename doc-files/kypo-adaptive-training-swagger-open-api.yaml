@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.40"
+  version: "Version: 1.0.41"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2410,6 +2410,37 @@ definitions:
         - "TRAINING"
     description: "Abstract superclass for classes TrainingPhaseUpdateDTO, InfoPhaseUpdateDTO\
       \ and QuestionnaireUpdateDTO"
+  AbstractQuestionDTO:
+    type: "object"
+    required:
+    - "choices"
+    - "order"
+    - "questionType"
+    - "text"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+        minimum: 0
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      questionType:
+        type: "string"
+        example: "MCQ"
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      choices:
+        type: "array"
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceDTO"
   AccessTrainingRunDTO:
     type: "object"
     properties:
@@ -3927,6 +3958,10 @@ definitions:
         description: "List of knowledge and skills necessary to complete the training."
         items:
           type: "string"
+      defaultContent:
+        type: "boolean"
+        example: false
+        description: "Sign if default phases should be created."
       description:
         type: "string"
         example: "Description of Photo Hunter"
@@ -4403,6 +4438,7 @@ definitions:
       - "allowedCommands"
       - "allowedWrongAnswers"
       - "decisionMatrix"
+      - "relatedQuestions"
       - "tasks"
       properties:
         estimatedDuration:
@@ -4431,6 +4467,11 @@ definitions:
           description: "Decision matrix associated with the training phase"
           items:
             $ref: "#/definitions/DecisionMatrixRowDTO"
+        relatedQuestions:
+          type: "array"
+          description: "Questions related to the training phase."
+          items:
+            $ref: "#/definitions/AbstractQuestionDTO"
   TrainingPhaseExportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseExportDTO"

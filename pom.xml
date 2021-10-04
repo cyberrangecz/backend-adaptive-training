@@ -50,7 +50,7 @@
         <dependency>
             <groupId>cz.muni.ics.kypo</groupId>
             <artifactId>kypo-security-commons</artifactId>
-            <version>1.0.44</version>
+            <version>1.0.47</version>
         </dependency>
         <dependency>
             <groupId>cz.muni.ics.kypo</groupId>

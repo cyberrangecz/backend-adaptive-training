@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
+import cz.muni.ics.kypo.training.adaptive.domain.Submission;
 import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
@@ -13,6 +14,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
 import cz.muni.ics.kypo.training.adaptive.dto.RelatedPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowForAssistantDTO;
+import cz.muni.ics.kypo.training.adaptive.enums.SubmissionType;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
 import cz.muni.ics.kypo.training.adaptive.repository.*;
@@ -34,7 +36,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -66,6 +71,7 @@ public class TrainingRunService {
     private final ParticipantTaskAssignmentRepository participantTaskAssignmentRepository;
     private final QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository;
     private final QuestionAnswerRepository questionAnswerRepository;
+    private final SubmissionRepository submissionRepository;
 
     /**
      * Instantiates a new Training run service.
@@ -92,7 +98,8 @@ public class TrainingRunService {
                               TRAcquisitionLockRepository trAcquisitionLockRepository,
                               ParticipantTaskAssignmentRepository participantTaskAssignmentRepository,
                               QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository,
-                              QuestionAnswerRepository questionAnswerRepository) {
+                              QuestionAnswerRepository questionAnswerRepository,
+                              SubmissionRepository submissionRepository) {
         this.sandboxServiceApi = sandboxServiceApi;
         this.trainingRunRepository = trainingRunRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
@@ -107,6 +114,7 @@ public class TrainingRunService {
         this.participantTaskAssignmentRepository = participantTaskAssignmentRepository;
         this.questionsPhaseRelationResultRepository = questionsPhaseRelationResultRepository;
         this.questionAnswerRepository = questionAnswerRepository;
+        this.submissionRepository = submissionRepository;
     }
 
     /**
@@ -160,6 +168,7 @@ public class TrainingRunService {
         elasticsearchServiceApi.deleteEventsFromTrainingRun(trainingRun.getTrainingInstance().getId(), trainingRunId);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         questionAnswerRepository.deleteAllByTrainingRunId(trainingRunId);
+        submissionRepository.deleteAllByTrainingRunId(trainingRunId);
         questionsPhaseRelationResultRepository.deleteAllByTrainingRunId(trainingRunId);
         trainingPhaseQuestionsFulfillmentRepository.deleteAllByTrainingRunId(trainingRunId);
         participantTaskAssignmentRepository.deleteAllByTrainingRunId(trainingRunId);
@@ -505,11 +514,13 @@ public class TrainingRunService {
                 trainingRun.setPhaseAnswered(true);
                 auditEventsService.auditCorrectAnswerSubmittedAction(trainingRun, answer);
                 auditEventsService.auditPhaseCompletedAction(trainingRun);
+                auditSubmission(trainingRun, SubmissionType.CORRECT, answer);
                 return true;
             } else if (currentTask.getIncorrectAnswerLimit() != trainingRun.getIncorrectAnswerCount()) {
                 trainingRun.setIncorrectAnswerCount(trainingRun.getIncorrectAnswerCount() + 1);
             }
             auditEventsService.auditWrongAnswerSubmittedAction(trainingRun, answer);
+            auditSubmission(trainingRun, SubmissionType.INCORRECT, answer);
             return false;
         } else {
             throw new BadRequestException("Current phase is not training phase and does not have answer.");
@@ -607,4 +618,22 @@ public class TrainingRunService {
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         trainingRunRepository.save(trainingRun);
     }
+
+    private void auditSubmission(TrainingRun trainingRun, SubmissionType submissionType, String answer) {
+        Submission submission = new Submission();
+        submission.setDate(LocalDateTime.now(Clock.systemUTC()));
+        submission.setPhase(trainingRun.getCurrentPhase());
+        submission.setTask(trainingRun.getCurrentTask());
+        submission.setTrainingRun(trainingRun);
+        submission.setProvided(answer);
+        submission.setType(submissionType);
+        submission.setIpAddress(getUserIpAddress());
+        submissionRepository.save(submission);
+    }
+
+    private String getUserIpAddress() {
+        ServletRequestAttributes requestAttributes =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+        return requestAttributes == null ? "" : requestAttributes.getRequest().getRemoteAddr();
+    }
+
 }

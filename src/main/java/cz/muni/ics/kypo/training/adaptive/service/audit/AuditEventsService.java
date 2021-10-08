@@ -2,10 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service.audit;
 
 import cz.muni.csirt.kypo.events.adaptive.trainings.*;
 import cz.muni.csirt.kypo.events.adaptive.trainings.enums.PhaseType;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +59,6 @@ public class AuditEventsService {
         PhaseStarted phaseStarted = phaseStartedBuilder
                 .phaseType(getPhaseType(trainingRun.getCurrentPhase()))
                 .phaseTitle(trainingRun.getCurrentPhase().getTitle())
-                .taskId(trainingRun.getCurrentTask() == null ? null : trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(phaseStarted, 10L);
     }
@@ -78,7 +74,6 @@ public class AuditEventsService {
 
         PhaseCompleted phaseCompleted = phaseCompletedBuilder
                 .phaseType(getPhaseType(trainingRun.getCurrentPhase()))
-                .taskId(trainingRun.getCurrentTask() == null ? null : trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(phaseCompleted, 5L);
     }
@@ -93,7 +88,6 @@ public class AuditEventsService {
                 fillInCommonBuilderFields(trainingRun, SolutionDisplayed.builder());
 
         SolutionDisplayed solutionDisplayed = solutionDisplayedBuilder
-                .taskId(trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(solutionDisplayed, 0L);
     }
@@ -110,7 +104,6 @@ public class AuditEventsService {
 
         CorrectAnswerSubmitted correctAnswerSubmitted = correctAnswerSubmittedBuilder
                 .answerContent(answer)
-                .taskId(trainingRun.getCurrentTask().getId())
                 .build();
         auditService.saveTrainingRunEvent(correctAnswerSubmitted, 0L);
     }
@@ -127,7 +120,6 @@ public class AuditEventsService {
 
         WrongAnswerSubmitted wrongAnswerSubmitted = wrongAnswerSubmittedBuilder
                 .answerContent(answer)
-                .taskId(trainingRun.getCurrentTask().getId())
                 .count(trainingRun.getIncorrectAnswerCount())
                 .build();
         auditService.saveTrainingRunEvent(wrongAnswerSubmitted, 0L);
@@ -180,6 +172,8 @@ public class AuditEventsService {
 
     private AbstractAuditAdaptivePOJO.AbstractAuditAdaptivePOJOBuilder<?, ?> fillInCommonBuilderFields(TrainingRun trainingRun, AbstractAuditAdaptivePOJO.AbstractAuditAdaptivePOJOBuilder<?, ?> builder) {
         TrainingInstance trainingInstance = trainingRun.getTrainingInstance();
+        Task trainingRunTask = trainingRun.getCurrentTask();
+        AbstractPhase trainingRunPhase = trainingRun.getCurrentPhase();
         builder.sandboxId(trainingRun.getSandboxInstanceRefId())
                 .poolId(trainingInstance.getPoolId())
                 .trainingRunId(trainingRun.getId())
@@ -187,7 +181,10 @@ public class AuditEventsService {
                 .trainingDefinitionId(trainingInstance.getTrainingDefinition().getId())
                 .trainingTime(computeTrainingTime(trainingRun.getStartTime()))
                 .userRefId(trainingRun.getParticipantRef().getUserRefId())
-                .phaseId(trainingRun.getCurrentPhase().getId());
+                .phaseId(trainingRunPhase.getId())
+                .phaseOrder(trainingRunPhase.getOrder())
+                .taskId(trainingRunTask == null ? null : trainingRunTask.getId())
+                .taskOrder(trainingRunTask == null ? null : trainingRunTask.getOrder());
         return builder;
     }
 

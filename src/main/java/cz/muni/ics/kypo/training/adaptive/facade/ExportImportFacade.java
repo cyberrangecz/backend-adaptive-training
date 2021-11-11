@@ -31,7 +31,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImpor
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;

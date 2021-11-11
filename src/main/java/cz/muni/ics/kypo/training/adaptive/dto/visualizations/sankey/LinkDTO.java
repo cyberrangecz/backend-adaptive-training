@@ -1,4 +1,4 @@
-package cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram;
+package cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

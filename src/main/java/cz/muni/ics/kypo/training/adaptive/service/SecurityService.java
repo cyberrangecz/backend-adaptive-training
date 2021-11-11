@@ -5,6 +5,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity;
+import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.*;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
@@ -59,6 +60,20 @@ public class SecurityService {
                 .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingRun.class, "id", trainingRunId.getClass(),
                         trainingRunId, "The necessary permissions are required for a resource.")));
         return trainingRun.getParticipantRef().getUserRefId().equals(userManagementServiceApi.getLoggedInUserRefId());
+    }
+
+    /**
+     * Is trainee of given finished training run boolean.
+     *
+     * @param trainingRunId the training run id
+     * @return the boolean
+     */
+    public boolean isTraineeOfFinishedTrainingRun(Long trainingRunId) {
+        TrainingRun trainingRun = trainingRunRepository.findById(trainingRunId)
+                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail(TrainingRun.class, "id", trainingRunId.getClass(),
+                        trainingRunId, "The necessary permissions are required for a resource.")));
+        return trainingRun.getParticipantRef().getUserRefId().equals(userManagementServiceApi.getLoggedInUserRefId()) &&
+                trainingRun.getState() == TRState.FINISHED;
     }
 
     /**

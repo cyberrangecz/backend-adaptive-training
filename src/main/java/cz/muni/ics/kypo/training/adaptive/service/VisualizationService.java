@@ -1,12 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
 import com.google.common.collect.Lists;
+import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.LinkDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.LinkDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import org.springframework.stereotype.Service;
@@ -216,4 +217,26 @@ public class VisualizationService {
             nodes.add(new NodeDTO(null, null, null, nextNotVisitedPhase.getId(), nextNotVisitedPhase.getOrder(), nextNotVisitedPhase.getTitle()));
         }
     }
+
+    /**
+     * Get all participant task assignments of the finished training runs in the given training instance.
+     *
+     * @param instanceId training instance id
+     * @return list of task assignments grouped by training run id
+     */
+    public Map<Long, List<ParticipantTaskAssignment>> getParticipantTaskAssignmentsByTrainingInstance(Long instanceId) {
+        return participantTaskAssignmentRepository.findAllByTrainingInstanceAndGroupedByTrainingRun(instanceId);
+    }
+
+    /**
+     * Get all participant task assignments of the given finished training run.
+     *
+     * @param runId training run id
+     * @return list of task assignments of the given training run
+     */
+    public List<ParticipantTaskAssignment> getParticipantTaskAssignmentsByTrainingRun(Long runId) {
+        return participantTaskAssignmentRepository.findAllByTrainingRun(runId);
+    }
+
+
 }

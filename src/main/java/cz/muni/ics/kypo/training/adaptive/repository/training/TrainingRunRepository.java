@@ -89,7 +89,7 @@ public interface TrainingRunRepository extends JpaRepository<TrainingRun, Long>,
      * @return {@link TrainingRun}
      */
     @EntityGraph(
-            value = "TrainingRun.findByIdParticipantRefTrainingInstance",
+            value = "TrainingRun.findByIdParticipantRefTrainingInstanceCurrentPhase",
             type = EntityGraph.EntityGraphType.FETCH
     )
     Optional<TrainingRun> findById(Long id);

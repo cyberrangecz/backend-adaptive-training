@@ -24,10 +24,11 @@ import java.util.Objects;
                 attributeNodes = @NamedAttributeNode(value = "participantRef")
         ),
         @NamedEntityGraph(
-                name = "TrainingRun.findByIdParticipantRefTrainingInstance",
+                name = "TrainingRun.findByIdParticipantRefTrainingInstanceCurrentPhase",
                 attributeNodes = {
                         @NamedAttributeNode(value = "participantRef"),
-                        @NamedAttributeNode(value = "trainingInstance")
+                        @NamedAttributeNode(value = "trainingInstance"),
+                        @NamedAttributeNode(value = "currentPhase")
                 }
         )
 })

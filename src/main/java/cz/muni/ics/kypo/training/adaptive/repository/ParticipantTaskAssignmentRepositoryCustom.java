@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.PreProcessLink;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +21,9 @@ public interface ParticipantTaskAssignmentRepositoryCustom {
                                                              Long firstPhaseId, Long secondPhaseId);
 
     Map<Long, Long> findNumberOfParticipantsInTasksOfPhase(Long phaseId);
+
+    Map<Long, List<ParticipantTaskAssignment>> findAllByTrainingInstanceAndGroupedByTrainingRun(Long instanceId);
+
+    List<ParticipantTaskAssignment> findAllByTrainingRun(Long trainingRunId);
 
 }

@@ -2,7 +2,6 @@ package cz.muni.ics.kypo.training.adaptive.mapping;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.info.InfoPhaseArchiveDTO;
@@ -22,7 +21,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePh
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.training.view.TaskViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import org.mapstruct.*;

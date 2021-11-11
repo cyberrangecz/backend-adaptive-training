@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.repository;
 
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.NodeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface ParticipantTaskAssignmentRepository extends
         JpaRepository<ParticipantTaskAssignment, Long>, ParticipantTaskAssignmentRepositoryCustom, QuerydslPredicateExecutor<ParticipantTaskAssignment> {
 
-    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO(t.id, t.order, t.title, ap.id, ap.order, ap.title) FROM ParticipantTaskAssignment p " +
+    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, ap.id, ap.order, ap.title) FROM ParticipantTaskAssignment p " +
             "JOIN p.task t " +
             "JOIN p.abstractPhase ap " +
             "JOIN p.trainingRun tr " +

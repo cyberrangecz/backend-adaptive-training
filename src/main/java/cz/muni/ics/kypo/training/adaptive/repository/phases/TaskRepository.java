@@ -1,7 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.repository.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.NodeDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -43,7 +43,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>, QuerydslPredi
     void decreaseOrderAfterTaskWasDeleted(@Param("trainingPhaseId") Long trainingPhaseId,
                                           @Param("order") int order);
 
-    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.NodeDTO(t.id, t.order, t.title, tp.id, tp.order, tp.title) FROM Task t " +
+    @Query("SELECT DISTINCT new cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, tp.id, tp.order, tp.title) FROM Task t " +
             "JOIN t.trainingPhase tp " +
             "JOIN tp.trainingDefinition td " +
             "WHERE td.id = :trainingDefinitionId " +

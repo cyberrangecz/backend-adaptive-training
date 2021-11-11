@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -241,7 +240,7 @@ public class TrainingRunService {
         trainingRun.setCurrentPhase(nextPhase);
         trainingRun.setIncorrectAnswerCount(0);
         trainingRunRepository.save(trainingRun);
-        participantTaskAssignmentRepository.save(prepareDataForSankeyDiagram(trainingRun, nextPhase));
+        storeParticipantTaskAssignment(trainingRun, nextPhase);
         auditEventsService.auditPhaseStartedAction(trainingRun);
 
         return trainingRun;
@@ -313,12 +312,12 @@ public class TrainingRunService {
         return relatedPhaseInfoDTO;
     }
 
-    private ParticipantTaskAssignment prepareDataForSankeyDiagram(TrainingRun trainingRun, AbstractPhase nextPhase) {
+    private void storeParticipantTaskAssignment(TrainingRun trainingRun, AbstractPhase nextPhase) {
         ParticipantTaskAssignment participantTaskAssignment = new ParticipantTaskAssignment();
         participantTaskAssignment.setTrainingRun(trainingRun);
         participantTaskAssignment.setAbstractPhase(nextPhase);
         participantTaskAssignment.setTask(trainingRun.getCurrentTask());
-        return participantTaskAssignment;
+        this.participantTaskAssignmentRepository.save(participantTaskAssignment);
     }
 
     /**
@@ -367,10 +366,11 @@ public class TrainingRunService {
         AbstractPhase initialPhase = findFirstPhaseForTrainingRun(trainingInstance.getTrainingDefinition().getId());
         TrainingRun trainingRun = getNewTrainingRun(initialPhase, trainingInstance, LocalDateTime.now(Clock.systemUTC()), trainingInstance.getEndTime(), participantRefId);
         if (initialPhase instanceof TrainingPhase) {
-            //TODO call smart assistant
             trainingRun.setCurrentTask(((TrainingPhase) initialPhase).getTasks().get(0));
         }
-        return trainingRunRepository.save(trainingRun);
+        trainingRunRepository.save(trainingRun);
+        storeParticipantTaskAssignment(trainingRun, initialPhase);
+        return trainingRun;
     }
 
     /**

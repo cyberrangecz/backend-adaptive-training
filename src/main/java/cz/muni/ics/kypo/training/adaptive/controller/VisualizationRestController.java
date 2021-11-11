@@ -1,7 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
 
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.SankeyDiagramDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TransitionsDataDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.errors.ApiError;
 import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
 import io.swagger.annotations.*;
@@ -57,6 +58,54 @@ public class VisualizationRestController {
                                                                       @PathVariable("instanceId") Long trainingInstanceId) {
         SankeyDiagramDTO clusteringVisualizationDTO = visualizationFacade.getSankeyDiagram(trainingInstanceId);
         return ResponseEntity.ok(clusteringVisualizationDTO);
+    }
+
+    /**
+     * Get data for the transitions graph of all finished training runs in the given training instance.
+     *
+     * @param instanceId id of training instance.
+     * @return data for the transitions graph.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get data for the transitions graph of the given training instance.",
+            response = SankeyDiagramDTO.class,
+            nickname = "getTransitionGraphDataForOrganizer",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Data for the transitions graph found.", response = SankeyDiagramDTO.class),
+            @ApiResponse(code = 404, message = "Training instance with given id not found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/training-instances/{instanceId}/transitions-graph", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TransitionsDataDTO> getTransitionGraphDataForOrganizer(
+            @ApiParam(value = "Training Instance ID", required = true) @PathVariable("instanceId") Long instanceId
+    ) {
+        return ResponseEntity.ok(visualizationFacade.getTransitionsGraphForOrganizer(instanceId));
+    }
+
+    /**
+     * Get data for the transitions graph of the finished training run.
+     *
+     * @param runId id of training run.
+     * @return data for the transitions graph.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get data for the transitions graph of the given training run.",
+            response = SankeyDiagramDTO.class,
+            nickname = "getTransitionGraphDataForTrainee",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Data for the transitions graph found.", response = SankeyDiagramDTO.class),
+            @ApiResponse(code = 404, message = "Training run with given id not found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/training-runs/{runId}/transitions-graph", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TransitionsDataDTO> getTransitionGraphDataForTrainee(
+            @ApiParam(value = "Training Run ID", required = true) @PathVariable("runId") Long runId
+    ) {
+        return ResponseEntity.ok(visualizationFacade.getTransitionsGraphForTrainee(runId));
     }
 
 }

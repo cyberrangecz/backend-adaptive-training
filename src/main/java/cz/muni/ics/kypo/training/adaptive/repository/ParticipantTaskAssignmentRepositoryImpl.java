@@ -11,9 +11,10 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.QTask;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QTrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.sankeydiagram.PreProcessLink;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.querydsl.core.group.GroupBy.groupBy;
+import static com.querydsl.core.group.GroupBy.list;
 
 /**
  * The type Training definition repository.
@@ -100,5 +104,39 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
                 .fetch()
                 .stream().collect(Collectors.toMap(tuple -> tuple.get(0, Long.class),
                                                    tuple -> tuple.get(1, Long.class) ));
+    }
+
+    @Override
+    @Transactional
+    public Map<Long, List<ParticipantTaskAssignment>> findAllByTrainingInstanceAndGroupedByTrainingRun(Long trainingInstanceId) {
+        Objects.requireNonNull(trainingInstanceId, "Input training instance ID must not be null.");
+        QParticipantTaskAssignment qParticipantTaskAssignment = new QParticipantTaskAssignment("participantTaskAssignment");
+        QTrainingRun qTrainingRun = new QTrainingRun("trainingRun");
+        QTrainingInstance qTrainingInstance = new QTrainingInstance("trainingInstance");
+
+        return new JPAQueryFactory(entityManager)
+                .select(qTrainingRun.id, qParticipantTaskAssignment)
+                .from(qParticipantTaskAssignment)
+                .join(qParticipantTaskAssignment.trainingRun, qTrainingRun)
+                .join(qTrainingRun.trainingInstance, qTrainingInstance)
+                .where(qTrainingInstance.id.eq(trainingInstanceId)
+                        .and(qTrainingRun.state.eq(TRState.FINISHED)))
+                .transform(groupBy(qTrainingRun.id).as(list(qParticipantTaskAssignment)));
+    }
+
+    @Override
+    @Transactional
+    public List<ParticipantTaskAssignment> findAllByTrainingRun(Long trainingRunId) {
+        Objects.requireNonNull(trainingRunId, "Input training run ID must not be null.");
+        QParticipantTaskAssignment qParticipantTaskAssignment = new QParticipantTaskAssignment("participantTaskAssignment");
+        QTrainingRun qTrainingRun = new QTrainingRun("trainingRun");
+
+        return new JPAQueryFactory(entityManager)
+                .select(qParticipantTaskAssignment)
+                .from(qParticipantTaskAssignment)
+                .join(qParticipantTaskAssignment.trainingRun, qTrainingRun)
+                .where(qTrainingRun.id.eq(trainingRunId)
+                        .and(qTrainingRun.state.eq(TRState.FINISHED)))
+                .fetch();
     }
 }

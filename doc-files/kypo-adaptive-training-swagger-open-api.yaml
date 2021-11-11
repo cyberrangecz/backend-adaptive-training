@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.41"
+  version: "Version: 1.0.42"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2284,6 +2284,68 @@ paths:
             $ref: "#/definitions/SankeyDiagramDTO"
         404:
           description: "Training instance with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /visualizations/training-instances/{instanceId}/transitions-graph:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get data for the transitions graph of the given training instance."
+      description: ""
+      operationId: "getTransitionGraphDataForOrganizer"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "instanceId"
+        in: "path"
+        description: "Training Instance ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Data for the transitions graph found."
+          schema:
+            $ref: "#/definitions/SankeyDiagramDTO"
+        404:
+          description: "Training instance with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /visualizations/training-runs/{runId}/transitions-graph:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get data for the transitions graph of the given training run."
+      description: ""
+      operationId: "getTransitionGraphDataForTrainee"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training Run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Data for the transitions graph found."
+          schema:
+            $ref: "#/definitions/SankeyDiagramDTO"
+        404:
+          description: "Training run with given id not found."
           schema:
             $ref: "#/definitions/ApiError"
         500:

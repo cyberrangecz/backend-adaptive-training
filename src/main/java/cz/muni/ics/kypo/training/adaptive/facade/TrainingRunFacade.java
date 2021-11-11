@@ -399,8 +399,7 @@ public class TrainingRunFacade {
         boolean isTrainingRunFinished = isCurrentPhaseAnswered && trainingRunDTO.getCurrentPhaseOrder() == trainingRunDTO.getNumberOfPhases();
         boolean isTrainingInstanceRunning = LocalDateTime.now(Clock.systemUTC()).isBefore(trainingRunDTO.getTrainingInstanceEndDate());
         if (isTrainingRunFinished || !isTrainingInstanceRunning) {
-            // should be Actions.RESULT, but this is temporary fix because adaptive trainings have no visualizations
-            return Actions.NONE;
+            return Actions.RESULTS;
         } else {
             return Actions.RESUME;
         }

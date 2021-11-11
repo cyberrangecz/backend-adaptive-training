@@ -1,3 +1,4 @@
+1.0.42 New endpoint - get data for transition graph
 1.0.41 Configuration of OIDC - supporting Microsoft Azure
 1.0.40 Changed the maximum length of the question answers to 1023, added attributes lastEdited and lastEditedBy to definition and instance, new endpoint to save multiple phases at once, assign/unassign the pool as part of the update training instnace request.
 1.0.39 Temporary return Actions.NONE instead of the Actions.RESULT for all accessed training runs, new version 1.0.27 of elasticsearch documents. 

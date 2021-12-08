@@ -1,3 +1,4 @@
+1.0.44 Bugfix - correctly compute estimated duration when uploading training definition.
 1.0.43 Rollback temporary fix - set action RESULTS to finished training runs. New version of the elasticsearch documents.
 1.0.42 New endpoint - get data for transition graph
 1.0.41 Configuration of OIDC - supporting Microsoft Azure

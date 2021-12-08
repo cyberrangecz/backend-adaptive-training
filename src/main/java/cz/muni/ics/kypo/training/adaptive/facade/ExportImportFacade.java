@@ -175,6 +175,7 @@ public class ExportImportFacade {
         }
 
         TrainingDefinition newDefinition = exportImportMapper.mapToEntity(importTrainingDefinitionDTO);
+        newDefinition.setEstimatedDuration(computeEstimatedDuration(importTrainingDefinitionDTO));
         TrainingDefinition newTrainingDefinition = trainingDefinitionService.create(newDefinition, false);
         List<AbstractPhaseImportDTO> phases = importTrainingDefinitionDTO.getPhases();
         phases.forEach(phase -> {
@@ -377,5 +378,12 @@ public class ExportImportFacade {
             zos.putNextEntry(sandboxDefinitionEntry);
             zos.write(objectMapper.writeValueAsBytes(sandboxDefinitionInfo));
         }
+    }
+
+    private int computeEstimatedDuration(ImportTrainingDefinitionDTO importedTrainingDefinition) {
+        return importedTrainingDefinition.getPhases().stream()
+                .filter(phase -> phase.getClass() == TrainingPhaseImportDTO.class)
+                .mapToInt(trainingPhase -> ((TrainingPhaseImportDTO) trainingPhase).getEstimatedDuration())
+                .sum();
     }
 }

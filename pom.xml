@@ -26,6 +26,8 @@
         <github.kongchen.version>3.1.8</github.kongchen.version>
         <swagger.directory>${basedir}/doc-files</swagger.directory>
         <swagger.skip>true</swagger.skip>
+        <!-- added to avoid log4j2 vulnerability CVE-2021-44228 -->
+        <log4j2.version>2.15.0</log4j2.version>
     </properties>
 
     <repositories>
@@ -50,7 +52,7 @@
         <dependency>
             <groupId>cz.muni.ics.kypo</groupId>
             <artifactId>kypo-security-commons</artifactId>
-            <version>1.0.47</version>
+            <version>1.0.48</version>
         </dependency>
         <dependency>
             <groupId>cz.muni.ics.kypo</groupId>

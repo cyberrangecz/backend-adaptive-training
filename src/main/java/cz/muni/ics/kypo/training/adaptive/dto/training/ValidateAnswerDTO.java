@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
+
 @ApiModel(
         value = "ValidateAnswerDTO",
         description = "Encapsulation of the answer submitted in training phase."

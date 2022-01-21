@@ -12,15 +12,15 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionAnswerRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
-import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -149,7 +149,7 @@ public class ExportImportService {
      * Finds training phase with given id.
      *
      * @param trainingDefinitionId the id of the training definition that is associated with training phase.
-     * @param trainingPhaseOrder the order of the training phase.
+     * @param trainingPhaseOrder   the order of the training phase.
      * @return the {@link TrainingPhase} with the given id.
      * @throws EntityNotFoundException if training instance was not found.
      */
@@ -168,6 +168,7 @@ public class ExportImportService {
     public Set<TrainingRun> findRunsByInstanceId(Long trainingInstanceId) {
         return trainingRunRepository.findAllByTrainingInstanceId(trainingInstanceId);
     }
+
     public Map<Long, List<QuestionAnswer>> findQuestionsAnswersOfQuestionnaires(Long trainingRunId) {
         return questionAnswerRepository.getAllByTrainingRunId(trainingRunId).stream()
                 .collect(Collectors.groupingBy(questionAnswer -> questionAnswer.getQuestion().getQuestionnairePhase().getId()));

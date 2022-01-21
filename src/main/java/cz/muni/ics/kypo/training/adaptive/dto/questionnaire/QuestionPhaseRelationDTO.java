@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Set;
+
 @ApiModel(
         value = "QuestionPhaseRelationDTO"
 )

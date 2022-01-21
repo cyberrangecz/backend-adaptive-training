@@ -27,6 +27,7 @@ public class QuestionnairePhaseArchiveDTO extends AbstractPhaseArchiveDTO {
     private QuestionnaireType questionnaireType;
     @ApiModelProperty(value = "List of relations between questions and a training phase")
     private List<QuestionPhaseRelationDTO> phaseRelations;
+
     public List<QuestionDTO> getQuestions() {
         return questions;
     }

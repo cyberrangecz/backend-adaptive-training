@@ -11,14 +11,10 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseReposit
 import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
-import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
 
 import static cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService.PHASE_NOT_FOUND;
 import static cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService.ARCHIVED_OR_RELEASED;

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
 import java.util.Objects;
+
 @ApiModel(
         value = "QuestionArchiveDTO"
 )

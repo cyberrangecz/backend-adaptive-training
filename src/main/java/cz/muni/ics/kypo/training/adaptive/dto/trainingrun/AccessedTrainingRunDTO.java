@@ -182,7 +182,6 @@ public class AccessedTrainingRunDTO {
     }
 
 
-
     @Override
     public boolean equals(Object object) {
         if (!(object instanceof AccessedTrainingRunDTO)) return false;

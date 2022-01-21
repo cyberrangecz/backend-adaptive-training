@@ -18,7 +18,7 @@ import java.io.IOException;
 @Service
 public class AuditService {
 
-    private static Logger logger = LoggerFactory.getLogger(AuditService.class);
+    private static final Logger logger = LoggerFactory.getLogger(AuditService.class);
 
     private final ObjectMapper objectMapper;
 

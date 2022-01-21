@@ -1,8 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service.api;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AdaptiveSmartAssistantInput;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SuitableTaskResponse;
 import cz.muni.ics.kypo.training.adaptive.exceptions.CustomWebClientException;
@@ -10,15 +8,11 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.MicroserviceApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The type Smart Assistant Service API.

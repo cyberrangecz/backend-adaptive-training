@@ -1,7 +1,9 @@
-package cz.muni.ics.kypo.training.adaptive.questionnaire;
+package cz.muni.ics.kypo.training.adaptive.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.URIPath;
-import cz.muni.ics.kypo.training.adaptive.config.RestConfigTest;
+import cz.muni.ics.kypo.training.adaptive.controller.PhasesController;
+import cz.muni.ics.kypo.training.adaptive.integration.config.RestConfigTest;
 import cz.muni.ics.kypo.training.adaptive.controller.TrainingRunsRestController;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
@@ -23,15 +25,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Set;
 
@@ -47,10 +54,12 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestDataFactory.class, TrainingRunsRestController.class})
-@DataJpaTest
-@Import(RestConfigTest.class)
+@SpringBootTest(classes = {
+        IntegrationTestApplication.class,
+        TrainingRunsRestController.class,
+})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Transactional
 class QuestionnaireEvaluationIT {
 
     private MockMvc mvc;
@@ -64,6 +73,10 @@ class QuestionnaireEvaluationIT {
     private QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository;
     @Autowired
     private AdaptiveQuestionsFulfillmentRepository adaptiveQuestionsFulfillmentRepository;
+    @Autowired
+    @Qualifier("objMapperRESTApi")
+    private ObjectMapper mapper;
+
 
     private TrainingRun trainingRun1;
     private Question freeformQuestion, multipleChoiceQuestion, ratingFormQuestion;
@@ -74,6 +87,7 @@ class QuestionnaireEvaluationIT {
     @BeforeEach
     public void init() {
         this.mvc = MockMvcBuilders.standaloneSetup(trainingRunsRestController)
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(mapper))
                 .setControllerAdvice(new CustomRestExceptionHandler())
                 .build();
 

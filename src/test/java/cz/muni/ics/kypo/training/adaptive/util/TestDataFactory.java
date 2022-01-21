@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.util;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -486,6 +487,7 @@ public class TestDataFactory {
 
     private InfoPhaseUpdateDTO generateInfoPhaseUpdateDTO(String title, String content) {
         InfoPhaseUpdateDTO infoPhaseUpdateDTO = new InfoPhaseUpdateDTO();
+        infoPhaseUpdateDTO.setPhaseType(PhaseType.INFO);
         infoPhaseUpdateDTO.setTitle(title);
         infoPhaseUpdateDTO.setContent(content);
         return infoPhaseUpdateDTO;
@@ -493,6 +495,7 @@ public class TestDataFactory {
 
     private TrainingPhaseUpdateDTO generateTrainingPhaseUpdateDTO(String title, int allowedCommands, int allowedWrongAnswers, int estimatedDuration) {
         TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = new TrainingPhaseUpdateDTO();
+        trainingPhaseUpdateDTO.setPhaseType(PhaseType.TRAINING);
         trainingPhaseUpdateDTO.setTitle(title);
         trainingPhaseUpdateDTO.setAllowedCommands(allowedCommands);
         trainingPhaseUpdateDTO.setAllowedWrongAnswers(allowedWrongAnswers);
@@ -529,6 +532,7 @@ public class TestDataFactory {
 
     private QuestionnaireUpdateDTO generateQuestionnaireUpdateDTO(String title) {
         QuestionnaireUpdateDTO questionnaireUpdateDTO = new QuestionnaireUpdateDTO();
+        questionnaireUpdateDTO.setPhaseType(PhaseType.QUESTIONNAIRE);
         questionnaireUpdateDTO.setTitle(title);
         return questionnaireUpdateDTO;
     }
@@ -834,7 +838,7 @@ public class TestDataFactory {
 
     private <T> T clone(Object object, Class<T> tClass){
         try {
-            mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+            mapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
             String json = mapper.writeValueAsString(object);
             return mapper.readValue(json, tClass);
         } catch (IOException e) {

@@ -13,7 +13,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.*;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
@@ -35,7 +36,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -373,10 +373,10 @@ public class TrainingRunFacade {
 
     private List<AccessedTrainingRunDTO> sortByTitle(List<AccessedTrainingRunDTO> runs, String sortByTitle) {
         if (sortByTitle != null && !sortByTitle.isBlank() && !runs.isEmpty()) {
-                if (sortByTitle.equals(Sort.ASC)) {
-                    runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle));
-                } else if (sortByTitle.equals(Sort.DESC)) {
-                    runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle).reversed());
+            if (sortByTitle.equals(Sort.ASC)) {
+                runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle));
+            } else if (sortByTitle.equals(Sort.DESC)) {
+                runs.sort(Comparator.comparing(AccessedTrainingRunDTO::getTitle).reversed());
             }
         }
         return runs;

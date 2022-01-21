@@ -17,5 +17,5 @@ public enum Actions {
     /**
      * Resume actions.
      */
-    RESUME;
+    RESUME
 }

@@ -1,7 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -10,18 +9,12 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
-import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -78,7 +71,7 @@ public class PhaseService {
      * Move phase to the different position and modify orders of phase between moved phase and new position.
      *
      * @param phaseIdFrom - id of the phase to be moved to the new position
-     * @param toOrder - position where phase will be moved
+     * @param toOrder     - position where phase will be moved
      * @return phase that has been moved to the specific position
      * @throws EntityNotFoundException training definition or one of the phase is not found.
      * @throws EntityConflictException released or archived training definition cannot be modified.

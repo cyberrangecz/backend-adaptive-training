@@ -11,8 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -57,7 +55,7 @@ public class TaskService {
                 .collect(Collectors.toMap(Task::getId, Function.identity()));
         updatedTasks.forEach(updatedTask -> {
             Task persistedTask = persistedTaskById.get(updatedTask.getId());
-            if(persistedTask == null) {
+            if (persistedTask == null) {
                 throw new EntityNotFoundException(new EntityErrorDetail(Task.class, "id", Long.class,
                         updatedTask.getId(), "Task was not found in phase (id: " + trainingPhaseId + ")."));
             }

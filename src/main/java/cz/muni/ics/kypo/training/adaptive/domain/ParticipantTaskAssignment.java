@@ -2,7 +2,6 @@ package cz.muni.ics.kypo.training.adaptive.domain;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
-import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 
 import javax.persistence.*;

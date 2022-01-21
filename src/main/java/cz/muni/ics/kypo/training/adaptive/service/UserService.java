@@ -24,7 +24,7 @@ public class UserService {
     /**
      * Instantiates a new User service.
      *
-     * @param userRefRepository              the user ref repository
+     * @param userRefRepository the user ref repository
      */
     public UserService(UserRefRepository userRefRepository,
                        UserManagementServiceApi userManagementServiceApi) {

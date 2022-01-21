@@ -17,8 +17,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPh
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
@@ -36,7 +36,7 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {QuestionMapper.class, TaskMapper.class, DecisionMatrixMapper.class, QuestionPhaseRelationMapper.class},
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PhaseMapper extends ParentMapper {
-    static final TaskMapper TASK_MAPPER = Mappers.getMapper(TaskMapper.class);
+    TaskMapper TASK_MAPPER = Mappers.getMapper(TaskMapper.class);
 
     // INFO PHASE
     InfoPhase mapToEntity(InfoPhaseDTO dto);

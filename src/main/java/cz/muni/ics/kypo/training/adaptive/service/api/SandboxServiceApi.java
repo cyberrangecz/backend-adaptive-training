@@ -7,7 +7,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxInfo;
 import cz.muni.ics.kypo.training.adaptive.exceptions.CustomWebClientException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.ForbiddenException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.MicroserviceApiException;
-import cz.muni.ics.kypo.training.adaptive.exceptions.errors.PythonApiError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;

@@ -20,5 +20,5 @@ public enum RoleType {
     /**
      * Role training trainee role.
      */
-    ROLE_TRAINING_TRAINEE;
+    ROLE_TRAINING_TRAINEE
 }

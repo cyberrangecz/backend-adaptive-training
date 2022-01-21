@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Objects;
 import java.util.Set;
+
 @ApiModel(
         value = "QuestionPhaseRelationExportDTO"
 )

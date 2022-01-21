@@ -1,7 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.domain.phase.questions;
 
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 

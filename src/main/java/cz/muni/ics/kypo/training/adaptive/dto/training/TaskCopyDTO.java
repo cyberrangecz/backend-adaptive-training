@@ -3,8 +3,12 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
+
 @ApiModel(
         value = "TaskCopyDTO"
 )

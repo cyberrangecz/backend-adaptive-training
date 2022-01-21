@@ -14,7 +14,6 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.QTrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.PreProcessLink;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.security.access.method.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,7 +102,7 @@ public class ParticipantTaskAssignmentRepositoryImpl extends QuerydslRepositoryS
                 .groupBy(currentTask.id)
                 .fetch()
                 .stream().collect(Collectors.toMap(tuple -> tuple.get(0, Long.class),
-                                                   tuple -> tuple.get(1, Long.class) ));
+                        tuple -> tuple.get(1, Long.class)));
     }
 
     @Override

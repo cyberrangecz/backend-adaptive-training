@@ -1,7 +1,9 @@
-package cz.muni.ics.kypo.training.adaptive.definition;
+package cz.muni.ics.kypo.training.adaptive.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.URIPath;
-import cz.muni.ics.kypo.training.adaptive.config.RestConfigTest;
+import cz.muni.ics.kypo.training.adaptive.controller.VisualizationRestController;
+import cz.muni.ics.kypo.training.adaptive.integration.config.RestConfigTest;
 import cz.muni.ics.kypo.training.adaptive.controller.TasksController;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
@@ -18,19 +20,22 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.reactive.function.client.ClientRequest;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static cz.muni.ics.kypo.training.adaptive.util.ObjectConverter.convertJsonToObject;
@@ -39,7 +44,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,10 +52,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestDataFactory.class, TasksController.class})
-@DataJpaTest
-@Import(RestConfigTest.class)
+@SpringBootTest(classes = {
+        IntegrationTestApplication.class,
+        TasksController.class,
+})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Transactional
 class TasksControllerIT {
 
     private MockMvc mvc;
@@ -65,6 +71,9 @@ class TasksControllerIT {
     private TaskRepository taskRepository;
     @Autowired
     private UserManagementServiceApi userManagementServiceApi;
+    @Autowired
+    @Qualifier("objMapperRESTApi")
+    private ObjectMapper mapper;
 
     private TrainingDefinition trainingDefinition;
     private TrainingPhase trainingPhase;
@@ -75,6 +84,7 @@ class TasksControllerIT {
     public void init() {
         this.mvc = MockMvcBuilders.standaloneSetup(tasksController)
                 .setControllerAdvice(new CustomRestExceptionHandler())
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(mapper))
                 .build();
 
         trainingDefinition = testDataFactory.getUnreleasedDefinition();
@@ -147,6 +157,7 @@ class TasksControllerIT {
     void updateTask() throws Exception {
         entityManager.persist(task);
         TaskUpdateDTO taskUpdateDTO = testDataFactory.getTaskUpdateDTO();
+        taskUpdateDTO.setId(task.getId());
 
         MockHttpServletResponse response = mvc.perform(put(URIPath.TASKS_ID.getUri(), trainingDefinition.getId(), trainingPhase.getId(), task.getId())
                 .content(convertObjectToJson(taskUpdateDTO))

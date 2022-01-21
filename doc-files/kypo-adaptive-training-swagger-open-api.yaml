@@ -3662,11 +3662,11 @@ definitions:
   Sort:
     type: "object"
     properties:
+      empty:
+        type: "boolean"
       sorted:
         type: "boolean"
       unsorted:
-        type: "boolean"
-      empty:
         type: "boolean"
   TaskCopyDTO:
     type: "object"

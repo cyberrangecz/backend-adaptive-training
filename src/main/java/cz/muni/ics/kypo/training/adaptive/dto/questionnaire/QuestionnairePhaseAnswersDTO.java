@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.Valid;
 import java.util.List;
+
 @ApiModel(
         value = "QuestionnairePhaseAnswersDTO"
 )

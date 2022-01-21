@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
+
 @ApiModel(
         value = "InfoPhaseUpdateDTO"
 )

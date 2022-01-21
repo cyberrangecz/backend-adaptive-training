@@ -6,7 +6,9 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity;
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
-import cz.muni.ics.kypo.training.adaptive.exceptions.*;
+import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
+import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
+import cz.muni.ics.kypo.training.adaptive.exceptions.ForbiddenException;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
@@ -14,7 +16,7 @@ import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 
@@ -150,8 +152,8 @@ public class SecurityService {
      * @return the boolean
      */
     public boolean hasRole(RoleTypeSecurity roleTypeSecurity) {
-        OAuth2Authentication authentication = (OAuth2Authentication) SecurityContextHolder.getContext().getAuthentication();
-        for (GrantedAuthority gA : authentication.getUserAuthentication().getAuthorities()) {
+        JwtAuthenticationToken jwtAuthentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        for (GrantedAuthority gA : jwtAuthentication.getAuthorities()) {
             if (gA.getAuthority().equals(roleTypeSecurity.name())) {
                 return true;
             }

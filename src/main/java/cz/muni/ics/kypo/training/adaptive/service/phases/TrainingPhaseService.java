@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService.PHASE_NOT_FOUND;
@@ -30,9 +32,9 @@ import static cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefini
 public class TrainingPhaseService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingPhaseService.class);
-    private static int DEFAULT_ALLOWED_WRONG_ANSWERS = 10;
-    private static int DEFAULT_ALLOWED_COMMANDS = 10;
-    private static int DEFAULT_ESTIMATED_DURATION = 10;
+    private static final int DEFAULT_ALLOWED_WRONG_ANSWERS = 10;
+    private static final int DEFAULT_ALLOWED_COMMANDS = 10;
+    private static final int DEFAULT_ESTIMATED_DURATION = 10;
 
     private final TrainingPhaseRepository trainingPhaseRepository;
     private final TrainingInstanceRepository trainingInstanceRepository;
@@ -69,8 +71,8 @@ public class TrainingPhaseService {
     /**
      * Updates training phase in training definition
      *
-     * @param persistedTrainingPhase               - id of the phase to be updated
-     * @param updatedTrainingPhase phase to be updated
+     * @param persistedTrainingPhase - id of the phase to be updated
+     * @param updatedTrainingPhase   phase to be updated
      * @throws EntityNotFoundException training definition is not found.
      * @throws EntityConflictException phase cannot be updated in released or archived training definition.
      */
@@ -104,7 +106,7 @@ public class TrainingPhaseService {
 
     public void alignDecisionMatrixOfTrainingPhasesAfterMove(Long trainingDefinitionId, int trainingPhaseFromOrder, int trainingPhaseToOrder) {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingDefinitionId);
-        if(trainingPhaseToOrder > trainingPhaseFromOrder) {
+        if (trainingPhaseToOrder > trainingPhaseFromOrder) {
             this.alignDecisionMatricesLowerToUpper(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
         } else if (trainingPhaseToOrder < trainingPhaseFromOrder) {
             this.alignDecisionMatricesUpperToLower(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhases);
@@ -114,7 +116,7 @@ public class TrainingPhaseService {
     private void alignDecisionMatricesLowerToUpper(int trainingPhaseFromOrder, int trainingPhaseToOrder, List<TrainingPhase> trainingPhases) {
         int currentPhaseOrder = trainingPhaseFromOrder;
         for (TrainingPhase trainingPhase : trainingPhases.subList(trainingPhaseFromOrder, trainingPhaseToOrder + 1)) {
-            if(currentPhaseOrder == trainingPhaseToOrder) {
+            if (currentPhaseOrder == trainingPhaseToOrder) {
                 this.addMissingDecisionMatrixRowsAfterMove(trainingPhaseFromOrder, trainingPhaseToOrder, trainingPhase);
             } else {
                 this.removeRedundantDecisionMatrixRows(trainingPhaseFromOrder, trainingPhaseFromOrder + 1, trainingPhase);
@@ -128,7 +130,7 @@ public class TrainingPhaseService {
         int currentPhaseOrder = trainingPhaseToOrder;
 
         for (TrainingPhase trainingPhase : trainingPhases.subList(trainingPhaseToOrder, trainingPhaseFromOrder + 1)) {
-            if(currentPhaseOrder == trainingPhaseToOrder) {
+            if (currentPhaseOrder == trainingPhaseToOrder) {
                 this.removeRedundantDecisionMatrixRows(trainingPhaseToOrder, trainingPhaseFromOrder, trainingPhase);
             } else {
                 this.addMissingDecisionMatrixRowsAfterMove(trainingPhaseToOrder, trainingPhaseToOrder + 1, trainingPhase);
@@ -140,7 +142,7 @@ public class TrainingPhaseService {
     }
 
     private void updateMatricesOfSubsequentTrainingPhasesLowerToUpper(int fromOrder, int toOrder, List<TrainingPhase> trainingPhases) {
-        for(int j = toOrder + 1; j < trainingPhases.size(); j++) {
+        for (int j = toOrder + 1; j < trainingPhases.size(); j++) {
             this.moveToIndex(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
             this.decreaseRowOrdersByOne(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
             trainingPhases.get(j).getDecisionMatrix().get(toOrder).incrementOrder(toOrder - fromOrder);
@@ -148,7 +150,7 @@ public class TrainingPhaseService {
     }
 
     private void updateMatricesOfSubsequentTrainingPhasesUpperToLower(int fromOrder, int toOrder, List<TrainingPhase> trainingPhases) {
-        for(int j = fromOrder + 1; j < trainingPhases.size(); j++) {
+        for (int j = fromOrder + 1; j < trainingPhases.size(); j++) {
             this.moveToIndex(fromOrder, toOrder, trainingPhases.get(j).getDecisionMatrix());
             this.increaseRowOrdersByOne(toOrder + 1, fromOrder + 1, trainingPhases.get(j).getDecisionMatrix());
             trainingPhases.get(j).getDecisionMatrix().get(toOrder).decrementOrder(fromOrder - toOrder);
@@ -161,13 +163,13 @@ public class TrainingPhaseService {
     }
 
     private void decreaseRowOrdersByOne(int from, int to, List<DecisionMatrixRow> decisionMatrixRows) {
-        for(int k = from; k < to; k++) {
+        for (int k = from; k < to; k++) {
             decisionMatrixRows.get(k).decrementOrder(1);
         }
     }
 
     private void increaseRowOrdersByOne(int from, int to, List<DecisionMatrixRow> decisionMatrixRows) {
-        for(int k = from; k < to; k++) {
+        for (int k = from; k < to; k++) {
             decisionMatrixRows.get(k).incrementOrder(1);
         }
     }

@@ -1,7 +1,7 @@
-package cz.muni.ics.kypo.training.adaptive.config;
+package cz.muni.ics.kypo.training.adaptive.integration.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
@@ -20,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,9 +28,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
 @Configuration
-@ComponentScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.mapping", "cz.muni.ics.kypo.training.adaptive.facade", "cz.muni.ics.kypo.training.adaptive.service"})
-@EntityScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.domain"},  basePackageClasses = Jsr310JpaConverters.class)
+@ComponentScan(basePackages = {
+		"cz.muni.ics.kypo.training.adaptive.mapping",
+		"cz.muni.ics.kypo.training.adaptive.facade",
+		"cz.muni.ics.kypo.training.adaptive.service",
+		"cz.muni.ics.kypo.training.adaptive.util"
+})
+@EntityScan(basePackages = {"cz.muni.ics.kypo.training.adaptive.domain"})
 @EnableJpaRepositories(basePackages = {"cz.muni.ics.kypo.training.adaptive.repository"})
+@EnableTransactionManagement
 public class RestConfigTest {
 	private static final Logger LOG = LoggerFactory.getLogger(RestConfigTest.class);
 
@@ -93,6 +100,7 @@ public class RestConfigTest {
 	public ObjectMapper objectMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.registerModule(new JavaTimeModule());
+		mapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
 		mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		return mapper;
@@ -102,7 +110,7 @@ public class RestConfigTest {
 	@Qualifier("objMapperForElasticsearch")
 	public ObjectMapper elasticsearchObjectMapper() {
 		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+		objectMapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
 		objectMapper.registerModule(new JavaTimeModule());
 		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		return objectMapper;

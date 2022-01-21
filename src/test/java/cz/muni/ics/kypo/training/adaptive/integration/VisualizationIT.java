@@ -1,7 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.muni.ics.kypo.training.adaptive.config.RestConfigTest;
 import cz.muni.ics.kypo.training.adaptive.controller.VisualizationRestController;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
@@ -16,18 +15,29 @@ import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagra
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
 import cz.muni.ics.kypo.training.adaptive.handler.CustomRestExceptionHandler;
+import cz.muni.ics.kypo.training.adaptive.integration.config.RestConfigTest;
+import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepositoryImpl;
 import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.querydsl.SimpleEntityPathResolver;
 import org.springframework.data.querydsl.binding.QuerydslBindingsFactory;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -38,26 +48,24 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {
+@SpringBootTest(classes = {
+        IntegrationTestApplication.class,
         VisualizationRestController.class,
-        TestDataFactory.class,
-        VisualizationFacade.class,
-        VisualizationService.class,
-        TrainingInstanceService.class,
-        UserManagementServiceApi.class
 })
-@DataJpaTest
-@Import(RestConfigTest.class)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Transactional
 public class VisualizationIT {
 
     private MockMvc mvc;
@@ -93,12 +101,12 @@ public class VisualizationIT {
     @BeforeEach
     public void init() {
 
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         this.mvc = MockMvcBuilders.standaloneSetup(visualizationRestController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(),
                         new QuerydslPredicateArgumentResolver(
                                 new QuerydslBindingsFactory(SimpleEntityPathResolver.INSTANCE), Optional.empty()))
-                .setMessageConverters(new MappingJackson2HttpMessageConverter())
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(mapper))
                 .setControllerAdvice(new CustomRestExceptionHandler())
                 .build();
 
@@ -245,6 +253,7 @@ public class VisualizationIT {
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andReturn().getResponse();
+        System.out.println(result.getContentAsString());
         SankeyDiagramDTO sankeyData = mapper.readValue(result.getContentAsString(), SankeyDiagramDTO.class);
         NodeDTO startNode = new NodeDTO(null, null, null, null, -1, null);
         NodeDTO finishNode = new NodeDTO(null, null, null, null, -2, null);

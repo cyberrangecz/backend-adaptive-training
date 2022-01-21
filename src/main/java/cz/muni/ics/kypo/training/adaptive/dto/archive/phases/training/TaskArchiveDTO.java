@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.training;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 @ApiModel(
         value = "TaskArchiveDTO"
 )

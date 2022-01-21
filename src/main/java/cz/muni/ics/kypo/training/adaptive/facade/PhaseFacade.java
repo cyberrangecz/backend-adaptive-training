@@ -11,19 +11,15 @@ import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionPhaseRelationDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
-import cz.muni.ics.kypo.training.adaptive.exceptions.BadRequestException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.QuestionPhaseRelationMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.TaskMapper;
 import cz.muni.ics.kypo.training.adaptive.service.phases.*;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +27,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -131,7 +126,7 @@ public class PhaseFacade {
     /**
      * Updates phases from the given training definition
      *
-     * @param definitionId - id of the training definition
+     * @param definitionId    - id of the training definition
      * @param phaseUpdateDTOS phases to be updated
      */
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
@@ -144,7 +139,7 @@ public class PhaseFacade {
                 .collect(Collectors.toMap(AbstractPhase::getId, Function.identity()));
         phaseUpdateDTOS.forEach(updatedPhaseDTO -> {
             AbstractPhase persistedPhase = persistedPhasesById.get(updatedPhaseDTO.getId());
-            if(persistedPhase == null) {
+            if (persistedPhase == null) {
                 throw new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", Long.class,
                         updatedPhaseDTO.getId(), "Phase was not found in definition (id: " + definitionId + ")."));
             }

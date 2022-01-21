@@ -20,15 +20,15 @@ public class SankeyDiagramDTO {
         return nodes;
     }
 
+    public void setNodes(List<NodeDTO> nodes) {
+        this.nodes = nodes;
+    }
+
     public List<LinkDTO> getLinks() {
         return links;
     }
 
     public void setLinks(List<LinkDTO> links) {
         this.links = links;
-    }
-
-    public void setNodes(List<NodeDTO> nodes) {
-        this.nodes = nodes;
     }
 }

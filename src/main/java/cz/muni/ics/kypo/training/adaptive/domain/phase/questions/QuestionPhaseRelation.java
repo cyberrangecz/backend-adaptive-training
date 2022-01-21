@@ -26,7 +26,7 @@ public class QuestionPhaseRelation implements Serializable {
     @JoinColumn(name = "related_training_phase_id")
     private TrainingPhase relatedTrainingPhase;
     @ManyToMany(fetch = FetchType.LAZY,
-                cascade = CascadeType.PERSIST
+            cascade = CascadeType.PERSIST
     )
     @JoinTable(
             name = "question_phase_relation_question",

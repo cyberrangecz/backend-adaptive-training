@@ -48,7 +48,7 @@ public class VisualizationService {
         List<TrainingPhase> trainingPhases = trainingPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
         List<NodeDTO> nodes = participantTaskAssignmentRepository.findAllVisitedTasks(trainingInstance.getId());
         if (trainingPhases.isEmpty() || nodes.isEmpty()) {
-            return new SankeyDiagramDTO(List.of( new NodeDTO(null, null, null, null, -1, null)), new ArrayList<>());
+            return new SankeyDiagramDTO(List.of(new NodeDTO(null, null, null, null, -1, null)), new ArrayList<>());
         }
         List<PreProcessLink> preProcessedLinks = this.getAllTasksTransitions(trainingInstance, trainingPhases, nodes);
         this.addLinksFromStartNode(preProcessedLinks, nodes);
@@ -69,8 +69,8 @@ public class VisualizationService {
      * Obtain all task transitions between specified training phases.
      *
      * @param trainingInstance the training instance
-     * @param trainingPhases training phases between which transitions are to be obtained
-     * @param nodes list of ordered visited tasks
+     * @param trainingPhases   training phases between which transitions are to be obtained
+     * @param nodes            list of ordered visited tasks
      * @return the list of links with complement info
      */
     private List<PreProcessLink> getAllTasksTransitions(TrainingInstance trainingInstance, List<TrainingPhase> trainingPhases, List<NodeDTO> nodes) {
@@ -78,7 +78,7 @@ public class VisualizationService {
         List<PreProcessLink> preProcessedLinks = new ArrayList<>();
         for (int i = 1; i < trainingPhases.size(); i++) {
             preProcessedLinks.addAll(participantTaskAssignmentRepository.findTaskTransitionsBetweenTwoPhases(definitionId, trainingInstance.getId(),
-                    trainingPhases.get(i-1).getId(), trainingPhases.get(i).getId()));
+                    trainingPhases.get(i - 1).getId(), trainingPhases.get(i).getId()));
             if (preProcessedLinks.isEmpty()) {
                 break;
             }
@@ -91,7 +91,7 @@ public class VisualizationService {
      * Set source and target attributes of the obtained links. Source/target is the order of the task in list of nodes.
      *
      * @param preProcessedLinks obtained links between training phases
-     * @param nodes list of ordered visited tasks
+     * @param nodes             list of ordered visited tasks
      */
     private void addSourcesAndTargetsToLinks(List<PreProcessLink> preProcessedLinks, List<NodeDTO> nodes) {
         AtomicInteger index = new AtomicInteger();
@@ -107,7 +107,7 @@ public class VisualizationService {
      * Add links from the start node to other tasks in the first training phase.
      *
      * @param preProcessedLinks obtained links between training phases
-     * @param visitedNodes list of ordered visited tasks
+     * @param visitedNodes      list of ordered visited tasks
      */
     private void addLinksFromStartNode(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
         Long firstPhaseId = visitedNodes.get(0).getPhaseId();
@@ -133,14 +133,14 @@ public class VisualizationService {
      * Add links from the tasks in the last training phase to the finish node.
      *
      * @param preProcessedLinks obtained links between training phases
-     * @param visitedNodes list of ordered visited tasks
+     * @param visitedNodes      list of ordered visited tasks
      */
     private void addLinksToFinishNode(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
         int nodeIndex = visitedNodes.size();
         Long lastPhaseId = visitedNodes.get(visitedNodes.size() - 1).getPhaseId();
         Map<Long, Long> numberOfParticipantsInTasksOfLastPhase = participantTaskAssignmentRepository.findNumberOfParticipantsInTasksOfPhase(lastPhaseId);
         List<PreProcessLink> linksToAdd = new ArrayList<>();
-        for (NodeDTO visitedNode: Lists.reverse(visitedNodes)) {
+        for (NodeDTO visitedNode : Lists.reverse(visitedNodes)) {
             if (!visitedNode.getPhaseId().equals(lastPhaseId)) {
                 break;
             }
@@ -159,12 +159,12 @@ public class VisualizationService {
      * Add empty links from the tasks in the last visited training phase to the next not visited phase.
      *
      * @param preProcessedLinks obtained links between training phases
-     * @param visitedNodes list of ordered visited tasks
+     * @param visitedNodes      list of ordered visited tasks
      */
     private void addLinksToNextNotVisitedPhase(List<PreProcessLink> preProcessedLinks, List<NodeDTO> visitedNodes) {
         int nodeIndex = visitedNodes.size();
         Integer lastPhaseOrder = visitedNodes.get(visitedNodes.size() - 1).getPhaseOrder();
-        for (NodeDTO visitedNode: Lists.reverse(visitedNodes)) {
+        for (NodeDTO visitedNode : Lists.reverse(visitedNodes)) {
             if (!visitedNode.getPhaseOrder().equals(lastPhaseOrder)) {
                 break;
             }
@@ -175,6 +175,7 @@ public class VisualizationService {
 
     /**
      * Add empty links from tasks that haven't been completed by anyone to the random task in the next phase.
+     *
      * @param preProcessedLinks obtained links between training phases
      */
     private void addEmptyLinksFromInnerNodes(List<PreProcessLink> preProcessedLinks) {
@@ -198,13 +199,14 @@ public class VisualizationService {
 
     /**
      * Add start and finish to the list of nodes. If the training have been finished by no one, add next phase node instead of finish node.
-     * @param nodes list of visited phases
+     *
+     * @param nodes          list of visited phases
      * @param trainingPhases all training phase in the training
      */
     private void addStartNodeAndNextNotVisitedPhaseNode(List<NodeDTO> nodes, List<TrainingPhase> trainingPhases) {
         nodes.add(0, new NodeDTO(null, null, null, null, -1, null));
-        NodeDTO lastNode = nodes.get(nodes.size() -1);
-        TrainingPhase lastTrainingPhase =  trainingPhases.get(trainingPhases.size() - 1);
+        NodeDTO lastNode = nodes.get(nodes.size() - 1);
+        TrainingPhase lastTrainingPhase = trainingPhases.get(trainingPhases.size() - 1);
         if (lastNode.getPhaseOrder().equals(lastTrainingPhase.getOrder())) {
             //FINISH NODE
             nodes.add(new NodeDTO(null, null, null, null, -2, null));
@@ -213,7 +215,7 @@ public class VisualizationService {
                     .sorted(Integer::compareTo)
                     .distinct()
                     .collect(Collectors.toList());
-            TrainingPhase nextNotVisitedPhase = trainingPhases.get(uniqueTrainingPhaseOrders.size()-1);
+            TrainingPhase nextNotVisitedPhase = trainingPhases.get(uniqueTrainingPhaseOrders.size() - 1);
             nodes.add(new NodeDTO(null, null, null, nextNotVisitedPhase.getId(), nextNotVisitedPhase.getOrder(), nextNotVisitedPhase.getTitle()));
         }
     }

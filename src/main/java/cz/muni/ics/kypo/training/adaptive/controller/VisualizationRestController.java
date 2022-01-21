@@ -55,7 +55,7 @@ public class VisualizationRestController {
     })
     @GetMapping(path = "/training-instances/{instanceId}/sankey", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<SankeyDiagramDTO> getSankeyDiagramVisualization(@ApiParam(value = "Training instance ID", required = true)
-                                                                      @PathVariable("instanceId") Long trainingInstanceId) {
+                                                                          @PathVariable("instanceId") Long trainingInstanceId) {
         SankeyDiagramDTO clusteringVisualizationDTO = visualizationFacade.getSankeyDiagram(trainingInstanceId);
         return ResponseEntity.ok(clusteringVisualizationDTO);
     }

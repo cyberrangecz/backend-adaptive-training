@@ -9,8 +9,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunPathNode;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunDataDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunPathNode;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TransitionsDataDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
@@ -24,7 +24,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -63,7 +66,6 @@ public class VisualizationFacade {
     }
 
 
-
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isOrganizerOfGivenTrainingInstance(#instanceId)")
     @TransactionalRO
@@ -86,9 +88,9 @@ public class VisualizationFacade {
         Map<Long, Long> visitedTasksByPhaseId = transitionsDataDTO.getTrainingRunsData().get(0).getTrainingRunPathNodes().stream()
                 .collect(Collectors.toMap(TrainingRunPathNode::getPhaseId, TrainingRunPathNode::getTaskId));
         for (AbstractPhaseDTO phase : transitionsDataDTO.getPhases()) {
-            if(phase.getPhaseType() == PhaseType.QUESTIONNAIRE) {
-                ((QuestionnairePhaseDTO)phase).getQuestions().forEach(question -> question.getChoices().forEach(choice -> choice.setCorrect(null)));
-            } else if(phase.getPhaseType() == PhaseType.TRAINING) {
+            if (phase.getPhaseType() == PhaseType.QUESTIONNAIRE) {
+                ((QuestionnairePhaseDTO) phase).getQuestions().forEach(question -> question.getChoices().forEach(choice -> choice.setCorrect(null)));
+            } else if (phase.getPhaseType() == PhaseType.TRAINING) {
                 ((TrainingPhaseDTO) phase).getTasks().stream()
                         .filter(task -> !task.getId().equals(visitedTasksByPhaseId.get(phase.getId())))
                         .forEach(task -> {

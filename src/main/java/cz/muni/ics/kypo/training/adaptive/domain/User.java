@@ -60,6 +60,7 @@ public class User implements Serializable {
 
     /**
      * Instantiates a new user reference
+     *
      * @param userRefId id of the user stored in user management service
      */
     public User(Long userRefId) {

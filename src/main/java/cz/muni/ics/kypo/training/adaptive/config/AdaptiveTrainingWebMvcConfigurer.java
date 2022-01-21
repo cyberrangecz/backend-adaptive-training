@@ -21,7 +21,7 @@ public class AdaptiveTrainingWebMvcConfigurer implements WebMvcConfigurer {
     private static final MediaType MEDIA_TYPE_YAML = MediaType.valueOf("text/yaml");
     private static final MediaType MEDIA_TYPE_YML = MediaType.valueOf("text/yml");
 
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     @Autowired
     public AdaptiveTrainingWebMvcConfigurer(ObjectMapper objectMapper) {

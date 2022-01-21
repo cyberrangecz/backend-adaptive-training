@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire;
 
-import java.util.List;
 import java.util.Set;
 
 public class QuestionAnswerArchiveDTO {

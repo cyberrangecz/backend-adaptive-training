@@ -20,5 +20,5 @@ public enum TDState {
     /**
      * Unreleased definition state.
      */
-    UNRELEASED;
+    UNRELEASED
 }

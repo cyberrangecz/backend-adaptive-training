@@ -1,8 +1,10 @@
-package cz.muni.ics.kypo.training.adaptive.definition;
+package cz.muni.ics.kypo.training.adaptive.integration;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.URIPath;
-import cz.muni.ics.kypo.training.adaptive.config.RestConfigTest;
+import cz.muni.ics.kypo.training.adaptive.controller.VisualizationRestController;
+import cz.muni.ics.kypo.training.adaptive.integration.config.RestConfigTest;
 import cz.muni.ics.kypo.training.adaptive.controller.PhasesController;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
@@ -32,18 +34,20 @@ import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,10 +68,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestDataFactory.class, PhasesController.class})
-@DataJpaTest
-@Import(RestConfigTest.class)
+@SpringBootTest(classes = {
+        IntegrationTestApplication.class,
+        PhasesController.class,
+})
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Transactional
 class PhasesControllerIT {
 
     private MockMvc mvc;
@@ -85,6 +91,9 @@ class PhasesControllerIT {
     private QuestionnairePhaseRepository questionnairePhaseRepository;
     @Autowired
     private UserManagementServiceApi userManagementServiceApi;
+    @Autowired
+    @Qualifier("objMapperRESTApi")
+    private ObjectMapper mapper;
 
     private TrainingDefinition trainingDefinition;
     private TrainingPhase trainingPhase;
@@ -96,6 +105,7 @@ class PhasesControllerIT {
     public void init() {
         this.mvc = MockMvcBuilders.standaloneSetup(phasesController)
                 .setControllerAdvice(new CustomRestExceptionHandler())
+                .setMessageConverters(new MappingJackson2HttpMessageConverter(mapper))
                 .build();
 
         trainingDefinition = testDataFactory.getUnreleasedDefinition();
@@ -293,6 +303,7 @@ class PhasesControllerIT {
     void updateInfoPhase() throws Exception {
         entityManager.persist(infoPhase);
         InfoPhaseUpdateDTO infoPhaseUpdateDTO = testDataFactory.getInfoPhaseUpdateDTO();
+        infoPhaseUpdateDTO.setId(infoPhase.getId());
 
         MockHttpServletResponse response = mvc.perform(put(URIPath.PHASES_ID_INFO.getUri(), trainingDefinition.getId(), infoPhase.getId())
                 .content(convertObjectToJson(infoPhaseUpdateDTO))
@@ -314,6 +325,7 @@ class PhasesControllerIT {
         TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = testDataFactory.getTrainingPhaseUpdateDTO();
         final DecisionMatrixRowDTO updatedDecisionMatrixRow = testDataFactory.getDecisionMatrixRowDTO1();
         trainingPhaseUpdateDTO.setDecisionMatrix(List.of(updatedDecisionMatrixRow));
+        trainingPhaseUpdateDTO.setId(trainingPhase.getId());
 
         MockHttpServletResponse response = mvc.perform(put(URIPath.PHASES_ID_TRAINING.getUri(), trainingDefinition.getId(), trainingPhase.getId())
                 .content(convertObjectToJson(trainingPhaseUpdateDTO))
@@ -349,6 +361,7 @@ class PhasesControllerIT {
         QuestionDTO ratingFormQuestion = testDataFactory.getRatingFormQuestionDTO();
         ratingFormQuestion.setChoices(List.of(testDataFactory.getCorrectQuestionChoiceDTO(), testDataFactory.getIncorrectQuestionChoiceDTO()));
         questionnaireUpdateDTO.setQuestions(List.of(freeFormQuestion, multipleChoiceQuestion, ratingFormQuestion));
+        questionnaireUpdateDTO.setId(questionnairePhase.getId());
 
         MockHttpServletResponse response = mvc.perform(put(URIPath.PHASES_ID_QUESTIONNAIRE.getUri(), trainingDefinition.getId(), questionnairePhase.getId())
                 .content(convertObjectToJson(questionnaireUpdateDTO))

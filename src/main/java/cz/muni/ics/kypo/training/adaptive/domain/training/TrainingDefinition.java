@@ -5,7 +5,6 @@ import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 

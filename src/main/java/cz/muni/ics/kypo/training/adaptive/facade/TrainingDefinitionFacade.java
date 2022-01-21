@@ -14,9 +14,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.AbstractQuestionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.*;
@@ -105,13 +103,13 @@ public class TrainingDefinitionFacade {
                 .flatMap(questionnaire -> ((QuestionnairePhase) questionnaire).getQuestions().stream())
                 .flatMap(question -> question.getQuestionPhaseRelations().stream())
                 .collect(groupingBy(phaseRelation -> phaseRelation.getRelatedTrainingPhase().getId(),
-                                        flatMapping(phaseRelation -> phaseRelation.getQuestions().stream(), Collectors.toSet()))
+                        flatMapping(phaseRelation -> phaseRelation.getQuestions().stream(), Collectors.toSet()))
                 );
         List<AbstractPhaseDTO> phaseDTOs = phases.stream()
                 .map(this.phaseMapper::mapToDTO)
                 .collect(Collectors.toList());
         phaseDTOs.forEach(phase -> {
-            if(phase.getPhaseType() == PhaseType.TRAINING) {
+            if (phase.getPhaseType() == PhaseType.TRAINING) {
                 ((TrainingPhaseDTO) phase).setRelatedQuestions(relatedQuestions.getOrDefault(phase.getId(), Collections.emptySet()).stream()
                         .map(this::mapToQuestionDTO)
                         .collect(Collectors.toList()));

@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.persistence;
 
-import cz.muni.ics.kypo.training.adaptive.config.PersistenceConfigTest;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
@@ -13,6 +12,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.PreProcessLi
 import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import cz.muni.ics.kypo.training.adaptive.repository.ParticipantTaskAssignmentRepository;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 @DataJpaTest
-@Import(PersistenceConfigTest.class)
-@ComponentScan(basePackages = "cz.muni.ics.kypo.training.adaptive.util")
 public class SankeyDiagramDataTest {
 
     @Autowired
@@ -59,10 +58,6 @@ public class SankeyDiagramDataTest {
     private  Task task31, task32, task33;
 
     private Pageable pageable;
-
-    @SpringBootApplication
-    static class TestConfiguration {
-    }
 
     @BeforeEach
     public void init() {

@@ -31,8 +31,8 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImpor
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;
-import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
@@ -307,7 +307,7 @@ public class ExportImportFacade {
             zos.putNextEntry(eventsDetailEntry);
 
             Map<Long, QuestionAnswersDetailsDTO> questionAnswersDetails = questionnairesDetails.getOrDefault(questionAnswersByQuestionnaire.getKey(), new HashMap<>());
-            for(QuestionAnswer questionAnswer : questionAnswersByQuestionnaire.getValue()) {
+            for (QuestionAnswer questionAnswer : questionAnswersByQuestionnaire.getValue()) {
                 Question question = questionAnswer.getQuestion();
                 if (!questionAnswersDetails.containsKey(question.getId())) {
                     questionAnswersDetails.put(question.getId(), new QuestionAnswersDetailsDTO(questionAnswer.getQuestion().getText()));
@@ -322,7 +322,7 @@ public class ExportImportFacade {
     }
 
     private void writeQuestionnairesDetails(ZipOutputStream zos, Map<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnairesDetails) throws IOException {
-        for(Map.Entry<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnaireDetails: questionnairesDetails.entrySet()) {
+        for (Map.Entry<Long, Map<Long, QuestionAnswersDetailsDTO>> questionnaireDetails : questionnairesDetails.entrySet()) {
             ZipEntry assessmentDetailsEntry = new ZipEntry(QUESTIONNAIRES_ANSWERS_FOLDER + "/questionnaire-id-" + questionnaireDetails.getKey() + "-details" + AbstractFileExtensions.JSON_FILE_EXTENSION);
             zos.putNextEntry(assessmentDetailsEntry);
             zos.write(objectMapper.writer().writeValueAsBytes(questionnaireDetails.getValue().values()));

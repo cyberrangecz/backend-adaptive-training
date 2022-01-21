@@ -3,10 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.deser.BeanDeserializer;
-import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
 import com.querydsl.core.types.Predicate;
-import cz.muni.ics.kypo.training.adaptive.config.BeanValidationDeserializer;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
@@ -14,8 +11,6 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
-import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionChoiceImportDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionImportDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -25,7 +20,10 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import cz.muni.ics.kypo.training.adaptive.mapping.CloneMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionnairePhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
@@ -37,13 +35,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
 import javax.validation.Validator;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -85,7 +80,7 @@ public class TrainingDefinitionService {
      * @param questionnairePhaseRepository the questionnaire phase repository
      * @param trainingInstanceRepository   the training instance repository
      * @param userRefRepository            the user ref repository
-     * @param userManagementServiceApi              the security service
+     * @param userManagementServiceApi     the security service
      */
     @Autowired
     public TrainingDefinitionService(TrainingDefinitionRepository trainingDefinitionRepository,
@@ -120,7 +115,7 @@ public class TrainingDefinitionService {
             InputStream inputStream = pathToDefaultPhases.isBlank() ? getClass().getResourceAsStream("/default-phases.json") : new FileInputStream(pathToDefaultPhases);
             defaultPhases = mapper.readValue(inputStream, DefaultPhases.class);
             Set<ConstraintViolation<DefaultPhases>> violations = this.validator.validate(defaultPhases);
-            if(!violations.isEmpty()){
+            if (!violations.isEmpty()) {
                 throw new InternalServerErrorException("Could not load the default phases. Reason: " + violations.stream()
                         .map(ConstraintViolation::getMessage).collect(Collectors.toList()));
             }
@@ -194,7 +189,7 @@ public class TrainingDefinitionService {
      */
     public TrainingDefinition create(TrainingDefinition trainingDefinition, boolean createDefaultContent) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
-        if(createDefaultContent && defaultPhases != null) {
+        if (createDefaultContent && defaultPhases != null) {
             this.createDefaultPhases(trainingDefinition);
         }
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
@@ -549,7 +544,7 @@ public class TrainingDefinitionService {
                 createQuestionChoice("Mumbai", 2, false, mcq)
         )));
         return mcq;
-     }
+    }
 
     private Question defaultFFQ(Integer order, QuestionnairePhase questionnairePhase) {
         Question ffq = new Question();
@@ -580,12 +575,12 @@ public class TrainingDefinitionService {
         return rfq;
     }
 
-     private QuestionChoice createQuestionChoice(String text, Integer order, boolean correct, Question question) {
-         QuestionChoice choice = new QuestionChoice();
-         choice.setText(text);
-         choice.setOrder(order);
-         choice.setCorrect(correct);
-         choice.setQuestion(question);
-         return choice;
-     }
+    private QuestionChoice createQuestionChoice(String text, Integer order, boolean correct, Question question) {
+        QuestionChoice choice = new QuestionChoice();
+        choice.setText(text);
+        choice.setOrder(order);
+        choice.setCorrect(correct);
+        choice.setQuestion(question);
+        return choice;
+    }
 }

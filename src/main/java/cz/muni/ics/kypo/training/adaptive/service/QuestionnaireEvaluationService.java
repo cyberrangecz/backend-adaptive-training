@@ -1,17 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
-import cz.muni.csirt.kypo.events.AbstractAuditPOJO;
-import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswerId;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionsPhaseRelationResult;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
@@ -26,23 +17,13 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelatio
 import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunRepository;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
-import org.hibernate.Hibernate;
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service

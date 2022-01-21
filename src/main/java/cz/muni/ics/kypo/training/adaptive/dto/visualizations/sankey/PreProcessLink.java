@@ -40,7 +40,7 @@ public class PreProcessLink {
                           Long targetTaskId,
                           Integer targetPhaseOrder,
                           Long value) {
-        this(source, target, null, targetTaskId,  null, targetPhaseOrder, value);
+        this(source, target, null, targetTaskId, null, targetPhaseOrder, value);
     }
 
     public PreProcessLink(Integer source,
@@ -48,13 +48,13 @@ public class PreProcessLink {
                           Integer sourcePhaseOrder,
                           Integer target,
                           Long value) {
-        this(source, target, sourceTaskId, null,  sourcePhaseOrder, null, value);
+        this(source, target, sourceTaskId, null, sourcePhaseOrder, null, value);
     }
 
     public PreProcessLink(Integer source,
                           Integer target,
                           Long value) {
-        this(source, target, null, null,  null, null, value);
+        this(source, target, null, null, null, null, value);
     }
 
     public Integer getSource() {

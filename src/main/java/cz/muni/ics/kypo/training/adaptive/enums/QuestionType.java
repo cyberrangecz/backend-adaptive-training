@@ -15,5 +15,5 @@ public enum QuestionType {
     /**
      * Rate form question type.
      */
-    RFQ;
+    RFQ
 }

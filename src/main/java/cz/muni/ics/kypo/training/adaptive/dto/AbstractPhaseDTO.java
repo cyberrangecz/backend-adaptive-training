@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;

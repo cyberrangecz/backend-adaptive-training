@@ -4,7 +4,6 @@ import cz.muni.ics.kypo.training.adaptive.dto.RelatedPhaseInfoDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @ApiModel(

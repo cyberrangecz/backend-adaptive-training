@@ -16,5 +16,5 @@ public enum TRState {
     /**
      * Archived run state.
      */
-    ARCHIVED;
+    ARCHIVED
 }

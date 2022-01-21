@@ -13,7 +13,7 @@ import java.util.Objects;
 @ApiModel(
         value = "UserRefDTO",
         description = "User information from user-and-group microservice is mapped to this class " +
-        "and is also used to provide information about authors, participants, and organizers."
+                "and is also used to provide information about authors, participants, and organizers."
 )
 public class UserRefDTO {
 

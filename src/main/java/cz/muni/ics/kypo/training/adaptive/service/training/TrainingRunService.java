@@ -53,9 +53,6 @@ import java.util.stream.Collectors;
 public class TrainingRunService {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingRunService.class);
-
-    @Value("${smart-assistant-service.suitable-task-delay:5}")
-    private int findSuitableTaskDelay;
     private final SandboxServiceApi sandboxServiceApi;
     private final TrainingRunRepository trainingRunRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
@@ -71,6 +68,8 @@ public class TrainingRunService {
     private final QuestionsPhaseRelationResultRepository questionsPhaseRelationResultRepository;
     private final QuestionAnswerRepository questionAnswerRepository;
     private final SubmissionRepository submissionRepository;
+    @Value("${smart-assistant-service.suitable-task-delay:5}")
+    private int findSuitableTaskDelay;
 
     /**
      * Instantiates a new Training run service.
@@ -249,7 +248,7 @@ public class TrainingRunService {
     private void waitToPropagateEvents() {
         try {
             TimeUnit.SECONDS.sleep(this.findSuitableTaskDelay);
-        } catch(InterruptedException ex) {
+        } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
         }
     }
@@ -297,7 +296,7 @@ public class TrainingRunService {
         }).collect(Collectors.toList());
     }
 
-    private boolean getFulfilled(Map<Integer, TrainingPhaseQuestionsFulfillment> questionnairesFulfillment, int order){
+    private boolean getFulfilled(Map<Integer, TrainingPhaseQuestionsFulfillment> questionnairesFulfillment, int order) {
         TrainingPhaseQuestionsFulfillment fulfillment = questionnairesFulfillment.get(order);
         return fulfillment == null || fulfillment.isFulfilled();
     }
@@ -632,7 +631,7 @@ public class TrainingRunService {
     }
 
     private String getUserIpAddress() {
-        ServletRequestAttributes requestAttributes =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
+        ServletRequestAttributes requestAttributes = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes());
         return requestAttributes == null ? "" : requestAttributes.getRequest().getRemoteAddr();
     }
 

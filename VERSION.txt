@@ -1,3 +1,4 @@
+1.0.46 Updated dependencies to the latest versions. Code cleanup. Configured multi-stage docker build to decrease the resulting image size.
 1.0.45 Update log4j2 version to avoid CVE-2021-44228 vulnerability
 1.0.44 Bugfix - correctly compute estimated duration when uploading training definition.
 1.0.43 Rollback temporary fix - set action RESULTS to finished training runs. New version of the elasticsearch documents.

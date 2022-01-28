@@ -505,25 +505,53 @@ public class TrainingRunService {
         TrainingRun trainingRun = findByIdWithPhase(runId);
         AbstractPhase currentPhase = trainingRun.getCurrentPhase();
         if (currentPhase instanceof TrainingPhase) {
-            if (trainingRun.isPhaseAnswered()) {
-                throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", Long.class, runId, "The answer of the current phase of training run has been already corrected."));
-            }
-            Task currentTask = trainingRun.getCurrentTask();
-            if (currentTask.getAnswer().equals(answer)) {
-                trainingRun.setPhaseAnswered(true);
-                auditEventsService.auditCorrectAnswerSubmittedAction(trainingRun, answer);
-                auditEventsService.auditPhaseCompletedAction(trainingRun);
-                auditSubmission(trainingRun, SubmissionType.CORRECT, answer);
-                return true;
-            } else if (currentTask.getIncorrectAnswerLimit() != trainingRun.getIncorrectAnswerCount()) {
-                trainingRun.setIncorrectAnswerCount(trainingRun.getIncorrectAnswerCount() + 1);
-            }
-            auditEventsService.auditWrongAnswerSubmittedAction(trainingRun, answer);
-            auditSubmission(trainingRun, SubmissionType.INCORRECT, answer);
-            return false;
-        } else {
             throw new BadRequestException("Current phase is not training phase and does not have answer.");
         }
+        if (trainingRun.isPhaseAnswered()) {
+            throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", Long.class, runId, "The answer of the current phase of training run has been already corrected."));
+        }
+        Task currentTask = trainingRun.getCurrentTask();
+        if (currentTask.getAnswer().equals(answer)) {
+            trainingRun.setPhaseAnswered(true);
+            auditEventsService.auditCorrectAnswerSubmittedAction(trainingRun, answer);
+            auditEventsService.auditPhaseCompletedAction(trainingRun);
+            auditSubmission(trainingRun, SubmissionType.CORRECT, answer);
+            return true;
+        } else if (currentTask.getIncorrectAnswerLimit() != trainingRun.getIncorrectAnswerCount()) {
+            trainingRun.setIncorrectAnswerCount(trainingRun.getIncorrectAnswerCount() + 1);
+        }
+        auditEventsService.auditWrongAnswerSubmittedAction(trainingRun, answer);
+        auditSubmission(trainingRun, SubmissionType.INCORRECT, answer);
+        return false;
+    }
+
+    /**
+     * Check given passkey of given Training Run.
+     *
+     * @param runId  id of Training Run to check passkey.
+     * @param passkey string which player submit.
+     * @return true if passkey is correct, false if passkey is wrong.
+     * @throws EntityNotFoundException training run is not found.
+     * @throws BadRequestException     the current phase of training run is not training phase.
+     */
+    public boolean isCorrectPasskey(Long runId, String passkey) {
+        TrainingRun trainingRun = findByIdWithPhase(runId);
+        AbstractPhase currentPhase = trainingRun.getCurrentPhase();
+        if (currentPhase.getClass() != AccessPhase.class) {
+            throw new BadRequestException("Current phase is not access phase and does not have passkey.");
+        }
+        if (trainingRun.isPhaseAnswered()) {
+            throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", Long.class, runId, "The passkey of the current phase of training run has been already corrected."));
+        }
+        AccessPhase accessPhase = (AccessPhase) trainingRun.getCurrentPhase();
+        if (accessPhase.getPasskey().equals(passkey)) {
+            trainingRun.setPhaseAnswered(true);
+            auditEventsService.auditCorrectPasskeySubmittedAction(trainingRun, passkey);
+            auditEventsService.auditPhaseCompletedAction(trainingRun);
+            return true;
+        }
+        auditEventsService.auditWrongPasskeySubmittedAction(trainingRun, passkey);
+        return false;
     }
 
     /**

@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.export.phases;
 
+import cz.muni.ics.kypo.training.adaptive.dto.export.phases.access.AccessPhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.info.InfoPhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.questionnaire.QuestionnairePhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.training.TrainingPhaseExportDTO;
@@ -11,12 +12,12 @@ import java.util.Objects;
 
 /**
  * Encapsulates information about abstract phase.
- * Extended by {@link QuestionnairePhaseExportDTO}, {@link TrainingPhaseExportDTO} and {@link InfoPhaseExportDTO}
+ * Extended by {@link QuestionnairePhaseExportDTO}, {@link TrainingPhaseExportDTO}, {@link AccessPhaseExportDTO} and {@link InfoPhaseExportDTO}
  */
 @ApiModel(
         value = "AbstractPhaseExportDTO",
-        subTypes = {TrainingPhaseExportDTO.class, InfoPhaseExportDTO.class, QuestionnairePhaseExportDTO.class},
-        description = "Superclass for classes TrainingPhaseExportDTO, InfoPhaseExportDTO and QuestionnairePhaseExportDTO"
+        subTypes = {TrainingPhaseExportDTO.class, AccessPhaseExportDTO.class, InfoPhaseExportDTO.class, QuestionnairePhaseExportDTO.class},
+        description = "Superclass for classes TrainingPhaseExportDTO, AccessPhaseExportDTO, InfoPhaseExportDTO and QuestionnairePhaseExportDTO"
 )
 public abstract class AbstractPhaseExportDTO {
 

@@ -218,6 +218,8 @@ public class TrainingRunFacade {
                 infoAboutPhases.add(new BasicPhaseInfoDTO(abstractPhase.getId(), abstractPhase.getTitle(), PhaseType.QUESTIONNAIRE, abstractPhase.getOrder()));
             } else if (abstractPhase instanceof TrainingPhase) {
                 infoAboutPhases.add(new BasicPhaseInfoDTO(abstractPhase.getId(), abstractPhase.getTitle(), PhaseType.TRAINING, abstractPhase.getOrder()));
+            } else if (abstractPhase instanceof AccessPhase) {
+                infoAboutPhases.add(new BasicPhaseInfoDTO(abstractPhase.getId(), abstractPhase.getTitle(), PhaseType.ACCESS, abstractPhase.getOrder()));
             } else {
                 infoAboutPhases.add(new BasicPhaseInfoDTO(abstractPhase.getId(), abstractPhase.getTitle(), PhaseType.INFO, abstractPhase.getOrder()));
             }
@@ -302,6 +304,20 @@ public class TrainingRunFacade {
             correctAnswerDTO.setSolution(getSolution(trainingRunId));
         }
         return correctAnswerDTO;
+    }
+
+    /**
+     * Check given passkey of given Training Run.
+     *
+     * @param trainingRunId id of Training Run to check passkey.
+     * @param passkey        string which player submit.
+     * @return true if passkey is correct, false if passkey is wrong.
+     */
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
+    @TransactionalWO
+    public Boolean isCorrectPasskey(Long trainingRunId, String passkey) {
+        return trainingRunService.isCorrectPasskey(trainingRunId, passkey);
     }
 
     /**
@@ -410,6 +426,8 @@ public class TrainingRunFacade {
             return phaseMapper.mapToQuestionnairePhaseViewDTO((QuestionnairePhase) abstractPhase);
         } else if (abstractPhase instanceof TrainingPhase) {
             return phaseMapper.mapToTrainingPhaseViewDTO((TrainingPhase) abstractPhase, task);
+        } else if (abstractPhase instanceof AccessPhase) {
+            return phaseMapper.mapToAccessPhaseViewDTO((AccessPhase) abstractPhase);
         } else {
             return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
         }

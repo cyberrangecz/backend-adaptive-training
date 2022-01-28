@@ -46,7 +46,7 @@ public class TaskFacade {
      * Creates new task in phase
      *
      * @param phaseId - id of phase in which task will be created
-     * @return {@link BasicPhaseInfoDTO} of new questionnaire phase
+     * @return {@link TaskDTO}
      */
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isDesignerOfGivenPhase(#phaseId)")

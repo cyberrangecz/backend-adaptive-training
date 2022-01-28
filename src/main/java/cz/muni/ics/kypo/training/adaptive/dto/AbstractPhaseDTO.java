@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
@@ -11,8 +12,8 @@ import java.util.Objects;
 
 @ApiModel(
         value = "AbstractLevelDTO",
-        subTypes = {TrainingPhaseDTO.class, InfoPhaseDTO.class, QuestionnairePhaseDTO.class},
-        description = "Abstract superclass for classes TrainingPhaseDTO, InfoPhaseDTO and QuestionnairePhaseDTO"
+        subTypes = {TrainingPhaseDTO.class, AccessPhaseDTO.class, InfoPhaseDTO.class, QuestionnairePhaseDTO.class},
+        description = "Abstract superclass for classes TrainingPhaseDTO, AccessPhaseDTO, InfoPhaseDTO and QuestionnairePhaseDTO"
 )
 public class AbstractPhaseDTO {
 

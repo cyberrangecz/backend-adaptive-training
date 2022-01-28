@@ -3,14 +3,20 @@ package cz.muni.ics.kypo.training.adaptive.mapping;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.access.AccessPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.info.InfoPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire.QuestionnairePhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.training.TrainingPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.AbstractPhaseExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.export.phases.access.AccessPhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.info.InfoPhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.questionnaire.QuestionnairePhaseExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.training.TrainingPhaseExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access.AccessPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
@@ -107,20 +113,44 @@ public interface PhaseMapper extends ParentMapper {
     @Mapping(target = "phaseType", constant = "TRAINING")
     TrainingPhaseArchiveDTO mapToTrainingPhaseArchiveDTO(TrainingPhase entity);
 
+    // ACCESS PHASE
+    AccessPhase mapToEntity(AccessPhaseDTO dto);
+
+    AccessPhase mapToEntity(AccessPhaseUpdateDTO dto);
+
+    AccessPhase mapToEntity(AccessPhaseImportDTO dto);
+
+    @Mapping(target = "phaseType", constant = "ACCESS")
+    BasicPhaseInfoDTO mapToBasicPhaseInfoDTO(AccessPhase entity);
+
+    @Mapping(target = "phaseType", constant = "ACCESS")
+    AccessPhaseDTO mapToAccessPhaseDTO(AccessPhase entity);
+
+    @Mapping(target = "phaseType", constant = "ACCESS")
+    AccessPhaseViewDTO mapToAccessPhaseViewDTO(AccessPhase entity);
+
+    @Mapping(target = "phaseType", constant = "ACCESS")
+    AccessPhaseExportDTO mapToAccessPhaseExportDTO(AccessPhase entity);
+
+    @Mapping(target = "phaseType", constant = "ACCESS")
+    AccessPhaseArchiveDTO mapToAccessPhaseArchiveDTO(AccessPhase entity);
+
     // ABSTRACT
     List<AbstractPhaseDTO> mapToListDTO(Collection<AbstractPhase> entities);
 
     default AbstractPhaseDTO mapToDTO(AbstractPhase entity) {
-        AbstractPhaseDTO abstractPhaseDTO;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            AbstractPhaseDTO abstractPhaseDTO;
         if (entity instanceof TrainingPhase) {
             abstractPhaseDTO = mapToTrainingPhaseDTO((TrainingPhase) entity);
         } else if (entity instanceof InfoPhase) {
             abstractPhaseDTO = mapToInfoPhaseDTO((InfoPhase) entity);
         } else if (entity instanceof QuestionnairePhase) {
             abstractPhaseDTO = mapToQuestionnairePhaseDTO((QuestionnairePhase) entity);
+        } else if (entity instanceof AccessPhase) {
+            abstractPhaseDTO = mapToAccessPhaseDTO((AccessPhase) entity);
         } else {
             throw new InternalServerErrorException("Phase with id: " + entity.getId() + " in given training definition with id: " + entity.getTrainingDefinition().getId() +
-                    " is not instance of questionnaire, training or info phase.");
+                    " is not instance of questionnaire, training, access or info phase.");
         }
         return abstractPhaseDTO;
     }
@@ -133,8 +163,10 @@ public interface PhaseMapper extends ParentMapper {
             abstractPhaseArchiveDTO = mapToInfoPhaseArchiveDTO((InfoPhase) entity);
         } else if (entity instanceof QuestionnairePhase) {
             abstractPhaseArchiveDTO = mapToQuestionnairePhaseArchiveDTO((QuestionnairePhase) entity);
+        } else if (entity instanceof AccessPhase) {
+            abstractPhaseArchiveDTO = mapToAccessPhaseArchiveDTO((AccessPhase) entity);
         } else {
-            throw new InternalServerErrorException("Phase with id: " + entity.getId() + " is not instance of questionnaire, training or info phase.");
+            throw new InternalServerErrorException("Phase with id: " + entity.getId() + " is not instance of questionnaire, training, access or info phase.");
         }
         return abstractPhaseArchiveDTO;
     }
@@ -147,8 +179,10 @@ public interface PhaseMapper extends ParentMapper {
             abstractPhaseExportDTO = mapToInfoPhaseExportDTO((InfoPhase) entity);
         } else if (entity instanceof QuestionnairePhase) {
             abstractPhaseExportDTO = mapToQuestionnairePhaseExportDTO((QuestionnairePhase) entity);
+        } else if (entity instanceof AccessPhase) {
+            abstractPhaseExportDTO = mapToAccessPhaseExportDTO((AccessPhase) entity);
         } else {
-            throw new InternalServerErrorException("Phase with id: " + entity.getId() + " is not instance of questionnaire, training or info phase.");
+            throw new InternalServerErrorException("Phase with id: " + entity.getId() + " is not instance of questionnaire, training, access, or info phase.");
         }
         return abstractPhaseExportDTO;
     }

@@ -1,24 +1,19 @@
 package cz.muni.ics.kypo.training.adaptive.startup;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 public class GetAccessPhase {
 
-    @NotEmpty(message = "{trainingPhase.title.NotEmpty.message}")
+    @NotEmpty(message = "{abstractPhase.title.NotEmpty.message}")
     private String title;
-    @NotNull(message = "{trainingPhase.estimatedDuration.NotNull.message}")
-    @Min(value = 0, message = "{trainingPhase.estimatedDuration.Min.message}")
-    private Integer estimatedDuration;
-    @NotEmpty(message = "{getAccessPhase.content.NotEmpty.message}")
-    private String content;
-    @NotEmpty(message = "{getAccessPhase.answer.NotEmpty.message}")
-    @Size(max = 50, message = "{getAccessPhase.answer.Size.message}")
-    private String answer;
-    @NotEmpty(message = "{getAccessPhase.solution.NotEmpty.message}")
-    private String solution;
+    @NotEmpty(message = "{accessPhase.cloudContent.NotEmpty.message}")
+    private String cloudContent;
+    @NotEmpty(message = "{accessPhase.localContent.NotEmpty.message}")
+    private String localContent;
+    @Size(max = 50, message = "{accessPhase.passkey.Size.message}")
+    @NotEmpty(message = "{accessPhase.passkey.NotEmpty.message}")
+    private String passkey;
 
     public String getTitle() {
         return title;
@@ -28,35 +23,27 @@ public class GetAccessPhase {
         this.title = title;
     }
 
-    public Integer getEstimatedDuration() {
-        return estimatedDuration;
+    public String getCloudContent() {
+        return cloudContent;
     }
 
-    public void setEstimatedDuration(Integer estimatedDuration) {
-        this.estimatedDuration = estimatedDuration;
+    public void setCloudContent(String cloudContent) {
+        this.cloudContent = cloudContent;
     }
 
-    public String getContent() {
-        return content;
+    public String getLocalContent() {
+        return localContent;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setLocalContent(String localContent) {
+        this.localContent = localContent;
     }
 
-    public String getAnswer() {
-        return answer;
+    public String getPasskey() {
+        return passkey;
     }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public String getSolution() {
-        return solution;
-    }
-
-    public void setSolution(String solution) {
-        this.solution = solution;
+    public void setPasskey(String passkey) {
+        this.passkey = passkey;
     }
 }

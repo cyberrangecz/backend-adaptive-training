@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
@@ -20,10 +21,7 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import cz.muni.ics.kypo.training.adaptive.mapping.CloneMapper;
 import cz.muni.ics.kypo.training.adaptive.repository.UserRefRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionnairePhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.*;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
@@ -60,6 +58,7 @@ public class TrainingDefinitionService {
     private final TrainingInstanceRepository trainingInstanceRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final TrainingPhaseRepository trainingPhaseRepository;
+    private final AccessPhaseRepository accessPhaseRepository;
     private final InfoPhaseRepository infoPhaseRepository;
     private final QuestionnairePhaseRepository questionnairePhaseRepository;
     private final UserRefRepository userRefRepository;
@@ -87,6 +86,7 @@ public class TrainingDefinitionService {
                                      AbstractPhaseRepository abstractPhaseRepository,
                                      InfoPhaseRepository infoPhaseRepository,
                                      TrainingPhaseRepository trainingPhaseRepository,
+                                     AccessPhaseRepository accessPhaseRepository,
                                      QuestionnairePhaseRepository questionnairePhaseRepository,
                                      TrainingInstanceRepository trainingInstanceRepository,
                                      UserRefRepository userRefRepository,
@@ -96,6 +96,7 @@ public class TrainingDefinitionService {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
+        this.accessPhaseRepository = accessPhaseRepository;
         this.infoPhaseRepository = infoPhaseRepository;
         this.questionnairePhaseRepository = questionnairePhaseRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
@@ -110,7 +111,7 @@ public class TrainingDefinitionService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
+        mapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
         try {
             InputStream inputStream = pathToDefaultPhases.isBlank() ? getClass().getResourceAsStream("/default-phases.json") : new FileInputStream(pathToDefaultPhases);
             defaultPhases = mapper.readValue(inputStream, DefaultPhases.class);
@@ -505,31 +506,14 @@ public class TrainingDefinitionService {
         )));
         questionnairePhaseRepository.save(questionnairePhase);
 
-        TrainingPhase getAccessPhase = new TrainingPhase();
-        getAccessPhase.setTitle(defaultPhases.getGetAccessPhase().getTitle());
-        getAccessPhase.setOrder(2);
-        getAccessPhase.setTrainingDefinition(trainingDefinition);
-        getAccessPhase.setEstimatedDuration(defaultPhases.getGetAccessPhase().getEstimatedDuration());
-        getAccessPhase.setAllowedWrongAnswers(100);
-        getAccessPhase.setAllowedCommands(100);
-
-        DecisionMatrixRow decisionMatrixRow = new DecisionMatrixRow();
-        decisionMatrixRow.setTrainingPhase(getAccessPhase);
-        decisionMatrixRow.setOrder(0);
-
-        Task accessPhaseTask = new Task();
-        accessPhaseTask.setTitle(defaultPhases.getGetAccessPhase().getTitle());
-        accessPhaseTask.setAnswer(defaultPhases.getGetAccessPhase().getAnswer());
-        accessPhaseTask.setSolution(defaultPhases.getGetAccessPhase().getSolution());
-        accessPhaseTask.setIncorrectAnswerLimit(100);
-        accessPhaseTask.setContent(defaultPhases.getGetAccessPhase().getContent());
-        accessPhaseTask.setOrder(0);
-        accessPhaseTask.setTrainingPhase(getAccessPhase);
-
-        getAccessPhase.setDecisionMatrix(new ArrayList<>(List.of(decisionMatrixRow)));
-        getAccessPhase.setTasks(new ArrayList<>(List.of(accessPhaseTask)));
-        trainingPhaseRepository.save(getAccessPhase);
-        trainingDefinition.setEstimatedDuration(trainingDefinition.getEstimatedDuration() + getAccessPhase.getEstimatedDuration());
+        AccessPhase accessPhase = new AccessPhase();
+        accessPhase.setTitle(defaultPhases.getGetAccessPhase().getTitle());
+        accessPhase.setOrder(2);
+        accessPhase.setTrainingDefinition(trainingDefinition);
+        accessPhase.setPasskey(defaultPhases.getGetAccessPhase().getPasskey());
+        accessPhase.setLocalContent(defaultPhases.getGetAccessPhase().getLocalContent());
+        accessPhase.setCloudContent(defaultPhases.getGetAccessPhase().getCloudContent());
+        accessPhaseRepository.save(accessPhase);
     }
 
     private Question defaultMCQ(Integer order, QuestionnairePhase questionnairePhase) {

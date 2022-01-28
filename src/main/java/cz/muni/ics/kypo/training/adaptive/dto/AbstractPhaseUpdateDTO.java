@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
@@ -16,12 +17,13 @@ import java.util.Objects;
 
 @ApiModel(
         value = "AbstractPhaseUpdateDTO",
-        subTypes = {TrainingPhaseUpdateDTO.class, InfoPhaseUpdateDTO.class, QuestionnaireUpdateDTO.class},
-        description = "Abstract superclass for classes TrainingPhaseUpdateDTO, InfoPhaseUpdateDTO and QuestionnaireUpdateDTO"
+        subTypes = {TrainingPhaseUpdateDTO.class, AccessPhaseUpdateDTO.class, InfoPhaseUpdateDTO.class, QuestionnaireUpdateDTO.class},
+        description = "Abstract superclass for classes TrainingPhaseUpdateDTO, AccessPhaseUpdateDTO, InfoPhaseUpdateDTO and QuestionnaireUpdateDTO"
 )
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "phase_type", visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TrainingPhaseUpdateDTO.class, name = "TRAINING"),
+        @JsonSubTypes.Type(value = AccessPhaseUpdateDTO.class, name = "ACCESS"),
         @JsonSubTypes.Type(value = QuestionnaireUpdateDTO.class, name = "QUESTIONNAIRE"),
         @JsonSubTypes.Type(value = InfoPhaseUpdateDTO.class, name = "INFO")})
 @JsonIgnoreProperties(ignoreUnknown = true)

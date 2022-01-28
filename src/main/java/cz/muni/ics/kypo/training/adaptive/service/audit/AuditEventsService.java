@@ -126,6 +126,38 @@ public class AuditEventsService {
     }
 
     /**
+     * Audit correct passkey submitted action.
+     *
+     * @param trainingRun the training run
+     * @param passkey     the passkey
+     */
+    public void auditCorrectPasskeySubmittedAction(TrainingRun trainingRun, String passkey) {
+        CorrectPasskeySubmitted.CorrectPasskeySubmittedBuilder<?, ?> correctPasskeySubmittedBuilder = (CorrectPasskeySubmitted.CorrectPasskeySubmittedBuilder<?, ?>)
+                fillInCommonBuilderFields(trainingRun, CorrectPasskeySubmitted.builder());
+
+        CorrectPasskeySubmitted correctPasskeySubmitted = correctPasskeySubmittedBuilder
+                .passkeyContent(passkey)
+                .build();
+        auditService.saveTrainingRunEvent(correctPasskeySubmitted, 0L);
+    }
+
+    /**
+     * Audit wrong passkey submitted action.
+     *
+     * @param trainingRun the training run
+     * @param passkey      the passkey
+     */
+    public void auditWrongPasskeySubmittedAction(TrainingRun trainingRun, String passkey) {
+        WrongPasskeySubmitted.WrongPasskeySubmittedBuilder<?, ?> wrongPasskeySubmittedBuilder = (WrongPasskeySubmitted.WrongPasskeySubmittedBuilder<?, ?>)
+                fillInCommonBuilderFields(trainingRun, WrongPasskeySubmitted.builder());
+
+        WrongPasskeySubmitted wrongPasskeySubmitted = wrongPasskeySubmittedBuilder
+                .passkeyContent(passkey)
+                .build();
+        auditService.saveTrainingRunEvent(wrongPasskeySubmitted, 0L);
+    }
+
+    /**
      * Audit questionnaire answers action.
      *
      * @param trainingRun the training run
@@ -199,6 +231,8 @@ public class AuditEventsService {
             return PhaseType.INFO;
         } else if (abstractPhase instanceof QuestionnairePhase) {
             return PhaseType.QUESTIONNAIRE;
+        } else if (abstractPhase instanceof AccessPhase) {
+            return PhaseType.ACCESS;
         }
         return null;
     }

@@ -18,7 +18,7 @@ import java.util.Objects;
 public class InfoPhaseImportDTO extends AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "The information and experiences that are directed towards a participant.", example = "Informational stuff")
-    @NotEmpty(message = "{info.content.NotEmpty.message}")
+    @NotEmpty(message = "{infoPhase.content.NotEmpty.message}")
     private String content;
 
     /**

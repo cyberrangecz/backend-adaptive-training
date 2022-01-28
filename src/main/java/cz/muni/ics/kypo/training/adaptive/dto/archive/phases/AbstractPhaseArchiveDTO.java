@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto.archive.phases;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.access.AccessPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.info.InfoPhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.questionnaire.QuestionnairePhaseArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.training.TrainingPhaseArchiveDTO;
@@ -11,16 +12,17 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Encapsulates information about abstract phase.
  * Used for archiving.
- * Extended by {@link QuestionnairePhaseArchiveDTO}, {@link TrainingPhaseArchiveDTO} and {@link InfoPhaseArchiveDTO}.
+ * Extended by {@link QuestionnairePhaseArchiveDTO}, {@link TrainingPhaseArchiveDTO}, {@link AccessPhaseArchiveDTO} and {@link InfoPhaseArchiveDTO}.
  */
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TrainingPhaseArchiveDTO.class, name = "TrainingPhaseArchiveDTO"),
+        @JsonSubTypes.Type(value = AccessPhaseArchiveDTO.class, name = "AccessPhaseArchiveDTO"),
         @JsonSubTypes.Type(value = QuestionnairePhaseArchiveDTO.class, name = "QuestionnairePhaseArchiveDTO"),
         @JsonSubTypes.Type(value = InfoPhaseArchiveDTO.class, name = "InfoPhaseArchiveDTO")})
 @ApiModel(
         value = "AbstractPhaseArchiveDTO",
-        subTypes = {TrainingPhaseArchiveDTO.class, InfoPhaseArchiveDTO.class, QuestionnairePhaseArchiveDTO.class},
-        description = "Superclass for classes TrainingPhaseArchiveDTO, InfoPhaseArchiveDTO and QuestionnairePhaseArchiveDTO"
+        subTypes = {TrainingPhaseArchiveDTO.class, AccessPhaseArchiveDTO.class, InfoPhaseArchiveDTO.class, QuestionnairePhaseArchiveDTO.class},
+        description = "Superclass for classes TrainingPhaseArchiveDTO, AccessPhaseArchiveDTO, InfoPhaseArchiveDTO and QuestionnairePhaseArchiveDTO"
 )
 public abstract class AbstractPhaseArchiveDTO {
 

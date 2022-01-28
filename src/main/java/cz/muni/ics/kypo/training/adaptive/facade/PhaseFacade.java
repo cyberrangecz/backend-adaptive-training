@@ -9,6 +9,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.PhaseCreateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
@@ -40,6 +41,7 @@ public class PhaseFacade {
     private final InfoPhaseService infoPhaseService;
     private final QuestionnairePhaseService questionnairePhaseService;
     private final TrainingPhaseService trainingPhaseService;
+    private final AccessPhaseService accessPhaseService;
     private final TrainingDefinitionService trainingDefinitionService;
     private final TaskService taskService;
     private final PhaseMapper phaseMapper;
@@ -50,6 +52,7 @@ public class PhaseFacade {
                        InfoPhaseService infoPhaseService,
                        QuestionnairePhaseService questionnairePhaseService,
                        TrainingPhaseService trainingPhaseService,
+                       AccessPhaseService accessPhaseService,
                        TrainingDefinitionService trainingDefinitionService,
                        TaskService taskService,
                        PhaseMapper phaseMapper,
@@ -58,6 +61,7 @@ public class PhaseFacade {
         this.infoPhaseService = infoPhaseService;
         this.questionnairePhaseService = questionnairePhaseService;
         this.trainingPhaseService = trainingPhaseService;
+        this.accessPhaseService = accessPhaseService;
         this.trainingDefinitionService = trainingDefinitionService;
         this.taskService = taskService;
         this.phaseMapper = phaseMapper;
@@ -80,6 +84,8 @@ public class PhaseFacade {
             abstractPhase = infoPhaseService.createDefaultInfoPhase(trainingDefinition);
         } else if (phaseCreateDTO.getPhaseType() == PhaseType.TRAINING) {
             abstractPhase = trainingPhaseService.createDefaultTrainingPhase(trainingDefinition);
+        } else if (phaseCreateDTO.getPhaseType() == PhaseType.ACCESS) {
+            abstractPhase = accessPhaseService.createDefaultAccessPhase(trainingDefinition);
         } else {
             abstractPhase = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinition, phaseCreateDTO.getQuestionnaireType());
         }
@@ -149,6 +155,9 @@ public class PhaseFacade {
                     List<Task> updatedTasks = updatedTrainingPhase.getTasks();
                     trainingPhaseService.updateTrainingPhase((TrainingPhase) persistedPhase, updatedTrainingPhase);
                     taskService.updateTasks(updatedTasks, updatedTrainingPhase.getTasks(), updatedTrainingPhase.getId());
+                    break;
+                case ACCESS:
+                    accessPhaseService.updateAccessPhase((AccessPhase) persistedPhase, phaseMapper.mapToEntity((AccessPhaseUpdateDTO) updatedPhaseDTO));
                     break;
                 case INFO:
                     infoPhaseService.updateInfoPhase((InfoPhase) persistedPhase, phaseMapper.mapToEntity((InfoPhaseUpdateDTO) updatedPhaseDTO));

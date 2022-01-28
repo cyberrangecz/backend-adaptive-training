@@ -5,7 +5,7 @@ import javax.validation.constraints.NotEmpty;
 public class IntroInfoPhase {
     @NotEmpty(message = "{phase.title.NotEmpty.message}")
     private String title;
-    @NotEmpty(message = "{info.content.NotEmpty.message}")
+    @NotEmpty(message = "{infoPhase.content.NotEmpty.message}")
     private String content;
 
     public String getTitle() {

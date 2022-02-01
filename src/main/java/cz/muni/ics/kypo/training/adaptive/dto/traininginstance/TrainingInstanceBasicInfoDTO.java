@@ -29,6 +29,8 @@ public class TrainingInstanceBasicInfoDTO {
     private String accessToken;
     @ApiModelProperty(value = "Id of sandbox pool belonging to training instance", example = "1")
     private Long poolId;
+    @ApiModelProperty(value = "Indicates if local sandboxes are used for training runs.", example = "true")
+    private boolean localEnvironment;
 
     public Long getId() {
         return id;
@@ -78,6 +80,14 @@ public class TrainingInstanceBasicInfoDTO {
         this.poolId = poolId;
     }
 
+    public boolean isLocalEnvironment() {
+        return localEnvironment;
+    }
+
+    public void setLocalEnvironment(boolean localEnvironment) {
+        this.localEnvironment = localEnvironment;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceBasicInfoDTO{" +
@@ -87,6 +97,7 @@ public class TrainingInstanceBasicInfoDTO {
                 ", title='" + title + '\'' +
                 ", accessToken='" + accessToken + '\'' +
                 ", poolId=" + poolId +
+                ", localEnvironment=" + localEnvironment +
                 '}';
     }
 }

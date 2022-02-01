@@ -34,6 +34,8 @@ public class TrainingInstanceArchiveDTO {
     private String accessToken;
     @ApiModelProperty(value = "Reference to organizersRefIds which organize training instance.")
     private Set<Long> organizersRefIds;
+    @ApiModelProperty(value = "Indicates if local sandboxes are used for training runs.", example = "true")
+    private boolean localEnvironment;
 
     public Long getId() {
         return id;
@@ -141,6 +143,24 @@ public class TrainingInstanceArchiveDTO {
         this.accessToken = accessToken;
     }
 
+    /**
+     * Gets if local environment (local sandboxes) is used for the training runs.
+     *
+     * @return true if local environment is enabled
+     */
+    public boolean isLocalEnvironment() {
+        return localEnvironment;
+    }
+
+    /**
+     * Sets if local environment (local sandboxes) is used for the training runs.
+     *
+     * @param localEnvironment true if local environment is enabled.
+     */
+    public void setLocalEnvironment(boolean localEnvironment) {
+        this.localEnvironment = localEnvironment;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceArchiveDTO{" +
@@ -151,6 +171,7 @@ public class TrainingInstanceArchiveDTO {
                 ", title='" + title + '\'' +
                 ", organizersRefIds=" + organizersRefIds +
                 ", accessToken='" + accessToken + '\'' +
+                ", localEnvironment=" + localEnvironment +
                 '}';
     }
 }

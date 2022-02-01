@@ -104,6 +104,8 @@ public class TrainingInstance implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> organizers = new HashSet<>();
+    @Column(name = "local_environment", nullable = false)
+    private boolean localEnvironment;
 
     /**
      * Gets unique identification number of Training instance
@@ -304,6 +306,24 @@ public class TrainingInstance implements Serializable {
         this.organizers.removeIf(userRef -> userRefIds.contains(userRef.getUserRefId()));
     }
 
+    /**
+     * Gets if local environment (local sandboxes) is used for the training runs.
+     *
+     * @return true if local environment is enabled
+     */
+    public boolean isLocalEnvironment() {
+        return localEnvironment;
+    }
+
+    /**
+     * Sets if local environment (local sandboxes) is used for the training runs.
+     *
+     * @param localEnvironment true if local environment is enabled.
+     */
+    public void setLocalEnvironment(boolean localEnvironment) {
+        this.localEnvironment = localEnvironment;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(accessToken, startTime, endTime, title, trainingDefinition);
@@ -322,6 +342,7 @@ public class TrainingInstance implements Serializable {
                 && Objects.equals(startTime, other.getStartTime())
                 && Objects.equals(endTime, other.getEndTime())
                 && Objects.equals(title, other.getTitle())
+                && Objects.equals(localEnvironment, other.isLocalEnvironment())
                 && Objects.equals(trainingDefinition, other.getTrainingDefinition());
     }
 
@@ -333,6 +354,7 @@ public class TrainingInstance implements Serializable {
                 ", endTime=" + this.getEndTime() +
                 ", title='" + this.getTitle() + '\'' +
                 ", accessToken='" + this.getAccessToken() + '\'' +
+                ", localEnvironment='" + this.isLocalEnvironment() + '\'' +
                 '}';
     }
 }

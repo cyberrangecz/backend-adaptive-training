@@ -206,9 +206,9 @@ public class AuditEventsService {
         TrainingInstance trainingInstance = trainingRun.getTrainingInstance();
         Task trainingRunTask = trainingRun.getCurrentTask();
         AbstractPhase trainingRunPhase = trainingRun.getCurrentPhase();
-        builder.sandboxId(trainingRun.getSandboxInstanceRefId())
+        builder.trainingRunId(trainingRun.getId())
                 .poolId(trainingInstance.getPoolId())
-                .trainingRunId(trainingRun.getId())
+                .sandboxId(trainingRun.getSandboxInstanceRefId())
                 .trainingInstanceId(trainingInstance.getId())
                 .trainingDefinitionId(trainingInstance.getTrainingDefinition().getId())
                 .trainingTime(computeTrainingTime(trainingRun.getStartTime()))

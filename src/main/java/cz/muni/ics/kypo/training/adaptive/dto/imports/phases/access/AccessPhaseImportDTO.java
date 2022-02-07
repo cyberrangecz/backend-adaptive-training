@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access;
 
 import cz.muni.ics.kypo.training.adaptive.dto.archive.phases.AbstractPhaseArchiveDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.AbstractPhaseImportDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -15,9 +16,9 @@ import java.util.Objects;
 @ApiModel(
         value = "AccessPhaseImportDTO",
         description = "Imported access phase.",
-        parent = AbstractPhaseArchiveDTO.class
+        parent = AbstractPhaseImportDTO.class
 )
-public class AccessPhaseImportDTO extends AbstractPhaseArchiveDTO {
+public class AccessPhaseImportDTO extends AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "Keyword used for access next level.", example = "secretAnswer")
     @Size(max = 50, message = "{accessPhase.passkey.Size.message}")

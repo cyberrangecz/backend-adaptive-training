@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.imports.phases;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access.AccessPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TaskImportDTO;
@@ -32,7 +33,8 @@ import java.util.Objects;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = TrainingPhaseImportDTO.class, name = "TRAINING"),
         @JsonSubTypes.Type(value = QuestionnairePhaseImportDTO.class, name = "QUESTIONNAIRE"),
-        @JsonSubTypes.Type(value = InfoPhaseImportDTO.class, name = "INFO")})
+        @JsonSubTypes.Type(value = InfoPhaseImportDTO.class, name = "INFO"),
+        @JsonSubTypes.Type(value = AccessPhaseImportDTO.class, name = "ACCESS")})
 public abstract class AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training phase description")

@@ -1,9 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service;
 
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRelation;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
@@ -115,6 +112,11 @@ public class ExportImportService {
     }
 
     public InfoPhase createInfoPhase(InfoPhase phase, TrainingDefinition definition) {
+        phase.setTrainingDefinition(definition);
+        return abstractPhaseRepository.save(phase);
+    }
+
+    public AccessPhase createAccessPhase(AccessPhase phase, TrainingDefinition definition) {
         phase.setTrainingDefinition(definition);
         return abstractPhaseRepository.save(phase);
     }

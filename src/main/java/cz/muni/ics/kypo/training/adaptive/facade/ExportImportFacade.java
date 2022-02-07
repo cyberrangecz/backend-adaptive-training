@@ -27,6 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.export.phases.AbstractPhaseExportD
 import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionWithPhasesExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.AbstractPhaseImportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access.AccessPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.info.InfoPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire.QuestionnairePhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TrainingPhaseImportDTO;
@@ -183,6 +184,8 @@ public class ExportImportFacade {
                 exportImportService.createTrainingPhase(phaseMapper.mapToEntity((TrainingPhaseImportDTO) phase), newTrainingDefinition);
             } else if (phase.getPhaseType().equals(PhaseType.INFO)) {
                 exportImportService.createInfoPhase(phaseMapper.mapToEntity((InfoPhaseImportDTO) phase), newTrainingDefinition);
+            } else if (phase.getPhaseType().equals(PhaseType.ACCESS)) {
+                exportImportService.createAccessPhase(phaseMapper.mapToEntity((AccessPhaseImportDTO) phase), newTrainingDefinition);
             }
         });
         phases.forEach(phase -> {

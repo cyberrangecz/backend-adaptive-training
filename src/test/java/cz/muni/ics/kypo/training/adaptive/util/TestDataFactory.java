@@ -10,10 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import cz.muni.ics.kypo.training.adaptive.converter.LocalDateTimeUTCSerializer;
 import cz.muni.ics.kypo.training.adaptive.domain.AccessToken;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.Task;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
@@ -117,6 +114,9 @@ public class TestDataFactory {
     private InfoPhase infoPhase2 = generateInfoPhase("Info phase 2", 9,  "Content");
 
     private InfoPhaseUpdateDTO infoPhaseUpdateDTO = generateInfoPhaseUpdateDTO("Updated info phase title", "Updated info phase content");
+
+    private AccessPhase accessPhase = generateAccessPhase("Access phase", 10,  "Cloud content.",
+            "Local content. Command: ${USER_ID} ${ACCESS_PHASE} ${CENTRAL_SYSLOG_IP}", "start-training");
 
     private BasicPhaseInfoDTO basicTrainingPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Game phase info", PhaseType.TRAINING);
     private BasicPhaseInfoDTO basicInfoPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Info phase info", PhaseType.INFO);
@@ -319,6 +319,10 @@ public class TestDataFactory {
         return clone(infoPhaseUpdateDTO, InfoPhaseUpdateDTO.class);
     }
 
+    public AccessPhase getAccessPhase(){
+        return clone(accessPhase , AccessPhase.class);
+    }
+
     public AccessToken getAccessToken1(){
         return clone(accessToken1, AccessToken.class);
     }
@@ -483,6 +487,16 @@ public class TestDataFactory {
         newInfoPhase.setOrder(order);
         newInfoPhase.setContent(content);
         return newInfoPhase;
+    }
+
+    private AccessPhase generateAccessPhase(String title, int order, String cloudContent, String localContent, String passkey){
+        AccessPhase newAccessPhase = new AccessPhase();
+        newAccessPhase.setTitle(title);
+        newAccessPhase.setOrder(order);
+        newAccessPhase.setCloudContent(cloudContent);
+        newAccessPhase.setLocalContent(localContent);
+        newAccessPhase.setPasskey(passkey);
+        return newAccessPhase;
     }
 
     private InfoPhaseUpdateDTO generateInfoPhaseUpdateDTO(String title, String content) {

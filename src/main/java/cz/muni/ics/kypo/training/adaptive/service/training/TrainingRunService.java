@@ -157,20 +157,34 @@ public class TrainingRunService {
      * @param trainingRunId training run to delete
      * @param forceDelete   delete training run in a force manner
      */
-    public void deleteTrainingRun(Long trainingRunId, boolean forceDelete) {
+    public void deleteTrainingRun(Long trainingRunId, boolean forceDelete, boolean deleteDataFromElasticsearch) {
         TrainingRun trainingRun = findById(trainingRunId);
         if (!forceDelete && trainingRun.getState().equals(TRState.RUNNING)) {
             throw new EntityConflictException(new EntityErrorDetail(TrainingRun.class, "id", trainingRun.getId().getClass(), trainingRun.getId(),
                     "Cannot delete training run that is running. Consider force delete."));
         }
-        elasticsearchServiceApi.deleteEventsFromTrainingRun(trainingRun.getTrainingInstance().getId(), trainingRunId);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         questionAnswerRepository.deleteAllByTrainingRunId(trainingRunId);
         submissionRepository.deleteAllByTrainingRunId(trainingRunId);
         questionsPhaseRelationResultRepository.deleteAllByTrainingRunId(trainingRunId);
         trainingPhaseQuestionsFulfillmentRepository.deleteAllByTrainingRunId(trainingRunId);
         participantTaskAssignmentRepository.deleteAllByTrainingRunId(trainingRunId);
+        if(deleteDataFromElasticsearch) {
+            deleteDataFromElasticsearch(trainingRun);
+        }
         trainingRunRepository.delete(trainingRun);
+    }
+
+    private void deleteDataFromElasticsearch(TrainingRun trainingRun) {
+        if(trainingRun.getTrainingInstance().isLocalEnvironment()) {
+            String accessToken = trainingRun.getTrainingInstance().getAccessToken();
+            Long userId = trainingRun.getParticipantRef().getUserRefId();
+            elasticsearchServiceApi.deleteCommandsByAccessTokenAndUserId(accessToken, userId);
+        } else {
+            Long sandboxId = trainingRun.getSandboxInstanceRefId() == null ? trainingRun.getPreviousSandboxInstanceRefId() : trainingRun.getSandboxInstanceRefId();
+            elasticsearchServiceApi.deleteCommandsBySandbox(sandboxId);
+        }
+        elasticsearchServiceApi.deleteEventsFromTrainingRun(trainingRun.getTrainingInstance().getId(), trainingRun.getId());
     }
 
     /**
@@ -231,7 +245,9 @@ public class TrainingRunService {
             this.waitToPropagateEvents();
             AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
             // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
-            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput).getSuitableTask();
+            String accessToken = trainingRun.getTrainingInstance().getAccessToken();
+            Long userId = trainingRun.getParticipantRef().getUserRefId();
+            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
             trainingRun.setCurrentTask(null);
@@ -372,6 +388,11 @@ public class TrainingRunService {
         return trainingRun;
     }
 
+    public  void auditTrainingRunStarted(TrainingRun trainingRun) {
+        auditEventsService.auditTrainingRunStartedAction(trainingRun);
+        auditEventsService.auditPhaseStartedAction(trainingRun);
+    }
+
     /**
      * Find running training run of user optional.
      *
@@ -457,8 +478,6 @@ public class TrainingRunService {
     public TrainingRun assignSandbox(TrainingRun trainingRun, long poolId) {
         Long sandboxInstanceRef = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
         trainingRun.setSandboxInstanceRefId(sandboxInstanceRef);
-        auditEventsService.auditTrainingRunStartedAction(trainingRun);
-        auditEventsService.auditPhaseStartedAction(trainingRun);
         return trainingRunRepository.save(trainingRun);
     }
 
@@ -505,7 +524,7 @@ public class TrainingRunService {
     public boolean isCorrectAnswer(Long runId, String answer) {
         TrainingRun trainingRun = findByIdWithPhase(runId);
         AbstractPhase currentPhase = trainingRun.getCurrentPhase();
-        if (currentPhase instanceof TrainingPhase) {
+        if (currentPhase.getClass() != TrainingPhase.class) {
             throw new BadRequestException("Current phase is not training phase and does not have answer.");
         }
         if (trainingRun.isPhaseAnswered()) {

@@ -150,10 +150,10 @@ public class TrainingInstanceFacade {
             trainingInstance.setPoolId(newPoolId);
         } else if (newPoolId == null) {
             sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-            deleteBashCommandsFromPool(trainingInstance.getPoolId());
+            deleteBashCommandsByPool(trainingInstance.getPoolId());
         } else {
             sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-            deleteBashCommandsFromPool(trainingInstance.getPoolId());
+            deleteBashCommandsByPool(trainingInstance.getPoolId());
             sandboxServiceApi.lockPool(newPoolId);
             trainingInstance.setPoolId(newPoolId);
         }
@@ -225,10 +225,10 @@ public class TrainingInstanceFacade {
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceId);
         if (forceDelete) {
             Set<TrainingRun> trainingRunsInTrainingInstance = trainingRunService.findAllByTrainingInstanceId(trainingInstanceId);
-            trainingRunsInTrainingInstance.forEach(tr -> trainingRunService.deleteTrainingRun(tr.getId(), true));
-            if (trainingInstance.getPoolId() != null) {
+            trainingRunsInTrainingInstance.forEach(tr -> trainingRunService.deleteTrainingRun(tr.getId(), true, false));
+            if (!trainingInstance.isLocalEnvironment() && trainingInstance.getPoolId() != null) {
                 sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-                deleteBashCommandsFromPool(trainingInstance.getPoolId());
+                deleteBashCommandsByPool(trainingInstance.getPoolId());
             }
         } else if (!trainingInstanceService.checkIfInstanceIsFinished(trainingInstanceId) && trainingRunService.existsAnyForTrainingInstance(trainingInstanceId)) {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", Long.class, trainingInstanceId,
@@ -239,15 +239,24 @@ public class TrainingInstanceFacade {
                     "First, you must unassign pool id from training instance then try it again."));
             // not possible to delete training instance with associated pool
         }
+        if (trainingInstance.isLocalEnvironment()) {
+            deleteBashCommandsByAccessToken(trainingInstance.getAccessToken());
+        }
         trainingInstanceService.delete(trainingInstance);
         elasticsearchServiceApi.deleteEventsByTrainingInstanceId(trainingInstance.getId());
     }
 
-    private void deleteBashCommandsFromPool(Long poolId) {
+    private void deleteBashCommandsByPool(Long poolId) {
         try {
-            elasticsearchServiceApi.deleteBashCommandsFromPool(poolId);
+            elasticsearchServiceApi.deleteCommandsByPool(poolId);
         } catch (MicroserviceApiException ignored) {
         }
+    }
+
+    private void deleteBashCommandsByAccessToken(String accessToken){
+        try {
+            elasticsearchServiceApi.deleteCommandsByAccessToken(accessToken);
+        } catch (MicroserviceApiException ignored){ }
     }
 
     /**
@@ -292,7 +301,7 @@ public class TrainingInstanceFacade {
         }
         // unlock previously assigned pool
         sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-        deleteBashCommandsFromPool(trainingInstance.getPoolId());
+        deleteBashCommandsByPool(trainingInstance.getPoolId());
 
         trainingInstance.setPoolId(null);
         return trainingInstanceMapper.mapEntityToTIBasicInfo(trainingInstanceService.auditAndSave(trainingInstance));

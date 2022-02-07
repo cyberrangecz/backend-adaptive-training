@@ -13,6 +13,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
@@ -32,6 +33,7 @@ import cz.muni.ics.kypo.training.adaptive.utils.Sort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +52,9 @@ import java.util.stream.Collectors;
 public class TrainingRunFacade {
 
     private static final Logger LOG = LoggerFactory.getLogger(TrainingRunFacade.class);
+
+    @Value("${central.syslog.ip:127.0.0.1}")
+    private String centralSyslogIp;
 
     private final TrainingRunService trainingRunService;
     private final UserManagementServiceApi userManagementServiceApi;
@@ -122,7 +127,7 @@ public class TrainingRunFacade {
     @IsOrganizerOrAdmin
     @TransactionalWO
     public void deleteTrainingRuns(List<Long> trainingRunIds, boolean forceDelete) {
-        trainingRunIds.forEach(trainingRunId -> trainingRunService.deleteTrainingRun(trainingRunId, forceDelete));
+        trainingRunIds.forEach(trainingRunId -> trainingRunService.deleteTrainingRun(trainingRunId, forceDelete, true));
     }
 
     /**
@@ -134,7 +139,7 @@ public class TrainingRunFacade {
     @IsOrganizerOrAdmin
     @TransactionalWO
     public void deleteTrainingRun(Long trainingRunId, boolean forceDelete) {
-        trainingRunService.deleteTrainingRun(trainingRunId, forceDelete);
+        trainingRunService.deleteTrainingRun(trainingRunId, forceDelete, true);
     }
 
     /**
@@ -189,6 +194,7 @@ public class TrainingRunFacade {
             if (!trainingInstance.isLocalEnvironment()) {
                 trainingRunService.assignSandbox(trainingRun, trainingInstance.getPoolId());
             }
+            trainingRunService.auditTrainingRunStarted(trainingRun);
             return convertToAccessTrainingRunDTO(trainingRun);
         } catch (Exception e) {
             // delete/rollback acquisition lock when no training run either sandbox is assigned
@@ -210,7 +216,22 @@ public class TrainingRunFacade {
         if (trainingRun.getCurrentPhase() instanceof TrainingPhase && trainingRun.isSolutionTaken()) {
             accessTrainingRunDTO.setTakenSolution(trainingRun.getCurrentTask().getSolution());
         }
+        if(trainingRun.getCurrentPhase().getClass() == AccessPhase.class) {
+            replacePlaceholders(
+                    (AccessPhaseViewDTO) accessTrainingRunDTO.getCurrentPhase(),
+                    trainingRun.getTrainingInstance().getAccessToken(),
+                    trainingRun.getParticipantRef().getUserRefId()
+            );
+        }
         return accessTrainingRunDTO;
+    }
+
+    private void replacePlaceholders(AccessPhaseViewDTO accessPhaseViewDTO, String accessToken, Long userId) {
+        String localContent = accessPhaseViewDTO.getLocalContent();
+        localContent = localContent.replaceAll("\\$\\{ACCESS_TOKEN\\}", accessToken);
+        localContent = localContent.replaceAll("\\$\\{USER_ID\\}", userId.toString());
+        localContent = localContent.replaceAll("\\$\\{CENTRAL_SYSLOG_IP\\}", centralSyslogIp);
+        accessPhaseViewDTO.setLocalContent(localContent);
     }
 
     private List<BasicPhaseInfoDTO> getInfoAboutPhases(Long definitionId) {
@@ -273,7 +294,15 @@ public class TrainingRunFacade {
     @TransactionalWO
     public AbstractPhaseDTO getNextPhase(Long trainingRunId) {
         TrainingRun trainingRun = trainingRunService.moveToNextPhase(trainingRunId);
-        return getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase(), trainingRun.getCurrentTask());
+        AbstractPhaseDTO abstractPhaseDTO = getCorrectAbstractPhaseDTO(trainingRun.getCurrentPhase(), trainingRun.getCurrentTask());
+        if (abstractPhaseDTO.getClass() == AccessPhaseViewDTO.class) {
+            replacePlaceholders(
+                    (AccessPhaseViewDTO) abstractPhaseDTO,
+                    trainingRun.getTrainingInstance().getAccessToken(),
+                    trainingRun.getParticipantRef().getUserRefId()
+            );
+        }
+        return abstractPhaseDTO;
     }
 
     /**

@@ -21,6 +21,8 @@ public class TrainingRunDataDTO {
     private UserRefDTO trainee;
     @ApiModelProperty(value = "List of the visited phases and tasks in case of training phase during the training run.")
     private List<TrainingRunPathNode> trainingRunPathNodes;
+    @ApiModelProperty(value = "Indicates if local sandboxes are used for training runs.", example = "true")
+    private boolean localEnvironment;
 
     public Long getTrainingRunId() {
         return trainingRunId;
@@ -46,6 +48,14 @@ public class TrainingRunDataDTO {
         this.trainingRunPathNodes = trainingRunPathNodes;
     }
 
+    public boolean isLocalEnvironment() {
+        return localEnvironment;
+    }
+
+    public void setLocalEnvironment(boolean localEnvironment) {
+        this.localEnvironment = localEnvironment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -65,6 +75,7 @@ public class TrainingRunDataDTO {
                 "trainingRunId=" + trainingRunId +
                 ", trainee=" + trainee +
                 ", trainingRunPathNodes=" + trainingRunPathNodes +
+                ", localEnvironment=" + localEnvironment +
                 '}';
     }
 }

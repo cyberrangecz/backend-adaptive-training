@@ -3,9 +3,12 @@ package cz.muni.ics.kypo.training.adaptive.facade;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.AccessPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
@@ -19,6 +22,7 @@ import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -111,18 +115,19 @@ public class VisualizationFacade {
                 .collect(Collectors.toMap(UserRefDTO::getUserRefId, Function.identity()));
 
         TransitionsDataDTO resultData = new TransitionsDataDTO();
-        resultData.setTrainingRunsData(getTrainingRunsData(assignmentsByTrainingRun.entrySet(), trainees));
+        resultData.setTrainingRunsData(getTrainingRunsData(assignmentsByTrainingRun.entrySet(), trainees, trainingInstance.isLocalEnvironment()));
         resultData.setPhases(getAbstractPhasesDTO(abstractPhases));
         return resultData;
     }
 
     private List<TrainingRunDataDTO> getTrainingRunsData(Set<Map.Entry<Long, List<ParticipantTaskAssignment>>> assignmentsEntries,
-                                                         Map<Long, UserRefDTO> trainees) {
+                                                         Map<Long, UserRefDTO> trainees, boolean localEnvironment) {
         return assignmentsEntries.stream().map(entry -> {
             TrainingRunDataDTO trainingRunDataDTO = new TrainingRunDataDTO();
             trainingRunDataDTO.setTrainingRunId(entry.getKey());
             trainingRunDataDTO.setTrainee(trainees.get(entry.getValue().get(0).getTrainingRun().getParticipantRef().getUserRefId()));
             trainingRunDataDTO.setTrainingRunPathNodes(getPathNodes(entry.getValue()));
+            trainingRunDataDTO.setLocalEnvironment(localEnvironment);
             return trainingRunDataDTO;
         }).collect(Collectors.toList());
     }

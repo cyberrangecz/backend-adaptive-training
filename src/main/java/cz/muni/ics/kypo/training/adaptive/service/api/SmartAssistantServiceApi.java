@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -41,11 +42,16 @@ public class SmartAssistantServiceApi {
      * @param smartAssistantInput input data for smart assistant to obtain suitable task.
      * @throws MicroserviceApiException error with specific message when calling elasticsearch microservice.
      */
-    public SuitableTaskResponse findSuitableTaskInPhase(AdaptiveSmartAssistantInput smartAssistantInput) {
+    public SuitableTaskResponse findSuitableTaskInPhase(AdaptiveSmartAssistantInput smartAssistantInput, String accessToken, Long userId) {
         try {
             return smartAssistantServiceWebClient
                     .post()
-                    .uri("/adaptive-phases")
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/adaptive-phases")
+                            .queryParam("accessToken", accessToken)
+                            .queryParam("userId", userId)
+                            .build()
+                    )
                     .body(Mono.just(objectMapper.writeValueAsString(smartAssistantInput)), String.class)
                     .retrieve()
                     .bodyToMono(SuitableTaskResponse.class)

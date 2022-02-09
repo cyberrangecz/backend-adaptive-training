@@ -244,9 +244,9 @@ public class TrainingRunService {
         if (nextPhase instanceof TrainingPhase) {
             this.waitToPropagateEvents();
             AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
-            // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
             String accessToken = trainingRun.getTrainingInstance().getAccessToken();
             Long userId = trainingRun.getParticipantRef().getUserRefId();
+            // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
             int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {

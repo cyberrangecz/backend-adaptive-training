@@ -417,5 +417,8 @@ public class TrainingInstanceFacade {
         if (trainingInstance.isLocalEnvironment() && trainingInstance.getPoolId() != null) {
             throw new BadRequestException("The pool cannot be assigned to training instance if the local environment is enabled.");
         }
+        if (!trainingInstance.isLocalEnvironment() && trainingInstance.getSandboxDefinitionId() != null) {
+            throw new BadRequestException("The sandbox definition cannot be set in the training instance if the local environment is disabled.");
+        }
     }
 }

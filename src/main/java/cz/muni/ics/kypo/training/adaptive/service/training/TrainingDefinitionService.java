@@ -467,6 +467,8 @@ public class TrainingDefinitionService {
             questionnairePhaseRepository.delete((QuestionnairePhase) abstractPhase);
         } else if (abstractPhase instanceof InfoPhase) {
             infoPhaseRepository.delete((InfoPhase) abstractPhase);
+        } else if (abstractPhase instanceof AccessPhase) {
+            accessPhaseRepository.delete((AccessPhase) abstractPhase);
         } else {
             trainingPhaseRepository.delete((TrainingPhase) abstractPhase);
         }

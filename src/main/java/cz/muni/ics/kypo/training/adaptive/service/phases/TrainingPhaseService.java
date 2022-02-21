@@ -209,6 +209,10 @@ public class TrainingPhaseService {
         }
         for (int i = currentPhaseOrder; i < trainingPhases.size(); i++) {
             trainingPhases.get(i).getDecisionMatrix().remove(deletedPhaseOrder);
+            //decrease order of each decision matrix row by 1  in the phases following the deleted phase
+            for (int r = currentPhaseOrder; r < trainingPhases.get(i).getDecisionMatrix().size(); r++) {
+                trainingPhases.get(i).getDecisionMatrix().get(r).decrementOrder(1);
+            }
         }
     }
 

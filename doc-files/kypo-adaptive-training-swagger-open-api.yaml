@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 1.0.46"
+  version: "Version: 1.1.0"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2093,6 +2093,47 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /training-runs/{runId}/is-correct-passkey:
+    post:
+      tags:
+      - "Training runs"
+      summary: "Check passkey of access phase"
+      description: "Current phase of given training run must be acess phase"
+      operationId: "isCorrectPasskey"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - in: "body"
+        name: "body"
+        description: "Submitted passkey"
+        required: true
+        schema:
+          $ref: "#/definitions/ValidatePasskeyDTO"
+      responses:
+        200:
+          description: "The passkey has been checked."
+          schema:
+            type: "boolean"
+        400:
+          description: "Current phase is not training phase and does not have answer."
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
   /training-runs/{runId}/next-phases:
     get:
       tags:
@@ -2392,8 +2433,8 @@ definitions:
         - "QUESTIONNAIRE"
         - "INFO"
         - "TRAINING"
-    description: "Abstract superclass for classes TrainingPhaseDTO, InfoPhaseDTO and\
-      \ QuestionnairePhaseDTO"
+    description: "Abstract superclass for classes TrainingPhaseDTO, AccessPhaseDTO,\
+      \ InfoPhaseDTO and QuestionnairePhaseDTO"
   AbstractPhaseExportDTO:
     type: "object"
     properties:
@@ -2409,13 +2450,14 @@ definitions:
         - "QUESTIONNAIRE"
         - "INFO"
         - "TRAINING"
+        - "ACCESS"
       order:
         type: "integer"
         format: "int32"
         example: 2
         description: "Order of phase, starts with 0"
-    description: "Superclass for classes TrainingPhaseExportDTO, InfoPhaseExportDTO\
-      \ and QuestionnairePhaseExportDTO"
+    description: "Superclass for classes TrainingPhaseExportDTO, AccessPhaseExportDTO,\
+      \ InfoPhaseExportDTO and QuestionnairePhaseExportDTO"
   AbstractPhaseImportDTO:
     type: "object"
     required:
@@ -2436,6 +2478,7 @@ definitions:
         - "QUESTIONNAIRE"
         - "INFO"
         - "TRAINING"
+        - "ACCESS"
       order:
         type: "integer"
         format: "int32"
@@ -2470,8 +2513,8 @@ definitions:
         - "QUESTIONNAIRE"
         - "INFO"
         - "TRAINING"
-    description: "Abstract superclass for classes TrainingPhaseUpdateDTO, InfoPhaseUpdateDTO\
-      \ and QuestionnaireUpdateDTO"
+    description: "Abstract superclass for classes TrainingPhaseUpdateDTO, AccessPhaseUpdateDTO,\
+      \ InfoPhaseUpdateDTO and QuestionnaireUpdateDTO"
   AbstractQuestionDTO:
     type: "object"
     required:
@@ -2503,6 +2546,93 @@ definitions:
         description: "Choices that are distributed with the question"
         items:
           $ref: "#/definitions/QuestionChoiceDTO"
+  AccessPhaseDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractLevelDTO"
+    - type: "object"
+      properties:
+        passkey:
+          type: "string"
+          example: "secretAnswer"
+          description: "Keyword found in training, used for access next level."
+        cloudContent:
+          type: "string"
+          example: "Connect using SSH config."
+          description: "The instructions on how to connect to the machine in cloud\
+            \ environment."
+        localContent:
+          type: "string"
+          example: "Use vagrant SSH connection."
+          description: "The instructions on how to connect to the machine in local\
+            \ (non-cloud) environment."
+      description: "A level containing instructions on how to connect to the virtual\
+        \ machines."
+  AccessPhaseExportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseExportDTO"
+    - type: "object"
+      properties:
+        passkey:
+          type: "string"
+          example: "secretAnswer"
+          description: "Keyword used for access next level."
+        cloudContent:
+          type: "string"
+          example: "Connect using SSH config."
+          description: "The instructions on how to connect to the machine in cloud\
+            \ environment."
+        localContent:
+          type: "string"
+          example: "Use vagrant SSH connection."
+          description: "The instructions on how to connect to the machine in local\
+            \ (non-cloud) environment."
+      description: "Exported access phase."
+  AccessPhaseImportDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImportDTO"
+    - type: "object"
+      properties:
+        passkey:
+          type: "string"
+          example: "secretAnswer"
+          description: "Keyword used for access next level."
+          minLength: 0
+          maxLength: 50
+        cloudContent:
+          type: "string"
+          example: "Connect using SSH config."
+          description: "The instructions on how to connect to the machine in cloud\
+            \ environment."
+        localContent:
+          type: "string"
+          example: "Use vagrant SSH connection."
+          description: "The instructions on how to connect to the machine in local\
+            \ (non-cloud) environment."
+      description: "Imported access phase."
+  AccessPhaseUpdateDTO:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseUpdateDTO"
+    - type: "object"
+      required:
+      - "passkey"
+      properties:
+        passkey:
+          type: "string"
+          example: "secretAnswer"
+          description: "Keyword found in training, used for access next level."
+          minLength: 0
+          maxLength: 50
+        cloudContent:
+          type: "string"
+          example: "Connect using SSH config."
+          description: "The instructions on how to connect to the machine in cloud\
+            \ environment."
+        localContent:
+          type: "string"
+          example: "Use vagrant SSH connection."
+          description: "The instructions on how to connect to the machine in local\
+            \ (non-cloud) environment."
+      description: "Access level to update."
   AccessTrainingRunDTO:
     type: "object"
     properties:
@@ -2542,6 +2672,16 @@ definitions:
         type: "string"
         example: "solution of the task"
         description: "Content of the taken solution of the current training phase."
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
+      sandboxDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 2
+        description: "Main identifier of sandbox definition which is assigned to training\
+          \ instance of the training run."
     description: "Just accessed training run."
   AccessedTrainingRunDTO:
     type: "object"
@@ -2753,6 +2893,7 @@ definitions:
         - "QUESTIONNAIRE"
         - "INFO"
         - "TRAINING"
+        - "ACCESS"
     description: "Basic information about the phase and its type."
   DecisionMatrixRowDTO:
     type: "object"
@@ -4230,6 +4371,10 @@ definitions:
         items:
           type: "integer"
           format: "int64"
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
     description: "The finished and archived instance of training definition which\
       \ includes individual finished training runs of participants."
   TrainingInstanceAssignPoolIdDTO:
@@ -4277,6 +4422,15 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox pool belonging to training instance"
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
+      sandboxDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox definition assigned to training instance"
   TrainingInstanceCreateDTO:
     type: "object"
     required:
@@ -4295,6 +4449,15 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox pool assigned to training instance"
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
+      sandboxDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox definition assigned to training instance"
       startTime:
         type: "string"
         format: "date-time"
@@ -4375,6 +4538,15 @@ definitions:
         type: "string"
         example: "John Doe"
         description: "Name of the user who has done the last edit in instance."
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
+      sandboxDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox definition assigned to training instance"
     description: "A session of attending a concrete training, which involves a deployment\
       \ of the training definition in one or more sandbox instances that are then\
       \ assigned to participants. The instance comprises one or more game runs."
@@ -4424,6 +4596,10 @@ definitions:
         type: "string"
         example: "John Doe"
         description: "Name of the user who has done the last edit in instance."
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
     description: "Information about training instance returned in find all training\
       \ instance response."
   TrainingInstanceRestResource:
@@ -4461,6 +4637,15 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox pool assigned to training instance"
+      localEnvironment:
+        type: "boolean"
+        example: true
+        description: "Indicates if local sandboxes are used for training runs."
+      sandboxDefinitionId:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Id of sandbox definition assigned to training instance"
       title:
         type: "string"
         example: "Current Instance"
@@ -4810,6 +4995,10 @@ definitions:
         items:
           type: "string"
           format: "byte"
+      mail:
+        type: "string"
+        example: "johndoe@mail.muni.cz"
+        description: "Email of the user."
       user_ref_id:
         type: "integer"
         format: "int64"
@@ -4844,3 +5033,12 @@ definitions:
         example: "answer"
         description: "Answer to be validated."
     description: "Encapsulation of the answer submitted in training phase."
+  ValidatePasskeyDTO:
+    type: "object"
+    required:
+    - "passkey"
+    properties:
+      passkey:
+        type: "string"
+        example: "passkey"
+        description: "Passkey to be validated."

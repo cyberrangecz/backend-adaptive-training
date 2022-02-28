@@ -30,7 +30,7 @@ public class TaskService {
 
     public Task createDefaultTask(TrainingPhase trainingPhase) {
         Task task = new Task();
-        task.setTitle("Title of a new task");
+        task.setTitle(trainingPhase.getTitle());
         task.setTrainingPhase(trainingPhase);
         task.setOrder(taskRepository.getCurrentMaxOrder(trainingPhase.getId()) + 1);
         task.setAnswer("Secret flag");

@@ -128,7 +128,7 @@ public class TrainingInstanceFacade {
     @IsOrganizerOrAdmin
     @TransactionalWO
     public String update(TrainingInstanceUpdateDTO trainingInstanceUpdateDTO) {
-        TrainingInstance trainingInstanceToUpdate = trainingInstanceMapper.mapUpdateToEntity(trainingInstanceUpdateDTO);
+        TrainingInstance updatedTrainingInstance = trainingInstanceMapper.mapUpdateToEntity(trainingInstanceUpdateDTO);
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceUpdateDTO.getId());
 
         if (LocalDateTime.now(Clock.systemUTC()).isAfter(trainingInstance.getStartTime()) &&
@@ -136,26 +136,26 @@ public class TrainingInstanceFacade {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", Long.class, trainingInstance.getId(),
                     "The training definition assigned to running training instance cannot be changed."));
         }
-        checkLocalEnvironmentConfiguration(trainingInstanceToUpdate);
-        if (isPoolIdChanged(trainingInstance.getPoolId(), trainingInstanceToUpdate.getPoolId())) {
-            handlePoolIdModification(trainingInstance.getPoolId(), trainingInstanceToUpdate.getPoolId(), trainingInstance);
+        checkLocalEnvironmentConfiguration(updatedTrainingInstance);
+        updatedTrainingInstance.setTrainingDefinition(trainingDefinitionService.findById(trainingInstanceUpdateDTO.getTrainingDefinitionId()));
+        Long oldPoolId = trainingInstance.getPoolId();
+        String accessToken = trainingInstanceService.update(updatedTrainingInstance);
+        if (isPoolIdChanged(oldPoolId, updatedTrainingInstance.getPoolId())) {
+            handlePoolIdModification(oldPoolId, updatedTrainingInstance.getPoolId());
         }
-        trainingInstanceToUpdate.setTrainingDefinition(trainingDefinitionService.findById(trainingInstanceUpdateDTO.getTrainingDefinitionId()));
-        return trainingInstanceService.update(trainingInstanceToUpdate);
+        return accessToken;
     }
 
-    private void handlePoolIdModification(Long currentPoolId, Long newPoolId, TrainingInstance trainingInstance) {
+    private void handlePoolIdModification(Long currentPoolId, Long newPoolId) {
         if (currentPoolId == null) {
             sandboxServiceApi.lockPool(newPoolId);
-            trainingInstance.setPoolId(newPoolId);
         } else if (newPoolId == null) {
-            sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-            deleteBashCommandsByPool(trainingInstance.getPoolId());
+            sandboxServiceApi.unlockPool(currentPoolId);
+            deleteBashCommandsByPool(currentPoolId);
         } else {
-            sandboxServiceApi.unlockPool(trainingInstance.getPoolId());
-            deleteBashCommandsByPool(trainingInstance.getPoolId());
+            sandboxServiceApi.unlockPool(currentPoolId);
+            deleteBashCommandsByPool(currentPoolId);
             sandboxServiceApi.lockPool(newPoolId);
-            trainingInstance.setPoolId(newPoolId);
         }
     }
 
@@ -178,7 +178,7 @@ public class TrainingInstanceFacade {
         trainingInstance.setId(null);
         TrainingInstance createdTrainingInstance = trainingInstanceService.create(trainingInstance);
         if (trainingInstance.getPoolId() != null) {
-            handlePoolIdModification(null, trainingInstance.getPoolId(), trainingInstance);
+            handlePoolIdModification(null, trainingInstance.getPoolId());
         }
         return trainingInstanceMapper.mapToDTO(createdTrainingInstance);
     }

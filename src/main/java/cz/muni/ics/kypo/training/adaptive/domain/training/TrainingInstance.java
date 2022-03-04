@@ -4,6 +4,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.HashSet;
@@ -343,6 +344,19 @@ public class TrainingInstance implements Serializable {
     public void setSandboxDefinitionId(Long sandboxDefinitionId) {
         this.sandboxDefinitionId = sandboxDefinitionId;
     }
+
+    public boolean running() {
+        return LocalDateTime.now(Clock.systemUTC()).isAfter(this.startTime) && LocalDateTime.now().isBefore(this.endTime);
+    }
+
+    public boolean finished() {
+        return LocalDateTime.now(Clock.systemUTC()).isAfter(this.endTime);
+    }
+
+    public boolean notStarted() {
+        return LocalDateTime.now(Clock.systemUTC()).isBefore(this.startTime);
+    }
+
 
     @Override
     public int hashCode() {

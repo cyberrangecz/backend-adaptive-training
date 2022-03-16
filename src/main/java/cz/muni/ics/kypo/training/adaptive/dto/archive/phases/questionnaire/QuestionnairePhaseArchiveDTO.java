@@ -26,7 +26,7 @@ public class QuestionnairePhaseArchiveDTO extends AbstractPhaseArchiveDTO {
     @ApiModelProperty(value = "Type of questionnaire phase", allowableValues = "ADAPTIVE,GENERAL", example = "ADAPTIVE")
     private QuestionnaireType questionnaireType;
     @ApiModelProperty(value = "List of relations between questions and a training phase")
-    private List<QuestionPhaseRelationDTO> phaseRelations;
+    private List<QuestionPhaseRelationArchiveDTO> phaseRelations;
 
     public List<QuestionDTO> getQuestions() {
         return questions;
@@ -44,11 +44,11 @@ public class QuestionnairePhaseArchiveDTO extends AbstractPhaseArchiveDTO {
         this.questionnaireType = questionnaireType;
     }
 
-    public List<QuestionPhaseRelationDTO> getPhaseRelations() {
+    public List<QuestionPhaseRelationArchiveDTO> getPhaseRelations() {
         return phaseRelations;
     }
 
-    public void setPhaseRelations(List<QuestionPhaseRelationDTO> phaseRelations) {
+    public void setPhaseRelations(List<QuestionPhaseRelationArchiveDTO> phaseRelations) {
         this.phaseRelations = phaseRelations;
     }
 

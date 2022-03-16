@@ -38,6 +38,8 @@ public interface QuestionPhaseRelationMapper extends ParentMapper {
 
     @Mapping(target = "phaseId", source = "relatedTrainingPhase")
     @Mapping(target = "questionIds", source = "questions")
+    @Mapping(target = "phaseOrder", source = "relatedTrainingPhase")
+    @Mapping(target = "questionOrders", source = "questions")
     QuestionPhaseRelationArchiveDTO mapToQuestionPhaseRelationArchiveDTO(QuestionPhaseRelation entity);
 
     List<QuestionPhaseRelation> mapToList(Collection<QuestionPhaseRelationDTO> dtos);

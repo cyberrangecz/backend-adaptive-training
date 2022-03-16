@@ -16,8 +16,12 @@ public class QuestionPhaseRelationArchiveDTO {
     private Integer order;
     @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire")
     private Set<Long> questionIds;
+    @ApiModelProperty(value = "Set of orders of questions related to the specified questionnaire")
+    private Set<Integer> questionOrders;
     @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1")
     private Long phaseId;
+    @ApiModelProperty(value = "Order of training phase to which the questions are related of question", required = true, example = "1")
+    private Integer phaseOrder;
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50")
     private int successRate;
 
@@ -45,6 +49,22 @@ public class QuestionPhaseRelationArchiveDTO {
         this.questionIds = questionIds;
     }
 
+    public Set<Integer> getQuestionOrders() {
+        return questionOrders;
+    }
+
+    public void setQuestionOrders(Set<Integer> questionOrders) {
+        this.questionOrders = questionOrders;
+    }
+
+    public Integer getPhaseOrder() {
+        return phaseOrder;
+    }
+
+    public void setPhaseOrder(Integer phaseOrder) {
+        this.phaseOrder = phaseOrder;
+    }
+
     public Long getPhaseId() {
         return phaseId;
     }
@@ -69,6 +89,8 @@ public class QuestionPhaseRelationArchiveDTO {
                 ", order=" + order +
                 ", questionIds=" + questionIds +
                 ", phaseId=" + phaseId +
+                ", questionOrders=" + questionOrders +
+                ", phaseOrder=" + phaseOrder +
                 ", successRate=" + successRate +
                 '}';
     }

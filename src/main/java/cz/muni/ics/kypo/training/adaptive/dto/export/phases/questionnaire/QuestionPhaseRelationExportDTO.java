@@ -13,9 +13,9 @@ public class QuestionPhaseRelationExportDTO {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")
     private Integer order;
-    @ApiModelProperty(value = "Set of IDs of questions related to the specified questionnaire")
+    @ApiModelProperty(value = "Set of orders of questions related to the specified questionnaire")
     private Set<Integer> questionOrders;
-    @ApiModelProperty(value = "ID of training phase to which the questions are related of question", required = true, example = "1")
+    @ApiModelProperty(value = "Order of training phase to which the questions are related of question", required = true, example = "1")
     private Integer phaseOrder;
     @ApiModelProperty(value = "Percentage that defines whether a player was successful or not ", required = true, example = "50")
     private int successRate;

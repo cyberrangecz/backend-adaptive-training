@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.AbstractPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import io.swagger.annotations.ApiModel;
@@ -19,6 +20,7 @@ import java.util.List;
         value = "ImportTrainingDefinitionDTO",
         description = "A basic information about hint."
 )
+@JsonIgnoreProperties({"id"})
 public class ImportTrainingDefinitionDTO {
 
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")

@@ -6,7 +6,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingDefinitionArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingRunArchiveDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionWithPhasesExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingRunExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
 import org.mapstruct.Mapper;
@@ -20,7 +20,7 @@ import org.mapstruct.ReportingPolicy;
         uses = {UserRefMapper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ExportImportMapper extends ParentMapper {
 
-    TrainingDefinitionWithPhasesExportDTO mapToDTO(TrainingDefinition entity);
+    TrainingDefinitionExportDTO mapToDTO(TrainingDefinition entity);
 
     TrainingDefinition mapToEntity(ImportTrainingDefinitionDTO dto);
 

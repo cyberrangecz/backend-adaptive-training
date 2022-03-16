@@ -12,10 +12,10 @@ import java.util.List;
  * Encapsulates information about training definition and its phase.
  */
 @ApiModel(
-        value = "TrainingDefinitionWithPhasesExportDTO",
+        value = "TrainingDefinitionExportDTO",
         description = "An exported detailed information about training definition which also include individual phase."
 )
-public class TrainingDefinitionWithPhasesExportDTO {
+public class TrainingDefinitionExportDTO {
 
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")
     private String title;
@@ -180,7 +180,7 @@ public class TrainingDefinitionWithPhasesExportDTO {
 
     @Override
     public String toString() {
-        return "TrainingDefinitionWithPhasesExportDTO{" +
+        return "TrainingDefinitionExportDTO{" +
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", state=" + state +

@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @ApiModel(
         value = "QuestionImportDTO"
 )
+@JsonIgnoreProperties({"id"})
 public class QuestionImportDTO {
 
     @ApiModelProperty(value = "The question that will be displayed to a player", required = true, example = "What's the capital of Canada?")

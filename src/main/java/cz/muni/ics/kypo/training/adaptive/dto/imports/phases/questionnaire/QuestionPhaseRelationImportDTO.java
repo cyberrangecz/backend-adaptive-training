@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @ApiModel(
         value = "QuestionPhaseRelationImportDTO"
 )
+@JsonIgnoreProperties({"id", "question_ids" , "phase_id"})
 public class QuestionPhaseRelationImportDTO {
 
     @ApiModelProperty(value = "Order of question", required = true, example = "0")

@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access.AccessPhaseImportDTO;
@@ -35,6 +36,7 @@ import java.util.Objects;
         @JsonSubTypes.Type(value = QuestionnairePhaseImportDTO.class, name = "QUESTIONNAIRE"),
         @JsonSubTypes.Type(value = InfoPhaseImportDTO.class, name = "INFO"),
         @JsonSubTypes.Type(value = AccessPhaseImportDTO.class, name = "ACCESS")})
+@JsonIgnoreProperties({"id"})
 public abstract class AbstractPhaseImportDTO {
 
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training phase description")

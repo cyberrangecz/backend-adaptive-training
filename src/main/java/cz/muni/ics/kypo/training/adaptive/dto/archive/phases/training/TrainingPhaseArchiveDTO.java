@@ -25,7 +25,9 @@ public class TrainingPhaseArchiveDTO extends AbstractPhaseArchiveDTO {
     private int allowedCommands;
     @ApiModelProperty(value = "Maximal number of allowed wrong answers provided by played", required = true, example = "10")
     private int allowedWrongAnswers;
+    @ApiModelProperty(value = "Tasks associated with the training phase", required = true)
     private List<TaskDTO> tasks = new ArrayList<>();
+    @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
     private List<DecisionMatrixRowArchiveDTO> decisionMatrix;
 
     public int getEstimatedDuration() {

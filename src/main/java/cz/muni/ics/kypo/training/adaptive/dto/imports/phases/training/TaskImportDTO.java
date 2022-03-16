@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,6 +13,7 @@ import javax.validation.constraints.*;
         value = "TaskImportDTO",
         description = "Imported task of the training phase."
 )
+@JsonIgnoreProperties({"id"})
 public class TaskImportDTO {
 
     @ApiModelProperty(value = "Short textual description of the phase.", example = "Training phase title")

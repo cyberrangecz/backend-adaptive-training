@@ -1,12 +1,14 @@
 package cz.muni.ics.kypo.training.adaptive.dto.export.phases.training;
 
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.AbstractPhaseExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.technique.MitreTechniqueDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Encapsulates information about training phase. Inherits from {@link AbstractPhaseExportDTO}
@@ -28,6 +30,10 @@ public class TrainingPhaseExportDTO extends AbstractPhaseExportDTO {
     private List<TaskExportDTO> tasks = new ArrayList<>();
     @ApiModelProperty(value = "Decision matrix associated with the training phase", required = true)
     private List<DecisionMatrixRowExportDTO> decisionMatrix;
+    @ApiModelProperty(value = "List of mitre techniques used in the training phase.")
+    private Set<MitreTechniqueDTO> mitreTechniques;
+    @ApiModelProperty(value = "Set of the expected commands to be executed during the training level.")
+    private Set<String> expectedCommands;
 
     public int getEstimatedDuration() {
         return estimatedDuration;
@@ -67,6 +73,22 @@ public class TrainingPhaseExportDTO extends AbstractPhaseExportDTO {
 
     public void setDecisionMatrix(List<DecisionMatrixRowExportDTO> decisionMatrix) {
         this.decisionMatrix = decisionMatrix;
+    }
+
+    public Set<MitreTechniqueDTO> getMitreTechniques() {
+        return mitreTechniques;
+    }
+
+    public void setMitreTechniques(Set<MitreTechniqueDTO> mitreTechniques) {
+        this.mitreTechniques = mitreTechniques;
+    }
+
+    public Set<String> getExpectedCommands() {
+        return expectedCommands;
+    }
+
+    public void setExpectedCommands(Set<String> expectedCommands) {
+        this.expectedCommands = expectedCommands;
     }
 
     @Override

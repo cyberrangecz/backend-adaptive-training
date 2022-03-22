@@ -39,7 +39,13 @@ import java.util.List;
  * The PhaseMapper is an utility class to map items into data transfer objects. It provides the implementation of mappings between Java bean type Phase and
  * DTOs classes. Code is generated during compile time.
  */
-@Mapper(componentModel = "spring", uses = {QuestionMapper.class, TaskMapper.class, DecisionMatrixMapper.class, QuestionPhaseRelationMapper.class},
+@Mapper(componentModel = "spring", uses = {
+        QuestionMapper.class,
+        TaskMapper.class,
+        DecisionMatrixMapper.class,
+        QuestionPhaseRelationMapper.class,
+        MitreTechniqueMapper.class
+},
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PhaseMapper extends ParentMapper {
     TaskMapper TASK_MAPPER = Mappers.getMapper(TaskMapper.class);
@@ -108,10 +114,22 @@ public interface PhaseMapper extends ParentMapper {
     }
 
     @Mapping(target = "phaseType", constant = "TRAINING")
+    @Mapping(source = "mitreTechniques", target = "mitreTechniques", qualifiedByName = "ignoreIds")
     TrainingPhaseExportDTO mapToTrainingPhaseExportDTO(TrainingPhase entity);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
+    @Mapping(source = "mitreTechniques", target = "mitreTechniques", qualifiedByName = "ignoreIds")
     TrainingPhaseArchiveDTO mapToTrainingPhaseArchiveDTO(TrainingPhase entity);
+
+    default String mapExpectedCommandToString(ExpectedCommand entity) {
+        return entity.getCommand();
+    }
+
+    default ExpectedCommand mapStringToExpectedCommand(String command) {
+        ExpectedCommand expectedCommand = new ExpectedCommand();
+        expectedCommand.setCommand(command);
+        return expectedCommand;
+    }
 
     // ACCESS PHASE
     AccessPhase mapToEntity(AccessPhaseDTO dto);

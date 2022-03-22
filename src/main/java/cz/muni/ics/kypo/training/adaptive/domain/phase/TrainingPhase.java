@@ -4,7 +4,9 @@ import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionPhaseRe
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "training_phase")
@@ -40,6 +42,19 @@ public class TrainingPhase extends AbstractPhase {
             fetch = FetchType.LAZY
     )
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "training_level_mitre_technique",
+            joinColumns = { @JoinColumn(name = "training_level_id") },
+            inverseJoinColumns = { @JoinColumn(name = "mitre_technique_id")}
+    )
+    private Set<MitreTechnique> mitreTechniques = new HashSet<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "expected_commands",
+            joinColumns = @JoinColumn(name = "training_level_id")
+    )
+    private Set<ExpectedCommand> expectedCommands;
 
     public int getEstimatedDuration() {
         return estimatedDuration;
@@ -89,6 +104,31 @@ public class TrainingPhase extends AbstractPhase {
         this.questionPhaseRelations = questionPhaseRelations;
     }
 
+    public Set<MitreTechnique> getMitreTechniques() {
+        return mitreTechniques;
+    }
+
+    public void setMitreTechniques(Set<MitreTechnique> mitreTechniques) {
+        this.mitreTechniques = mitreTechniques;
+    }
+
+    public void addMitreTechnique(MitreTechnique mitreTechnique) {
+        this.mitreTechniques.add(mitreTechnique);
+        mitreTechnique.addTrainingPhase(this);
+    }
+
+    public void removeMitreTechnique(MitreTechnique mitreTechnique) {
+        this.mitreTechniques.remove(mitreTechnique);
+        mitreTechnique.addTrainingPhase(this);
+    }
+
+    public Set<ExpectedCommand> getExpectedCommands() {
+        return expectedCommands;
+    }
+
+    public void setExpectedCommands(Set<ExpectedCommand> expectedCommands) {
+        this.expectedCommands = expectedCommands;
+    }
 
     @Override
     public String toString() {

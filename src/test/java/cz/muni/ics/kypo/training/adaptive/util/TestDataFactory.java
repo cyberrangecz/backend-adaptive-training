@@ -33,6 +33,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.training.DecisionMatrixRowDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.technique.MitreTechniqueDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionCreateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionDTO;
@@ -120,6 +121,12 @@ public class TestDataFactory {
 
     private BasicPhaseInfoDTO basicTrainingPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Game phase info", PhaseType.TRAINING);
     private BasicPhaseInfoDTO basicInfoPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Info phase info", PhaseType.INFO);
+
+    private MitreTechnique mitreTechnique1 = generateMitreTechnique("T1548.002");
+    private MitreTechnique mitreTechnique2 = generateMitreTechnique("T2451.004");
+
+    private MitreTechniqueDTO mitreTechniqueDTO1 = generateMitreTechniqueDTO("T3548.003");
+    private MitreTechniqueDTO mitreTechniqueDTO2 = generateMitreTechniqueDTO("T5791.011");
 
     private AccessToken accessToken1 = generateAccessToken("test-0000");
     private AccessToken accessToken2 = generateAccessToken("token-9999");
@@ -321,6 +328,22 @@ public class TestDataFactory {
 
     public AccessPhase getAccessPhase(){
         return clone(accessPhase , AccessPhase.class);
+    }
+
+    public MitreTechnique getMitreTechnique1(){
+        return clone(mitreTechnique1, MitreTechnique.class);
+    }
+
+    public MitreTechnique getMitreTechnique2(){
+        return clone(mitreTechnique2, MitreTechnique.class);
+    }
+
+    public MitreTechniqueDTO getMitreTechniqueDTO1(){
+        return clone(mitreTechniqueDTO1, MitreTechniqueDTO.class);
+    }
+
+    public MitreTechniqueDTO getMitreTechniqueDTO2(){
+        return clone(mitreTechniqueDTO2, MitreTechniqueDTO.class);
     }
 
     public AccessToken getAccessToken1(){
@@ -565,6 +588,18 @@ public class TestDataFactory {
         questionChoiceDTO.setOrder(order);
         questionChoiceDTO.setCorrect(correct);
         return questionChoiceDTO;
+    }
+
+    private MitreTechnique generateMitreTechnique(String techniqueKey){
+        MitreTechnique newMitreTechnique = new MitreTechnique();
+        newMitreTechnique.setTechniqueKey(techniqueKey);
+        return newMitreTechnique;
+    }
+
+    private MitreTechniqueDTO generateMitreTechniqueDTO(String techniqueKey){
+        MitreTechniqueDTO mitreTechniqueDTO = new MitreTechniqueDTO();
+        mitreTechniqueDTO.setTechniqueKey(techniqueKey);
+        return mitreTechniqueDTO;
     }
 
     private AccessToken generateAccessToken(String accessToken){

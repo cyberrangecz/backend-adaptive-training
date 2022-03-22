@@ -2,12 +2,14 @@ package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.AbstractQuestionDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.technique.MitreTechniqueDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @ApiModel(
         value = "TrainingPhaseDTO"
@@ -26,6 +28,10 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
     private List<DecisionMatrixRowDTO> decisionMatrix;
     @ApiModelProperty(value = "Questions related to the training phase.", required = true)
     private List<AbstractQuestionDTO> relatedQuestions;
+    @ApiModelProperty(value = "List of mitre techniques used in the training level.")
+    private List<MitreTechniqueDTO> mitreTechniques;
+    @ApiModelProperty(value = "Set of the expected commands to be executed during the training level.")
+    private Set<String> expectedCommands;
 
     public int getEstimatedDuration() {
         return estimatedDuration;
@@ -73,6 +79,22 @@ public class TrainingPhaseDTO extends AbstractPhaseDTO {
 
     public void setRelatedQuestions(List<AbstractQuestionDTO> relatedQuestions) {
         this.relatedQuestions = relatedQuestions;
+    }
+
+    public List<MitreTechniqueDTO> getMitreTechniques() {
+        return mitreTechniques;
+    }
+
+    public void setMitreTechniques(List<MitreTechniqueDTO> mitreTechniques) {
+        this.mitreTechniques = mitreTechniques;
+    }
+
+    public Set<String> getExpectedCommands() {
+        return expectedCommands;
+    }
+
+    public void setExpectedCommands(Set<String> expectedCommands) {
+        this.expectedCommands = expectedCommands;
     }
 
     @Override

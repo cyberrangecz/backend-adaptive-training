@@ -1,6 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto.training;
 
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.technique.MitreTechniqueDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @ApiModel(
         value = "TrainingPhaseUpdateDTO",
@@ -36,6 +38,11 @@ public class TrainingPhaseUpdateDTO extends AbstractPhaseUpdateDTO {
     @ApiModelProperty(value = "Tasks associated with the training phase", required = true, position = 5)
     @Valid
     private List<TaskUpdateDTO> tasks;
+    @Valid
+    @ApiModelProperty(value = "List of mitre techniques used in the training level.")
+    private List<MitreTechniqueDTO> mitreTechniques;
+    @ApiModelProperty(value = "Set of the expected commands to be executed during the training level.")
+    private Set<String> expectedCommands;
 
     public Integer getAllowedWrongAnswers() {
         return allowedWrongAnswers;
@@ -75,6 +82,22 @@ public class TrainingPhaseUpdateDTO extends AbstractPhaseUpdateDTO {
 
     public void setTasks(List<TaskUpdateDTO> tasks) {
         this.tasks = tasks;
+    }
+
+    public List<MitreTechniqueDTO> getMitreTechniques() {
+        return mitreTechniques;
+    }
+
+    public void setMitreTechniques(List<MitreTechniqueDTO> mitreTechniques) {
+        this.mitreTechniques = mitreTechniques;
+    }
+
+    public Set<String> getExpectedCommands() {
+        return expectedCommands;
+    }
+
+    public void setExpectedCommands(Set<String> expectedCommands) {
+        this.expectedCommands = expectedCommands;
     }
 
     @Override

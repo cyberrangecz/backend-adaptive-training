@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.URIPath;
 import cz.muni.ics.kypo.training.adaptive.controller.VisualizationRestController;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
+import cz.muni.ics.kypo.training.adaptive.dto.training.technique.MitreTechniqueDTO;
 import cz.muni.ics.kypo.training.adaptive.integration.config.RestConfigTest;
 import cz.muni.ics.kypo.training.adaptive.controller.PhasesController;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
@@ -31,6 +33,7 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionnairePhaseRe
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.util.TestDataFactory;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -55,11 +58,12 @@ import static cz.muni.ics.kypo.training.adaptive.util.ObjectConverter.convertJso
 import static cz.muni.ics.kypo.training.adaptive.util.ObjectConverter.convertObjectToJson;
 import static cz.muni.ics.kypo.training.adaptive.util.TestDataFactory.CORRECT_QUESTION_CHOICE;
 import static cz.muni.ics.kypo.training.adaptive.util.TestDataFactory.WRONG_QUESTION_CHOICE;
+import static org.apache.logging.log4j.ThreadContext.isEmpty;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.isNotNull;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -100,6 +104,8 @@ class PhasesControllerIT {
     private QuestionnairePhase questionnairePhase;
     private InfoPhase infoPhase;
     private UserRefDTO designer;
+    private MitreTechnique mitreTechnique1, mitreTechnique2;
+    private MitreTechniqueDTO mitreTechniqueDTO1, mitreTechniqueDTO2;
 
     @BeforeEach
     public void init() {
@@ -123,6 +129,11 @@ class PhasesControllerIT {
         infoPhase = testDataFactory.getInfoPhase1();
         infoPhase.setOrder(0);
         infoPhase.setTrainingDefinition(trainingDefinition);
+
+        mitreTechnique1 = testDataFactory.getMitreTechnique1();
+        mitreTechnique2 = testDataFactory.getMitreTechnique2();
+        mitreTechniqueDTO1 = testDataFactory.getMitreTechniqueDTO1();
+        mitreTechniqueDTO2 = testDataFactory.getMitreTechniqueDTO2();
 
         entityManager.persist(trainingDefinition);
         doReturn(designer).when(userManagementServiceApi).getUserRefDTO();
@@ -348,6 +359,85 @@ class PhasesControllerIT {
         assertThat(updatedTrainingPhase.getDecisionMatrix().get(0).getSolutionDisplayed(), is(updatedDecisionMatrixRow.getSolutionDisplayed()));
         assertThat(updatedTrainingPhase.getDecisionMatrix().get(0).getWrongAnswers(), is(updatedDecisionMatrixRow.getWrongAnswers()));
         assertThat(updatedTrainingPhase.getDecisionMatrix().get(0).getOrder(), is(0));
+    }
+
+    @Test
+    public void updateTrainingPhaseAddNewMitreTechniques() throws Exception {
+        entityManager.persist(trainingDefinition);
+        entityManager.persist(trainingPhase);
+        trainingPhase.setTrainingDefinition(trainingDefinition);
+
+        TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = testDataFactory.getTrainingPhaseUpdateDTO();
+        trainingPhaseUpdateDTO.setId(trainingPhase.getId());
+        trainingPhaseUpdateDTO.setMitreTechniques(List.of(mitreTechniqueDTO1, mitreTechniqueDTO2));
+        final DecisionMatrixRowDTO updatedDecisionMatrixRow = testDataFactory.getDecisionMatrixRowDTO1();
+        trainingPhaseUpdateDTO.setDecisionMatrix(List.of(updatedDecisionMatrixRow));
+
+        mvc.perform(put(URIPath.PHASES_ID_TRAINING.getUri(), trainingDefinition.getId(), trainingPhase.getId())
+                .content(convertObjectToJson(trainingPhaseUpdateDTO))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andReturn().getResponse();
+        Optional<TrainingPhase> updatedTrainingPhase = trainingPhaseRepository.findById(trainingPhase.getId());
+        assertThat(updatedTrainingPhase.isPresent(), is(true));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), hasSize(2));
+    }
+
+    @Test
+    public void updateTrainingPhaseUpdateMitreTechniques() throws Exception {
+        entityManager.persist(trainingDefinition);
+        trainingPhase.addMitreTechnique(mitreTechnique1);
+        trainingPhase.addMitreTechnique(mitreTechnique2);
+        entityManager.persist(trainingPhase);
+        trainingPhase.setTrainingDefinition(trainingDefinition);
+
+        TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = testDataFactory.getTrainingPhaseUpdateDTO();
+        trainingPhaseUpdateDTO.setId(trainingPhase.getId());
+
+        MitreTechniqueDTO mitreTechniqueDTO = new MitreTechniqueDTO();
+        mitreTechniqueDTO.setId(mitreTechnique1.getId());
+        mitreTechniqueDTO.setTechniqueKey(mitreTechnique1.getTechniqueKey());
+        trainingPhaseUpdateDTO.setMitreTechniques(List.of(mitreTechniqueDTO1, mitreTechniqueDTO2, mitreTechniqueDTO));
+        final DecisionMatrixRowDTO updatedDecisionMatrixRow = testDataFactory.getDecisionMatrixRowDTO1();
+        trainingPhaseUpdateDTO.setDecisionMatrix(List.of(updatedDecisionMatrixRow));
+
+        mvc.perform(put(URIPath.PHASES_ID_TRAINING.getUri(), trainingDefinition.getId(), trainingPhase.getId())
+                .content(convertObjectToJson(trainingPhaseUpdateDTO))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        Optional<TrainingPhase> updatedTrainingPhase = trainingPhaseRepository.findById(trainingPhase.getId());
+        assertThat(updatedTrainingPhase.isPresent(), is(true));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), hasSize(3));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), not(contains(mitreTechnique2)));
+        assertThat(mitreTechnique2.getTrainingPhases(), empty());
+    }
+
+    @Test
+    public void updateTrainingPhaseRemoveAllMitreTechniques() throws Exception {
+        entityManager.persist(trainingDefinition);
+        trainingPhase.addMitreTechnique(mitreTechnique1);
+        trainingPhase.addMitreTechnique(mitreTechnique2);
+        entityManager.persist(trainingPhase);
+        trainingPhase.setTrainingDefinition(trainingDefinition);
+
+        TrainingPhaseUpdateDTO trainingPhaseUpdateDTO = testDataFactory.getTrainingPhaseUpdateDTO();
+        trainingPhaseUpdateDTO.setId(trainingPhase.getId());
+        final DecisionMatrixRowDTO updatedDecisionMatrixRow = testDataFactory.getDecisionMatrixRowDTO1();
+        trainingPhaseUpdateDTO.setDecisionMatrix(List.of(updatedDecisionMatrixRow));
+
+        mvc.perform(put(URIPath.PHASES_ID_TRAINING.getUri(), trainingDefinition.getId(), trainingPhase.getId())
+                .content(convertObjectToJson(trainingPhaseUpdateDTO))
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk());
+
+        Optional<TrainingPhase> updatedTrainingPhase = trainingPhaseRepository.findById(trainingPhase.getId());
+        assertThat(updatedTrainingPhase.isPresent(), is(true));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), hasSize(0));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), not(contains(mitreTechnique1)));
+        assertThat(updatedTrainingPhase.get().getMitreTechniques(), not(contains(mitreTechnique2)));
+        assertThat(mitreTechnique1.getTrainingPhases(), empty());
+        assertThat(mitreTechnique2.getTrainingPhases(), empty());
     }
 
     @Test

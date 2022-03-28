@@ -1,6 +1,8 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
 
+import com.github.bohnman.squiggly.util.SquigglyUtils;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TransitionsDataDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.errors.ApiError;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * The rest controller for Visualizations.
@@ -106,6 +110,28 @@ public class VisualizationRestController {
             @ApiParam(value = "Training Run ID", required = true) @PathVariable("runId") Long runId
     ) {
         return ResponseEntity.ok(visualizationFacade.getTransitionsGraphForTrainee(runId));
+    }
+
+    /**
+     * Gather all mitre techniques of the training definitions with indication if the definition has been played by user.
+     *
+     * @return summarized mitre techniques from all training definitions
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get summarized mitre techniques.",
+            response = TrainingDefinitionMitreTechniquesDTO[].class,
+            nickname = "getSummarizedMitreTechniques",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Mitre techniques found.", response = TrainingDefinitionMitreTechniquesDTO[].class),
+            @ApiResponse(code = 404, message = "Training instance with given id not found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/training-definitions/mitre-techniques", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getTrainingDefinitionsWithMitreTechniques() {
+        List<TrainingDefinitionMitreTechniquesDTO> trainingDefinitionMitreTechniquesDTOS = visualizationFacade.getTrainingDefinitionsWithMitreTechniques();
+        return ResponseEntity.ok(trainingDefinitionMitreTechniquesDTOS);
     }
 
 }

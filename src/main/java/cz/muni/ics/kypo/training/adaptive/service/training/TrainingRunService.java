@@ -247,7 +247,8 @@ public class TrainingRunService {
             String accessToken = trainingRun.getTrainingInstance().getAccessToken();
             Long userId = trainingRun.getParticipantRef().getUserRefId();
             // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
-            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
+//            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
+            int suitableTask = 1;
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
             trainingRun.setCurrentTask(null);
@@ -649,6 +650,20 @@ public class TrainingRunService {
             auditEventsService.auditPhaseCompletedAction(trainingRun);
         }
         auditEventsService.auditTrainingRunEndedAction(trainingRun);
+    }
+
+    /**
+     * Finds all trainee submissions.
+     *
+     * @param runId the training run id
+     * @param phaseId the training phase id
+     * @return the list of submissions
+     */
+    public List<Submission> findTraineeSubmissions(Long runId, Long phaseId) {
+        if (phaseId != null) {
+            return submissionRepository.findByTrainingRunIdAndPhaseId(runId, phaseId);
+        }
+        return submissionRepository.findByTrainingRunId(runId);
     }
 
     /**

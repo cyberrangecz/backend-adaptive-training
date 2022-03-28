@@ -9,10 +9,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.transactions.Transactional
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
-import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.BasicPhaseInfoDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.*;
 import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
@@ -24,7 +21,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.Actions;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
-import cz.muni.ics.kypo.training.adaptive.mapping.TaskMapper;
+import cz.muni.ics.kypo.training.adaptive.mapping.SubmissionMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
 import cz.muni.ics.kypo.training.adaptive.service.QuestionnaireEvaluationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
@@ -60,7 +57,7 @@ public class TrainingRunFacade {
     private final UserManagementServiceApi userManagementServiceApi;
     private final TrainingRunMapper trainingRunMapper;
     private final PhaseMapper phaseMapper;
-    private final TaskMapper taskMapper;
+    private final SubmissionMapper submissionMapper;
     private final QuestionnaireEvaluationService questionnaireEvaluationService;
 
     /**
@@ -76,13 +73,13 @@ public class TrainingRunFacade {
                              UserManagementServiceApi userManagementServiceApi,
                              TrainingRunMapper trainingRunMapper,
                              PhaseMapper phaseMapper,
-                             TaskMapper taskMapper) {
+                             SubmissionMapper submissionMapper) {
         this.trainingRunService = trainingRunService;
         this.questionnaireEvaluationService = questionnaireEvaluationService;
         this.userManagementServiceApi = userManagementServiceApi;
         this.trainingRunMapper = trainingRunMapper;
         this.phaseMapper = phaseMapper;
-        this.taskMapper = taskMapper;
+        this.submissionMapper = submissionMapper;
     }
 
     /**
@@ -404,6 +401,20 @@ public class TrainingRunFacade {
     public UserRefDTO getParticipant(Long trainingRunId) {
         TrainingRun trainingRun = trainingRunService.findById(trainingRunId);
         return userManagementServiceApi.getUserRefDTOByUserRefId(trainingRun.getParticipantRef().getUserRefId());
+    }
+
+    /**
+     * Retrieve trainees submission.
+     *
+     * @param runId ID of the training run.
+     * @param phaseId ID of the phase to specify subset of submissions.
+     * @return returns submissions of the given training run.
+     */
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isTraineeOfGivenTrainingRun(#runId) or @securityService.isOrganizerOfGivenTrainingRun(#runId)")
+    @TransactionalRO
+    public List<SubmissionDTO> getTraineeSubmissions(Long runId, Long phaseId) {
+        return submissionMapper.mapToSubmissionListDTO(trainingRunService.findTraineeSubmissions(runId, phaseId));
     }
 
     private void addParticipantsToTrainingRunDTOs(List<TrainingRunDTO> trainingRunDTOS) {

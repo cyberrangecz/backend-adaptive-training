@@ -404,7 +404,7 @@ public class TrainingRunFacade {
     }
 
     /**
-     * Retrieve trainees submission.
+     * Retrieve trainees submissions.
      *
      * @param runId ID of the training run.
      * @param phaseId ID of the phase to specify subset of submissions.
@@ -413,8 +413,8 @@ public class TrainingRunFacade {
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
             "or @securityService.isTraineeOfGivenTrainingRun(#runId) or @securityService.isOrganizerOfGivenTrainingRun(#runId)")
     @TransactionalRO
-    public List<SubmissionDTO> getTraineeSubmissions(Long runId, Long phaseId) {
-        return submissionMapper.mapToSubmissionListDTO(trainingRunService.findTraineeSubmissions(runId, phaseId));
+    public List<SubmissionDTO> getTraineesSubmissions(Long runId, Long phaseId) {
+        return submissionMapper.mapToSubmissionListDTO(trainingRunService.findTraineesSubmissions(runId, phaseId));
     }
 
     private void addParticipantsToTrainingRunDTOs(List<TrainingRunDTO> trainingRunDTOS) {

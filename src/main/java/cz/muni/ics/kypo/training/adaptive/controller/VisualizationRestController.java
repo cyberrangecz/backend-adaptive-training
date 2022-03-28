@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * The rest controller for Visualizations.
@@ -132,6 +133,29 @@ public class VisualizationRestController {
     public ResponseEntity<Object> getTrainingDefinitionsWithMitreTechniques() {
         List<TrainingDefinitionMitreTechniquesDTO> trainingDefinitionMitreTechniquesDTOS = visualizationFacade.getTrainingDefinitionsWithMitreTechniques();
         return ResponseEntity.ok(trainingDefinitionMitreTechniquesDTOS);
+    }
+
+    /**
+     * Gather all commands in a training run.
+     *
+     * @param runId id of training run.
+     * @return the list of commands including its timestamp.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get all commands in a training run.",
+            response = List.class,
+            nickname = "getAllCommandsInTrainingRun",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Commands in training run.", response = List.class),
+            @ApiResponse(code = 404, message = "Training run with given id not found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/training-runs/{runId}/commands", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Map<String, Object>>> getAllCommandsInTrainingRun(
+            @ApiParam(value = "Training run ID", required = true) @PathVariable("runId") Long runId) {
+        return ResponseEntity.ok(visualizationFacade.getAllCommandsInTrainingRun(runId));
     }
 
 }

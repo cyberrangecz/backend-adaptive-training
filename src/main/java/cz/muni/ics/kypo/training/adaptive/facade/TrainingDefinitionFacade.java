@@ -166,11 +166,11 @@ public class TrainingDefinitionFacade {
         Long loggedInUserId = userManagementServiceApi.getLoggedInUserRefId();
         if (state == TDState.RELEASED) {
             return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
-                    trainingDefinitionService.findAllForOrganizers(TDState.RELEASED, pageable));
+                    trainingDefinitionService.findAllByState(TDState.RELEASED, pageable));
         } else if (state == TDState.UNRELEASED) {
             if (securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)) {
                 return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
-                        trainingDefinitionService.findAllForOrganizers(TDState.UNRELEASED, pageable));
+                        trainingDefinitionService.findAllByState(TDState.UNRELEASED, pageable));
             } else if (securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_DESIGNER) && securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_ORGANIZER)) {
                 return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
                         trainingDefinitionService.findAllForDesigner(loggedInUserId, pageable));

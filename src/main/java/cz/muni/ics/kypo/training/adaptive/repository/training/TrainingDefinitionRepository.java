@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -65,7 +66,7 @@ public interface TrainingDefinitionRepository
      * @param pageable the pageable
      * @return page of all {@link TrainingDefinition}
      */
-    Page<TrainingDefinition> findAllForOrganizers(@Param("state") TDState state, Pageable pageable);
+    Page<TrainingDefinition> findAllByState(@Param("state") TDState state, Pageable pageable);
 
     /**
      * Find all for designers and organizers unreleased page.
@@ -89,4 +90,13 @@ public interface TrainingDefinitionRepository
 
     @Query("SELECT td FROM Task t INNER JOIN t.trainingPhase tp INNER JOIN tp.trainingDefinition td WHERE t.id = :taskId")
     Optional<TrainingDefinition> findByTaskId(@Param("taskId") Long taskId);
+
+    /**
+     * Find all definition played by user.
+     *
+     * @param userRefId the user ref id
+     * @return the list of training definitions
+     */
+    List<TrainingDefinition> findAllPlayedByUser(@Param("userRefId") Long userRefId);
+
 }

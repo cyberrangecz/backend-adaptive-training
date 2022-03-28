@@ -1,37 +1,37 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
+import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTrainee;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.AccessPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunDataDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunPathNode;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TransitionsDataDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
+import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 public class VisualizationFacade {
 
     private final VisualizationService visualizationService;
+    private final TrainingDefinitionService trainingDefinitionService;
     private final TrainingInstanceService trainingInstanceService;
     private final TrainingRunService trainingRunService;
     private final UserManagementServiceApi userManagementServiceApi;
@@ -48,12 +49,14 @@ public class VisualizationFacade {
     private final PhaseMapper phaseMapper;
 
     public VisualizationFacade(VisualizationService visualizationService,
+                               TrainingDefinitionService trainingDefinitionService,
                                TrainingInstanceService trainingInstanceService,
                                TrainingRunService trainingRunService,
                                UserManagementServiceApi userManagementServiceApi,
                                PhaseService phaseService,
                                PhaseMapper phaseMapper) {
         this.visualizationService = visualizationService;
+        this.trainingDefinitionService = trainingDefinitionService;
         this.trainingInstanceService = trainingInstanceService;
         this.trainingRunService = trainingRunService;
         this.userManagementServiceApi = userManagementServiceApi;
@@ -87,6 +90,39 @@ public class VisualizationFacade {
         removeCorrectnessFromTransitionsDataOfTrainee(transitionsData);
         return transitionsData;
     }
+
+    /**
+     * Gather all summarized data about mitre techniques used in training definitions.
+     *
+     * @return training definitions with mitre techniques
+     */
+    @IsTrainee
+    @TransactionalRO
+    public List<TrainingDefinitionMitreTechniquesDTO> getTrainingDefinitionsWithMitreTechniques() {
+        List<TrainingDefinition> trainingDefinitions = trainingDefinitionService.findAllByState(TDState.RELEASED, PageRequest.of(0, Integer.MAX_VALUE)).getContent();
+        List<TrainingPhase> trainingPhases = visualizationService.getAllTrainingPhases();
+        UserRefDTO userRefDTO = userManagementServiceApi.getUserRefDTO();
+        Set<Long> playedDefinitionIds = trainingDefinitionService.findAllPlayedByUser(userRefDTO.getUserRefId()).stream()
+                .map(TrainingDefinition::getId)
+                .collect(Collectors.toSet());
+
+        List<TrainingDefinitionMitreTechniquesDTO> result = new ArrayList<>();
+
+        for (TrainingDefinition trainingDefinition: trainingDefinitions) {
+            List<TrainingPhase> trainingPhasesOfDefinition = visualizationService.getTrainingPhasesByTrainingDefinitionId(trainingDefinition.getId());
+            TrainingDefinitionMitreTechniquesDTO definitionMitreTechniquesDTO = new TrainingDefinitionMitreTechniquesDTO();
+            definitionMitreTechniquesDTO.setId(trainingDefinition.getId());
+            definitionMitreTechniquesDTO.setTitle(trainingDefinition.getTitle());
+            Set<String> techniques = trainingPhasesOfDefinition.stream()
+                    .flatMap(trainingLevel -> trainingLevel.getMitreTechniques().stream().map(MitreTechnique::getTechniqueKey))
+                    .collect(Collectors.toSet());
+            definitionMitreTechniquesDTO.setMitreTechniques(techniques);
+            definitionMitreTechniquesDTO.setPlayed(playedDefinitionIds.contains(trainingDefinition.getId()));
+            result.add(definitionMitreTechniquesDTO);
+        }
+        return result;
+    }
+
 
     private void removeCorrectnessFromTransitionsDataOfTrainee(TransitionsDataDTO transitionsDataDTO) {
         Map<Long, Long> visitedTasksByPhaseId = transitionsDataDTO.getTrainingRunsData().get(0).getTrainingRunPathNodes().stream()

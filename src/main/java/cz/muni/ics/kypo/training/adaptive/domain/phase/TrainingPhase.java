@@ -44,15 +44,15 @@ public class TrainingPhase extends AbstractPhase {
     private List<QuestionPhaseRelation> questionPhaseRelations = new ArrayList<>();
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE} , fetch = FetchType.LAZY)
     @JoinTable(
-            name = "training_level_mitre_technique",
-            joinColumns = { @JoinColumn(name = "training_level_id") },
+            name = "training_phase_mitre_technique",
+            joinColumns = { @JoinColumn(name = "training_phase_id") },
             inverseJoinColumns = { @JoinColumn(name = "mitre_technique_id")}
     )
     private Set<MitreTechnique> mitreTechniques = new HashSet<>();
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "expected_commands",
-            joinColumns = @JoinColumn(name = "training_level_id")
+            joinColumns = @JoinColumn(name = "training_phase_id")
     )
     private Set<ExpectedCommand> expectedCommands;
 

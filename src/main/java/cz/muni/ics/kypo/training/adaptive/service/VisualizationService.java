@@ -240,5 +240,11 @@ public class VisualizationService {
         return participantTaskAssignmentRepository.findAllByTrainingRun(runId);
     }
 
+    public List<TrainingPhase> getAllTrainingPhases() {
+        return trainingPhaseRepository.findAll();
+    }
 
+    public List<TrainingPhase> getTrainingPhasesByTrainingDefinitionId(Long trainingDefinitionId) {
+        return trainingPhaseRepository.findAllByTrainingDefinitionId(trainingDefinitionId);
+    }
 }

@@ -9,6 +9,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.swagger.ApiPageableSwagger
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.SubmissionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.access.ValidatePasskeyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The rest controller for Training runs.
@@ -453,6 +455,32 @@ public class TrainingRunsRestController {
                                                    @PathVariable("runId") Long runId) {
         trainingRunFacade.archiveTrainingRun(runId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Get trainee submissions.
+     *
+     * @param runId ID of training run for which to get submissions
+     * @param phaseId ID of the phase to specify subset of submissions
+     * @return Submissions submitted during the training run of the trainee.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get trainee submissions.",
+            response = SubmissionDTO[].class,
+            nickname = "getTraineeSubmissions",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The submissions has been found.", response = SubmissionDTO[].class),
+            @ApiResponse(code = 404, message = "The training run has not been found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/{runId}/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getTraineeSubmissions(
+            @ApiParam(value = "Training run ID") @PathVariable Long runId,
+            @ApiParam(value = "Training phase ID.") @RequestParam(required = false) Long phaseId) {
+        List<SubmissionDTO> traineeSubmissions = trainingRunFacade.getTraineeSubmissions(runId, phaseId);
+        return ResponseEntity.ok(SquigglyUtils.stringify(objectMapper, traineeSubmissions));
     }
 
     /**

@@ -34,6 +34,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -218,15 +220,17 @@ public class TrainingRunFacade {
             replacePlaceholders(
                     (AccessPhaseViewDTO) accessTrainingRunDTO.getCurrentPhase(),
                     trainingRun.getTrainingInstance().getAccessToken(),
+                    getBearerToken(),
                     trainingRun.getParticipantRef().getUserRefId()
             );
         }
         return accessTrainingRunDTO;
     }
 
-    private void replacePlaceholders(AccessPhaseViewDTO accessPhaseViewDTO, String accessToken, Long userId) {
+    private void replacePlaceholders(AccessPhaseViewDTO accessPhaseViewDTO, String accessToken, String bearerToken, Long userId) {
         String localContent = accessPhaseViewDTO.getLocalContent();
         localContent = localContent.replaceAll("\\$\\{ACCESS_TOKEN\\}", accessToken);
+        localContent = localContent.replaceAll("\\$\\{BEARER_TOKEN\\}", bearerToken);
         localContent = localContent.replaceAll("\\$\\{USER_ID\\}", userId.toString());
         localContent = localContent.replaceAll("\\$\\{CENTRAL_SYSLOG_IP\\}", centralSyslogIp);
         accessPhaseViewDTO.setLocalContent(localContent);
@@ -297,6 +301,7 @@ public class TrainingRunFacade {
             replacePlaceholders(
                     (AccessPhaseViewDTO) abstractPhaseDTO,
                     trainingRun.getTrainingInstance().getAccessToken(),
+                    getBearerToken(),
                     trainingRun.getParticipantRef().getUserRefId()
             );
         }
@@ -475,5 +480,10 @@ public class TrainingRunFacade {
         } else {
             return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
         }
+    }
+
+    public String getBearerToken() {
+        JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getToken().getTokenValue();
     }
 }

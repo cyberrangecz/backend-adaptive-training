@@ -370,6 +370,9 @@ public class TrainingDefinitionService {
             if (phase instanceof InfoPhase) {
                 cloneInfoPhase((InfoPhase) phase, clonedTrainingDefinition);
             }
+            if (phase instanceof AccessPhase) {
+                cloneAccessPhase((AccessPhase) phase, clonedTrainingDefinition);
+            }
             if (phase instanceof TrainingPhase) {
                 TrainingPhase clonedTrainingPhase = cloneTrainingPhase((TrainingPhase) phase, clonedTrainingDefinition);
                 clonedTrainingPhases.put(phase.getId(), clonedTrainingPhase);
@@ -386,6 +389,12 @@ public class TrainingDefinitionService {
         InfoPhase clonedInfoPhase = cloneMapper.clone(infoPhase);
         clonedInfoPhase.setTrainingDefinition(trainingDefinition);
         infoPhaseRepository.save(clonedInfoPhase);
+    }
+
+    private void cloneAccessPhase(AccessPhase accessPhase, TrainingDefinition trainingDefinition) {
+        AccessPhase clonedAccessPhase = cloneMapper.clone(accessPhase);
+        clonedAccessPhase.setTrainingDefinition(trainingDefinition);
+        accessPhaseRepository.save(clonedAccessPhase);
     }
 
     private TrainingPhase cloneTrainingPhase(TrainingPhase trainingPhase, TrainingDefinition trainingDefinition) {

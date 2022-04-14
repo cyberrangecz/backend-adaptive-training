@@ -11,6 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
@@ -145,9 +146,7 @@ public class VisualizationFacade {
                                                    Supplier<Map<Long, List<ParticipantTaskAssignment>>> getTaskAssignmentFunction) {
         List<AbstractPhase> abstractPhases = phaseService.getPhases(trainingInstance.getTrainingDefinition().getId());
         Map<Long, List<ParticipantTaskAssignment>> assignmentsByTrainingRun = getTaskAssignmentFunction.get();
-        Map<Long, UserRefDTO> trainees = userManagementServiceApi.getUserRefDTOsByUserIds(getTraineeIds(assignmentsByTrainingRun.entrySet()), PageRequest.of(0, 999), null, null)
-                .getContent()
-                .stream()
+        Map<Long, UserRefDTO> trainees = getAllUsersRefsByGivenUsersIds(getTraineeIds(assignmentsByTrainingRun)).stream()
                 .collect(Collectors.toMap(UserRefDTO::getUserRefId, Function.identity()));
 
         TransitionsDataDTO resultData = new TransitionsDataDTO();
@@ -176,10 +175,23 @@ public class VisualizationFacade {
         }).collect(Collectors.toList());
     }
 
-    private Set<Long> getTraineeIds(Set<Map.Entry<Long, List<ParticipantTaskAssignment>>> assignmentsEntries) {
-        return assignmentsEntries.stream()
-                .map(entry -> entry.getValue().get(0).getTrainingRun().getParticipantRef().getUserRefId())
-                .collect(Collectors.toSet());
+    private List<UserRefDTO> getAllUsersRefsByGivenUsersIds(List<Long> participantsRefIds) {
+        List<UserRefDTO> users = new ArrayList<>();
+        PageResultResource<UserRefDTO> usersPageResultResource;
+        int page = 0;
+        do {
+            usersPageResultResource = userManagementServiceApi.getUserRefDTOsByUserIds(participantsRefIds, PageRequest.of(page, 999), null, null);
+            users.addAll(usersPageResultResource.getContent());
+            page++;
+        }
+        while (page != usersPageResultResource.getPagination().getTotalPages());
+        return users;
+    }
+
+    private List<Long> getTraineeIds(Map<Long, List<ParticipantTaskAssignment>> assignmentsByTrainingRun) {
+        return assignmentsByTrainingRun.values().stream()
+                .map(taskAssignments -> taskAssignments.get(0).getTrainingRun().getParticipantRef().getUserRefId())
+                .toList();
     }
 
     private void removeUnnecessaryFields(AbstractPhaseDTO abstractPhaseDTO) {

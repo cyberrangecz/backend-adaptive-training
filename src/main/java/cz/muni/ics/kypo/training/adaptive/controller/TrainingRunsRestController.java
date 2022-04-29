@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * The rest controller for Training runs.
@@ -458,16 +457,16 @@ public class TrainingRunsRestController {
     }
 
     /**
-     * Get trainee submissions.
+     * Get trainees submissions.
      *
      * @param runId ID of training run for which to get submissions
      * @param phaseId ID of the phase to specify subset of submissions
      * @return Submissions submitted during the training run of the trainee.
      */
     @ApiOperation(httpMethod = "GET",
-            value = "Get trainee submissions.",
+            value = "Get trainees submissions.",
             response = SubmissionDTO[].class,
-            nickname = "getTraineeSubmissions",
+            nickname = "getTraineesSubmissions",
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ApiResponses(value = {
@@ -476,10 +475,10 @@ public class TrainingRunsRestController {
             @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
     })
     @GetMapping(path = "/{runId}/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getTraineeSubmissions(
+    public ResponseEntity<Object> getTraineesSubmissions(
             @ApiParam(value = "Training run ID") @PathVariable Long runId,
             @ApiParam(value = "Training phase ID.") @RequestParam(required = false) Long phaseId) {
-        List<SubmissionDTO> traineeSubmissions = trainingRunFacade.getTraineeSubmissions(runId, phaseId);
+        List<SubmissionDTO> traineeSubmissions = trainingRunFacade.getTraineesSubmissions(runId, phaseId);
         return ResponseEntity.ok(SquigglyUtils.stringify(objectMapper, traineeSubmissions));
     }
 

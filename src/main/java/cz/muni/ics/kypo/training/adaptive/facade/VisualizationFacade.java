@@ -124,6 +124,14 @@ public class VisualizationFacade {
         return result;
     }
 
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isOrganizerOfGivenTrainingRun(#runId) " +
+            "or @securityService.isTraineeOfGivenTrainingRun(#runId)")
+    @TransactionalRO
+    public List<Map<String, Object>> getAllCommandsInTrainingRun(Long runId) {
+        return trainingRunService.getCommandsByTrainingRun(runId);
+    }
+
 
     private void removeCorrectnessFromTransitionsDataOfTrainee(TransitionsDataDTO transitionsDataDTO) {
         Map<Long, Long> visitedTasksByPhaseId = transitionsDataDTO.getTrainingRunsData().get(0).getTrainingRunPathNodes().stream()

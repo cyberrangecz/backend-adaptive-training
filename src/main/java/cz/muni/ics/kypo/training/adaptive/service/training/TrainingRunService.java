@@ -658,11 +658,28 @@ public class TrainingRunService {
      * @param phaseId the training phase id
      * @return the list of submissions
      */
-    public List<Submission> findTraineeSubmissions(Long runId, Long phaseId) {
+    public List<Submission> findTraineesSubmissions(Long runId, Long phaseId) {
         if (phaseId != null) {
             return submissionRepository.findByTrainingRunIdAndPhaseId(runId, phaseId);
         }
         return submissionRepository.findByTrainingRunId(runId);
+    }
+
+    /**
+     * Finds all trainees commands executed in sandbox during the training run.
+     *
+     * @param runId the training run id
+     * @return the list of commands
+     */
+    public List<Map<String, Object>> getCommandsByTrainingRun(Long runId) {
+        TrainingRun run = findById(runId);
+        if (run.getTrainingInstance().isLocalEnvironment()) {
+            return elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserId(
+                    run.getTrainingInstance().getAccessToken(),
+                    run.getParticipantRef().getUserRefId());
+        }
+        Long sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+        return elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
     }
 
     /**

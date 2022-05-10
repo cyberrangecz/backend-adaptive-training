@@ -24,9 +24,11 @@ import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.preview.QuestionnairePhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.preview.TrainingPhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import org.mapstruct.*;
@@ -84,6 +86,9 @@ public interface PhaseMapper extends ParentMapper {
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseViewDTO mapToQuestionnairePhaseViewDTO(QuestionnairePhase entity);
 
+    @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
+    QuestionnairePhasePreviewDTO mapToQuestionnairePhasePreviewDTO(QuestionnairePhase entity);
+
     @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseArchiveDTO mapToQuestionnairePhaseArchiveDTO(QuestionnairePhase entity);
@@ -111,6 +116,14 @@ public interface PhaseMapper extends ParentMapper {
     @AfterMapping
     default void setTaskViewDTO(@MappingTarget TrainingPhaseViewDTO target, @Context Task taskEntity) {
         target.setTask(TASK_MAPPER.mapToTaskViewDTO(taskEntity));
+    }
+
+    @Mapping(target = "phaseType", constant = "TRAINING")
+    TrainingPhasePreviewDTO mapToTrainingPhasePreviewDTO(TrainingPhase entity, @Context Task taskEntity);
+
+    @AfterMapping
+    default void setTaskPreviewDTO(@MappingTarget TrainingPhasePreviewDTO target, @Context Task taskEntity) {
+        target.setTask(TASK_MAPPER.mapToTaskPreviewDTO(taskEntity));
     }
 
     @Mapping(target = "phaseType", constant = "TRAINING")

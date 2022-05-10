@@ -7,19 +7,23 @@ import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTraineeOrAdmin;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.*;
 import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionAnswerDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.preview.QuestionnairePhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
+import cz.muni.ics.kypo.training.adaptive.dto.training.preview.TrainingPhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.AccessedTrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingrun.TrainingRunDTO;
 import cz.muni.ics.kypo.training.adaptive.enums.Actions;
 import cz.muni.ics.kypo.training.adaptive.enums.PhaseType;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.SubmissionMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.TrainingRunMapper;
@@ -212,6 +216,7 @@ public class TrainingRunFacade {
         accessTrainingRunDTO.setInstanceId(trainingRun.getTrainingInstance().getId());
         accessTrainingRunDTO.setStartTime(trainingRun.getStartTime());
         accessTrainingRunDTO.setLocalEnvironment(trainingRun.getTrainingInstance().isLocalEnvironment());
+        accessTrainingRunDTO.setBackwardMode(trainingRun.getTrainingInstance().isBackwardMode());
         accessTrainingRunDTO.setSandboxDefinitionId(trainingRun.getTrainingInstance().getSandboxDefinitionId());
         if (trainingRun.getCurrentPhase() instanceof TrainingPhase && trainingRun.isSolutionTaken()) {
             accessTrainingRunDTO.setTakenSolution(trainingRun.getCurrentTask().getSolution());
@@ -306,6 +311,22 @@ public class TrainingRunFacade {
             );
         }
         return abstractPhaseDTO;
+    }
+
+    /**
+     * Gets visited phase of given Training Run.
+     *
+     * @param trainingRunId id of Training Run whose visited phase should be returned.
+     * @param phaseId ID of the visited phase.
+     * @return {@link AbstractPhaseDTO}
+     */
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
+    @TransactionalWO
+    public AbstractPhaseDTO getVisitedPhase(Long trainingRunId, Long phaseId) {
+        AbstractPhase abstractPhase = trainingRunService.getVisitedPhase(trainingRunId, phaseId);
+        TrainingRun trainingRun = trainingRunService.findById(trainingRunId);
+        return getAbstractPhasePreviewDTO(abstractPhase, trainingRun);
     }
 
     /**
@@ -480,6 +501,53 @@ public class TrainingRunFacade {
         } else {
             return phaseMapper.mapToInfoPhaseDTO((InfoPhase) abstractPhase);
         }
+    }
+
+    private AbstractPhaseDTO getAbstractPhasePreviewDTO(AbstractPhase abstractPhase, TrainingRun trainingRun) {
+        if (abstractPhase instanceof InfoPhase infoPhase) {
+            return phaseMapper.mapToInfoPhaseDTO(infoPhase);
+        } else if (abstractPhase instanceof TrainingPhase trainingPhase) {
+            return mapToTrainingPhasePreviewDTO(trainingPhase, trainingRun);
+        } else if (abstractPhase instanceof AccessPhase accessPhase) {
+            return mapToAccessPhaseViewDTO(accessPhase, trainingRun);
+        } else {
+            return mapToQuestionnairePhasePreviewDTO((QuestionnairePhase) abstractPhase, trainingRun);
+        }
+    }
+
+    private TrainingPhasePreviewDTO mapToTrainingPhasePreviewDTO(TrainingPhase trainingPhase, TrainingRun trainingRun) {
+        Task visitedTask = trainingRunService.getVisitedTask(trainingPhase, trainingRun);
+        TrainingPhasePreviewDTO trainingPhasePreviewDTO = phaseMapper.mapToTrainingPhasePreviewDTO(trainingPhase, visitedTask);
+        boolean isSolutionTaken = trainingRun.getSolutionInfoList().stream()
+                .anyMatch(solutionInfo -> trainingPhase.getId().equals(solutionInfo.getTrainingPhaseId()));
+        if (!isSolutionTaken) {
+            trainingPhasePreviewDTO.getTask().setSolution(null);
+        }
+        return trainingPhasePreviewDTO;
+    }
+
+    private AccessPhaseViewDTO mapToAccessPhaseViewDTO(AccessPhase accessPhase, TrainingRun trainingRun) {
+        AccessPhaseViewDTO accessLevelViewDTO = phaseMapper.mapToAccessPhaseViewDTO(accessPhase);
+        replacePlaceholders(
+                accessLevelViewDTO,
+                trainingRun.getTrainingInstance().getAccessToken(),
+                getBearerToken(),
+                trainingRun.getParticipantRef().getUserRefId()
+        );
+        return accessLevelViewDTO;
+    }
+
+    private QuestionnairePhasePreviewDTO mapToQuestionnairePhasePreviewDTO(QuestionnairePhase questionnairePhase, TrainingRun trainingRun) {
+        Map<Long, Set<String>> userAnswersByQuestionId = trainingRunService.getQuestionAnswersByTrainingRunId(trainingRun.getId()).stream()
+                .collect(Collectors.toMap(q -> q.getQuestion().getId(), QuestionAnswer::getAnswers));
+        QuestionnairePhasePreviewDTO questionnairePreviewDTO = phaseMapper.mapToQuestionnairePhasePreviewDTO(questionnairePhase);
+        questionnairePreviewDTO.getQuestions().forEach(previewQuestion -> {
+            if (previewQuestion.getQuestionType() == QuestionType.FFQ) {
+                previewQuestion.setChoices(Collections.emptyList());
+            }
+            previewQuestion.setUserAnswers(userAnswersByQuestionId.get(previewQuestion.getId()));
+        });
+        return questionnairePreviewDTO;
     }
 
     public String getBearerToken() {

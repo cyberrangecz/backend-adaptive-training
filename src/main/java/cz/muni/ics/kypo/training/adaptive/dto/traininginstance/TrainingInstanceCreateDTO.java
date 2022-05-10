@@ -43,6 +43,8 @@ public class TrainingInstanceCreateDTO {
     private boolean localEnvironment;
     @ApiModelProperty(value = "Id of sandbox definition assigned to training instance", example = "1")
     private Long sandboxDefinitionId;
+    @ApiModelProperty(value = "Indicates if trainee can during training run move to the previous already solved phases.", example = "true")
+    private boolean backwardMode;
 
     /**
      * Gets start time.
@@ -188,6 +190,24 @@ public class TrainingInstanceCreateDTO {
         this.sandboxDefinitionId = sandboxDefinitionId;
     }
 
+    /**
+     * Gets if trainee can during training run move back to the previous phases.
+     *
+     * @return true if backward mode is enabled.
+     */
+    public boolean isBackwardMode() {
+        return backwardMode;
+    }
+
+    /**
+     * Sets if trainee can during training run move back to the previous phases.
+     *
+     * @param backwardMode true if backward mode is enabled.
+     */
+    public void setBackwardMode(boolean backwardMode) {
+        this.backwardMode = backwardMode;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceCreateDTO{" +
@@ -199,6 +219,7 @@ public class TrainingInstanceCreateDTO {
                 ", poolId=" + poolId +
                 ", localEnvironment=" + localEnvironment +
                 ", sandboxDefinitionId=" + sandboxDefinitionId +
+                ", backwardMode=" + backwardMode +
                 '}';
     }
 }

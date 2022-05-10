@@ -36,6 +36,8 @@ public class TrainingInstanceArchiveDTO {
     private Set<Long> organizersRefIds;
     @ApiModelProperty(value = "Indicates if local sandboxes are used for training runs.", example = "true")
     private boolean localEnvironment;
+    @ApiModelProperty(value = "Indicates if trainee can during training run move to the previous already solved phases.", example = "true")
+    private boolean backwardMode;
 
     public Long getId() {
         return id;
@@ -161,6 +163,24 @@ public class TrainingInstanceArchiveDTO {
         this.localEnvironment = localEnvironment;
     }
 
+    /**
+     * Gets if trainee can during training run move back to the previous phases.
+     *
+     * @return true if backward mode is enabled.
+     */
+    public boolean isBackwardMode() {
+        return backwardMode;
+    }
+
+    /**
+     * Sets if trainee can during training run move back to the previous phases.
+     *
+     * @param backwardMode true if backward mode is enabled.
+     */
+    public void setBackwardMode(boolean backwardMode) {
+        this.backwardMode = backwardMode;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceArchiveDTO{" +
@@ -172,6 +192,7 @@ public class TrainingInstanceArchiveDTO {
                 ", organizersRefIds=" + organizersRefIds +
                 ", accessToken='" + accessToken + '\'' +
                 ", localEnvironment=" + localEnvironment +
+                ", backwardMode=" + backwardMode +
                 '}';
     }
 }

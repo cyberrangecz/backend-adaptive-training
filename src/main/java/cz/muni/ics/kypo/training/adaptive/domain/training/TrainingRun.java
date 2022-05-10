@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.domain.training;
 
+import cz.muni.ics.kypo.training.adaptive.domain.SolutionInfo;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
@@ -9,6 +10,8 @@ import cz.muni.ics.kypo.training.adaptive.enums.TRState;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class represents Training run.
@@ -134,6 +137,9 @@ public class TrainingRun implements Serializable {
     private boolean phaseAnswered;
     @Column(name = "previous_sandbox_instance_ref_id")
     private Long previousSandboxInstanceRefId;
+    @ElementCollection(targetClass = SolutionInfo.class, fetch = FetchType.LAZY)
+    @CollectionTable(name = "solution_info", joinColumns = @JoinColumn(name = "training_run_id"))
+    private Set<SolutionInfo> solutionInfoList = new HashSet<>();
 
     /**
      * Gets unique identification number of Training run
@@ -364,29 +370,17 @@ public class TrainingRun implements Serializable {
         this.previousSandboxInstanceRefId = previousSandboxInstanceRefId;
     }
 
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(currentPhase, startTime, endTime, state, trainingInstance, incorrectAnswerCount);
-//    }
-//
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (this == obj)
-//            return true;
-//        if (obj == null)
-//            return false;
-//        if (!(obj instanceof TrainingRun))
-//            return false;
-//        TrainingRun other = (TrainingRun) obj;
-//        return Objects.equals(currentPhase, other.getCurrentPhase())
-//                && Objects.equals(startTime, other.getStartTime())
-//                && Objects.equals(endTime, other.getEndTime())
-//                && Objects.equals(state, other.getState())
-//                && Objects.equals(incorrectAnswerCount, other.getIncorrectAnswerCount())
-//                && Objects.equals(trainingInstance, other.getTrainingInstance())
-//                && Objects.equals(participantRef, other.getParticipantRef())
-//                && Objects.equals(solutionTaken, other.isSolutionTaken());
-//    }
+    public Set<SolutionInfo> getSolutionInfoList() {
+        return solutionInfoList;
+    }
+
+    public void setSolutionInfoList(Set<SolutionInfo> solutionInfoList) {
+        this.solutionInfoList = solutionInfoList;
+    }
+
+    public void addSolutionInfo(SolutionInfo solutionInfo) {
+        this.solutionInfoList.add(solutionInfo);
+    }
 
     @Override
     public String toString() {

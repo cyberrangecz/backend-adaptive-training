@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ParticipantTaskAssignmentRepository extends
@@ -25,6 +26,8 @@ public interface ParticipantTaskAssignmentRepository extends
     List<NodeDTO> findAllVisitedTasks(@Param("trainingInstanceId") Long trainingInstanceId);
 
     List<ParticipantTaskAssignment> findAllByTrainingRunTrainingInstanceId(Long trainingInstanceId);
+
+    Optional<ParticipantTaskAssignment> findByAbstractPhaseIdAndTrainingRunId(Long trainingPhaseId, Long trainingRunId);
 
     @Modifying
     void deleteAllByTrainingRunId(Long trainingRunId);

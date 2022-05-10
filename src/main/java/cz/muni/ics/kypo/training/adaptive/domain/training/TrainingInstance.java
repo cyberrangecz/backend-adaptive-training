@@ -109,6 +109,8 @@ public class TrainingInstance implements Serializable {
     private boolean localEnvironment;
     @Column(name = "sandbox_definition_id")
     private Long sandboxDefinitionId;
+    @Column(name = "backward_mode", nullable = false)
+    private boolean backwardMode;
 
     /**
      * Gets unique identification number of Training instance
@@ -345,6 +347,24 @@ public class TrainingInstance implements Serializable {
         this.sandboxDefinitionId = sandboxDefinitionId;
     }
 
+    /**
+     * Gets if trainee can during training run move back to the previous levels.
+     *
+     * @return true if backward mode is enabled.
+     */
+    public boolean isBackwardMode() {
+        return backwardMode;
+    }
+
+    /**
+     * Sets if trainee can during training run move back to the previous levels.
+     *
+     * @param backwardMode true if backward mode is enabled.
+     */
+    public void setBackwardMode(boolean backwardMode) {
+        this.backwardMode = backwardMode;
+    }
+
     public boolean running() {
         return LocalDateTime.now(Clock.systemUTC()).isAfter(this.startTime) && LocalDateTime.now().isBefore(this.endTime);
     }
@@ -377,6 +397,7 @@ public class TrainingInstance implements Serializable {
                 && Objects.equals(endTime, other.getEndTime())
                 && Objects.equals(title, other.getTitle())
                 && Objects.equals(localEnvironment, other.isLocalEnvironment())
+                && Objects.equals(backwardMode, other.isBackwardMode())
                 && Objects.equals(trainingDefinition, other.getTrainingDefinition());
     }
 
@@ -389,6 +410,7 @@ public class TrainingInstance implements Serializable {
                 ", title='" + this.getTitle() + '\'' +
                 ", accessToken='" + this.getAccessToken() + '\'' +
                 ", localEnvironment='" + this.isLocalEnvironment() + '\'' +
+                ", backwardMode='" + this.isBackwardMode() + '\'' +
                 ", sandboxDefinitionId='" + this.getSandboxDefinitionId() + '\'' +
                 '}';
     }

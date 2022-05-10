@@ -2,11 +2,9 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalWO;
-import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
-import cz.muni.ics.kypo.training.adaptive.domain.Submission;
-import cz.muni.ics.kypo.training.adaptive.domain.TRAcquisitionLock;
-import cz.muni.ics.kypo.training.adaptive.domain.User;
+import cz.muni.ics.kypo.training.adaptive.domain.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
@@ -247,7 +245,8 @@ public class TrainingRunService {
             String accessToken = trainingRun.getTrainingInstance().getAccessToken();
             Long userId = trainingRun.getParticipantRef().getUserRefId();
             // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
-            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
+//            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
+            int suitableTask = 1;
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
             trainingRun.setCurrentTask(null);
@@ -333,6 +332,34 @@ public class TrainingRunService {
         participantTaskAssignment.setAbstractPhase(nextPhase);
         participantTaskAssignment.setTask(trainingRun.getCurrentTask());
         this.participantTaskAssignmentRepository.save(participantTaskAssignment);
+    }
+
+    /**
+     * Get previous/current phase (visited) of given Training Run.
+     *
+     * @param runId ID of Training Run whose visited phase should be returned.
+     * @param phaseId ID of the visited phase that should be returned.
+     * @return {@link AbstractPhase}
+     */
+    public AbstractPhase getVisitedPhase(Long runId, Long phaseId) {
+        TrainingRun trainingRun = findByIdWithPhase(runId);
+        AbstractPhase abstractPhase = abstractPhaseRepository.findById(phaseId).orElseThrow(
+                () -> new EntityNotFoundException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "Phase not found")));
+        TrainingDefinition trainingRunDefinition = trainingRun.getTrainingInstance().getTrainingDefinition();
+        if (!abstractPhase.getTrainingDefinition().getId().equals(trainingRunDefinition.getId())) {
+            throw new EntityConflictException(new EntityErrorDetail("Requested phase (ID: " + phaseId + ") is not part of the training run (ID: " + runId + ")."));
+        }
+        if (abstractPhase.getOrder() > trainingRun.getCurrentPhase().getOrder()) {
+            throw new EntityConflictException(new EntityErrorDetail("Requested phase (ID: " + phaseId + ") hasn't been visited yet"));
+        }
+        return abstractPhase;
+    }
+
+    public Task getVisitedTask(TrainingPhase trainingPhase, TrainingRun trainingRun) {
+        return this.participantTaskAssignmentRepository.findByAbstractPhaseIdAndTrainingRunId(trainingPhase.getId(), trainingRun.getId())
+                .orElseThrow(() -> new EntityNotFoundException(new EntityErrorDetail("Task assigned to training phase (ID: " + trainingPhase.getId() + ") " +
+                        "in training run (ID: " + trainingRun.getId() + ") not found.")))
+                .getTask();
     }
 
     /**
@@ -603,9 +630,15 @@ public class TrainingRunService {
     public String getSolution(Long trainingRunId) {
         TrainingRun trainingRun = findByIdWithPhase(trainingRunId);
         AbstractPhase currentPhase = trainingRun.getCurrentPhase();
-        if (currentPhase instanceof TrainingPhase) {
+        if (currentPhase instanceof TrainingPhase trainingPhase) {
             if (!trainingRun.isSolutionTaken()) {
                 trainingRun.setSolutionTaken(true);
+                trainingRun.addSolutionInfo(
+                        new SolutionInfo(
+                                trainingPhase.getId(),
+                                trainingRun.getCurrentTask().getId(),
+                                trainingRun.getCurrentTask().getSolution()
+                        ));
                 trainingRunRepository.save(trainingRun);
                 auditEventsService.auditSolutionDisplayedAction(trainingRun);
             }
@@ -695,6 +728,10 @@ public class TrainingRunService {
         trainingRun.setSandboxInstanceRefId(null);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         trainingRunRepository.save(trainingRun);
+    }
+
+    public List<QuestionAnswer> getQuestionAnswersByTrainingRunId(Long runId) {
+        return questionAnswerRepository.getAllByTrainingRunId(runId);
     }
 
     private void auditSubmission(TrainingRun trainingRun, SubmissionType submissionType, String answer) {

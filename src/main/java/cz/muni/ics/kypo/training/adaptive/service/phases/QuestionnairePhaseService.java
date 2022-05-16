@@ -55,7 +55,7 @@ public class QuestionnairePhaseService {
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
     }
 
-    public QuestionnairePhase createDefaultQuestionnairePhase(TrainingDefinition trainingDefinition, QuestionnaireType questionnaireType) {
+    public QuestionnairePhase createQuestionnairePhase(TrainingDefinition trainingDefinition, QuestionnaireType questionnaireType) {
         checkIfCanBeUpdated(trainingDefinition);
 
         QuestionnairePhase questionnairePhase = new QuestionnairePhase();

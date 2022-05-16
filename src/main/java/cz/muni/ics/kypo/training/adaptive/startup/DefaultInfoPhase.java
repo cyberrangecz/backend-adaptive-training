@@ -2,7 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.startup;
 
 import javax.validation.constraints.NotEmpty;
 
-public class IntroInfoPhase {
+public class DefaultInfoPhase {
     @NotEmpty(message = "{phase.title.NotEmpty.message}")
     private String title;
     @NotEmpty(message = "{infoPhase.content.NotEmpty.message}")

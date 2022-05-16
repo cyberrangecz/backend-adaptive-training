@@ -26,7 +26,9 @@ import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
 import cz.muni.ics.kypo.training.adaptive.service.UserService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
+import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
+import org.apache.maven.plugin.lifecycle.Phase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +53,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class TrainingDefinitionFacade {
 
     private final TrainingDefinitionService trainingDefinitionService;
+    private final PhaseService phaseService;
     private final UserService userService;
     private final UserManagementServiceApi userManagementServiceApi;
     private final SecurityService securityService;
@@ -68,12 +71,14 @@ public class TrainingDefinitionFacade {
      */
     @Autowired
     public TrainingDefinitionFacade(TrainingDefinitionService trainingDefinitionService,
+                                    PhaseService phaseService,
                                     UserService userService,
                                     UserManagementServiceApi userManagementServiceApi,
                                     SecurityService securityService,
                                     TrainingDefinitionMapper trainingDefMapper,
                                     PhaseMapper phaseMapper) {
         this.trainingDefinitionService = trainingDefinitionService;
+        this.phaseService = phaseService;
         this.userService = userService;
         this.userManagementServiceApi = userManagementServiceApi;
         this.securityService = securityService;
@@ -191,7 +196,10 @@ public class TrainingDefinitionFacade {
     @TransactionalWO
     public TrainingDefinitionByIdDTO create(TrainingDefinitionCreateDTO trainingDefinition) {
         TrainingDefinition newTrainingDefinition = trainingDefinitionMapper.mapCreateToEntity(trainingDefinition);
-        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition, trainingDefinition.isDefaultContent());
+        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition);
+        if (trainingDefinition.isDefaultContent()) {
+            phaseService.createPredefinedPhases(newTrainingDefinition.getId());
+        }
         return trainingDefinitionMapper.mapToDTOById(createdTrainingDefinition);
     }
 

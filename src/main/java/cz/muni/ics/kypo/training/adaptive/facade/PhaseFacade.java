@@ -81,13 +81,13 @@ public class PhaseFacade {
         TrainingDefinition trainingDefinition = this.trainingDefinitionService.findById(definitionId);
         AbstractPhase abstractPhase;
         if (phaseCreateDTO.getPhaseType() == PhaseType.INFO) {
-            abstractPhase = infoPhaseService.createDefaultInfoPhase(trainingDefinition);
+            abstractPhase = infoPhaseService.createInfoPhase(trainingDefinition);
         } else if (phaseCreateDTO.getPhaseType() == PhaseType.TRAINING) {
-            abstractPhase = trainingPhaseService.createDefaultTrainingPhase(trainingDefinition);
+            abstractPhase = trainingPhaseService.createTrainingPhase(trainingDefinition);
         } else if (phaseCreateDTO.getPhaseType() == PhaseType.ACCESS) {
-            abstractPhase = accessPhaseService.createDefaultAccessPhase(trainingDefinition);
+            abstractPhase = accessPhaseService.createAccessPhase(trainingDefinition);
         } else {
-            abstractPhase = questionnairePhaseService.createDefaultQuestionnairePhase(trainingDefinition, phaseCreateDTO.getQuestionnaireType());
+            abstractPhase = questionnairePhaseService.createQuestionnairePhase(trainingDefinition, phaseCreateDTO.getQuestionnaireType());
         }
         this.trainingDefinitionService.auditAndSave(trainingDefinition);
         return phaseMapper.mapToDTO(abstractPhase);

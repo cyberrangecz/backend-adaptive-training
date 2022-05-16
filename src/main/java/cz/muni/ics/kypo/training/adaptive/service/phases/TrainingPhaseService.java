@@ -58,7 +58,7 @@ public class TrainingPhaseService {
         this.mitreTechniqueRepository = mitreTechniqueRepository;
     }
 
-    public TrainingPhase createDefaultTrainingPhase(TrainingDefinition trainingDefinition) {
+    public TrainingPhase createTrainingPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
 
         TrainingPhase trainingPhase = new TrainingPhase();

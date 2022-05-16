@@ -177,7 +177,7 @@ public class ExportImportFacade {
 
         TrainingDefinition newDefinition = exportImportMapper.mapToEntity(importTrainingDefinitionDTO);
         newDefinition.setEstimatedDuration(computeEstimatedDuration(importTrainingDefinitionDTO));
-        TrainingDefinition newTrainingDefinition = trainingDefinitionService.create(newDefinition, false);
+        TrainingDefinition newTrainingDefinition = trainingDefinitionService.create(newDefinition);
         List<AbstractPhaseImportDTO> phases = importTrainingDefinitionDTO.getPhases();
         phases.forEach(phase -> {
             if (phase.getPhaseType().equals(PhaseType.TRAINING)) {

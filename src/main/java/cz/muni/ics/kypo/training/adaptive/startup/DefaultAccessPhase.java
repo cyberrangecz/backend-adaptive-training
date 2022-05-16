@@ -3,7 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.startup;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-public class GetAccessPhase {
+public class DefaultAccessPhase {
 
     @NotEmpty(message = "{abstractPhase.title.NotEmpty.message}")
     private String title;

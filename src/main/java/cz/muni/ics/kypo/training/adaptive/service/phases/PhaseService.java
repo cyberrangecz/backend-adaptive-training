@@ -1,19 +1,27 @@
 package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.AccessPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.QuestionnairePhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.Question;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionChoice;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
+import cz.muni.ics.kypo.training.adaptive.enums.QuestionnaireType;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
+import cz.muni.ics.kypo.training.adaptive.startup.DefaultPhasesLoader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,15 +32,18 @@ public class PhaseService {
 
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final TrainingPhaseService trainingPhaseService;
-    private final TrainingDefinitionRepository trainingDefinitionRepository;
+    private final TrainingDefinitionService trainingDefinitionService;
+    private final DefaultPhasesLoader defaultPhasesLoader;
 
     @Autowired
     public PhaseService(AbstractPhaseRepository abstractPhaseRepository,
                         TrainingPhaseService trainingPhaseService,
-                        TrainingDefinitionRepository trainingDefinitionRepository) {
+                        TrainingDefinitionService trainingDefinitionService,
+                        DefaultPhasesLoader defaultPhasesLoader) {
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.trainingPhaseService = trainingPhaseService;
-        this.trainingDefinitionRepository = trainingDefinitionRepository;
+        this.trainingDefinitionService = trainingDefinitionService;
+        this.defaultPhasesLoader = defaultPhasesLoader;
     }
 
     /**
@@ -122,5 +133,89 @@ public class PhaseService {
             }
         }
         return -1;
+    }
+
+    public void createPredefinedPhases(Long definitionId) {
+        TrainingDefinition trainingDefinition = trainingDefinitionService.findById(definitionId);
+
+        InfoPhase infoPhase = new InfoPhase();
+        infoPhase.setOrder(0);
+        infoPhase.setTitle(defaultPhasesLoader.getDefaultInfoPhase().getTitle());
+        infoPhase.setContent(defaultPhasesLoader.getDefaultInfoPhase().getContent());
+        infoPhase.setTrainingDefinition(trainingDefinition);
+        abstractPhaseRepository.save(infoPhase);
+
+        QuestionnairePhase questionnairePhase = new QuestionnairePhase();
+        questionnairePhase.setQuestionnaireType(QuestionnaireType.ADAPTIVE);
+        questionnairePhase.setOrder(1);
+        questionnairePhase.setTrainingDefinition(trainingDefinition);
+        questionnairePhase.setTitle("Pre-training questionnaire");
+        questionnairePhase.setQuestions(new ArrayList<>(List.of(
+                defaultMCQ(0, questionnairePhase),
+                defaultFFQ(1, questionnairePhase),
+                defaultRFQ(2, questionnairePhase)
+        )));
+        abstractPhaseRepository.save(questionnairePhase);
+
+        AccessPhase accessPhase = new AccessPhase();
+        accessPhase.setOrder(2);
+        accessPhase.setTitle(defaultPhasesLoader.getDefaultAccessPhase().getTitle());
+        accessPhase.setPasskey(defaultPhasesLoader.getDefaultAccessPhase().getPasskey());
+        accessPhase.setLocalContent(defaultPhasesLoader.getDefaultAccessPhase().getLocalContent());
+        accessPhase.setCloudContent(defaultPhasesLoader.getDefaultAccessPhase().getCloudContent());
+        accessPhase.setTrainingDefinition(trainingDefinition);
+        abstractPhaseRepository.save(accessPhase);
+    }
+
+    private Question defaultMCQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question mcq = new Question();
+        mcq.setQuestionType(QuestionType.MCQ);
+        mcq.setQuestionnairePhase(questionnairePhase);
+        mcq.setText("The city known as the \"IT capital of India\" is ");
+        mcq.setOrder(order);
+        mcq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("Bangalore", 0, true, mcq),
+                createQuestionChoice("Karachi", 1, false, mcq),
+                createQuestionChoice("Mumbai", 2, false, mcq)
+        )));
+        return mcq;
+    }
+
+    private Question defaultFFQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question ffq = new Question();
+        ffq.setQuestionType(QuestionType.FFQ);
+        ffq.setQuestionnairePhase(questionnairePhase);
+        ffq.setText("What is the example of the transport layer protocol?");
+        ffq.setOrder(order);
+        ffq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("SPX", 0, true, ffq),
+                createQuestionChoice("TCP", 1, true, ffq),
+                createQuestionChoice("UDP", 2, true, ffq)
+        )));
+        return ffq;
+    }
+
+    private Question defaultRFQ(Integer order, QuestionnairePhase questionnairePhase) {
+        Question rfq = new Question();
+        rfq.setQuestionType(QuestionType.RFQ);
+        rfq.setQuestionnairePhase(questionnairePhase);
+        rfq.setText("What is your level of skill in zip and unzip files in CLI?");
+        rfq.setOrder(order);
+        rfq.setChoices(new ArrayList<>(List.of(
+                createQuestionChoice("High", 0, true, rfq),
+                createQuestionChoice("Medium", 1, true, rfq),
+                createQuestionChoice("Low", 3, false, rfq),
+                createQuestionChoice("None", 2, false, rfq)
+        )));
+        return rfq;
+    }
+
+    private QuestionChoice createQuestionChoice(String text, Integer order, boolean correct, Question question) {
+        QuestionChoice choice = new QuestionChoice();
+        choice.setText(text);
+        choice.setOrder(order);
+        choice.setCorrect(correct);
+        choice.setQuestion(question);
+        return choice;
     }
 }

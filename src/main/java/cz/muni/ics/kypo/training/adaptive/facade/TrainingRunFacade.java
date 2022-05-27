@@ -218,6 +218,7 @@ public class TrainingRunFacade {
         accessTrainingRunDTO.setLocalEnvironment(trainingRun.getTrainingInstance().isLocalEnvironment());
         accessTrainingRunDTO.setBackwardMode(trainingRun.getTrainingInstance().isBackwardMode());
         accessTrainingRunDTO.setSandboxDefinitionId(trainingRun.getTrainingInstance().getSandboxDefinitionId());
+        accessTrainingRunDTO.setPhaseAnswered(trainingRun.isPhaseAnswered());
         if (trainingRun.getCurrentPhase() instanceof TrainingPhase && trainingRun.isSolutionTaken()) {
             accessTrainingRunDTO.setTakenSolution(trainingRun.getCurrentTask().getSolution());
         }

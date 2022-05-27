@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.DecisionMatrixRow;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
@@ -9,6 +10,7 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.MitreTechniqueRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,19 +43,22 @@ public class TrainingPhaseService {
     private final TrainingInstanceRepository trainingInstanceRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
     private final TrainingDefinitionRepository trainingDefinitionRepository;
+    private final MitreTechniqueRepository mitreTechniqueRepository;
 
     @Autowired
     public TrainingPhaseService(TrainingDefinitionRepository trainingDefinitionRepository,
                                 TrainingInstanceRepository trainingInstanceRepository,
                                 TrainingPhaseRepository trainingPhaseRepository,
-                                AbstractPhaseRepository abstractPhaseRepository) {
+                                AbstractPhaseRepository abstractPhaseRepository,
+                                MitreTechniqueRepository mitreTechniqueRepository) {
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
+        this.mitreTechniqueRepository = mitreTechniqueRepository;
     }
 
-    public TrainingPhase createDefaultTrainingPhase(TrainingDefinition trainingDefinition) {
+    public TrainingPhase createTrainingPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
 
         TrainingPhase trainingPhase = new TrainingPhase();
@@ -96,8 +102,25 @@ public class TrainingPhaseService {
                     .filter(matrixRow -> matrixRow.getId() == null || persistedMatrixRows.contains(matrixRow.getId()))
                     .forEach(matrixRow -> matrixRow.setTrainingPhase(updatedTrainingPhase));
         }
+        this.updateMitreTechniques(updatedTrainingPhase, persistedTrainingPhase);
         return trainingPhaseRepository.save(updatedTrainingPhase);
     }
+
+    private void updateMitreTechniques(TrainingPhase updatedPhase, TrainingPhase persistedPhase) {
+        // Removing training level from persisted MITRE techniques
+        persistedPhase.getMitreTechniques()
+                .forEach(t -> t.getTrainingPhases().removeIf(tl -> tl.getId().equals(persistedPhase.getId())));
+
+        Set<String> techniqueKeys = updatedPhase.getMitreTechniques().stream()
+                .map(MitreTechnique::getTechniqueKey)
+                .collect(Collectors.toSet());
+        Set<MitreTechnique> resultTechniques = mitreTechniqueRepository.findAllByTechniqueKeyIn(techniqueKeys);
+        resultTechniques.addAll(updatedPhase.getMitreTechniques());
+
+        updatedPhase.setMitreTechniques(new HashSet<>());
+        resultTechniques.forEach(updatedPhase::addMitreTechnique);
+    }
+
 
     public TrainingPhase findPhaseById(Long phaseId) {
         return trainingPhaseRepository.findById(phaseId)

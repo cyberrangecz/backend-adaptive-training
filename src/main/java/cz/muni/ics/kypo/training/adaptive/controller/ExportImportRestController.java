@@ -5,7 +5,7 @@ import com.github.bohnman.squiggly.Squiggly;
 import com.github.bohnman.squiggly.util.SquigglyUtils;
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.FileToReturnDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionWithPhasesExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionByIdDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.errors.ApiError;
@@ -58,12 +58,12 @@ public class ExportImportRestController {
      */
     @ApiOperation(httpMethod = "GET",
             value = "Get exported training definitions and phase.",
-            response = TrainingDefinitionWithPhasesExportDTO.class,
+            response = TrainingDefinitionExportDTO.class,
             nickname = "getExportedTrainingDefinitionAndPhases",
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
     )
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Training definitions and phase found and exported.", response = TrainingDefinitionWithPhasesExportDTO.class),
+            @ApiResponse(code = 200, message = "Training definitions and phase found and exported.", response = TrainingDefinitionExportDTO.class),
             @ApiResponse(code = 404, message = "Training definition not found.", response = ApiError.class),
             @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
     })

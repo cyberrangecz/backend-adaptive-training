@@ -24,9 +24,11 @@ import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseUpdateDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnaireUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.preview.QuestionnairePhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view.QuestionnairePhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.preview.TrainingPhasePreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TrainingPhaseViewDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.InternalServerErrorException;
 import org.mapstruct.*;
@@ -39,7 +41,13 @@ import java.util.List;
  * The PhaseMapper is an utility class to map items into data transfer objects. It provides the implementation of mappings between Java bean type Phase and
  * DTOs classes. Code is generated during compile time.
  */
-@Mapper(componentModel = "spring", uses = {QuestionMapper.class, TaskMapper.class, DecisionMatrixMapper.class, QuestionPhaseRelationMapper.class},
+@Mapper(componentModel = "spring", uses = {
+        QuestionMapper.class,
+        TaskMapper.class,
+        DecisionMatrixMapper.class,
+        QuestionPhaseRelationMapper.class,
+        MitreTechniqueMapper.class
+},
         nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PhaseMapper extends ParentMapper {
     TaskMapper TASK_MAPPER = Mappers.getMapper(TaskMapper.class);
@@ -78,6 +86,9 @@ public interface PhaseMapper extends ParentMapper {
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseViewDTO mapToQuestionnairePhaseViewDTO(QuestionnairePhase entity);
 
+    @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
+    QuestionnairePhasePreviewDTO mapToQuestionnairePhasePreviewDTO(QuestionnairePhase entity);
+
     @Mapping(target = "phaseRelations", source = "questionPhaseRelations")
     @Mapping(target = "phaseType", constant = "QUESTIONNAIRE")
     QuestionnairePhaseArchiveDTO mapToQuestionnairePhaseArchiveDTO(QuestionnairePhase entity);
@@ -108,10 +119,30 @@ public interface PhaseMapper extends ParentMapper {
     }
 
     @Mapping(target = "phaseType", constant = "TRAINING")
+    TrainingPhasePreviewDTO mapToTrainingPhasePreviewDTO(TrainingPhase entity, @Context Task taskEntity);
+
+    @AfterMapping
+    default void setTaskPreviewDTO(@MappingTarget TrainingPhasePreviewDTO target, @Context Task taskEntity) {
+        target.setTask(TASK_MAPPER.mapToTaskPreviewDTO(taskEntity));
+    }
+
+    @Mapping(target = "phaseType", constant = "TRAINING")
+    @Mapping(source = "mitreTechniques", target = "mitreTechniques", qualifiedByName = "ignoreIds")
     TrainingPhaseExportDTO mapToTrainingPhaseExportDTO(TrainingPhase entity);
 
     @Mapping(target = "phaseType", constant = "TRAINING")
+    @Mapping(source = "mitreTechniques", target = "mitreTechniques", qualifiedByName = "ignoreIds")
     TrainingPhaseArchiveDTO mapToTrainingPhaseArchiveDTO(TrainingPhase entity);
+
+    default String mapExpectedCommandToString(ExpectedCommand entity) {
+        return entity.getCommand();
+    }
+
+    default ExpectedCommand mapStringToExpectedCommand(String command) {
+        ExpectedCommand expectedCommand = new ExpectedCommand();
+        expectedCommand.setCommand(command);
+        return expectedCommand;
+    }
 
     // ACCESS PHASE
     AccessPhase mapToEntity(AccessPhaseDTO dto);

@@ -7,6 +7,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training.TaskImport
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskCopyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TaskUpdateDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.training.preview.TaskPreviewDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.view.TaskViewDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -36,6 +37,8 @@ public interface TaskMapper extends ParentMapper {
     TaskDTO mapToTaskDTO(Task entity);
 
     TaskViewDTO mapToTaskViewDTO(Task entity);
+
+    TaskPreviewDTO mapToTaskPreviewDTO(Task entity);
 
     List<Task> mapToList(Collection<TaskDTO> dtos);
 

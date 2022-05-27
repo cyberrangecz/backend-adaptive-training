@@ -16,7 +16,7 @@ import java.util.*;
 @Table(name = "training_definition")
 @NamedQueries({
         @NamedQuery(
-                name = "TrainingDefinition.findAllForOrganizers",
+                name = "TrainingDefinition.findAllByState",
                 query = "SELECT DISTINCT td FROM TrainingDefinition td WHERE td.state = :state"
         ),
         @NamedQuery(
@@ -24,7 +24,16 @@ import java.util.*;
                 query = "SELECT DISTINCT td FROM TrainingDefinition td " +
                         "LEFT JOIN td.authors aut " +
                         "WHERE aut.userRefId = :userRefId  AND td.state = 'UNRELEASED'"
+        ),
+        @NamedQuery(
+                name = "TrainingDefinition.findAllPlayedByUser",
+                query = "SELECT DISTINCT td FROM TrainingRun tr " +
+                        "LEFT JOIN tr.participantRef pr " +
+                        "LEFT JOIN tr.trainingInstance ti " +
+                        "LEFT JOIN ti.trainingDefinition td " +
+                        "WHERE pr.userRefId = :userRefId"
         )
+
 })
 public class TrainingDefinition implements Serializable {
 

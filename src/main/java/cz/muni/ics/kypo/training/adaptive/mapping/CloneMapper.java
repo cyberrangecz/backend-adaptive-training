@@ -32,6 +32,10 @@ public interface CloneMapper extends ParentMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "trainingDefinition", ignore = true)
+    AccessPhase clone(AccessPhase entity);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "trainingDefinition", ignore = true)
     TrainingPhase clone(TrainingPhase entity);
 
     @Mapping(target = "id", ignore = true)

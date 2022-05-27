@@ -9,6 +9,7 @@ import cz.muni.ics.kypo.training.adaptive.annotations.swagger.ApiPageableSwagger
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.IsCorrectAnswerDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.SubmissionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.access.ValidatePasskeyDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseAnswersDTO;
@@ -453,6 +454,62 @@ public class TrainingRunsRestController {
                                                    @PathVariable("runId") Long runId) {
         trainingRunFacade.archiveTrainingRun(runId);
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Get previous or current phase (visited) of given Training Run.
+     *
+     * @param runId  of Training Run for which to get previous or current phase.
+     * @param phaseId ID of the visited phase.
+     * @param fields attributes of the object to be returned as the result.
+     * @return Requested phase.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get visited phase of given training run.",
+            notes = "Returns (questionnaire, training, info, access) phase if any phase exists and training run as well",
+            response = AbstractPhaseDTO.class,
+            nickname = "getVisitedPhase",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The visited phase has been found.", response = AbstractPhaseDTO.class),
+            @ApiResponse(code = 404, message = "The visited phase has not been found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/{runId}/phases/{phaseId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getVisitedPhase(
+            @ApiParam(value = "Training run ID", required = true) @PathVariable("runId") Long runId,
+            @ApiParam(value = "Phase ID", required = true) @PathVariable("phaseId") Long phaseId,
+            @ApiParam(value = "Fields which should be returned in REST API response") @RequestParam(value = "fields", required = false) String fields) {
+        AbstractPhaseDTO phaseDTO = trainingRunFacade.getVisitedPhase(runId, phaseId);
+        Squiggly.init(objectMapper, fields);
+        return ResponseEntity.ok(SquigglyUtils.stringify(objectMapper, phaseDTO));
+    }
+
+    /**
+     * Get trainees submissions.
+     *
+     * @param runId ID of training run for which to get submissions
+     * @param phaseId ID of the phase to specify subset of submissions
+     * @return Submissions submitted during the training run of the trainee.
+     */
+    @ApiOperation(httpMethod = "GET",
+            value = "Get trainees submissions.",
+            response = SubmissionDTO[].class,
+            nickname = "getTraineesSubmissions",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "The submissions has been found.", response = SubmissionDTO[].class),
+            @ApiResponse(code = 404, message = "The training run has not been found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @GetMapping(path = "/{runId}/submissions", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Object> getTraineesSubmissions(
+            @ApiParam(value = "Training run ID") @PathVariable Long runId,
+            @ApiParam(value = "Training phase ID.") @RequestParam(required = false) Long phaseId) {
+        List<SubmissionDTO> traineeSubmissions = trainingRunFacade.getTraineesSubmissions(runId, phaseId);
+        return ResponseEntity.ok(SquigglyUtils.stringify(objectMapper, traineeSubmissions));
     }
 
     /**

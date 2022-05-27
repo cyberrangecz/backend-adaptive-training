@@ -40,6 +40,10 @@ public class AccessTrainingRunDTO {
     private boolean localEnvironment;
     @ApiModelProperty(value = "Main identifier of sandbox definition which is assigned to training instance of the training run.", example = "2")
     private Long sandboxDefinitionId;
+    @ApiModelProperty(value = "Indicates if trainee can during training run move to the previous already solved phases.", example = "true")
+    private boolean backwardMode;
+    @ApiModelProperty(value = "Indicates if the current phase has been already corrected/answered.", example = "true")
+    private boolean isPhaseAnswered;
 
     /**
      * Gets training run id.
@@ -221,6 +225,32 @@ public class AccessTrainingRunDTO {
         this.sandboxDefinitionId = sandboxDefinitionId;
     }
 
+    /**
+     * Gets if trainee can during training run move back to the previous phases.
+     *
+     * @return true if backward mode is enabled.
+     */
+    public boolean isBackwardMode() {
+        return backwardMode;
+    }
+
+    /**
+     * Sets if trainee can during training run move back to the previous phases.
+     *
+     * @param backwardMode true if backward mode is enabled.
+     */
+    public void setBackwardMode(boolean backwardMode) {
+        this.backwardMode = backwardMode;
+    }
+
+    public boolean isPhaseAnswered() {
+        return isPhaseAnswered;
+    }
+
+    public void setPhaseAnswered(boolean phaseAnswered) {
+        isPhaseAnswered = phaseAnswered;
+    }
+
     @Override
     public String toString() {
         return "AccessTrainingRunDTO{" +
@@ -233,6 +263,8 @@ public class AccessTrainingRunDTO {
                 ", takenSolution='" + takenSolution + '\'' +
                 ", localEnvironment='" + localEnvironment +
                 ", sandboxDefinitionId='" + sandboxDefinitionId +
+                ", backwardMode='" + backwardMode +
+                ", isPhaseAnswered='" + isPhaseAnswered +
                 '}';
     }
 }

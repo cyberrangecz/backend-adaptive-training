@@ -26,7 +26,9 @@ import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
 import cz.muni.ics.kypo.training.adaptive.service.UserService;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
+import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
+import org.apache.maven.plugin.lifecycle.Phase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,6 +53,7 @@ import static java.util.stream.Collectors.groupingBy;
 public class TrainingDefinitionFacade {
 
     private final TrainingDefinitionService trainingDefinitionService;
+    private final PhaseService phaseService;
     private final UserService userService;
     private final UserManagementServiceApi userManagementServiceApi;
     private final SecurityService securityService;
@@ -68,12 +71,14 @@ public class TrainingDefinitionFacade {
      */
     @Autowired
     public TrainingDefinitionFacade(TrainingDefinitionService trainingDefinitionService,
+                                    PhaseService phaseService,
                                     UserService userService,
                                     UserManagementServiceApi userManagementServiceApi,
                                     SecurityService securityService,
                                     TrainingDefinitionMapper trainingDefMapper,
                                     PhaseMapper phaseMapper) {
         this.trainingDefinitionService = trainingDefinitionService;
+        this.phaseService = phaseService;
         this.userService = userService;
         this.userManagementServiceApi = userManagementServiceApi;
         this.securityService = securityService;
@@ -166,11 +171,11 @@ public class TrainingDefinitionFacade {
         Long loggedInUserId = userManagementServiceApi.getLoggedInUserRefId();
         if (state == TDState.RELEASED) {
             return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
-                    trainingDefinitionService.findAllForOrganizers(TDState.RELEASED, pageable));
+                    trainingDefinitionService.findAllByState(TDState.RELEASED, pageable));
         } else if (state == TDState.UNRELEASED) {
             if (securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)) {
                 return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
-                        trainingDefinitionService.findAllForOrganizers(TDState.UNRELEASED, pageable));
+                        trainingDefinitionService.findAllByState(TDState.UNRELEASED, pageable));
             } else if (securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_DESIGNER) && securityService.hasRole(RoleTypeSecurity.ROLE_ADAPTIVE_TRAINING_ORGANIZER)) {
                 return trainingDefinitionMapper.mapToPageResultResourceInfoDTO(
                         trainingDefinitionService.findAllForDesigner(loggedInUserId, pageable));
@@ -191,7 +196,10 @@ public class TrainingDefinitionFacade {
     @TransactionalWO
     public TrainingDefinitionByIdDTO create(TrainingDefinitionCreateDTO trainingDefinition) {
         TrainingDefinition newTrainingDefinition = trainingDefinitionMapper.mapCreateToEntity(trainingDefinition);
-        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition, trainingDefinition.isDefaultContent());
+        TrainingDefinition createdTrainingDefinition = trainingDefinitionService.create(newTrainingDefinition);
+        if (trainingDefinition.isDefaultContent()) {
+            phaseService.createPredefinedPhases(newTrainingDefinition.getId());
+        }
         return trainingDefinitionMapper.mapToDTOById(createdTrainingDefinition);
     }
 
@@ -293,7 +301,7 @@ public class TrainingDefinitionFacade {
         TrainingDefinition trainingDefinition = trainingDefinitionService.findById(trainingDefinitionId);
         return userManagementServiceApi.getUserRefDTOsByUserIds(trainingDefinition.getAuthors().stream()
                         .map(User::getUserRefId)
-                        .collect(Collectors.toSet()),
+                        .toList(),
                 pageable, givenName, familyName);
     }
 
@@ -339,24 +347,32 @@ public class TrainingDefinitionFacade {
     }
 
     private void addAuthorsToTrainingDefinition(TrainingDefinition trainingDefinition, Set<Long> userRefIds) {
-        PageResultResource<UserRefDTO> authors;
+        List<UserRefDTO> authors = getAllUsersRefsByGivenUsersIds(new ArrayList<>(userRefIds));
+        Set<Long> actualAuthorsIds = trainingDefinition.getAuthors().stream()
+                .map(User::getUserRefId)
+                .collect(Collectors.toSet());
+        for (UserRefDTO author : authors) {
+            if (actualAuthorsIds.contains(author.getUserRefId())) {
+                continue;
+            }
+            try {
+                trainingDefinition.addAuthor(userService.getUserByUserRefId(author.getUserRefId()));
+            } catch (EntityNotFoundException ex) {
+                trainingDefinition.addAuthor(userService.createUserRef(createUserRefFromDTO(author)));
+            }
+        }
+    }
+
+    private List<UserRefDTO> getAllUsersRefsByGivenUsersIds(List<Long> participantsRefIds) {
+        List<UserRefDTO> users = new ArrayList<>();
+        PageResultResource<UserRefDTO> usersPageResultResource;
         int page = 0;
         do {
-            authors = userManagementServiceApi.getUserRefDTOsByUserIds(userRefIds, PageRequest.of(page, 999), null, null);
-            Set<Long> actualAuthorsIds = trainingDefinition.getAuthors().stream()
-                    .map(User::getUserRefId)
-                    .collect(Collectors.toSet());
+            usersPageResultResource = userManagementServiceApi.getUserRefDTOsByUserIds(participantsRefIds, PageRequest.of(page, 999), null, null);
+            users.addAll(usersPageResultResource.getContent());
             page++;
-            for (UserRefDTO author : authors.getContent()) {
-                if (actualAuthorsIds.contains(author.getUserRefId())) {
-                    continue;
-                }
-                try {
-                    trainingDefinition.addAuthor(userService.getUserByUserRefId(author.getUserRefId()));
-                } catch (EntityNotFoundException ex) {
-                    trainingDefinition.addAuthor(userService.createUserRef(createUserRefFromDTO(author)));
-                }
-            }
-        } while (authors.getPagination().getTotalPages() != page);
+        }
+        while (page < usersPageResultResource.getPagination().getTotalPages());
+        return users;
     }
 }

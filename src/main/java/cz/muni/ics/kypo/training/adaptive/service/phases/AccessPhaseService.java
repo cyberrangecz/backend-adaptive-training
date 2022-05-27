@@ -2,7 +2,6 @@ package cz.muni.ics.kypo.training.adaptive.service.phases;
 
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AccessPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.InfoPhase;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.enums.TDState;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityConflictException;
@@ -10,9 +9,9 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AccessPhaseRepository;
-import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
+import cz.muni.ics.kypo.training.adaptive.startup.DefaultPhasesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +29,29 @@ public class AccessPhaseService {
     private final TrainingDefinitionRepository trainingDefinitionRepository;
     private final AccessPhaseRepository accessPhaseRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
+    private final DefaultPhasesLoader defaultPhasesLoader;
 
     @Autowired
     public AccessPhaseService(TrainingDefinitionRepository trainingDefinitionRepository,
                               TrainingInstanceRepository trainingInstanceRepository,
                               AccessPhaseRepository accessPhaseRepository,
-                              AbstractPhaseRepository abstractPhaseRepository) {
+                              AbstractPhaseRepository abstractPhaseRepository,
+                              DefaultPhasesLoader defaultPhasesLoader) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.accessPhaseRepository = accessPhaseRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
+        this.defaultPhasesLoader = defaultPhasesLoader;
     }
 
-    public AccessPhase createDefaultAccessPhase(TrainingDefinition trainingDefinition) {
+    public AccessPhase createAccessPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
 
         AccessPhase accessPhase = new AccessPhase();
-        accessPhase.setCloudContent("Cloud content of access phase");
-        accessPhase.setLocalContent("Local content of access phase");
-        accessPhase.setPasskey("start-training");
-        accessPhase.setTitle("Title of access phase");
+        accessPhase.setCloudContent(defaultPhasesLoader.getDefaultAccessPhase().getCloudContent());
+        accessPhase.setLocalContent(defaultPhasesLoader.getDefaultAccessPhase().getLocalContent());
+        accessPhase.setPasskey(defaultPhasesLoader.getDefaultAccessPhase().getPasskey());
+        accessPhase.setTitle(defaultPhasesLoader.getDefaultAccessPhase().getTitle());
         accessPhase.setTrainingDefinition(trainingDefinition);
         accessPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
         return accessPhaseRepository.save(accessPhase);

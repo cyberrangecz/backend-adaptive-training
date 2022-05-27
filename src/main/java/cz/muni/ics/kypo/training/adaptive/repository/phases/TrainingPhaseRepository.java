@@ -19,4 +19,6 @@ public interface TrainingPhaseRepository extends JpaRepository<TrainingPhase, Lo
     List<TrainingPhase> findAllByTrainingDefinitionIdOrderByOrder(Long trainingDefinitionId);
 
     Optional<TrainingPhase> findByTrainingDefinitionIdAndOrder(Long trainingDefinitionId, Integer trainingPhaseOrder);
+
+    List<TrainingPhase> findAllByTrainingDefinitionId(@Param("trainingDefinitionId") Long trainingDefinitionId);
 }

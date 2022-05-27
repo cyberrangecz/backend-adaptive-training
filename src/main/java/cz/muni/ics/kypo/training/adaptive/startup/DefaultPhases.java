@@ -4,23 +4,23 @@ import javax.validation.Valid;
 
 public class DefaultPhases {
     @Valid
-    private IntroInfoPhase introInfoPhase;
+    private DefaultInfoPhase defaultInfoPhase;
     @Valid
-    private GetAccessPhase getAccessPhase;
+    private DefaultAccessPhase defaultAccessPhase;
 
-    public IntroInfoPhase getIntroInfoPhase() {
-        return introInfoPhase;
+    public DefaultInfoPhase getDefaultInfoPhase() {
+        return defaultInfoPhase;
     }
 
-    public void setIntroInfoPhase(IntroInfoPhase introInfoPhase) {
-        this.introInfoPhase = introInfoPhase;
+    public void setDefaultInfoPhase(DefaultInfoPhase defaultInfoPhase) {
+        this.defaultInfoPhase = defaultInfoPhase;
     }
 
-    public GetAccessPhase getGetAccessPhase() {
-        return getAccessPhase;
+    public DefaultAccessPhase getDefaultAccessPhase() {
+        return defaultAccessPhase;
     }
 
-    public void setGetAccessPhase(GetAccessPhase getAccessPhase) {
-        this.getAccessPhase = getAccessPhase;
+    public void setDefaultAccessPhase(DefaultAccessPhase defaultAccessPhase) {
+        this.defaultAccessPhase = defaultAccessPhase;
     }
 }

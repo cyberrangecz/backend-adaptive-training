@@ -3,7 +3,6 @@ package cz.muni.ics.kypo.training.adaptive.service.training;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.querydsl.core.types.Predicate;
 import cz.muni.ics.kypo.training.adaptive.domain.User;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
@@ -64,10 +63,6 @@ public class TrainingDefinitionService {
     private final UserRefRepository userRefRepository;
     private final UserManagementServiceApi userManagementServiceApi;
     private final CloneMapper cloneMapper;
-    private final Validator validator;
-    @Value("${path.to.default.phases:}")
-    private String pathToDefaultPhases;
-    private DefaultPhases defaultPhases;
 
     /**
      * Instantiates a new Training definition service.
@@ -91,8 +86,7 @@ public class TrainingDefinitionService {
                                      TrainingInstanceRepository trainingInstanceRepository,
                                      UserRefRepository userRefRepository,
                                      UserManagementServiceApi userManagementServiceApi,
-                                     CloneMapper cloneMapper,
-                                     Validator validator) {
+                                     CloneMapper cloneMapper) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.trainingPhaseRepository = trainingPhaseRepository;
@@ -103,26 +97,6 @@ public class TrainingDefinitionService {
         this.userRefRepository = userRefRepository;
         this.userManagementServiceApi = userManagementServiceApi;
         this.cloneMapper = cloneMapper;
-        this.validator = validator;
-    }
-
-    @PostConstruct
-    private void loadDefaultPhases() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-        mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, true);
-        mapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
-        try {
-            InputStream inputStream = pathToDefaultPhases.isBlank() ? getClass().getResourceAsStream("/default-phases.json") : new FileInputStream(pathToDefaultPhases);
-            defaultPhases = mapper.readValue(inputStream, DefaultPhases.class);
-            Set<ConstraintViolation<DefaultPhases>> violations = this.validator.validate(defaultPhases);
-            if (!violations.isEmpty()) {
-                throw new InternalServerErrorException("Could not load the default phases. Reason: " + violations.stream()
-                        .map(ConstraintViolation::getMessage).collect(Collectors.toList()));
-            }
-        } catch (IOException e) {
-            throw new InternalServerErrorException("Could not load file with the default phases.", e);
-        }
     }
 
     /**
@@ -161,14 +135,14 @@ public class TrainingDefinitionService {
     }
 
     /**
-     * Finds all Training Definitions accessible to users with the role of organizer.
+     * Finds all Training Definitions by state.
      *
      * @param state    represents a state of training definition if it is released or unreleased.
      * @param pageable pageable parameter with information about pagination.
-     * @return all Training Definitions for organizers
+     * @return all Training Definitions with given state
      */
-    public Page<TrainingDefinition> findAllForOrganizers(TDState state, Pageable pageable) {
-        return trainingDefinitionRepository.findAllForOrganizers(state, pageable);
+    public Page<TrainingDefinition> findAllByState(TDState state, Pageable pageable) {
+        return trainingDefinitionRepository.findAllByState(state, pageable);
     }
 
     /**
@@ -183,16 +157,23 @@ public class TrainingDefinitionService {
     }
 
     /**
+     * Find all played by a user.
+     *
+     * @param userId a user id
+     * @return the list of definitions
+     */
+    public List<TrainingDefinition> findAllPlayedByUser(Long userId) {
+        return trainingDefinitionRepository.findAllPlayedByUser(userId);
+    }
+
+    /**
      * creates new training definition
      *
      * @param trainingDefinition to be created
      * @return new {@link TrainingDefinition}
      */
-    public TrainingDefinition create(TrainingDefinition trainingDefinition, boolean createDefaultContent) {
+    public TrainingDefinition create(TrainingDefinition trainingDefinition) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
-        if (createDefaultContent && defaultPhases != null) {
-            this.createDefaultPhases(trainingDefinition);
-        }
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
         return this.auditAndSave(trainingDefinition);
     }
@@ -360,6 +341,9 @@ public class TrainingDefinitionService {
             if (phase instanceof InfoPhase) {
                 cloneInfoPhase((InfoPhase) phase, clonedTrainingDefinition);
             }
+            if (phase instanceof AccessPhase) {
+                cloneAccessPhase((AccessPhase) phase, clonedTrainingDefinition);
+            }
             if (phase instanceof TrainingPhase) {
                 TrainingPhase clonedTrainingPhase = cloneTrainingPhase((TrainingPhase) phase, clonedTrainingDefinition);
                 clonedTrainingPhases.put(phase.getId(), clonedTrainingPhase);
@@ -376,6 +360,12 @@ public class TrainingDefinitionService {
         InfoPhase clonedInfoPhase = cloneMapper.clone(infoPhase);
         clonedInfoPhase.setTrainingDefinition(trainingDefinition);
         infoPhaseRepository.save(clonedInfoPhase);
+    }
+
+    private void cloneAccessPhase(AccessPhase accessPhase, TrainingDefinition trainingDefinition) {
+        AccessPhase clonedAccessPhase = cloneMapper.clone(accessPhase);
+        clonedAccessPhase.setTrainingDefinition(trainingDefinition);
+        accessPhaseRepository.save(clonedAccessPhase);
     }
 
     private TrainingPhase cloneTrainingPhase(TrainingPhase trainingPhase, TrainingDefinition trainingDefinition) {
@@ -486,87 +476,5 @@ public class TrainingDefinitionService {
             User newUser = new User(userManagementServiceApi.getLoggedInUserRefId());
             trainingDefinition.addAuthor(newUser);
         }
-    }
-
-    private void createDefaultPhases(TrainingDefinition trainingDefinition) {
-        InfoPhase introInfoPhase = new InfoPhase();
-        introInfoPhase.setTitle(defaultPhases.getIntroInfoPhase().getTitle());
-        introInfoPhase.setOrder(0);
-        introInfoPhase.setTrainingDefinition(trainingDefinition);
-        introInfoPhase.setContent(defaultPhases.getIntroInfoPhase().getContent());
-        infoPhaseRepository.save(introInfoPhase);
-
-        QuestionnairePhase questionnairePhase = new QuestionnairePhase();
-        questionnairePhase.setQuestionnaireType(QuestionnaireType.ADAPTIVE);
-        questionnairePhase.setOrder(1);
-        questionnairePhase.setTrainingDefinition(trainingDefinition);
-        questionnairePhase.setTitle("Pre-training questionnaire");
-        questionnairePhase.setQuestions(new ArrayList<>(List.of(
-                defaultMCQ(0, questionnairePhase),
-                defaultFFQ(1, questionnairePhase),
-                defaultRFQ(2, questionnairePhase)
-        )));
-        questionnairePhaseRepository.save(questionnairePhase);
-
-        AccessPhase accessPhase = new AccessPhase();
-        accessPhase.setTitle(defaultPhases.getGetAccessPhase().getTitle());
-        accessPhase.setOrder(2);
-        accessPhase.setTrainingDefinition(trainingDefinition);
-        accessPhase.setPasskey(defaultPhases.getGetAccessPhase().getPasskey());
-        accessPhase.setLocalContent(defaultPhases.getGetAccessPhase().getLocalContent());
-        accessPhase.setCloudContent(defaultPhases.getGetAccessPhase().getCloudContent());
-        accessPhaseRepository.save(accessPhase);
-    }
-
-    private Question defaultMCQ(Integer order, QuestionnairePhase questionnairePhase) {
-        Question mcq = new Question();
-        mcq.setQuestionType(QuestionType.MCQ);
-        mcq.setQuestionnairePhase(questionnairePhase);
-        mcq.setText("The city known as the \"IT capital of India\" is ");
-        mcq.setOrder(order);
-        mcq.setChoices(new ArrayList<>(List.of(
-                createQuestionChoice("Bangalore", 0, true, mcq),
-                createQuestionChoice("Karachi", 1, false, mcq),
-                createQuestionChoice("Mumbai", 2, false, mcq)
-        )));
-        return mcq;
-    }
-
-    private Question defaultFFQ(Integer order, QuestionnairePhase questionnairePhase) {
-        Question ffq = new Question();
-        ffq.setQuestionType(QuestionType.FFQ);
-        ffq.setQuestionnairePhase(questionnairePhase);
-        ffq.setText("What is the example of the transport layer protocol?");
-        ffq.setOrder(order);
-        ffq.setChoices(new ArrayList<>(List.of(
-                createQuestionChoice("SPX", 0, true, ffq),
-                createQuestionChoice("TCP", 1, true, ffq),
-                createQuestionChoice("UDP", 2, true, ffq)
-        )));
-        return ffq;
-    }
-
-    private Question defaultRFQ(Integer order, QuestionnairePhase questionnairePhase) {
-        Question rfq = new Question();
-        rfq.setQuestionType(QuestionType.RFQ);
-        rfq.setQuestionnairePhase(questionnairePhase);
-        rfq.setText("What is your level of skill in zip and unzip files in CLI?");
-        rfq.setOrder(order);
-        rfq.setChoices(new ArrayList<>(List.of(
-                createQuestionChoice("High", 0, true, rfq),
-                createQuestionChoice("Medium", 1, true, rfq),
-                createQuestionChoice("Low", 3, false, rfq),
-                createQuestionChoice("None", 2, false, rfq)
-        )));
-        return rfq;
-    }
-
-    private QuestionChoice createQuestionChoice(String text, Integer order, boolean correct, Question question) {
-        QuestionChoice choice = new QuestionChoice();
-        choice.setText(text);
-        choice.setOrder(order);
-        choice.setCorrect(correct);
-        choice.setQuestion(question);
-        return choice;
     }
 }

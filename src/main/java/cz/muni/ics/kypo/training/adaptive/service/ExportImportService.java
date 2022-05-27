@@ -10,6 +10,7 @@ import cz.muni.ics.kypo.training.adaptive.exceptions.EntityErrorDetail;
 import cz.muni.ics.kypo.training.adaptive.exceptions.EntityNotFoundException;
 import cz.muni.ics.kypo.training.adaptive.repository.QuestionAnswerRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseRepository;
+import cz.muni.ics.kypo.training.adaptive.repository.phases.MitreTechniqueRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.QuestionPhaseRelationRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.phases.TrainingPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
@@ -18,6 +19,7 @@ import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingRunReposit
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +38,7 @@ public class ExportImportService {
     private final TrainingPhaseRepository trainingPhaseRepository;
     private final TrainingInstanceRepository trainingInstanceRepository;
     private final TrainingRunRepository trainingRunRepository;
+    private final MitreTechniqueRepository mitreTechniqueRepository;
 
     /**
      * Instantiates a new Export import service.
@@ -54,7 +57,8 @@ public class ExportImportService {
                                QuestionAnswerRepository questionAnswerRepository,
                                TrainingPhaseRepository trainingPhaseRepository,
                                TrainingInstanceRepository trainingInstanceRepository,
-                               TrainingRunRepository trainingRunRepository) {
+                               TrainingRunRepository trainingRunRepository,
+                               MitreTechniqueRepository mitreTechniqueRepository) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
         this.questionPhaseRelationRepository = questionPhaseRelationRepository;
@@ -62,6 +66,7 @@ public class ExportImportService {
         this.trainingPhaseRepository = trainingPhaseRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.trainingRunRepository = trainingRunRepository;
+        this.mitreTechniqueRepository = mitreTechniqueRepository;
     }
 
     /**
@@ -87,7 +92,19 @@ public class ExportImportService {
         phase.setTrainingDefinition(definition);
         phase.getTasks().forEach(task -> task.setTrainingPhase(phase));
         phase.getDecisionMatrix().forEach(decisionMatrixRow -> decisionMatrixRow.setTrainingPhase(phase));
+        this.setMitreTechniques(phase);
         return abstractPhaseRepository.save(phase);
+    }
+
+    private void setMitreTechniques(TrainingPhase importedLevel) {
+        Set<String> techniqueKeys = importedLevel.getMitreTechniques().stream()
+                .map(MitreTechnique::getTechniqueKey)
+                .collect(Collectors.toSet());
+        Set<MitreTechnique> resultTechniques = mitreTechniqueRepository.findAllByTechniqueKeyIn(techniqueKeys);
+        resultTechniques.addAll(importedLevel.getMitreTechniques());
+
+        importedLevel.setMitreTechniques(new HashSet<>());
+        resultTechniques.forEach(importedLevel::addMitreTechnique);
     }
 
     public QuestionnairePhase createQuestionnairePhase(QuestionnairePhase phase, TrainingDefinition definition) {

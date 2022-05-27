@@ -1,11 +1,13 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.training;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(
         value = "DecisionMatrixRowImportDTO"
 )
+@JsonIgnoreProperties({"id"})
 public class DecisionMatrixRowImportDTO {
     @ApiModelProperty(value = "Order of row in a decision matrix", required = true, example = "1")
     private int order;

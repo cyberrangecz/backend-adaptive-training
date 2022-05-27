@@ -11,6 +11,7 @@ import cz.muni.ics.kypo.training.adaptive.repository.phases.AbstractPhaseReposit
 import cz.muni.ics.kypo.training.adaptive.repository.phases.InfoPhaseRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingDefinitionRepository;
 import cz.muni.ics.kypo.training.adaptive.repository.training.TrainingInstanceRepository;
+import cz.muni.ics.kypo.training.adaptive.startup.DefaultPhasesLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,24 +29,27 @@ public class InfoPhaseService {
     private final TrainingDefinitionRepository trainingDefinitionRepository;
     private final InfoPhaseRepository infoPhaseRepository;
     private final AbstractPhaseRepository abstractPhaseRepository;
+    private final DefaultPhasesLoader defaultPhasesLoader;
 
     @Autowired
     public InfoPhaseService(TrainingDefinitionRepository trainingDefinitionRepository,
                             TrainingInstanceRepository trainingInstanceRepository,
                             InfoPhaseRepository infoPhaseRepository,
-                            AbstractPhaseRepository abstractPhaseRepository) {
+                            AbstractPhaseRepository abstractPhaseRepository,
+                            DefaultPhasesLoader defaultPhasesLoader) {
         this.trainingDefinitionRepository = trainingDefinitionRepository;
         this.trainingInstanceRepository = trainingInstanceRepository;
         this.infoPhaseRepository = infoPhaseRepository;
         this.abstractPhaseRepository = abstractPhaseRepository;
+        this.defaultPhasesLoader = defaultPhasesLoader;
     }
 
-    public InfoPhase createDefaultInfoPhase(TrainingDefinition trainingDefinition) {
+    public InfoPhase createInfoPhase(TrainingDefinition trainingDefinition) {
         checkIfCanBeUpdated(trainingDefinition);
 
         InfoPhase infoPhase = new InfoPhase();
-        infoPhase.setContent("Content of info phase");
-        infoPhase.setTitle("Title of info phase");
+        infoPhase.setTitle(defaultPhasesLoader.getDefaultInfoPhase().getTitle());
+        infoPhase.setContent(defaultPhasesLoader.getDefaultInfoPhase().getContent());
         infoPhase.setTrainingDefinition(trainingDefinition);
         infoPhase.setOrder(abstractPhaseRepository.getCurrentMaxOrder(trainingDefinition.getId()) + 1);
         return infoPhaseRepository.save(infoPhase);

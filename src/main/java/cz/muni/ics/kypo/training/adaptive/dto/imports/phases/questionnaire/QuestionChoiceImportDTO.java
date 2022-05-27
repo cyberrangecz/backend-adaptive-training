@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.dto.imports.phases.questionnaire;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -11,6 +12,7 @@ import java.util.Objects;
 @ApiModel(
         value = "QuestionChoiceImportDTO"
 )
+@JsonIgnoreProperties({"id"})
 public class QuestionChoiceImportDTO {
 
     @ApiModelProperty(value = "Short description of question choice", required = true, example = "An answer")

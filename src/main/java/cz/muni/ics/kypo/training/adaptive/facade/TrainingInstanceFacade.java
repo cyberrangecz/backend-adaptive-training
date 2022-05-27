@@ -33,6 +33,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -185,25 +186,33 @@ public class TrainingInstanceFacade {
 
     private void addOrganizersToTrainingInstance(TrainingInstance trainingInstance, Set<Long> userRefIdsOfOrganizers) {
         if (userRefIdsOfOrganizers.isEmpty()) return;
-        PageResultResource<UserRefDTO> organizers;
+        List<UserRefDTO> organizers = getAllUsersRefsByGivenUsersIds(new ArrayList<>(userRefIdsOfOrganizers));
+        Set<Long> actualOrganizersIds = trainingInstance.getOrganizers().stream()
+                .map(User::getUserRefId)
+                .collect(Collectors.toSet());
+        for (UserRefDTO organizer : organizers) {
+            if (actualOrganizersIds.contains(organizer.getUserRefId())) {
+                continue;
+            }
+            try {
+                trainingInstance.addOrganizer(userService.getUserByUserRefId(organizer.getUserRefId()));
+            } catch (EntityNotFoundException ex) {
+                trainingInstance.addOrganizer(userService.createUserRef(createUserRefFromDTO(organizer)));
+            }
+        }
+    }
+
+    private List<UserRefDTO> getAllUsersRefsByGivenUsersIds(List<Long> participantsRefIds) {
+        List<UserRefDTO> users = new ArrayList<>();
+        PageResultResource<UserRefDTO> usersPageResultResource;
         int page = 0;
         do {
-            organizers = userManagementServiceApi.getUserRefDTOsByUserIds(userRefIdsOfOrganizers, PageRequest.of(page, 999), null, null);
-            Set<Long> actualOrganizersIds = trainingInstance.getOrganizers().stream()
-                    .map(User::getUserRefId)
-                    .collect(Collectors.toSet());
+            usersPageResultResource = userManagementServiceApi.getUserRefDTOsByUserIds(participantsRefIds, PageRequest.of(page, 999), null, null);
+            users.addAll(usersPageResultResource.getContent());
             page++;
-            for (UserRefDTO organizer : organizers.getContent()) {
-                if (actualOrganizersIds.contains(organizer.getUserRefId())) {
-                    continue;
-                }
-                try {
-                    trainingInstance.addOrganizer(userService.getUserByUserRefId(organizer.getUserRefId()));
-                } catch (EntityNotFoundException ex) {
-                    trainingInstance.addOrganizer(userService.createUserRef(createUserRefFromDTO(organizer)));
-                }
-            }
-        } while (organizers.getPagination().getTotalPages() != page);
+        }
+        while (page < usersPageResultResource.getPagination().getTotalPages());
+        return users;
     }
 
     private User createUserRefFromDTO(UserRefDTO userToBeCreated) {
@@ -367,7 +376,7 @@ public class TrainingInstanceFacade {
         TrainingInstance trainingInstance = trainingInstanceService.findById(trainingInstanceId);
         return userManagementServiceApi.getUserRefDTOsByUserIds(trainingInstance.getOrganizers().stream()
                 .map(User::getUserRefId)
-                .collect(Collectors.toSet()), pageable, givenName, familyName);
+                .toList(), pageable, givenName, familyName);
     }
 
     /**

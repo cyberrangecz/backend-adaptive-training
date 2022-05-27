@@ -24,7 +24,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingInstanceA
 import cz.muni.ics.kypo.training.adaptive.dto.archive.training.TrainingRunArchiveDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.FileToReturnDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.export.phases.AbstractPhaseExportDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionWithPhasesExportDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.export.training.TrainingDefinitionExportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.ImportTrainingDefinitionDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.AbstractPhaseImportDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.imports.phases.access.AccessPhaseImportDTO;
@@ -127,7 +127,7 @@ public class ExportImportFacade {
     @TransactionalRO
     public FileToReturnDTO dbExport(Long trainingDefinitionId) {
         TrainingDefinition td = exportImportService.findById(trainingDefinitionId);
-        TrainingDefinitionWithPhasesExportDTO dbExport = exportImportMapper.mapToDTO(td);
+        TrainingDefinitionExportDTO dbExport = exportImportMapper.mapToDTO(td);
         if (dbExport != null) {
             dbExport.setPhases(mapAbstractPhaseToAbstractPhaseDTO(trainingDefinitionId));
         }
@@ -177,7 +177,7 @@ public class ExportImportFacade {
 
         TrainingDefinition newDefinition = exportImportMapper.mapToEntity(importTrainingDefinitionDTO);
         newDefinition.setEstimatedDuration(computeEstimatedDuration(importTrainingDefinitionDTO));
-        TrainingDefinition newTrainingDefinition = trainingDefinitionService.create(newDefinition, false);
+        TrainingDefinition newTrainingDefinition = trainingDefinitionService.create(newDefinition);
         List<AbstractPhaseImportDTO> phases = importTrainingDefinitionDTO.getPhases();
         phases.forEach(phase -> {
             if (phase.getPhaseType().equals(PhaseType.TRAINING)) {

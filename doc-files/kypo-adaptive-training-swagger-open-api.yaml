@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 2.0.0"
+  version: "Version: 2.1.0"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -37,7 +37,7 @@ paths:
         200:
           description: "Training definitions and phase found and exported."
           schema:
-            $ref: "#/definitions/TrainingDefinitionWithPhasesExportDTO"
+            $ref: "#/definitions/TrainingDefinitionExportDTO"
         404:
           description: "Training definition not found."
           schema:
@@ -2202,6 +2202,49 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /training-runs/{runId}/phases/{phaseId}:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get visited phase of given training run."
+      description: "Returns (questionnaire, training, info, access) phase if any phase\
+        \ exists and training run as well"
+      operationId: "getVisitedPhase"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "phaseId"
+        in: "path"
+        description: "Phase ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "fields"
+        in: "query"
+        description: "Fields which should be returned in REST API response"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "The visited phase has been found."
+          schema:
+            $ref: "#/definitions/AbstractLevelDTO"
+        404:
+          description: "The visited phase has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
   /training-runs/{runId}/questionnaire-evaluation:
     put:
       tags:
@@ -2302,6 +2345,72 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /training-runs/{runId}/submissions:
+    get:
+      tags:
+      - "Training runs"
+      summary: "Get trainees submissions."
+      description: ""
+      operationId: "getTraineesSubmissions"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      - name: "phaseId"
+        in: "query"
+        description: "Training phase ID."
+        required: false
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "The submissions has been found."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/SubmissionDTO"
+        404:
+          description: "The training run has not been found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /visualizations/training-definitions/mitre-techniques:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get summarized mitre techniques."
+      description: ""
+      operationId: "getSummarizedMitreTechniques"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Mitre techniques found."
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/TrainingDefinitionMitreTechniqueDTO"
+        404:
+          description: "Training instance with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
   /visualizations/training-instances/{instanceId}/sankey:
     get:
       tags:
@@ -2356,6 +2465,39 @@ paths:
             $ref: "#/definitions/SankeyDiagramDTO"
         404:
           description: "Training instance with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /visualizations/training-runs/{runId}/commands:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get all commands in a training run."
+      description: ""
+      operationId: "getAllCommandsInTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Commands in training run."
+          schema:
+            type: "array"
+            items:
+              type: "object"
+        404:
+          description: "Training run with given id not found."
           schema:
             $ref: "#/definitions/ApiError"
         500:
@@ -2682,6 +2824,13 @@ definitions:
         example: 2
         description: "Main identifier of sandbox definition which is assigned to training\
           \ instance of the training run."
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
+      phase_answered:
+        type: "boolean"
     description: "Just accessed training run."
   AccessedTrainingRunDTO:
     type: "object"
@@ -3283,6 +3432,21 @@ definitions:
       value:
         type: "integer"
         format: "int64"
+  MitreTechniqueDTO:
+    type: "object"
+    required:
+    - "id"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Main identifier of Mitre technique."
+      technique_key:
+        type: "string"
+        example: "T1548.001"
+    description: "Represent 'how' an trainee achieves a tactical goal of the training\
+      \ level by performing an action."
   NodeDTO:
     type: "object"
     properties:
@@ -3623,7 +3787,7 @@ definitions:
         description: "Order of question"
       question_orders:
         type: "array"
-        description: "Set of IDs of questions related to the specified questionnaire"
+        description: "Set of orders of questions related to the specified questionnaire"
         uniqueItems: true
         items:
           type: "integer"
@@ -3632,7 +3796,8 @@ definitions:
         type: "integer"
         format: "int32"
         example: 1
-        description: "ID of training phase to which the questions are related of question"
+        description: "Order of training phase to which the questions are related of\
+          \ question"
       success_rate:
         type: "integer"
         format: "int32"
@@ -3809,6 +3974,44 @@ definitions:
         type: "boolean"
       unsorted:
         type: "boolean"
+  SubmissionDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of a the submission"
+      provided:
+        type: "string"
+        example: "true"
+        description: "Content of the provided answer."
+      submission_type:
+        type: "string"
+        example: "CORRECT"
+        description: "Type of the submission, either correct or incorrect"
+        enum:
+        - "CORRECT"
+        - "INCORRECT"
+      date:
+        type: "string"
+        format: "date-time"
+        example: "2016-10-19 10:23:54+02"
+        description: "Date time when answer was submitted."
+      ip_address:
+        type: "string"
+        example: "2016-10-19 10:23:54+02"
+        description: "IP address of the trainee who submitted an answer."
+      training_run_id:
+        type: "integer"
+        format: "int64"
+        example: "2016-10-19 10:23:54+02"
+        description: "ID of training run."
+      phase_id:
+        type: "integer"
+        format: "int64"
+        example: "2016-10-19 10:23:54+02"
+        description: "ID of phase."
   TaskCopyDTO:
     type: "object"
     required:
@@ -4194,6 +4397,54 @@ definitions:
         position: 1
         description: "Sign if stepper bar should be displayed."
     description: "Training definition to create."
+  TrainingDefinitionExportDTO:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        description: "Description of training definition that is visible to the participant."
+      prerequisites:
+        type: "array"
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      show_stepper_bar:
+        type: "boolean"
+        example: false
+        description: "Sign if stepper bar should be displayed."
+      phases:
+        type: "array"
+        description: "Information about all phase in training definition."
+        items:
+          $ref: "#/definitions/AbstractPhaseExportDTO"
+      estimated_duration:
+        type: "integer"
+        format: "int32"
+        example: 5
+        description: "Estimated time (minutes) taken by the player to finish run created\
+          \ from this definition."
+    description: "An exported detailed information about training definition which\
+      \ also include individual phase."
   TrainingDefinitionInfoDTO:
     type: "object"
     properties:
@@ -4216,6 +4467,30 @@ definitions:
         - "ARCHIVED"
         - "UNRELEASED"
     description: "Basic training definition information."
+  TrainingDefinitionMitreTechniqueDTO:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: "Delta"
+        description: "Unique identifier of the training definition."
+      title:
+        type: "string"
+        example: "Delta"
+        description: "Title of the training definition."
+      played:
+        type: "boolean"
+        example: true
+        description: "Indicates if the training definition has been played by user."
+      mitre_techniques:
+        type: "array"
+        example: "[TA0043.T1595, TA0042.T1588.006]"
+        description: "List of MITRE technique keys."
+        uniqueItems: true
+        items:
+          type: "string"
+    description: "Represent training definition and all used mitre techniques."
   TrainingDefinitionRestResource:
     type: "object"
     properties:
@@ -4284,54 +4559,6 @@ definitions:
         - "ARCHIVED"
         - "UNRELEASED"
     description: "Training definition to update."
-  TrainingDefinitionWithPhasesExportDTO:
-    type: "object"
-    properties:
-      title:
-        type: "string"
-        example: "TrainingDefinition2"
-        description: "A name of the training/game (e.g., Photo Hunter) ."
-      description:
-        type: "string"
-        example: "Unreleased training definition"
-        description: "Description of training definition that is visible to the participant."
-      prerequisites:
-        type: "array"
-        description: "List of knowledge and skills necessary to complete the training."
-        items:
-          type: "string"
-      outcomes:
-        type: "array"
-        description: "A list of knowledge and skills that the participant should learn\
-          \ by attending the training (if it is used for educational purposes) "
-        items:
-          type: "string"
-      state:
-        type: "string"
-        example: "UNRELEASED"
-        description: "Current state of training definition."
-        enum:
-        - "PRIVATED"
-        - "RELEASED"
-        - "ARCHIVED"
-        - "UNRELEASED"
-      show_stepper_bar:
-        type: "boolean"
-        example: false
-        description: "Sign if stepper bar should be displayed."
-      phases:
-        type: "array"
-        description: "Information about all phase in training definition."
-        items:
-          $ref: "#/definitions/AbstractPhaseExportDTO"
-      estimated_duration:
-        type: "integer"
-        format: "int32"
-        example: 5
-        description: "Estimated time (minutes) taken by the player to finish run created\
-          \ from this definition."
-    description: "An exported detailed information about training definition which\
-      \ also include individual phase."
   TrainingInstanceArchiveDTO:
     type: "object"
     properties:
@@ -4375,6 +4602,11 @@ definitions:
         type: "boolean"
         example: true
         description: "Indicates if local sandboxes are used for training runs."
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
     description: "The finished and archived instance of training definition which\
       \ includes individual finished training runs of participants."
   TrainingInstanceAssignPoolIdDTO:
@@ -4431,6 +4663,11 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox definition assigned to training instance"
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
   TrainingInstanceCreateDTO:
     type: "object"
     required:
@@ -4458,6 +4695,11 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox definition assigned to training instance"
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
       start_time:
         type: "string"
         format: "date-time"
@@ -4547,6 +4789,11 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox definition assigned to training instance"
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
     description: "A session of attending a concrete training, which involves a deployment\
       \ of the training definition in one or more sandbox instances that are then\
       \ assigned to participants. The instance comprises one or more game runs."
@@ -4600,6 +4847,11 @@ definitions:
         type: "boolean"
         example: true
         description: "Indicates if local sandboxes are used for training runs."
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
     description: "Information about training instance returned in find all training\
       \ instance response."
   TrainingInstanceRestResource:
@@ -4646,6 +4898,11 @@ definitions:
         format: "int64"
         example: 1
         description: "Id of sandbox definition assigned to training instance"
+      backward_mode:
+        type: "boolean"
+        example: true
+        description: "Indicates if trainee can during training run move to the previous\
+          \ already solved phases."
       title:
         type: "string"
         example: "Current Instance"
@@ -4719,6 +4976,18 @@ definitions:
           description: "Questions related to the training phase."
           items:
             $ref: "#/definitions/AbstractQuestionDTO"
+        mitre_techniques:
+          type: "array"
+          description: "List of mitre techniques used in the training level."
+          items:
+            $ref: "#/definitions/MitreTechniqueDTO"
+        expected_commands:
+          type: "array"
+          description: "Set of the expected commands to be executed during the training\
+            \ level."
+          uniqueItems: true
+          items:
+            type: "string"
   TrainingPhaseExportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseExportDTO"
@@ -4755,6 +5024,19 @@ definitions:
           description: "Decision matrix associated with the training phase"
           items:
             $ref: "#/definitions/DecisionMatrixRowExportDTO"
+        mitre_techniques:
+          type: "array"
+          description: "List of mitre techniques used in the training phase."
+          uniqueItems: true
+          items:
+            $ref: "#/definitions/MitreTechniqueDTO"
+        expected_commands:
+          type: "array"
+          description: "Set of the expected commands to be executed during the training\
+            \ level."
+          uniqueItems: true
+          items:
+            type: "string"
       description: "Exported training phase."
   TrainingPhaseImportDTO:
     allOf:
@@ -4770,6 +5052,18 @@ definitions:
           example: 50
           description: "Estimated time it takes to finish the phase (in minutes)."
           minimum: 0
+        mitre_techniques:
+          type: "array"
+          description: "List of mitre techniques used in the training level."
+          items:
+            $ref: "#/definitions/MitreTechniqueDTO"
+        expected_commands:
+          type: "array"
+          description: "Set of the expected commands to be executed during the training\
+            \ level."
+          uniqueItems: true
+          items:
+            type: "string"
         allowed_commands:
           type: "integer"
           format: "int32"
@@ -4810,6 +5104,18 @@ definitions:
       - "estimated_duration"
       - "tasks"
       properties:
+        mitre_techniques:
+          type: "array"
+          description: "List of mitre techniques used in the training level."
+          items:
+            $ref: "#/definitions/MitreTechniqueDTO"
+        expected_commands:
+          type: "array"
+          description: "Set of the expected commands to be executed during the training\
+            \ level."
+          uniqueItems: true
+          items:
+            type: "string"
         allowed_wrong_answers:
           type: "integer"
           format: "int32"

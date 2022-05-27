@@ -211,7 +211,7 @@ public class TrainingInstanceFacade {
             users.addAll(usersPageResultResource.getContent());
             page++;
         }
-        while (page != usersPageResultResource.getPagination().getTotalPages());
+        while (page < usersPageResultResource.getPagination().getTotalPages());
         return users;
     }
 

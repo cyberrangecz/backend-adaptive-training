@@ -1,3 +1,4 @@
+2.1.1 Modify validation of the access token during TI update, fix computation of the suitable task.
 2.1.0 Structure of the archived definition is same as exported one, added field for map of games (MITRE techniques), endpoint to request all commands from training run, fix cloning of access phase, support backward mode (move to previous phases), unify default content of default phases.
 2.0.0 Migrate project to Java 17. Allow to edit end time of the ongoing training instance.
 1.1.0 Integration of the local sandboxes. Bugfix - update decision matrix rows orders when a training phase is deleted. New type of level - access level. Prefill the task title by phase title.

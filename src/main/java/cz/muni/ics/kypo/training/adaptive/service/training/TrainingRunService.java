@@ -245,8 +245,7 @@ public class TrainingRunService {
             String accessToken = trainingRun.getTrainingInstance().getAccessToken();
             Long userId = trainingRun.getParticipantRef().getUserRefId();
             // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
-//            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
-            int suitableTask = 1;
+            int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
             trainingRun.setCurrentTask(null);

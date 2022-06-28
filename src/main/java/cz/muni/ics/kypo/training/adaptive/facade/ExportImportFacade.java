@@ -235,7 +235,7 @@ public class ExportImportFacade {
             fileToReturnDTO.setTitle(trainingInstance.getTitle());
             return fileToReturnDTO;
         } catch (IOException ex) {
-            throw new InternalServerErrorException("The .zip file was not created since there were some processing error.", ex);
+            throw new InternalServerErrorException("The .zip file was not created since there were some processing errors.", ex);
         }
     }
 

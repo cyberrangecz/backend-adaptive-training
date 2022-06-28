@@ -1,18 +1,18 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
-import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTrainee;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
-import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.TrainingPhase;
+import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTrainee;
+import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
-import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.responses.PageResultResource;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TrainingRunDataDTO;
@@ -31,6 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.*;
 import java.util.function.Function;

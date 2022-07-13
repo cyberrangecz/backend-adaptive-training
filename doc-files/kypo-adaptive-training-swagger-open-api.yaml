@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 2.1.0"
+  version: "Version: 2.1.1"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -3970,9 +3970,9 @@ definitions:
     properties:
       empty:
         type: "boolean"
-      sorted:
-        type: "boolean"
       unsorted:
+        type: "boolean"
+      sorted:
         type: "boolean"
   SubmissionDTO:
     type: "object"

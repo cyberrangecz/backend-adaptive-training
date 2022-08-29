@@ -1,5 +1,7 @@
 package cz.muni.ics.kypo.training.adaptive.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.access.AccessPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.info.InfoPhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
@@ -15,6 +17,12 @@ import java.util.Objects;
         subTypes = {TrainingPhaseDTO.class, AccessPhaseDTO.class, InfoPhaseDTO.class, QuestionnairePhaseDTO.class},
         description = "Abstract superclass for classes TrainingPhaseDTO, AccessPhaseDTO, InfoPhaseDTO and QuestionnairePhaseDTO"
 )
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "phase_type", visible = true)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = TrainingPhaseDTO.class, name = "TRAINING"),
+        @JsonSubTypes.Type(value = AccessPhaseDTO.class, name = "ACCESS"),
+        @JsonSubTypes.Type(value = QuestionnairePhaseDTO.class, name = "QUESTIONNAIRE"),
+        @JsonSubTypes.Type(value = InfoPhaseDTO.class, name = "INFO")})
 public class AbstractPhaseDTO {
 
     @ApiModelProperty(value = "ID of task", required = true, example = "1")

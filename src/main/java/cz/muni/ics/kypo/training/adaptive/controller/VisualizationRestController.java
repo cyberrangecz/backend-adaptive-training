@@ -1,20 +1,23 @@
 package cz.muni.ics.kypo.training.adaptive.controller;
 
 
-import com.github.bohnman.squiggly.util.SquigglyUtils;
+import cz.muni.ics.kypo.training.adaptive.domain.simulator.InstanceModelUpdate;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.visualizations.simulator.InstanceSimulatorDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.transitions.TransitionsDataDTO;
 import cz.muni.ics.kypo.training.adaptive.exceptions.errors.ApiError;
+import cz.muni.ics.kypo.training.adaptive.facade.SankeySimulatorFacade;
 import cz.muni.ics.kypo.training.adaptive.facade.VisualizationFacade;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import java.util.List;
 import java.util.Map;
@@ -31,14 +34,18 @@ import java.util.Map;
         @ApiResponse(code = 403, message = "The necessary permissions are required for a resource.", response = ApiError.class)
 })
 @RestController
+@Validated
 @RequestMapping(value = "/visualizations", produces = MediaType.APPLICATION_JSON_VALUE)
 public class VisualizationRestController {
 
     private final VisualizationFacade visualizationFacade;
+    private final SankeySimulatorFacade sankeySimulatorFacade;
 
     @Autowired
-    public VisualizationRestController(VisualizationFacade visualizationFacade) {
+    public VisualizationRestController(VisualizationFacade visualizationFacade, SankeySimulatorFacade sankeySimulatorFacade) {
         this.visualizationFacade = visualizationFacade;
+        this.sankeySimulatorFacade = sankeySimulatorFacade;
+
     }
 
     /**
@@ -63,6 +70,54 @@ public class VisualizationRestController {
                                                                           @PathVariable("instanceId") Long trainingInstanceId) {
         SankeyDiagramDTO clusteringVisualizationDTO = visualizationFacade.getSankeyDiagram(trainingInstanceId);
         return ResponseEntity.ok(clusteringVisualizationDTO);
+    }
+
+    /**
+     * Process exported training instance data.
+     *
+     * @param zipFile exported training instance data.
+     * @return data for sankey visualizations and training definition.
+     */
+    @ApiOperation(httpMethod = "POST",
+            value = "Get necessary visualization info and training definition for training instance simulator.",
+            response = InstanceSimulatorDTO.class,
+            nickname = "uploadTrainingInstance",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Data for visualization and definition uploaded.", response = InstanceSimulatorDTO.class),
+            @ApiResponse(code = 400, message = "The provided exported data is not valid", response = ApiError.class),
+            @ApiResponse(code = 404, message = "Training instance not found.", response = ApiError.class),
+            @ApiResponse(code = 415, message = "File type not supported.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @PostMapping(path = "/training-instances/simulator", consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<InstanceSimulatorDTO> uploadTrainingInstance(@ApiParam(value = "Exported training instance data", required = true)
+                                                                       @Valid @RequestBody byte[] zipFile) {
+        return new ResponseEntity<>(sankeySimulatorFacade.processTrainingInstance(zipFile), HttpStatus.OK);
+    }
+
+    /**
+     * Regenerate sankey diagram.
+     *
+     * @param instanceModelUpdate update data TODo
+     * @return data for sankey visualizations.
+     */
+    @ApiOperation(httpMethod = "POST",
+            value = "Get necessary visualization info for training instance simulator.",
+            response = SankeyDiagramDTO.class,
+            nickname = "uploadTrainingInstance",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Data for visualization and definition uploaded.", response = SankeyDiagramDTO.class),
+            @ApiResponse(code = 404, message = "Training instance not found.", response = ApiError.class),
+            @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
+    })
+    @PostMapping(path = "/training-instances/generate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<SankeyDiagramDTO> uploadTrainingInstance(@ApiParam(value = "Cache id", required = true)
+                                                                       @Valid @RequestBody InstanceModelUpdate instanceModelUpdate) {
+        return new ResponseEntity<>(sankeySimulatorFacade.generateSankeyDiagram(instanceModelUpdate), HttpStatus.OK);
     }
 
     /**

@@ -6,6 +6,8 @@ import cz.muni.ics.kypo.training.adaptive.domain.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.*;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.QuestionAnswer;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.questions.TrainingPhaseQuestionsFulfillment;
+import cz.muni.ics.kypo.training.adaptive.domain.simulator.OverallPhaseStatistics;
+import cz.muni.ics.kypo.training.adaptive.domain.simulator.imports.*;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
@@ -41,6 +43,8 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -278,6 +282,74 @@ public class TrainingRunService {
         adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowForAssistantDTO(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(),
                 nextPhase.getAllowedWrongAnswers(), phases, trainingRun.getId()));
         return adaptiveSmartAssistantInput;
+    }
+
+    public AdaptiveSmartAssistantInput gatherInputDataForSmartAssistant(Long trainingRunId, TrainingPhaseImport nextPhase, List<AbstractPhaseImport> phases,
+                                                                        OverallPhaseStatistics currentPhaseStatistics, QuestionnairePhaseImport preGameQuestionnairePhase) {
+        AdaptiveSmartAssistantInput adaptiveSmartAssistantInput = new AdaptiveSmartAssistantInput();
+        adaptiveSmartAssistantInput.setPhaseX(nextPhase.getId());
+        adaptiveSmartAssistantInput.setTrainingRunId(trainingRunId);
+        adaptiveSmartAssistantInput.setPhaseXTasks(nextPhase.getTasks().size());
+        adaptiveSmartAssistantInput.setPhaseIds(phases.stream()
+                .map(AbstractPhaseImport::getId)
+                .collect(Collectors.toList()));
+        adaptiveSmartAssistantInput.setDecisionMatrix(mapToDecisionMatrixRowDTOForAssistant(nextPhase.getDecisionMatrix(), nextPhase.getAllowedCommands(),
+                nextPhase.getAllowedWrongAnswers(), phases, currentPhaseStatistics, preGameQuestionnairePhase));
+        return adaptiveSmartAssistantInput;
+    }
+
+    private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowDTOForAssistant(List<DecisionMatrixRowImport> decisionMatrixRows, int allowedCommands,
+                                                                                         int allowedWrongAnswers, List<AbstractPhaseImport> phases, OverallPhaseStatistics currentPhaseStatistics, QuestionnairePhaseImport preGameQuestionnairePhase) {
+        List<AbstractPhaseImport> orderedTrainingPhases = phases.stream()
+                .filter(phase -> phase instanceof TrainingPhaseImport)
+                .limit(decisionMatrixRows.size())
+                .sorted(Comparator.comparing(AbstractPhaseImport::getOrder))
+                .collect(Collectors.toList());
+
+        return decisionMatrixRows.stream().map(row -> {
+            DecisionMatrixRowForAssistantDTO decisionMatrixRowForAssistantDTO = new DecisionMatrixRowForAssistantDTO();
+            decisionMatrixRowForAssistantDTO.setId(row.getId());
+            decisionMatrixRowForAssistantDTO.setAllowedCommands(allowedCommands);
+            decisionMatrixRowForAssistantDTO.setAllowedWrongAnswers(allowedWrongAnswers);
+            decisionMatrixRowForAssistantDTO.setCompletedInTime(row.getCompletedInTime());
+            decisionMatrixRowForAssistantDTO.setKeywordUsed(row.getKeywordUsed());
+            decisionMatrixRowForAssistantDTO.setOrder(row.getOrder());
+            decisionMatrixRowForAssistantDTO.setQuestionnaireAnswered(row.getQuestionnaireAnswered());
+            decisionMatrixRowForAssistantDTO.setSolutionDisplayed(row.getSolutionDisplayed());
+            decisionMatrixRowForAssistantDTO.setWrongAnswers(row.getWrongAnswers());
+            decisionMatrixRowForAssistantDTO.setRelatedPhaseInfo(getPhaseInfo(orderedTrainingPhases.get(row.getOrder()), currentPhaseStatistics, preGameQuestionnairePhase));
+            return decisionMatrixRowForAssistantDTO;
+        }).collect(Collectors.toList());
+    }
+
+    private RelatedPhaseInfoDTO getPhaseInfo(AbstractPhaseImport abstractPhase, OverallPhaseStatistics currentPhaseStatistics, QuestionnairePhaseImport preGameQuestionnairePhase) {
+        RelatedPhaseInfoDTO relatedPhaseInfoDTO = new RelatedPhaseInfoDTO();
+        relatedPhaseInfoDTO.setId(abstractPhase.getId());
+        if (abstractPhase instanceof TrainingPhaseImport) {
+            boolean trainingPhaseQuestionsFulfillment = getTrainingPhaseQuestionsFulfillment(preGameQuestionnairePhase, abstractPhase.getOrder(), currentPhaseStatistics);
+            relatedPhaseInfoDTO.setCorrectlyAnsweredRelatedQuestions(trainingPhaseQuestionsFulfillment);
+            relatedPhaseInfoDTO.setEstimatedPhaseTime(((TrainingPhaseImport) abstractPhase).getEstimatedDuration());
+        }
+        return relatedPhaseInfoDTO;
+    }
+
+    private boolean getTrainingPhaseQuestionsFulfillment(QuestionnairePhaseImport preGameQuestionnairePhase, Integer currentPhaseOrder, OverallPhaseStatistics currentPhaseStatistics) {
+        QuestionPhaseRelationImport phaseRelation = preGameQuestionnairePhase.getPhaseRelations().stream()
+                .filter(relation -> relation.getPhaseOrder().equals(currentPhaseOrder))
+                .findFirst()
+                .orElse(null);
+        if (phaseRelation == null) {
+            return false;
+        }
+        AtomicInteger success = new AtomicInteger(0);
+        phaseRelation.getQuestionOrders().forEach(question -> {
+            if (question >= currentPhaseStatistics.getQuestionsAnswer().size()) {
+                success.addAndGet(0);
+            } else {
+                success.addAndGet(currentPhaseStatistics.getQuestionsAnswer().get(question) ? 1 : 0);
+            }
+        });
+        return ((success.get() / phaseRelation.getQuestionOrders().size()) * 100) >= phaseRelation.getSuccessRate();
     }
 
     private List<DecisionMatrixRowForAssistantDTO> mapToDecisionMatrixRowForAssistantDTO(List<DecisionMatrixRow> decisionMatrixRows, int allowedCommands,

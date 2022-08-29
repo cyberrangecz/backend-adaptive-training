@@ -91,7 +91,8 @@ public class TrainingDefinitionFacade {
      * @param id of a Training Definition that would be returned
      * @return specific {@link TrainingDefinitionByIdDTO}
      */
-    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_TRAINEE)")
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.enums.RoleTypeSecurity).ROLE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isDesignerOfGivenTrainingDefinition(#id)")
     @TransactionalRO
     public TrainingDefinitionByIdDTO findById(Long id) {
         TrainingDefinition trainingDefinition = trainingDefinitionService.findById(id);

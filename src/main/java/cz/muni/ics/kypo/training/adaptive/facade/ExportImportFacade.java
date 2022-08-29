@@ -42,6 +42,7 @@ import cz.muni.ics.kypo.training.adaptive.mapping.PhaseMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.QuestionPhaseRelationMapper;
 import cz.muni.ics.kypo.training.adaptive.mapping.TrainingDefinitionMapper;
 import cz.muni.ics.kypo.training.adaptive.service.ExportImportService;
+import cz.muni.ics.kypo.training.adaptive.service.SecurityService;
 import cz.muni.ics.kypo.training.adaptive.service.VisualizationService;
 import cz.muni.ics.kypo.training.adaptive.service.api.ElasticsearchServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
@@ -50,6 +51,7 @@ import cz.muni.ics.kypo.training.adaptive.utils.AbstractFileExtensions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,6 +78,7 @@ public class ExportImportFacade {
     private final ExportImportService exportImportService;
     private final TrainingDefinitionService trainingDefinitionService;
     private final VisualizationService visualizationService;
+    private final SecurityService securityService;
     private final SandboxServiceApi sandboxServiceApi;
     private final ElasticsearchServiceApi elasticsearchServiceApi;
     private final ExportImportMapper exportImportMapper;
@@ -88,9 +91,10 @@ public class ExportImportFacade {
      * Instantiates a new Export import facade.
      *
      * @param exportImportService       the export import service
+     * @param trainingDefinitionService the training definition service
+     * @param securityService
      * @param exportImportMapper        the export import mapper
      * @param phaseMapper               the phase mapper
-     * @param trainingDefinitionService the training definition service
      * @param trainingDefinitionMapper  the training definition mapper
      * @param objectMapper              the object mapper
      */
@@ -98,7 +102,7 @@ public class ExportImportFacade {
     public ExportImportFacade(ExportImportService exportImportService,
                               TrainingDefinitionService trainingDefinitionService,
                               VisualizationService visualizationService,
-                              SandboxServiceApi sandboxServiceApi,
+                              SecurityService securityService, SandboxServiceApi sandboxServiceApi,
                               ElasticsearchServiceApi elasticsearchServiceApi,
                               ExportImportMapper exportImportMapper,
                               PhaseMapper phaseMapper,
@@ -108,6 +112,7 @@ public class ExportImportFacade {
         this.exportImportService = exportImportService;
         this.trainingDefinitionService = trainingDefinitionService;
         this.visualizationService = visualizationService;
+        this.securityService = securityService;
         this.sandboxServiceApi = sandboxServiceApi;
         this.elasticsearchServiceApi = elasticsearchServiceApi;
         this.exportImportMapper = exportImportMapper;
@@ -123,7 +128,8 @@ public class ExportImportFacade {
      * @param trainingDefinitionId the id of the definition to be exported
      * @return the file containing definition, {@link FileToReturnDTO}
      */
-    @IsDesignerOrOrganizerOrAdmin
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.enums.RoleTypeSecurity).ROLE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isDesignerOfGivenTrainingDefinition(#trainingDefinitionId)")
     @TransactionalRO
     public FileToReturnDTO dbExport(Long trainingDefinitionId) {
         TrainingDefinition td = exportImportService.findById(trainingDefinitionId);
@@ -208,7 +214,8 @@ public class ExportImportFacade {
      * @param trainingInstanceId the id of the instance to be exported
      * @return the file containing instance, {@link FileToReturnDTO}
      */
-    @IsOrganizerOrAdmin
+    @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.enums.RoleTypeSecurity).ROLE_TRAINING_ADMINISTRATOR)" +
+            "or @securityService.isOrganizerOfGivenTrainingInstance(#trainingInstanceId)")
     @TransactionalRO
     public FileToReturnDTO archiveTrainingInstance(Long trainingInstanceId) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();

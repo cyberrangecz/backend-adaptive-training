@@ -455,11 +455,13 @@ public class TrainingDefinitionService {
     }
 
     private void addLoggedInUserToTrainingDefinitionAsAuthor(TrainingDefinition trainingDefinition) {
-        Optional<User> user = userRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
+        Long loggedInId = userManagementServiceApi.getLoggedInUserRefId();
+        Optional<User> user = userRefRepository.findUserByUserRefId(loggedInId);
         if (user.isPresent()) {
             trainingDefinition.addAuthor(user.get());
         } else {
-            User newUser = new User(userManagementServiceApi.getLoggedInUserRefId());
+            User newUser = new User(loggedInId);
+            userRefRepository.saveAndFlush(newUser);
             trainingDefinition.addAuthor(newUser);
         }
     }

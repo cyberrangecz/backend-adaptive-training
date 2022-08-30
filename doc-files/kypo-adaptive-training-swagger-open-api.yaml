@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 2.1.1"
+  version: "Version: 2.1.2"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2411,6 +2411,84 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /visualizations/training-instances/generate:
+    post:
+      tags:
+      - "Visualizations"
+      summary: "Get necessary visualization info for training instance simulator."
+      description: ""
+      operationId: "uploadTrainingInstance"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Cache id"
+        required: true
+        schema:
+          $ref: "#/definitions/InstanceModelUpdate"
+      responses:
+        200:
+          description: "Data for visualization and definition uploaded."
+          schema:
+            $ref: "#/definitions/SankeyDiagramDTO"
+        404:
+          description: "Training instance not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
+  /visualizations/training-instances/simulator:
+    post:
+      tags:
+      - "Visualizations"
+      summary: "Get necessary visualization info and training definition for training\
+        \ instance simulator."
+      description: ""
+      operationId: "uploadTrainingInstance"
+      consumes:
+      - "application/octet-stream"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Exported training instance data"
+        required: true
+        schema:
+          type: "array"
+          items:
+            type: "string"
+            format: "byte"
+      responses:
+        200:
+          description: "Data for visualization and definition uploaded."
+          schema:
+            $ref: "#/definitions/InstanceSimulatorDTO"
+        400:
+          description: "The provided exported data is not valid"
+          schema:
+            $ref: "#/definitions/ApiError"
+        404:
+          description: "Training instance not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        415:
+          description: "File type not supported."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
   /visualizations/training-instances/{instanceId}/sankey:
     get:
       tags:
@@ -2552,6 +2630,7 @@ definitions:
     - "order"
     - "phase_type"
     - "title"
+    discriminator: "phase_type"
     properties:
       id:
         type: "integer"
@@ -2600,6 +2679,37 @@ definitions:
         description: "Order of phase, starts with 0"
     description: "Superclass for classes TrainingPhaseExportDTO, AccessPhaseExportDTO,\
       \ InfoPhaseExportDTO and QuestionnairePhaseExportDTO"
+  AbstractPhaseImport:
+    type: "object"
+    required:
+    - "id"
+    - "order"
+    discriminator: "phase_type"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of phase"
+      title:
+        type: "string"
+        example: "Training phase description"
+        description: "Short textual description of the phase."
+      phase_type:
+        type: "string"
+        example: "TRAINING"
+        description: "Type of the phase."
+        enum:
+        - "QUESTIONNAIRE"
+        - "INFO"
+        - "TRAINING"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 2
+        description: "Order of phase, starts with 0"
+    description: "Abstract superclass for classes TrainingPhaseDTO, AccessPhaseDTO,\
+      \ InfoPhaseDTO and QuestionnairePhaseDTO"
   AbstractPhaseImportDTO:
     type: "object"
     required:
@@ -2688,6 +2798,36 @@ definitions:
         description: "Choices that are distributed with the question"
         items:
           $ref: "#/definitions/QuestionChoiceDTO"
+  AbstractQuestionImport:
+    type: "object"
+    required:
+    - "choices"
+    - "order"
+    - "question_type"
+    - "text"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      question_type:
+        type: "string"
+        example: "MCQ"
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      choices:
+        type: "array"
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceImport"
   AccessPhaseDTO:
     allOf:
     - $ref: "#/definitions/AbstractLevelDTO"
@@ -2729,6 +2869,26 @@ definitions:
           description: "The instructions on how to connect to the machine in local\
             \ (non-cloud) environment."
       description: "Exported access phase."
+  AccessPhaseImport:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImport"
+    - type: "object"
+      properties:
+        passkey:
+          type: "string"
+          example: "secretAnswer"
+          description: "Keyword used for access next level."
+        cloud_content:
+          type: "string"
+          example: "Connect using SSH config."
+          description: "The instructions on how to connect to the machine in cloud\
+            \ environment."
+        local_content:
+          type: "string"
+          example: "Use vagrant SSH connection."
+          description: "The instructions on how to connect to the machine in local\
+            \ (non-cloud) environment."
+      description: "Imported access phase."
   AccessPhaseImportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseImportDTO"
@@ -3138,6 +3298,56 @@ definitions:
         format: "double"
         example: 0.5
         description: "It determines how important the number of wrong answers are"
+  DecisionMatrixRowImport:
+    type: "object"
+    required:
+    - "completed_in_time"
+    - "id"
+    - "keyword_used"
+    - "order"
+    - "questionnaire_answered"
+    - "solution_displayed"
+    - "wrong_answers"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of row in a decision matrix"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        description: "Order of row in a decision matrix"
+      questionnaire_answered:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the answers of the questions in\
+          \ questionnaires are"
+      keyword_used:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player used the\
+          \ keyword"
+      completed_in_time:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player completed\
+          \ the task in time"
+      solution_displayed:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important it is whether the player displayed\
+          \ the solution of the task they were solving"
+      wrong_answers:
+        type: "number"
+        format: "double"
+        example: 0.5
+        description: "It determines how important the number of wrong answers are"
   DecisionMatrixRowImportDTO:
     type: "object"
     required:
@@ -3201,6 +3411,78 @@ definitions:
         type: "string"
         example: "Group with same name already exists."
         description: "Detailed message of the exception"
+  ImportTrainingDefinition:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "ID of training definition"
+      title:
+        type: "string"
+        example: "TrainingDefinition2"
+        description: "A name of the training/game (e.g., Photo Hunter) ."
+      last_edited:
+        type: "string"
+        format: "date-time"
+        example: "2017-10-19 10:23:54+02"
+        description: "Time of last edit done to definition."
+      last_edited_by:
+        type: "string"
+        example: "John Doe"
+        description: "Name of the user who has done the last edit in definition."
+      description:
+        type: "string"
+        example: "Unreleased training definition"
+        position: 1
+        description: "Description of training definition that is visible to the participant."
+      state:
+        type: "string"
+        example: "UNRELEASED"
+        position: 2
+        description: "Current state of training definition."
+        enum:
+        - "PRIVATED"
+        - "RELEASED"
+        - "ARCHIVED"
+        - "UNRELEASED"
+      show_stepper_bar:
+        type: "boolean"
+        example: false
+        position: 3
+        description: "Sign if stepper bar should be displayed."
+      estimated_duration:
+        type: "integer"
+        format: "int64"
+        example: 5
+        position: 4
+        description: "Estimated time it takes to finish runs created from this definition."
+      prerequisites:
+        type: "array"
+        position: 5
+        description: "List of knowledge and skills necessary to complete the training."
+        items:
+          type: "string"
+      outcomes:
+        type: "array"
+        position: 6
+        description: "A list of knowledge and skills that the participant should learn\
+          \ by attending the training (if it is used for educational purposes) "
+        items:
+          type: "string"
+      phases:
+        type: "array"
+        position: 7
+        description: "Information about all phase in training definition."
+        items:
+          $ref: "#/definitions/AbstractPhaseImport"
+      can_be_archived:
+        type: "boolean"
+        example: true
+        position: 7
+        description: "Sign if training definition can be archived or not."
+    description: "A basic information about training definition."
   ImportTrainingDefinitionDTO:
     type: "object"
     required:
@@ -3279,6 +3561,17 @@ definitions:
           description: "The information and experiences that are directed towards\
             \ a participant."
       description: "Exported info phase."
+  InfoPhaseImport:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImport"
+    - type: "object"
+      properties:
+        content:
+          type: "string"
+          example: "Informational stuff"
+          description: "The information and experiences that are directed towards\
+            \ a participant."
+      description: "An imported info phase."
   InfoPhaseImportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseImportDTO"
@@ -3301,6 +3594,24 @@ definitions:
           type: "string"
           example: "Read the info"
           description: "The information of info phase that is displayed to a player"
+  InstanceModelUpdate:
+    type: "object"
+    properties:
+      cache_id:
+        type: "string"
+      phases:
+        type: "array"
+        items:
+          $ref: "#/definitions/AbstractPhaseImport"
+  InstanceSimulatorDTO:
+    type: "object"
+    properties:
+      sankey_diagram:
+        $ref: "#/definitions/SankeyDiagramDTO"
+      training_definition:
+        $ref: "#/definitions/ImportTrainingDefinition"
+      cache_key:
+        type: "string"
   IsCorrectAnswerDTO:
     type: "object"
     properties:
@@ -3612,6 +3923,32 @@ definitions:
         format: "int32"
         example: 0
         description: "Order of question choice"
+  QuestionChoiceImport:
+    type: "object"
+    required:
+    - "correct"
+    - "id"
+    - "order"
+    - "text"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question choice ID. Leave blank if new choice is added"
+      text:
+        type: "string"
+        example: "An answer"
+        description: "Short description of question choice"
+      correct:
+        type: "boolean"
+        example: true
+        description: "It defines whether this answer is correct or not"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question choice"
   QuestionChoiceImportDTO:
     type: "object"
     required:
@@ -3700,6 +4037,42 @@ definitions:
         description: "Choices that are distributed with the question"
         items:
           $ref: "#/definitions/QuestionChoiceExportDTO"
+  QuestionImport:
+    type: "object"
+    required:
+    - "choices"
+    - "id"
+    - "order"
+    - "question_type"
+    - "text"
+    properties:
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      text:
+        type: "string"
+        example: "What's the capital of Canada?"
+        description: "The question that will be displayed to a player"
+      question_type:
+        type: "string"
+        example: "MCQ"
+        description: "It defines the type of the question"
+        enum:
+        - "FFQ"
+        - "MCQ"
+        - "RFQ"
+      choices:
+        type: "array"
+        description: "Choices that are distributed with the question"
+        items:
+          $ref: "#/definitions/QuestionChoiceImport"
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question ID. Leave blank if a new question is added"
   QuestionImportDTO:
     type: "object"
     required:
@@ -3803,6 +4176,59 @@ definitions:
         format: "int32"
         example: 50
         description: "Percentage that defines whether a player was successful or not "
+  QuestionPhaseRelationImport:
+    type: "object"
+    required:
+    - "id"
+    - "order"
+    - "phase_id"
+    - "phase_order"
+    - "question_orders"
+    - "success_rate"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question choice ID. Leave blank if new choice is added"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 0
+        description: "Order of question"
+      phase_order:
+        type: "integer"
+        format: "int32"
+        example: 1
+        position: 1
+        description: "ID of training phase to which the questions are related of question"
+      success_rate:
+        type: "integer"
+        format: "int32"
+        example: 50
+        position: 2
+        description: "Percentage that defines whether a player was successful or not "
+      question_orders:
+        type: "array"
+        position: 3
+        description: "Set of orders of questions related to the specified questionnaire"
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int32"
+      question_ids:
+        type: "array"
+        position: 3
+        description: "Set of ids of questions related to the specified questionnaire"
+        uniqueItems: true
+        items:
+          type: "integer"
+          format: "int32"
+      phase_id:
+        type: "integer"
+        format: "int64"
+        position: 3
+        description: "Id of phase to which the question is relate"
   QuestionPhaseRelationImportDTO:
     type: "object"
     required:
@@ -3895,6 +4321,36 @@ definitions:
           items:
             $ref: "#/definitions/QuestionPhaseRelationExportDTO"
       description: "Exported questionnaire phase."
+  QuestionnairePhaseImport:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImport"
+    - type: "object"
+      required:
+      - "phase_relations"
+      - "questionnaire_type"
+      - "questions"
+      properties:
+        questionnaire_type:
+          type: "string"
+          example: "ADAPTIVE"
+          description: "The type of the questionnaire"
+          enum:
+          - "ADAPTIVE"
+          - "GENERAL"
+        questions:
+          type: "array"
+          position: 1
+          description: "Questions in the questionnaire"
+          items:
+            $ref: "#/definitions/QuestionImport"
+        phase_relations:
+          type: "array"
+          position: 2
+          description: "The relation between questions in the questionnaire and phase\
+            \ in the training definition"
+          items:
+            $ref: "#/definitions/QuestionPhaseRelationImport"
+      description: "Imported questionnaire phase."
   QuestionnairePhaseImportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseImportDTO"
@@ -3970,9 +4426,9 @@ definitions:
     properties:
       empty:
         type: "boolean"
-      unsorted:
-        type: "boolean"
       sorted:
+        type: "boolean"
+      unsorted:
         type: "boolean"
   SubmissionDTO:
     type: "object"
@@ -4165,6 +4621,67 @@ definitions:
         example: 15
         description: "It defines the expected duration of sandbox change defined in\
           \ seconds"
+  TaskImport:
+    type: "object"
+    required:
+    - "id"
+    - "incorrect_answer_limit"
+    - "order"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+        example: 1
+        description: "Question choice ID. Leave blank if new choice is added"
+      title:
+        type: "string"
+        example: "Training phase title"
+        description: "Short textual description of the phase."
+      global_order:
+        type: "integer"
+        format: "int32"
+      order:
+        type: "integer"
+        format: "int32"
+        example: 2
+        position: 1
+        description: "Order of phase, starts with 0"
+      content:
+        type: "string"
+        example: "Play me"
+        position: 2
+        description: "The information and experiences that are directed towards a\
+          \ participant."
+      answer:
+        type: "string"
+        example: "secretFlag"
+        position: 3
+        description: "Keyword found in training, used for access next phase."
+      solution:
+        type: "string"
+        example: "This is how you do it"
+        position: 4
+        description: "Instruction how to get answer in training."
+      incorrect_answer_limit:
+        type: "integer"
+        format: "int32"
+        example: 5
+        position: 5
+        description: "How many times player can submit incorrect answer before displaying\
+          \ solution."
+      modify_sandbox:
+        type: "boolean"
+        example: true
+        position: 6
+        description: "Sign if sandbox should be modified if the task is picked."
+      sandbox_change_expected_duration:
+        type: "integer"
+        format: "int32"
+        example: 30
+        position: 7
+        description: "Expected duration of the sandbox change when the task is picked\
+          \ (in seconds)."
+    description: "Imported task of the training phase."
   TaskImportDTO:
     type: "object"
     required:
@@ -5038,6 +5555,62 @@ definitions:
           items:
             type: "string"
       description: "Exported training phase."
+  TrainingPhaseImport:
+    allOf:
+    - $ref: "#/definitions/AbstractPhaseImport"
+    - type: "object"
+      required:
+      - "allowed_commands"
+      - "allowed_wrong_answers"
+      - "decision_matrix"
+      - "estimated_duration"
+      - "related_questions"
+      - "tasks"
+      properties:
+        estimated_duration:
+          type: "integer"
+          format: "int32"
+          example: 50
+          description: "Estimated time it takes to finish the phase (in minutes)."
+        expected_commands:
+          type: "array"
+          description: "Set of the expected commands to be executed during the training\
+            \ phase."
+          uniqueItems: true
+          items:
+            type: "string"
+        related_questions:
+          type: "array"
+          description: "Questions related to the training phase."
+          items:
+            $ref: "#/definitions/AbstractQuestionImport"
+        allowed_commands:
+          type: "integer"
+          format: "int32"
+          example: 10
+          position: 1
+          description: "Number of allowed commands that can be used to solve the task\
+            \ (used for data analysis)."
+        allowed_wrong_answers:
+          type: "integer"
+          format: "int32"
+          example: 4
+          position: 2
+          description: "How many times player can submit incorrect answer before displaying\
+            \ solution."
+        tasks:
+          type: "array"
+          position: 3
+          description: "Tasks associated with the training phase"
+          items:
+            $ref: "#/definitions/TaskImport"
+        decision_matrix:
+          type: "array"
+          position: 4
+          description: "Decision matrix associated with the training phase"
+          items:
+            $ref: "#/definitions/DecisionMatrixRowImport"
+      description: "Imported training phase."
   TrainingPhaseImportDTO:
     allOf:
     - $ref: "#/definitions/AbstractPhaseImportDTO"

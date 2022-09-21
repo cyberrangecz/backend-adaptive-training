@@ -2,6 +2,7 @@ package cz.muni.ics.kypo.training.adaptive.controller;
 
 
 import cz.muni.ics.kypo.training.adaptive.domain.simulator.InstanceModelUpdate;
+import cz.muni.ics.kypo.training.adaptive.dto.CommandDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.trainingdefinition.TrainingDefinitionMitreTechniquesDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.sankey.SankeyDiagramDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.visualizations.simulator.InstanceSimulatorDTO;
@@ -207,8 +208,8 @@ public class VisualizationRestController {
             @ApiResponse(code = 404, message = "Training run with given id not found.", response = ApiError.class),
             @ApiResponse(code = 500, message = "Unexpected condition was encountered.", response = ApiError.class)
     })
-    @GetMapping(path = "/training-runs/{runId}/commands", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Map<String, Object>>> getAllCommandsInTrainingRun(
+    @GetMapping(path = "/commands/training-runs/{runId}/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<CommandDTO>> getAllCommandsInTrainingRun(
             @ApiParam(value = "Training run ID", required = true) @PathVariable("runId") Long runId) {
         return ResponseEntity.ok(visualizationFacade.getAllCommandsInTrainingRun(runId));
     }

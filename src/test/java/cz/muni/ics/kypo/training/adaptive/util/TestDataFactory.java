@@ -177,21 +177,21 @@ public class TestDataFactory {
             LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Archived instance", "archived-6666");
 
     private TrainingRun runningRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
-            TRState.RUNNING, 2, true, 1L, true,
-            20L);
+            TRState.RUNNING, 2, true, "1L", true,
+            "20L");
     private TrainingRun finishedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(10), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-            TRState.FINISHED, 4, false, 3L, true, 30L);
+            TRState.FINISHED, 4, false, "3L", true, "30L");
     private TrainingRun archivedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(20), LocalDateTime.now(Clock.systemUTC()).minusHours(10),
-            TRState.ARCHIVED, 0, false, 5L, false, 60L);
+            TRState.ARCHIVED, 0, false, "5L", false, "60L");
     private TrainingRunByIdDTO trainingRunByIdDTO = generateTrainingRunByIdDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
-             TRState.RUNNING, 5L);
+             TRState.RUNNING, "5L");
     private TrainingRunDTO trainingRunDTO = generateTrainingRunDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(9), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-             TRState.FINISHED, 7L);
+             TRState.FINISHED, "7L");
 //    private AccessedTrainingRunDTO accessedTrainingRunDTO = generateAccessedTrainingRunDTO("Accessed run", LocalDateTime.now(Clock.systemUTC()).minusHours(8), LocalDateTime.now(Clock.systemUTC()).minusHours(4), 5,
 //            6, Actions.RESUME);
 
     private PoolInfoDTO poolInfoDTO = generatePoolInfoDTO(1L, 1L, 5L, 10L, 5L, "sha", "revSha");
-    private SandboxInfo sandboxInfo = generateSandboxInfo(1L, 1, 4);
+    private SandboxInfo sandboxInfo = generateSandboxInfo("1L", 1, 4);
     private SandboxPoolInfo sandboxPoolInfo = generateSandboxPoolInfo(1L, 1L, 10L, 5L);
     private LockedPoolInfo lockedPoolInfo = generateLockedPoolInfo(1L, 1L);
 
@@ -691,7 +691,7 @@ public class TestDataFactory {
     }
 
     private TrainingRun generateTrainingRun(LocalDateTime startTime, LocalDateTime endTime, TRState state,
-                                            int incorrectAnswerCount, boolean solutionTaken, Long SBIRefId, boolean phaseAnswered, Long previousSBIRefId){
+                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, boolean phaseAnswered, String previousSBIRefId){
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setStartTime(startTime);
         newTrainingRun.setEndTime(endTime);
@@ -792,7 +792,7 @@ public class TestDataFactory {
         return trainingInstanceDTO;
     }
 
-    private TrainingRunByIdDTO generateTrainingRunByIdDTO(LocalDateTime start, LocalDateTime end, TRState state, Long SBIId){
+    private TrainingRunByIdDTO generateTrainingRunByIdDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIId){
         TrainingRunByIdDTO trainingRunByIdDTO = new TrainingRunByIdDTO();
         trainingRunByIdDTO.setStartTime(start);
         trainingRunByIdDTO.setEndTime(end);
@@ -801,7 +801,7 @@ public class TestDataFactory {
         return trainingRunByIdDTO;
     }
 
-    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, Long SBIId){
+    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIId){
         TrainingRunDTO trainingRunDTO = new TrainingRunDTO();
         trainingRunDTO.setStartTime(start);
         trainingRunDTO.setEndTime(end);
@@ -843,7 +843,7 @@ public class TestDataFactory {
         return poolInfoDTO;
     }
 
-    private SandboxInfo generateSandboxInfo(Long id, Integer lockId, Integer allocationUnit){
+    private SandboxInfo generateSandboxInfo(String id, Integer lockId, Integer allocationUnit){
         SandboxInfo sandboxInfo = new SandboxInfo();
         sandboxInfo.setId(id);
         sandboxInfo.setAllocationUnitId(allocationUnit);

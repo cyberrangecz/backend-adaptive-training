@@ -36,7 +36,7 @@ public class SandboxServiceApi {
     }
 
 
-    public Long getAndLockSandboxForTrainingRun(Long poolId) {
+    public String getAndLockSandboxForTrainingRun(Long poolId) {
         try {
             SandboxInfo sandboxInfo = sandboxServiceWebClient
                     .get()

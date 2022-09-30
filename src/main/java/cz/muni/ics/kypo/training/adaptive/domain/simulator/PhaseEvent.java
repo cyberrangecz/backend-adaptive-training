@@ -31,7 +31,7 @@ public class PhaseEvent {
     private Long phaseOrder;
     @ApiModelProperty(value = "Identifier of sandbox associated with trainee in phase.", required = true, example = "2")
     @NotNull(message = "{phaseEvent.sandboxId.NotNull.message}")
-    private Long sandboxId;
+    private String sandboxId;
     private Long trainingInstanceId;
     private Long userRefId;
     private Long trainingDefinitionId;

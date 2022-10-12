@@ -221,6 +221,36 @@ public class TrainingRunService {
     }
 
     /**
+     * Check if run event logging works
+     *
+     * @param run run to check
+     * @return resulting boolean
+     */
+    public boolean checkRunEventLogging(TrainingRun run) {
+        return !elasticsearchServiceApi.findAllEventsFromTrainingRun(run).isEmpty();
+    }
+
+    /**
+     * Check if run command logging works
+     *
+     * @param run run to check
+     * @return resulting boolean
+     */
+    public boolean checkRunCommandLogging(TrainingRun run) {
+        List<Map<String, Object>> runCommands;
+        if (run.getTrainingInstance().isLocalEnvironment()) {
+            String accessToken = run.getTrainingInstance().getAccessToken();
+            Long userId = run.getParticipantRef().getUserRefId();
+            runCommands = elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserId(accessToken, userId);
+        } else {
+            Long sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+            runCommands = elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
+        }
+
+        return !runCommands.isEmpty();
+    }
+
+    /**
      * Gets next phase of given Training Run and set new current phase.
      *
      * @param runId id of Training Run whose next phase should be returned.

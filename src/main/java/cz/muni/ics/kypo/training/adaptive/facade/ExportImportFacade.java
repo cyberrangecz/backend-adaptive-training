@@ -284,7 +284,7 @@ public class ExportImportFacade {
         if (instance.isLocalEnvironment()) {
             return elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserId(instance.getAccessToken(), run.getParticipantRef().getUserRefId());
         }
-        Long sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+        String sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
         return elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
     }
 

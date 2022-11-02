@@ -24,7 +24,7 @@ public class OverallPhaseStatistics {
     private Long taskId;
     @JsonProperty()
     @ApiModelProperty(value = "ID of a sandbox", example = "1")
-    private Long sandboxId;
+    private String sandboxId;
     @JsonProperty()
     @ApiModelProperty(value = "Order of a phase", example = "0")
     private Long phaseOrder;

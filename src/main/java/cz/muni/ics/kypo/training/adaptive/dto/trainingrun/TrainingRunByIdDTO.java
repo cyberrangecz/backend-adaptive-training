@@ -29,7 +29,7 @@ public class TrainingRunByIdDTO {
     @ApiModelProperty(value = "Current state of training run.", example = "ALLOCATED")
     private TRState state;
     @ApiModelProperty(value = "Reference to the received sandbox.")
-    private Long sandboxInstanceRefId;
+    private String sandboxInstanceRefId;
     @ApiModelProperty(value = "Reference to participant of training run.")
     private UserRefDTO participantRef;
     @ApiModelProperty(value = "Id of associated training definition")
@@ -117,7 +117,7 @@ public class TrainingRunByIdDTO {
      *
      * @return the sandbox instance id
      */
-    public Long getSandboxInstanceRefId() {
+    public String getSandboxInstanceRefId() {
         return sandboxInstanceRefId;
     }
 
@@ -126,7 +126,7 @@ public class TrainingRunByIdDTO {
      *
      * @param sandboxInstanceRefId the sandbox instance id
      */
-    public void setSandboxInstanceRefId(Long sandboxInstanceRefId) {
+    public void setSandboxInstanceRefId(String sandboxInstanceRefId) {
         this.sandboxInstanceRefId = sandboxInstanceRefId;
     }
 

@@ -121,7 +121,7 @@ public class ElasticsearchServiceApi {
         }
     }
 
-    public List<Map<String, Object>> findAllConsoleCommandsBySandboxAndTimeRange(Integer sandboxId, Long from, Long to) {
+    public List<Map<String, Object>> findAllConsoleCommandsBySandboxAndTimeRange(String sandboxId, Long from, Long to) {
         try {
             return elasticsearchServiceWebClient
                     .get()

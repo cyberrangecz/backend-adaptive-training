@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,4 +32,6 @@ public class TrainingPhaseImport extends AbstractPhaseImport {
     private List<DecisionMatrixRowImport> decisionMatrix;
     @ApiModelProperty(value = "Questions related to the training phase.", required = true)
     private List<AbstractQuestionImport> relatedQuestions;
+    @ApiModelProperty(value = "Mitre techniques specified by the instructor")
+    private List<MitreTechniqueImport> mitreTechniques;
 }

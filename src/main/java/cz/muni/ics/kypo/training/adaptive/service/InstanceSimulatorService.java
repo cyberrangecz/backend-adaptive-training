@@ -56,11 +56,11 @@ public class InstanceSimulatorService {
      * @return parsed sandbox interactions for the simulator.
      * @throws JsonProcessingException if error occurs during parsing of phase-useractions.json
      */
-    public Map<Long, Map<Long, List<PhaseUserActions>>> parseSandboxInteractions(
+    public Map<String, Map<Long, List<PhaseUserActions>>> parseSandboxInteractions(
             String content,
-            Long sandboxId,
+            String sandboxId,
             Long phaseId,
-            Map<Long, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
+            Map<String, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
             Validator validator
     ) throws JsonProcessingException, BadRequestException {
         List<PhaseUserActions> phaseUserActionsCommands =
@@ -167,10 +167,10 @@ public class InstanceSimulatorService {
      */
     @Cacheable(value = "traineesPerformance", key = "#trainingInstanceInfo.getId() + '-' + #trainingInstanceInfo.getAccessToken()")
     public String cacheTraineesPerformance(
-            Map<Long, Long> traineesIdentification,
+            Map<Long, String> traineesIdentification,
             Map<Long, Map<Long, List<QuestionnaireActions>>> questionnaireActions,
             Map<Long, Map<Long, List<PhaseEvent>>> trainingEvents,
-            Map<Long, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
+            Map<String, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
             ImportTrainingDefinition trainingDefinition,
             TrainingInstanceInfo trainingInstanceInfo
     ) {
@@ -189,9 +189,6 @@ public class InstanceSimulatorService {
             participantPerformance.setTraineeID(trainingRunId);
             participantsPerformance.add(participantPerformance);
         });
-        if (participantsPerformance.isEmpty()) {
-            throw new BadRequestException("The file was not processed. Unsupported data format", null);
-        }
         String cacheKey = String.format("%d-%s", trainingInstanceInfo.getId(), trainingInstanceInfo.getAccessToken());
         overallInstanceStatistics.setParticipantsPerformance(participantsPerformance);
         overallInstanceStatistics.setTrainingDefinition(trainingDefinition);
@@ -248,10 +245,10 @@ public class InstanceSimulatorService {
     private List<OverallPhaseStatistics> computePhaseStatistics(
             List<OverallPhaseStatistics> participantPerformance,
             Long trainingRunId,
-            Long sandboxId,
+            String sandboxId,
             Map<Long, Map<Long, List<QuestionnaireActions>>> questionnaireActions,
             Map<Long, Map<Long, List<PhaseEvent>>> trainingEvents,
-            Map<Long, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
+            Map<String, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
             ImportTrainingDefinition trainingDefinition
     ) {
         QuestionnairePhaseImport questionnaire = (QuestionnairePhaseImport) getPreTrainingQuestionnaire(trainingDefinition);

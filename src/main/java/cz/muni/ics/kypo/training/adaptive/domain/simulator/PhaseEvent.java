@@ -12,6 +12,7 @@ public class PhaseEvent {
     @ApiModelProperty(value = "Identifier of events associated with trainee in phase.", required = true, example = "2")
     @NotNull(message = "{phaseEvent.trainingRunId.NotNull.message}")
     private Long trainingRunId;
+    private Long count;
     private String phaseType;
     private Long taskId;
     @ApiModelProperty(value = "Identifier of phase.", required = true, example = "2")

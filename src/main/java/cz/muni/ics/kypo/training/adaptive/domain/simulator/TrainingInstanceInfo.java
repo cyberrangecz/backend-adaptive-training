@@ -25,4 +25,6 @@ public class TrainingInstanceInfo {
     @NotEmpty(message = "{trainingInstance.accessToken.NotEmpty.message}")
     private String accessToken;
     private List<Long> organizersRefIds;
+    private Boolean localEnvironment;
+    private Boolean backwardMode;
 }

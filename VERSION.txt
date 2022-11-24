@@ -1,3 +1,4 @@
+22.12-rc.1 Changed sandboxId type to string, added automatic check if logging works for training events and commands.
 2.1.3 Fix create, update and clone for training definitions
 2.1.2 Fix authorization requirements for various training definition/instance functions, trim access codes on instance creation, removed stack trace from errors, it is no longer possible to create/edit non-local instances without setting the pool.
 2.1.1 Modify validation of the access token during TI update, fix computation of the suitable task.

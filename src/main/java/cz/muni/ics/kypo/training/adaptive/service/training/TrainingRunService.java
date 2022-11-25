@@ -183,7 +183,7 @@ public class TrainingRunService {
             Long userId = trainingRun.getParticipantRef().getUserRefId();
             elasticsearchServiceApi.deleteCommandsByAccessTokenAndUserId(accessToken, userId);
         } else {
-            Long sandboxId = trainingRun.getSandboxInstanceRefId() == null ? trainingRun.getPreviousSandboxInstanceRefId() : trainingRun.getSandboxInstanceRefId();
+            String sandboxId = trainingRun.getSandboxInstanceRefId() == null ? trainingRun.getPreviousSandboxInstanceRefId() : trainingRun.getSandboxInstanceRefId();
             elasticsearchServiceApi.deleteCommandsBySandbox(sandboxId);
         }
         elasticsearchServiceApi.deleteEventsFromTrainingRun(trainingRun.getTrainingInstance().getId(), trainingRun.getId());
@@ -218,6 +218,36 @@ public class TrainingRunService {
      */
     public Set<TrainingRun> findAllByTrainingInstanceId(Long trainingInstanceId) {
         return trainingRunRepository.findAllByTrainingInstanceId(trainingInstanceId);
+    }
+
+    /**
+     * Check if run event logging works
+     *
+     * @param run run to check
+     * @return resulting boolean
+     */
+    public boolean checkRunEventLogging(TrainingRun run) {
+        return !elasticsearchServiceApi.findAllEventsFromTrainingRun(run).isEmpty();
+    }
+
+    /**
+     * Check if run command logging works
+     *
+     * @param run run to check
+     * @return resulting boolean
+     */
+    public boolean checkRunCommandLogging(TrainingRun run) {
+        List<Map<String, Object>> runCommands;
+        if (run.getTrainingInstance().isLocalEnvironment()) {
+            String accessToken = run.getTrainingInstance().getAccessToken();
+            Long userId = run.getParticipantRef().getUserRefId();
+            runCommands = elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserId(accessToken, userId);
+        } else {
+            String sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+            runCommands = elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
+        }
+
+        return !runCommands.isEmpty();
     }
 
     /**
@@ -574,7 +604,7 @@ public class TrainingRunService {
      * @throws MicroserviceApiException error calling OpenStack Sandbox Service API
      */
     public TrainingRun assignSandbox(TrainingRun trainingRun, long poolId) {
-        Long sandboxInstanceRef = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
+        String sandboxInstanceRef = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
         trainingRun.setSandboxInstanceRefId(sandboxInstanceRef);
         return trainingRunRepository.save(trainingRun);
     }
@@ -782,7 +812,7 @@ public class TrainingRunService {
                     run.getTrainingInstance().getAccessToken(),
                     run.getParticipantRef().getUserRefId());
         }
-        Long sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+        String sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
         return elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
     }
 

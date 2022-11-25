@@ -272,8 +272,8 @@ public class ExportImportFacade {
             writeEventsByPhases(zos, run, events);
 
             List<Map<String, Object>> consoleCommands = getConsoleCommands(trainingInstance, run);
-            Integer sandboxId = events.get(0).get("sandbox_id") == null ?
-                    run.getParticipantRef().getUserRefId().intValue() : (Integer) events.get(0).get("sandbox_id");
+            String sandboxId = events.get(0).get("sandbox_id") == null ?
+                    run.getParticipantRef().getUserRefId().toString() : (String) events.get(0).get("sandbox_id");
             writeConsoleCommands(zos, sandboxId, consoleCommands);
             writeConsoleCommandsDetails(zos, trainingInstance, run, sandboxId, phaseStartTimestampMapping);
         }
@@ -284,7 +284,7 @@ public class ExportImportFacade {
         if (instance.isLocalEnvironment()) {
             return elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserId(instance.getAccessToken(), run.getParticipantRef().getUserRefId());
         }
-        Long sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
+        String sandboxId = run.getSandboxInstanceRefId() == null ? run.getPreviousSandboxInstanceRefId() : run.getSandboxInstanceRefId();
         return elasticsearchServiceApi.findAllConsoleCommandsBySandbox(sandboxId);
     }
 
@@ -348,7 +348,7 @@ public class ExportImportFacade {
         }
     }
 
-    private void writeConsoleCommands(ZipOutputStream zos, Integer sandboxId, List<Map<String, Object>> consoleCommands) throws IOException {
+    private void writeConsoleCommands(ZipOutputStream zos, String sandboxId, List<Map<String, Object>> consoleCommands) throws IOException {
         ZipEntry consoleCommandsEntry = new ZipEntry(LOGS_FOLDER + "/sandbox-" + sandboxId + "-useractions" + AbstractFileExtensions.JSON_FILE_EXTENSION);
         zos.putNextEntry(consoleCommandsEntry);
         for (Map<String, Object> command : consoleCommands) {
@@ -357,7 +357,7 @@ public class ExportImportFacade {
         }
     }
 
-    private void writeConsoleCommandsDetails(ZipOutputStream zos, TrainingInstance instance, TrainingRun run, Integer sandboxId, Map<Integer, Long> phaseStartTimestampMapping) throws IOException {
+    private void writeConsoleCommandsDetails(ZipOutputStream zos, TrainingInstance instance, TrainingRun run, String sandboxId, Map<Integer, Long> phaseStartTimestampMapping) throws IOException {
         List<Long> phaseTimestampRanges = new ArrayList<>(phaseStartTimestampMapping.values());
         List<Integer> phaseIds = new ArrayList<>(phaseStartTimestampMapping.keySet());
         phaseTimestampRanges.add(Long.MAX_VALUE);
@@ -372,7 +372,7 @@ public class ExportImportFacade {
             }
         }
     }
-    private List<Map<String, Object>> getConsoleCommandsWithinTimeRange(TrainingInstance instance, TrainingRun run, Integer sandboxId, Long from, Long to) {
+    private List<Map<String, Object>> getConsoleCommandsWithinTimeRange(TrainingInstance instance, TrainingRun run, String sandboxId, Long from, Long to) {
         if(instance.isLocalEnvironment()) {
             return elasticsearchServiceApi.findAllConsoleCommandsByAccessTokenAndUserIdAndTimeRange(instance.getAccessToken(), run.getParticipantRef().getUserRefId(), from, to);
         }

@@ -34,13 +34,13 @@ public class SankeySimulatorFacade {
     private final InstanceSimulatorService instanceSimulatorService;
     private final ObjectMapper objectMapper;
 
-    static final Pattern sandboxDetailPattern = Pattern.compile("(sandbox-[0-9]+-details)");
+    static final Pattern sandboxDetailPattern = Pattern.compile("(sandbox-[a-z0-9-]{36}-details)");
     static final Pattern sandboxUserActionsPattern = Pattern.compile("(phase[0-9]+-useractions)");
     static final Pattern trainingRunDetailsPattern = Pattern.compile("(training_run-id[0-9]+-details)");
     static final Pattern trainingPhaseEventsPattern = Pattern.compile("(phase[0-9]+-events)");
     static final Pattern trainingRunQuestionnairesPattern = Pattern.compile("(training_run-id-[0-9]+-questionnaires)");
     static final Pattern trainingRunQuestionnaireAnswersPattern = Pattern.compile("(questionnaire_id-[0-9]+-answers)");
-    static final Pattern sandboxIdPatter = Pattern.compile("(\"sandbox_id\":[0-9]+)");
+    static final Pattern sandboxIdPatter = Pattern.compile("(\"sandbox_id\":[a-z0-9-]{36})");
     static final Pattern trainingRunIdPattern = Pattern.compile("(training_run-id[0-9]+)");
 
     public SankeySimulatorFacade(InstanceSimulatorService instanceSimulatorService,
@@ -83,13 +83,13 @@ public class SankeySimulatorFacade {
         ZipEntry zipEntry;
 
         // Map<TrainingRunId, SandboxId>
-        Map<Long, Long> traineesIdentification = new HashMap<>();
+        Map<Long, String> traineesIdentification = new HashMap<>();
         // Map<TrainingRunId, Map<phaseId, List<QuestionnaireActions>>>
         Map<Long, Map<Long, List<QuestionnaireActions>>> questionnaireActions = new HashMap<>();
         // Map<TrainingRunId, Map<phaseId, List<PhaseEvent>>>
         Map<Long, Map<Long, List<PhaseEvent>>> trainingEvents = new HashMap<>();
-        // Map<TrainingRunId, Map<phaseId, List<PhaseUserActions>>>
-        Map<Long, Map<Long, List<PhaseUserActions>>> sandboxUseractions = new HashMap<>();
+        // Map<SandboxId, Map<phaseId, List<PhaseUserActions>>>
+        Map<String, Map<Long, List<PhaseUserActions>>> sandboxUseractions = new HashMap<>();
 
         SankeyDiagramDTO sankeyDiagramDTO = new SankeyDiagramDTO();
         ImportTrainingDefinition trainingDefinition = new ImportTrainingDefinition();
@@ -104,7 +104,7 @@ public class SankeySimulatorFacade {
                     trainingDefinition = this.processDefinition(fileContent, validator, zipEntryName);
                 } else if (!zipEntry.isDirectory() && Pattern.matches("sankey_diagram.*", zipEntryName)) {
                     sankeyDiagramDTO = this.processSankey(fileContent, validator, zipEntryName);
-                } else if (Pattern.matches("logs/sandbox-[0-9]+-details/phase[0-9]+-useractions\\.json$", zipEntryName)) {
+                } else if (Pattern.matches("logs/sandbox-[a-z0-9-]{36}-details/phase[0-9]+-useractions\\.json$", zipEntryName)) {
                     sandboxUseractions = Optional.ofNullable(this.processSandboxLogs(fileContent, zipEntryName, sandboxUseractions, validator)).orElse(sandboxUseractions);
                 } else if (Pattern.matches("training_events/training_run-id[0-9]+-details/phase[0-9]+-events\\.json$", zipEntryName)) {
                     trainingEvents = Optional.ofNullable(this.processPhaseEvents(fileContent, zipEntryName, trainingEvents, validator)).orElse(trainingEvents);
@@ -155,15 +155,15 @@ public class SankeySimulatorFacade {
         return sankeyDiagramDTO;
     }
 
-    private Map<Long, Map<Long, List<PhaseUserActions>>> processSandboxLogs(
+    private Map<String, Map<Long, List<PhaseUserActions>>> processSandboxLogs(
             String fileContent,
             String zipEntryName,
-            Map<Long, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
+            Map<String, Map<Long, List<PhaseUserActions>>> sandboxUseractions,
             Validator validator
     ) throws JsonProcessingException, BadRequestException {
         Matcher matcher = sandboxDetailPattern.matcher(zipEntryName);
         if (matcher.find()) {
-            Long sandboxId = Long.parseLong(matcher.group(1).replaceAll("[^0-9]+",""));
+            String sandboxId = matcher.group(1).replaceAll("[a-z0-9-]{36}","");
             matcher = sandboxUserActionsPattern.matcher(zipEntryName);
             if (matcher.find()) {
                 Long phaseId = Long.parseLong(matcher.group(1).replaceAll("[^0-9]+",""));
@@ -209,14 +209,14 @@ public class SankeySimulatorFacade {
         return null;
     }
 
-    private void processTrainingEvents(String fileContent, String zipEntryName, Map<Long, Long> traineesIdentification) {
+    private void processTrainingEvents(String fileContent, String zipEntryName, Map<Long, String> traineesIdentification) {
         Matcher matcher = trainingRunIdPattern.matcher(zipEntryName);
 
         if (matcher.find()) {
             Long trainingRunId = Long.parseLong(matcher.group(1).replaceAll("[^0-9]+", ""));
             matcher = sandboxIdPatter.matcher(fileContent);
             if (matcher.find()) {
-                Long sandboxId = Long.parseLong(matcher.group(1).replaceAll("[^0-9]+", ""));
+                String sandboxId = matcher.group(1).replaceAll("[a-z0-9-]{36}", "");
                 traineesIdentification.put(trainingRunId, sandboxId);
             }
         }

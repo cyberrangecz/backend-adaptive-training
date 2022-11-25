@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.facade;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import cz.muni.ics.kypo.training.adaptive.annotations.transactions.TransactionalRO;
 import cz.muni.ics.kypo.training.adaptive.domain.ParticipantTaskAssignment;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.AbstractPhase;
@@ -8,7 +9,9 @@ import cz.muni.ics.kypo.training.adaptive.annotations.security.IsTrainee;
 import cz.muni.ics.kypo.training.adaptive.domain.phase.MitreTechnique;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingDefinition;
 import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingInstance;
+import cz.muni.ics.kypo.training.adaptive.domain.training.TrainingRun;
 import cz.muni.ics.kypo.training.adaptive.dto.AbstractPhaseDTO;
+import cz.muni.ics.kypo.training.adaptive.dto.CommandDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.UserRefDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.questionnaire.QuestionnairePhaseDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.training.TrainingPhaseDTO;
@@ -27,12 +30,17 @@ import cz.muni.ics.kypo.training.adaptive.service.phases.PhaseService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingDefinitionService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingInstanceService;
 import cz.muni.ics.kypo.training.adaptive.service.training.TrainingRunService;
+import cz.muni.ics.kypo.training.adaptive.utils.AbstractCommandPrefixes;
+import cz.muni.ics.kypo.training.adaptive.utils.ElasticSearchCommand;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -49,6 +57,7 @@ public class VisualizationFacade {
     private final UserManagementServiceApi userManagementServiceApi;
     private final PhaseService phaseService;
     private final PhaseMapper phaseMapper;
+    private final ObjectMapper objectMapper;
 
     public VisualizationFacade(VisualizationService visualizationService,
                                TrainingDefinitionService trainingDefinitionService,
@@ -56,7 +65,7 @@ public class VisualizationFacade {
                                TrainingRunService trainingRunService,
                                UserManagementServiceApi userManagementServiceApi,
                                PhaseService phaseService,
-                               PhaseMapper phaseMapper) {
+                               PhaseMapper phaseMapper, ObjectMapper objectMapper) {
         this.visualizationService = visualizationService;
         this.trainingDefinitionService = trainingDefinitionService;
         this.trainingInstanceService = trainingInstanceService;
@@ -64,6 +73,7 @@ public class VisualizationFacade {
         this.userManagementServiceApi = userManagementServiceApi;
         this.phaseService = phaseService;
         this.phaseMapper = phaseMapper;
+        this.objectMapper = objectMapper;
     }
 
     @PreAuthorize("hasAuthority(T(cz.muni.ics.kypo.training.adaptive.enums.RoleTypeSecurity).ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR)" +
@@ -129,9 +139,47 @@ public class VisualizationFacade {
             "or @securityService.isOrganizerOfGivenTrainingRun(#runId) " +
             "or @securityService.isTraineeOfGivenTrainingRun(#runId)")
     @TransactionalRO
-    public List<Map<String, Object>> getAllCommandsInTrainingRun(Long runId) {
-        return trainingRunService.getCommandsByTrainingRun(runId);
+    public List<CommandDTO> getAllCommandsInTrainingRun(Long runId) {
+        TrainingRun trainingRun = trainingRunService.findById(runId);
+        List<Map<String, Object>> runCommands = trainingRunService.getCommandsByTrainingRun(runId);
+        return elasticCommandsToCommandDTOlist(runCommands, trainingRun.getStartTime());
     }
+
+    private List<CommandDTO> elasticCommandsToCommandDTOlist(List<Map<String, Object>> elasticCommands, LocalDateTime runStartTime) {
+        List<CommandDTO> commandDTOS = new ArrayList<>(elasticCommands.size());
+        elasticCommands.stream()
+                .map(elasticCommand -> objectMapper.convertValue(elasticCommand, ElasticSearchCommand.class))
+                .forEach(elasticCommand -> commandDTOS.add(elasticCommandToCommandDTO(elasticCommand, runStartTime)));
+        return commandDTOS;
+    }
+
+    private CommandDTO elasticCommandToCommandDTO(ElasticSearchCommand elasticSearchCommand, LocalDateTime runStartTime) {
+        String[] commandSplit =  elasticSearchCommand.getCmd().split(" ", 2);
+        String command = commandSplit[0];
+        if (AbstractCommandPrefixes.isPrefix(command)) {
+            commandSplit = commandSplit[1].split(" ", 2);
+            command += " " + commandSplit[0];
+        }
+
+        // if there were no options, the option string should be null
+        String options = null;
+        if (commandSplit.length == 2) {
+            options = commandSplit[1];
+        }
+        String timestampString = elasticSearchCommand.getTimestampStr();
+        LocalDateTime commandTimestamp = ZonedDateTime.parse(timestampString).toLocalDateTime();
+
+        return CommandDTO.builder()
+                .commandType(elasticSearchCommand.getCmdType())
+                .cmd(command)
+                .timestamp(commandTimestamp)
+                .trainingTime(Duration.between(runStartTime, commandTimestamp))
+                .fromHostIp(elasticSearchCommand.getIp())
+                .options(options)
+                .build();
+    }
+
+
 
 
     private void removeCorrectnessFromTransitionsDataOfTrainee(TransitionsDataDTO transitionsDataDTO) {

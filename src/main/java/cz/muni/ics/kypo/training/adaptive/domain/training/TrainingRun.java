@@ -128,15 +128,15 @@ public class TrainingRun implements Serializable {
     )
     @JoinColumn(name = "training_instance_id")
     private TrainingInstance trainingInstance;
-    @Column(name = "sandbox_instance_ref_id")
-    private Long sandboxInstanceRefId;
+    @Column(name = "sandbox_instance_ref_id", length = 36)
+    private String sandboxInstanceRefId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User participantRef;
     @Column(name = "phase_answered")
     private boolean phaseAnswered;
-    @Column(name = "previous_sandbox_instance_ref_id")
-    private Long previousSandboxInstanceRefId;
+    @Column(name = "previous_sandbox_instance_ref_id", length = 36)
+    private String previousSandboxInstanceRefId;
     @ElementCollection(targetClass = SolutionInfo.class, fetch = FetchType.LAZY)
     @CollectionTable(name = "solution_info", joinColumns = @JoinColumn(name = "training_run_id"))
     private Set<SolutionInfo> solutionInfoList = new HashSet<>();
@@ -267,7 +267,7 @@ public class TrainingRun implements Serializable {
      *
      * @return the sandbox instance ref id
      */
-    public Long getSandboxInstanceRefId() {
+    public String getSandboxInstanceRefId() {
         return sandboxInstanceRefId;
     }
 
@@ -276,7 +276,7 @@ public class TrainingRun implements Serializable {
      *
      * @param sandboxInstanceRefId the sandbox instance ref id
      */
-    public void setSandboxInstanceRefId(Long sandboxInstanceRefId) {
+    public void setSandboxInstanceRefId(String sandboxInstanceRefId) {
         this.sandboxInstanceRefId = sandboxInstanceRefId;
     }
 
@@ -357,7 +357,7 @@ public class TrainingRun implements Serializable {
      *
      * @return the id of previous sandbox instance ref
      */
-    public Long getPreviousSandboxInstanceRefId() {
+    public String getPreviousSandboxInstanceRefId() {
         return previousSandboxInstanceRefId;
     }
 
@@ -366,7 +366,7 @@ public class TrainingRun implements Serializable {
      *
      * @param previousSandboxInstanceRefId the id of previous sandbox instance ref
      */
-    public void setPreviousSandboxInstanceRefId(Long previousSandboxInstanceRefId) {
+    public void setPreviousSandboxInstanceRefId(String previousSandboxInstanceRefId) {
         this.previousSandboxInstanceRefId = previousSandboxInstanceRefId;
     }
 

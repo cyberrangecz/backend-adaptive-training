@@ -15,7 +15,7 @@ public class AuditInfoDTO {
     @ApiModelProperty(value = "Main identifier of the user in user managements service.", example = "1")
     private long userRefId;
     @ApiModelProperty(value = "Main identifier of the sandbox.", example = "1")
-    private long sandboxId;
+    private String sandboxId;
     @ApiModelProperty(value = "Main identifier of the pool.", example = "1")
     private long poolId;
     @ApiModelProperty(value = "Main identifier of the training run.", example = "1")
@@ -58,7 +58,7 @@ public class AuditInfoDTO {
      *
      * @return the sandbox id
      */
-    public long getSandboxId() {
+    public String getSandboxId() {
         return sandboxId;
     }
 
@@ -67,7 +67,7 @@ public class AuditInfoDTO {
      *
      * @param sandboxId the sandbox id
      */
-    public void setSandboxId(long sandboxId) {
+    public void setSandboxId(String sandboxId) {
         this.sandboxId = sandboxId;
     }
 

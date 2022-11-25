@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 2.1.3"
+  version: "Version: 22.12-rc.1"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2384,6 +2384,39 @@ paths:
             $ref: "#/definitions/ApiError"
       security:
       - bearerAuth: []
+  /visualizations/commands/training-runs/{runId}/all:
+    get:
+      tags:
+      - "Visualizations"
+      summary: "Get all commands in a training run."
+      description: ""
+      operationId: "getAllCommandsInTrainingRun"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "runId"
+        in: "path"
+        description: "Training run ID"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Commands in training run."
+          schema:
+            type: "array"
+            items:
+              type: "object"
+        404:
+          description: "Training run with given id not found."
+          schema:
+            $ref: "#/definitions/ApiError"
+        500:
+          description: "Unexpected condition was encountered."
+          schema:
+            $ref: "#/definitions/ApiError"
+      security:
+      - bearerAuth: []
   /visualizations/training-definitions/mitre-techniques:
     get:
       tags:
@@ -2543,39 +2576,6 @@ paths:
             $ref: "#/definitions/SankeyDiagramDTO"
         404:
           description: "Training instance with given id not found."
-          schema:
-            $ref: "#/definitions/ApiError"
-        500:
-          description: "Unexpected condition was encountered."
-          schema:
-            $ref: "#/definitions/ApiError"
-      security:
-      - bearerAuth: []
-  /visualizations/training-runs/{runId}/commands:
-    get:
-      tags:
-      - "Visualizations"
-      summary: "Get all commands in a training run."
-      description: ""
-      operationId: "getAllCommandsInTrainingRun"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "runId"
-        in: "path"
-        description: "Training run ID"
-        required: true
-        type: "integer"
-        format: "int64"
-      responses:
-        200:
-          description: "Commands in training run."
-          schema:
-            type: "array"
-            items:
-              type: "object"
-        404:
-          description: "Training run with given id not found."
           schema:
             $ref: "#/definitions/ApiError"
         500:
@@ -2948,9 +2948,8 @@ definitions:
         example: false
         description: "Sign if stepper bar should be displayed."
       sandbox_instance_ref_id:
-        type: "integer"
-        format: "int64"
-        example: 2
+        type: "string"
+        example: "2"
         description: "Main identifier of sandbox which is assigned to training run."
       current_phase:
         description: "Current phase in the training run."
@@ -5584,6 +5583,11 @@ definitions:
           description: "Questions related to the training phase."
           items:
             $ref: "#/definitions/AbstractQuestionImport"
+        mitre_techniques:
+          type: "array"
+          description: "Mitre techniques specified by the instructor"
+          items:
+            $ref: "#/definitions/TrainingPhaseImport"
         allowed_commands:
           type: "integer"
           format: "int32"
@@ -5751,8 +5755,7 @@ definitions:
         - "FINISHED"
         - "ARCHIVED"
       sandbox_instance_ref_id:
-        type: "integer"
-        format: "int64"
+        type: "string"
         description: "Reference to the received sandbox."
       participant_ref:
         description: "Reference to participant of training run."
@@ -5799,12 +5802,19 @@ definitions:
         - "FINISHED"
         - "ARCHIVED"
       sandbox_instance_ref_id:
-        type: "integer"
-        format: "int64"
+        type: "string"
         description: "Reference to the received sandbox."
       participant_ref:
         description: "Reference to participant of training run."
         $ref: "#/definitions/UserRefDTO"
+      event_logging_state:
+        type: "boolean"
+        example: true
+        description: "Boolean to check whether event logging works."
+      command_logging_state:
+        type: "boolean"
+        example: true
+        description: "Boolean to check whether command logging works."
     description: "The act, or a recording, of performing actions during training from\
       \ a perspective of one concrete participant."
   TrainingRunRestResource:

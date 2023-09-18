@@ -314,6 +314,7 @@ public class TrainingDefinitionService {
     public TrainingDefinition auditAndSave(TrainingDefinition trainingDefinition) {
         trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         trainingDefinition.setLastEditedBy(userManagementServiceApi.getUserRefDTO().getUserRefFullName());
+        trainingDefinition.setCreatedAt(getCurrentTimeInUTC());
         return trainingDefinitionRepository.save(trainingDefinition);
     }
 

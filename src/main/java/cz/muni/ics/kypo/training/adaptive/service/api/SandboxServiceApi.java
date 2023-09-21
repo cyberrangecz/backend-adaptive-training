@@ -102,6 +102,21 @@ public class SandboxServiceApi {
             }
         }
     }
+    public SandboxInfo getAndLockSandbox(Long poolId) {
+        try {
+            return sandboxServiceWebClient
+                    .get()
+                    .uri("/pools/{poolId}/sandboxes/get-and-lock", poolId)
+                    .retrieve()
+                    .bodyToMono(SandboxInfo.class)
+                    .block();
+        } catch (CustomWebClientException ex) {
+            if (ex.getStatusCode() == HttpStatus.CONFLICT) {
+                throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");
+            }
+            throw new MicroserviceApiException("Error when calling OpenStack Sandbox Service API to get unlocked sandbox from pool (ID: " + poolId + ").", ex);
+        }
+    }
 
     /**
      * Gets sandbox definition id.

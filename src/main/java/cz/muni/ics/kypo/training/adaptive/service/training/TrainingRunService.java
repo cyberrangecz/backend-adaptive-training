@@ -605,7 +605,7 @@ public class TrainingRunService {
      */
     public TrainingRun assignSandbox(TrainingRun trainingRun, long poolId) {
         String sandboxInstanceRef = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
-        Long sandboxInstanceAllocationId = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId).get();
+        Long sandboxInstanceAllocationId = this.sandboxServiceApi.getAndLockSandbox(poolId).getAllocationUnitId().longValue();
         trainingRun.setSandboxInstanceRefId(sandboxInstanceRef);
         return trainingRunRepository.save(trainingRun);
     }
@@ -828,6 +828,7 @@ public class TrainingRunService {
         trainingRun.setState(TRState.ARCHIVED);
         trainingRun.setPreviousSandboxInstanceRefId(trainingRun.getSandboxInstanceRefId());
         trainingRun.setSandboxInstanceRefId(null);
+        trainingRun.setSandboxInstanceAllocationId(null);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         trainingRunRepository.save(trainingRun);
     }

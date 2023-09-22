@@ -177,16 +177,16 @@ public class TestDataFactory {
             LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Archived instance", "archived-6666");
 
     private TrainingRun runningRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
-            TRState.RUNNING, 2, true, "1L", 1L, true,
+            TRState.RUNNING, 2, true, "1L", 1, true,
             "20L");
     private TrainingRun finishedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(10), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-            TRState.FINISHED, 4, false, "3L", 3l, true, "30L");
+            TRState.FINISHED, 4, false, "3L", 3, true, "30L");
     private TrainingRun archivedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(20), LocalDateTime.now(Clock.systemUTC()).minusHours(10),
-            TRState.ARCHIVED, 0, false, "5L", 5l, false, "60L");
+            TRState.ARCHIVED, 0, false, "5L", 5, false, "60L");
     private TrainingRunByIdDTO trainingRunByIdDTO = generateTrainingRunByIdDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
              TRState.RUNNING, "5L");
     private TrainingRunDTO trainingRunDTO = generateTrainingRunDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(9), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-             TRState.FINISHED, "7L", 7L);
+             TRState.FINISHED, "7L", 7);
 //    private AccessedTrainingRunDTO accessedTrainingRunDTO = generateAccessedTrainingRunDTO("Accessed run", LocalDateTime.now(Clock.systemUTC()).minusHours(8), LocalDateTime.now(Clock.systemUTC()).minusHours(4), 5,
 //            6, Actions.RESUME);
 
@@ -694,7 +694,7 @@ public class TestDataFactory {
     }
 
     private TrainingRun generateTrainingRun(LocalDateTime startTime, LocalDateTime endTime, TRState state,
-                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, Long SBIAllocId, boolean phaseAnswered, String previousSBIRefId){
+                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, Integer SBIAllocId, boolean phaseAnswered, String previousSBIRefId){
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setStartTime(startTime);
         newTrainingRun.setEndTime(endTime);
@@ -805,7 +805,7 @@ public class TestDataFactory {
         return trainingRunByIdDTO;
     }
 
-    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIRefId, Long SBIAllocId){
+    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIRefId, Integer SBIAllocId){
         TrainingRunDTO trainingRunDTO = new TrainingRunDTO();
         trainingRunDTO.setStartTime(start);
         trainingRunDTO.setEndTime(end);

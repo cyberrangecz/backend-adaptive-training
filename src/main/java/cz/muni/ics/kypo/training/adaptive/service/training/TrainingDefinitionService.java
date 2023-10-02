@@ -160,6 +160,7 @@ public class TrainingDefinitionService {
      */
     public TrainingDefinition create(TrainingDefinition trainingDefinition) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
+        trainingDefinition.setCreatedAt(getCurrentTimeInUTC());
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
         return this.auditAndSave(trainingDefinition);
     }
@@ -314,7 +315,6 @@ public class TrainingDefinitionService {
     public TrainingDefinition auditAndSave(TrainingDefinition trainingDefinition) {
         trainingDefinition.setLastEdited(getCurrentTimeInUTC());
         trainingDefinition.setLastEditedBy(userManagementServiceApi.getUserRefDTO().getUserRefFullName());
-        trainingDefinition.setCreatedAt(getCurrentTimeInUTC());
         return trainingDefinitionRepository.save(trainingDefinition);
     }
 

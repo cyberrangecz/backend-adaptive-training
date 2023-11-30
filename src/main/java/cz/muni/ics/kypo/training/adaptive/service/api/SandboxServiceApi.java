@@ -1,5 +1,6 @@
 package cz.muni.ics.kypo.training.adaptive.service.api;
 
+import com.querydsl.core.Tuple;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.LockedPoolInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PoolInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;
@@ -7,6 +8,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxInfo;
 import cz.muni.ics.kypo.training.adaptive.exceptions.CustomWebClientException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.ForbiddenException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.MicroserviceApiException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +38,7 @@ public class SandboxServiceApi {
     }
 
 
-    public String getAndLockSandboxForTrainingRun(Long poolId) {
+    public Pair<Integer, String> getAndLockSandboxForTrainingRun(Long poolId) {
         try {
             SandboxInfo sandboxInfo = sandboxServiceWebClient
                     .get()
@@ -44,7 +46,7 @@ public class SandboxServiceApi {
                     .retrieve()
                     .bodyToMono(SandboxInfo.class)
                     .block();
-            return sandboxInfo.getId();
+            return Pair.of((sandboxInfo.getAllocationUnitId(), sandboxInfo.getId());
         } catch (CustomWebClientException ex) {
             if (ex.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");
@@ -100,21 +102,6 @@ public class SandboxServiceApi {
             if (ex.getStatusCode() != HttpStatus.NOT_FOUND) {
                 throw new MicroserviceApiException("Currently, it is not possible to unlock a pool with (ID: " + poolId + ").", ex);
             }
-        }
-    }
-    public SandboxInfo getAndLockSandbox(Long poolId) {
-        try {
-            return sandboxServiceWebClient
-                    .get()
-                    .uri("/pools/{poolId}/sandboxes/get-and-lock", poolId)
-                    .retrieve()
-                    .bodyToMono(SandboxInfo.class)
-                    .block();
-        } catch (CustomWebClientException ex) {
-            if (ex.getStatusCode() == HttpStatus.CONFLICT) {
-                throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");
-            }
-            throw new MicroserviceApiException("Error when calling OpenStack Sandbox Service API to get unlocked sandbox from pool (ID: " + poolId + ").", ex);
         }
     }
 

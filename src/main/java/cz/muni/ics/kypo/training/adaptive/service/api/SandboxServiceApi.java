@@ -1,6 +1,5 @@
 package cz.muni.ics.kypo.training.adaptive.service.api;
 
-import com.querydsl.core.Tuple;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.LockedPoolInfo;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.PoolInfoDTO;
 import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxDefinitionInfo;

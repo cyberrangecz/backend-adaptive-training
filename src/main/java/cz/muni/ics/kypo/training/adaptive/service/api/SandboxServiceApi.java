@@ -45,7 +45,7 @@ public class SandboxServiceApi {
                     .retrieve()
                     .bodyToMono(SandboxInfo.class)
                     .block();
-            return Pair.of((sandboxInfo.getAllocationUnitId(), sandboxInfo.getId());
+            return Pair.of(sandboxInfo.getAllocationUnitId(), sandboxInfo.getId());
         } catch (CustomWebClientException ex) {
             if (ex.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");

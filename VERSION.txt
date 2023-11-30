@@ -1,3 +1,4 @@
+2.2.3 Add allocation id to training run.
 2.2.2 Add createdAt to training definition. Modify TD import to drop 'uploaded' prefix.
 2.2.1 Added a fail-safe check for simulating tool incorrect input files.
 22.12-rc.1 Changed sandboxId type to string, added automatic check if logging works for training events and commands.

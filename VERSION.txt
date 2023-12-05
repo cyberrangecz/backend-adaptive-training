@@ -1,3 +1,4 @@
+14.2.4 Fix ATD simulator not accepting passkey content field.
 2.2.3 Add allocation id to training run.
 2.2.2 Add createdAt to training definition. Modify TD import to drop 'uploaded' prefix.
 2.2.1 Added a fail-safe check for simulating tool incorrect input files.

@@ -127,7 +127,7 @@ public class SankeySimulatorFacade {
         String cacheKey = instanceSimulatorService.cacheTraineesPerformance(traineesIdentification, questionnaireActions, trainingEvents, sandboxUseractions, trainingDefinition, trainingInstanceInfo);
 
         if (trainingDefinition.getId() == null || trainingDefinition.getTitle() == null) {
-            throw new BadRequestException("The file was not processed. Unsupported data format. Please provide a zip file of adaptive training instance");
+            throw new BadRequestException(trainingDefinition.toString());
         }
         return new InstanceSimulatorDTO(sankeyDiagramDTO, trainingDefinition, cacheKey);
     }

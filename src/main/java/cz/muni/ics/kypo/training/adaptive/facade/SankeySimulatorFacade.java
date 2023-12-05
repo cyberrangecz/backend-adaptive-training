@@ -56,7 +56,7 @@ public class SankeySimulatorFacade {
         try {
             return processInstanceZip(zipFile);
         } catch (IOException e) {
-            throw new BadRequestException("The file was not processed. Unsupported data format. Please provide a zip file of adaptive training instance", e);
+            throw new BadRequestException(e.getMessage(), e);
         }
     }
 
@@ -122,7 +122,7 @@ public class SankeySimulatorFacade {
         } catch (IOException e) {
             zis.closeEntry();
             zis.close();
-            throw new BadRequestException("The file was not processed. Unsupported data format. Please provide a zip file of adaptive training instance", e);
+            throw new BadRequestException(e.getMessage(), e);
         }
         String cacheKey = instanceSimulatorService.cacheTraineesPerformance(traineesIdentification, questionnaireActions, trainingEvents, sandboxUseractions, trainingDefinition, trainingInstanceInfo);
 

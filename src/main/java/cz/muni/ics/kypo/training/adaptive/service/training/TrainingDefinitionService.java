@@ -160,6 +160,7 @@ public class TrainingDefinitionService {
      */
     public TrainingDefinition create(TrainingDefinition trainingDefinition) {
         addLoggedInUserToTrainingDefinitionAsAuthor(trainingDefinition);
+        trainingDefinition.setCreatedAt(getCurrentTimeInUTC());
         LOG.info("Training definition with id: {} created.", trainingDefinition.getId());
         return this.auditAndSave(trainingDefinition);
     }

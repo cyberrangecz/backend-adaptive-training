@@ -39,6 +39,7 @@ public class PhaseEvent {
     @ApiModelProperty(value = "Timestamp of event.", required = true, example = "151651561")
     @NotNull(message = "{phaseEvent.timestamp.NotNull.message}")
     private Long timestamp;
+    private String passkeyContent;
     private String answerContent;
     private String answers;
     private Long endTime;

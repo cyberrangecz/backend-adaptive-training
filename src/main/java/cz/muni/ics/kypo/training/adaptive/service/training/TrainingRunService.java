@@ -27,6 +27,7 @@ import cz.muni.ics.kypo.training.adaptive.service.api.SandboxServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.SmartAssistantServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.api.UserManagementServiceApi;
 import cz.muni.ics.kypo.training.adaptive.service.audit.AuditEventsService;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -604,8 +605,9 @@ public class TrainingRunService {
      * @throws MicroserviceApiException error calling OpenStack Sandbox Service API
      */
     public TrainingRun assignSandbox(TrainingRun trainingRun, long poolId) {
-        String sandboxInstanceRef = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
-        trainingRun.setSandboxInstanceRefId(sandboxInstanceRef);
+        Pair<Integer, String> sandboxRefAndId = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
+        trainingRun.setSandboxInstanceRefId(sandboxRefAndId.getRight());
+        trainingRun.setSandboxInstanceAllocationId(sandboxRefAndId.getLeft());
         return trainingRunRepository.save(trainingRun);
     }
 
@@ -827,6 +829,7 @@ public class TrainingRunService {
         trainingRun.setState(TRState.ARCHIVED);
         trainingRun.setPreviousSandboxInstanceRefId(trainingRun.getSandboxInstanceRefId());
         trainingRun.setSandboxInstanceRefId(null);
+        trainingRun.setSandboxInstanceAllocationId(null);
         trAcquisitionLockRepository.deleteByParticipantRefIdAndTrainingInstanceId(trainingRun.getParticipantRef().getUserRefId(), trainingRun.getTrainingInstance().getId());
         trainingRunRepository.save(trainingRun);
     }

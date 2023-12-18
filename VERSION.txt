@@ -1,3 +1,7 @@
+2.2.5 Fix ATD update not setting createdAt.
+2.2.4 Fix ATD simulator not accepting passkey content field.
+2.2.3 Add allocation id to training run.
+2.2.2 Add createdAt to training definition. Modify TD import to drop 'uploaded' prefix.
 2.2.1 Added a fail-safe check for simulating tool incorrect input files.
 22.12-rc.1 Changed sandboxId type to string, added automatic check if logging works for training events and commands.
 2.1.3 Fix create, update and clone for training definitions

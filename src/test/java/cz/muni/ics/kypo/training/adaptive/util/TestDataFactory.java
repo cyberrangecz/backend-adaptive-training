@@ -133,13 +133,13 @@ public class TestDataFactory {
 
     private TrainingDefinition unreleasedDefinition = generateTrainingDefinition("Unreleased definition", "Unreleased description",
             new String[]{"p1", "p2"}, new String[]{"o1", "o2"}, TDState.UNRELEASED, true,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(1), "John Doe");
+            LocalDateTime.now(Clock.systemUTC()).minusHours(1), "John Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(1));
     private TrainingDefinition releasedDefinition = generateTrainingDefinition("Released definition", "Released description",
             new String[]{"p3", "p4"}, new String[]{"o3"}, TDState.RELEASED, true,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(5), "John Doe");
+            LocalDateTime.now(Clock.systemUTC()).minusHours(5), "John Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(5));
     private TrainingDefinition archivedDefinition = generateTrainingDefinition("Archived definition", "Archived description",
             new String[]{"p5"}, new String[]{"o4", "o5", "o6"}, TDState.ARCHIVED, false,
-            LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Jane Doe");
+            LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Jane Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(10));
     private TrainingDefinitionDTO unreleasedDefinitionDTO = generateTrainingDefinitionDTO(unreleasedDefinition);
     private TrainingDefinitionDTO releasedDefinitionDTO = generateTrainingDefinitionDTO(releasedDefinition);
     private TrainingDefinitionDTO archivedDefinitionDTO = generateTrainingDefinitionDTO(archivedDefinition);
@@ -177,16 +177,16 @@ public class TestDataFactory {
             LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Archived instance", "archived-6666");
 
     private TrainingRun runningRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
-            TRState.RUNNING, 2, true, "1L", true,
+            TRState.RUNNING, 2, true, "1L", 1, true,
             "20L");
     private TrainingRun finishedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(10), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-            TRState.FINISHED, 4, false, "3L", true, "30L");
+            TRState.FINISHED, 4, false, "3L", 3, true, "30L");
     private TrainingRun archivedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(20), LocalDateTime.now(Clock.systemUTC()).minusHours(10),
-            TRState.ARCHIVED, 0, false, "5L", false, "60L");
+            TRState.ARCHIVED, 0, false, "5L", 5, false, "60L");
     private TrainingRunByIdDTO trainingRunByIdDTO = generateTrainingRunByIdDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
              TRState.RUNNING, "5L");
     private TrainingRunDTO trainingRunDTO = generateTrainingRunDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(9), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-             TRState.FINISHED, "7L");
+             TRState.FINISHED, "7L", 7);
 //    private AccessedTrainingRunDTO accessedTrainingRunDTO = generateAccessedTrainingRunDTO("Accessed run", LocalDateTime.now(Clock.systemUTC()).minusHours(8), LocalDateTime.now(Clock.systemUTC()).minusHours(4), 5,
 //            6, Actions.RESUME);
 
@@ -647,7 +647,8 @@ public class TestDataFactory {
 
     private TrainingDefinition generateTrainingDefinition(String title, String description, String[] prerequisites,
                                                           String[] outcomes, TDState state, boolean showStepperBar,
-                                                          LocalDateTime lastEdited, String lastEditedBy){
+                                                          LocalDateTime lastEdited, String lastEditedBy,
+                                                          LocalDateTime createdAt){
         TrainingDefinition newTrainingDefinition = new TrainingDefinition();
         newTrainingDefinition.setTitle(title);
         newTrainingDefinition.setDescription(description);
@@ -656,6 +657,7 @@ public class TestDataFactory {
         newTrainingDefinition.setShowStepperBar(showStepperBar);
         newTrainingDefinition.setLastEdited(lastEdited);
         newTrainingDefinition.setLastEditedBy(lastEditedBy);
+        newTrainingDefinition.setCreatedAt(createdAt);
         return newTrainingDefinition;
     }
 
@@ -667,6 +669,7 @@ public class TestDataFactory {
         trainingDefinitionDTO.setState(trainingDefinition.getState());
         trainingDefinitionDTO.setShowStepperBar(trainingDefinition.isShowStepperBar());
         trainingDefinitionDTO.setLastEdited(trainingDefinition.getLastEdited());
+        trainingDefinitionDTO.setCreatedAt(trainingDefinition.getCreatedAt());
         return trainingDefinitionDTO;
     }
 
@@ -691,7 +694,7 @@ public class TestDataFactory {
     }
 
     private TrainingRun generateTrainingRun(LocalDateTime startTime, LocalDateTime endTime, TRState state,
-                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, boolean phaseAnswered, String previousSBIRefId){
+                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, Integer SBIAllocId, boolean phaseAnswered, String previousSBIRefId){
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setStartTime(startTime);
         newTrainingRun.setEndTime(endTime);
@@ -699,6 +702,7 @@ public class TestDataFactory {
         newTrainingRun.setIncorrectAnswerCount(incorrectAnswerCount);
         newTrainingRun.setSolutionTaken(solutionTaken);
         newTrainingRun.setSandboxInstanceRefId(SBIRefId);
+        newTrainingRun.setSandboxInstanceAllocationId(SBIAllocId);
         newTrainingRun.setPhaseAnswered(phaseAnswered);
         newTrainingRun.setPreviousSandboxInstanceRefId(previousSBIRefId);
         return newTrainingRun;
@@ -801,12 +805,13 @@ public class TestDataFactory {
         return trainingRunByIdDTO;
     }
 
-    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIId){
+    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIRefId, Integer SBIAllocId){
         TrainingRunDTO trainingRunDTO = new TrainingRunDTO();
         trainingRunDTO.setStartTime(start);
         trainingRunDTO.setEndTime(end);
         trainingRunDTO.setState(state);
-        trainingRunDTO.setSandboxInstanceRefId(SBIId);
+        trainingRunDTO.setSandboxInstanceRefId(SBIRefId);
+        trainingRunDTO.setSandboxInstanceAllocationId(SBIAllocId);
         return trainingRunDTO;
     }
 

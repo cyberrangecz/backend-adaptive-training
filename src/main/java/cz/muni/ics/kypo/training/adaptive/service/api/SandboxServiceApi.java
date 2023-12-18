@@ -7,6 +7,7 @@ import cz.muni.ics.kypo.training.adaptive.dto.responses.SandboxInfo;
 import cz.muni.ics.kypo.training.adaptive.exceptions.CustomWebClientException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.ForbiddenException;
 import cz.muni.ics.kypo.training.adaptive.exceptions.MicroserviceApiException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -36,7 +37,7 @@ public class SandboxServiceApi {
     }
 
 
-    public String getAndLockSandboxForTrainingRun(Long poolId) {
+    public Pair<Integer, String> getAndLockSandboxForTrainingRun(Long poolId) {
         try {
             SandboxInfo sandboxInfo = sandboxServiceWebClient
                     .get()
@@ -44,7 +45,7 @@ public class SandboxServiceApi {
                     .retrieve()
                     .bodyToMono(SandboxInfo.class)
                     .block();
-            return sandboxInfo.getId();
+            return Pair.of(sandboxInfo.getAllocationUnitId(), sandboxInfo.getId());
         } catch (CustomWebClientException ex) {
             if (ex.getStatusCode() == HttpStatus.CONFLICT) {
                 throw new ForbiddenException("There is no available sandbox, wait a minute and try again or ask organizer to allocate more sandboxes.");

@@ -71,6 +71,8 @@ public class TrainingDefinition implements Serializable {
     private LocalDateTime lastEdited;
     @Column(name = "last_edited_by", nullable = false)
     private String lastEditedBy;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 
 
     /**
@@ -294,6 +296,22 @@ public class TrainingDefinition implements Serializable {
         this.lastEditedBy = lastEditedBy;
     }
 
+    /**
+     * Gets the time the Training Definition was created at
+     * @return the time of Training Definition creation
+     */
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    /**
+     * Sets the creation time of the Training Definition
+     * @param createdAt time of Training Definition creation
+     */
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(description, outcomes, prerequisites, state, title);
@@ -327,6 +345,7 @@ public class TrainingDefinition implements Serializable {
                 ", showStepperBar=" + this.isShowStepperBar() +
                 ", estimatedDuration=" + this.getEstimatedDuration() +
                 ", lastEdited=" + this.getLastEdited() +
+                ", createdAt=" + this.getCreatedAt() +
                 '}';
     }
 }

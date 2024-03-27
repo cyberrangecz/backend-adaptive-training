@@ -521,8 +521,12 @@ public class TrainingRunFacade {
         TrainingPhasePreviewDTO trainingPhasePreviewDTO = phaseMapper.mapToTrainingPhasePreviewDTO(trainingPhase, visitedTask);
         boolean isSolutionTaken = trainingRun.getSolutionInfoList().stream()
                 .anyMatch(solutionInfo -> trainingPhase.getId().equals(solutionInfo.getTrainingPhaseId()));
+        String solutionWithAnswers = trainingPhasePreviewDTO.getTask().getSolution();
         if (!isSolutionTaken) {
             trainingPhasePreviewDTO.getTask().setSolution(null);
+        } else if (solutionWithAnswers.contains("${ANSWER}")) {
+            solutionWithAnswers = solutionWithAnswers.replaceAll("\\$\\{ANSWER\\}", trainingRunService.getSolution(trainingRun.getId()));
+            trainingPhasePreviewDTO.getTask().setSolution(solutionWithAnswers);
         }
         return trainingPhasePreviewDTO;
     }

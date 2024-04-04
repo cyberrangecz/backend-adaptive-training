@@ -3,8 +3,6 @@ package cz.muni.ics.kypo.training.adaptive.dto.questionnaire;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @ApiModel(

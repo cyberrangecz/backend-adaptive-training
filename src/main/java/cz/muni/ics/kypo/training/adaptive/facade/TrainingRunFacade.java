@@ -340,7 +340,11 @@ public class TrainingRunFacade {
             "or @securityService.isTraineeOfGivenTrainingRun(#trainingRunId)")
     @TransactionalWO
     public String getSolution(Long trainingRunId) {
-        return trainingRunService.getSolution(trainingRunId);
+        String solution = trainingRunService.getSolution(trainingRunId);
+        if (solution.contains("${ANSWER}")) {
+            solution = solution.replaceAll("\\$\\{ANSWER\\}", solution);
+        }
+        return solution;
     }
 
     /**

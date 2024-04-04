@@ -549,11 +549,9 @@ public class TrainingRunService {
         }
         List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
         for (var phase: phases) {
-            if (phase instanceof TrainingPhase) {
-                if (((TrainingPhase) phase).getTasks().isEmpty()) {
-                    throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", trainingInstance.getId().getClass(), trainingInstance.getId(),
-                            "Training phase " + phase.getOrder() + " contains no tasks."));
-                }
+            if (phase instanceof TrainingPhase && ((TrainingPhase) phase).getTasks().isEmpty()) {
+                throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", trainingInstance.getId().getClass(), trainingInstance.getId(),
+                        "Training phase " + phase.getOrder() + " contains no tasks."));
             }
         }
         return trainingInstance;

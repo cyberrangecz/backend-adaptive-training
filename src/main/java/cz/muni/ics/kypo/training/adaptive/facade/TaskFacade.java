@@ -101,6 +101,8 @@ public class TaskFacade {
             "or @securityService.isDesignerOfGivenTask(#taskId)")
     @TransactionalWO
     public TaskDTO updateTask(Long taskId, TaskUpdateDTO taskUpdateDto) {
+        TrainingDefinition trainingDefinition = this.taskService.getTask(taskId).getTrainingPhase().getTrainingDefinition();
+        trainingDefinitionService.checkIfCanBeUpdated(trainingDefinition);
         Task updatedTask = this.taskService.updateTask(taskId, this.taskMapper.mapToEntity(taskUpdateDto));
         trainingDefinitionService.auditAndSave(updatedTask.getTrainingPhase().getTrainingDefinition());
         return this.taskMapper.mapToTaskDTO(updatedTask);

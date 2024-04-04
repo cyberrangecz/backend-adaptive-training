@@ -53,6 +53,7 @@ public class TaskFacade {
     @TransactionalWO
     public TaskDTO createDefaultTask(Long phaseId) {
         AbstractPhase trainingPhase = phaseService.getPhase(phaseId);
+        trainingDefinitionService.checkIfCanBeUpdated(trainingPhase.getTrainingDefinition());
         if (!(trainingPhase instanceof TrainingPhase)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "The specified phase isn't training phase."));
         }
@@ -66,6 +67,7 @@ public class TaskFacade {
     @TransactionalWO
     public TaskDTO createTask(Long phaseId, TaskCopyDTO taskCopyDTO) {
         AbstractPhase trainingPhase = this.phaseService.getPhase(phaseId);
+        trainingDefinitionService.checkIfCanBeUpdated(trainingPhase.getTrainingDefinition());
         if (!(trainingPhase instanceof TrainingPhase)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "The specified phase isn't training phase."));
         }
@@ -115,6 +117,7 @@ public class TaskFacade {
     public void removeTask(Long taskId) {
         Task taskToRemove = this.taskService.getTask(taskId);
         TrainingDefinition relatedTrainingDefinition = taskToRemove.getTrainingPhase().getTrainingDefinition();
+        trainingDefinitionService.checkIfCanBeUpdated(relatedTrainingDefinition);
         this.taskService.removeTask(taskToRemove);
         trainingDefinitionService.auditAndSave(relatedTrainingDefinition);
     }

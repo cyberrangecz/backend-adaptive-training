@@ -752,7 +752,11 @@ public class TrainingRunService {
                 trainingRunRepository.save(trainingRun);
                 auditEventsService.auditSolutionDisplayedAction(trainingRun);
             }
-            return trainingRun.getCurrentTask().getSolution();
+            String solution = trainingRun.getCurrentTask().getSolution();
+            if (solution.contains("${ANSWER}")) {
+                solution = solution.replaceAll("\\$\\{ANSWER\\}", trainingRun.getCurrentTask().getAnswer());
+            }
+            return solution;
         } else {
             throw new BadRequestException("Current phase is not training phase and does not have solution.");
         }

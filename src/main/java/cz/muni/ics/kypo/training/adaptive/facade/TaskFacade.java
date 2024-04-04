@@ -53,6 +53,7 @@ public class TaskFacade {
     @TransactionalWO
     public TaskDTO createDefaultTask(Long phaseId) {
         AbstractPhase trainingPhase = phaseService.getPhase(phaseId);
+        trainingDefinitionService.checkIfCanBeUpdated(trainingPhase.getTrainingDefinition());
         if (!(trainingPhase instanceof TrainingPhase)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "The specified phase isn't training phase."));
         }
@@ -66,6 +67,7 @@ public class TaskFacade {
     @TransactionalWO
     public TaskDTO createTask(Long phaseId, TaskCopyDTO taskCopyDTO) {
         AbstractPhase trainingPhase = this.phaseService.getPhase(phaseId);
+        trainingDefinitionService.checkIfCanBeUpdated(trainingPhase.getTrainingDefinition());
         if (!(trainingPhase instanceof TrainingPhase)) {
             throw new EntityConflictException(new EntityErrorDetail(AbstractPhase.class, "id", phaseId.getClass(), phaseId, "The specified phase isn't training phase."));
         }
@@ -99,6 +101,8 @@ public class TaskFacade {
             "or @securityService.isDesignerOfGivenTask(#taskId)")
     @TransactionalWO
     public TaskDTO updateTask(Long taskId, TaskUpdateDTO taskUpdateDto) {
+        TrainingDefinition trainingDefinition = this.taskService.getTask(taskId).getTrainingPhase().getTrainingDefinition();
+        trainingDefinitionService.checkIfCanBeUpdated(trainingDefinition);
         Task updatedTask = this.taskService.updateTask(taskId, this.taskMapper.mapToEntity(taskUpdateDto));
         trainingDefinitionService.auditAndSave(updatedTask.getTrainingPhase().getTrainingDefinition());
         return this.taskMapper.mapToTaskDTO(updatedTask);
@@ -115,6 +119,7 @@ public class TaskFacade {
     public void removeTask(Long taskId) {
         Task taskToRemove = this.taskService.getTask(taskId);
         TrainingDefinition relatedTrainingDefinition = taskToRemove.getTrainingPhase().getTrainingDefinition();
+        trainingDefinitionService.checkIfCanBeUpdated(relatedTrainingDefinition);
         this.taskService.removeTask(taskToRemove);
         trainingDefinitionService.auditAndSave(relatedTrainingDefinition);
     }

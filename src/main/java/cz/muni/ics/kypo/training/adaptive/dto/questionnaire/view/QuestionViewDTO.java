@@ -3,6 +3,7 @@ package cz.muni.ics.kypo.training.adaptive.dto.questionnaire.view;
 import cz.muni.ics.kypo.training.adaptive.enums.QuestionType;
 import io.swagger.annotations.ApiModelProperty;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +19,8 @@ public class QuestionViewDTO {
     private QuestionType questionType;
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
     private List<QuestionChoiceViewDTO> choices;
+    @ApiModelProperty(value = "Sign if the question must be answered by the participant or not.", example = "true")
+    private boolean answerRequired;
 
     public Long getId() {
         return id;
@@ -59,6 +62,14 @@ public class QuestionViewDTO {
         this.choices = choices;
     }
 
+    public boolean isAnswerRequired() {
+        return answerRequired;
+    }
+
+    public void setAnswerRequired(boolean answerRequired) {
+        this.answerRequired = answerRequired;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,12 +78,13 @@ public class QuestionViewDTO {
         return getOrder() == that.getOrder() &&
                 getId().equals(that.getId()) &&
                 getText().equals(that.getText()) &&
-                getQuestionType() == that.getQuestionType();
+                getQuestionType() == that.getQuestionType() &&
+                isAnswerRequired() == that.isAnswerRequired();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getOrder(), getText());
+        return Objects.hash(getId(), getOrder(), getText(), isAnswerRequired());
     }
 
     @Override
@@ -82,6 +94,7 @@ public class QuestionViewDTO {
                 ", order=" + order +
                 ", text='" + text + '\'' +
                 ", questionType=" + questionType +
+                ", answerRequired=" + answerRequired +
                 '}';
     }
 }

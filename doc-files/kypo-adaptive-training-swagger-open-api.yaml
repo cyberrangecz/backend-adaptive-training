@@ -1,7 +1,7 @@
 ---
 swagger: "2.0"
 info:
-  version: "Version: 2.2.5"
+  version: "Version: 2.2.8"
   title: "KYPO Adaptive Training Service - API Reference"
 host: "localhost:8082"
 basePath: "/kypo-adaptive-training/api/v1"
@@ -2770,6 +2770,7 @@ definitions:
   AbstractQuestionDTO:
     type: "object"
     required:
+    - "answer_required"
     - "choices"
     - "order"
     - "question_type"
@@ -2798,6 +2799,11 @@ definitions:
         description: "Choices that are distributed with the question"
         items:
           $ref: "#/definitions/QuestionChoiceDTO"
+      answer_required:
+        type: "boolean"
+        example: true
+        description: "Sign if the question must be answered by the participant or\
+          \ not."
   AbstractQuestionImport:
     type: "object"
     required:
@@ -3972,6 +3978,7 @@ definitions:
   QuestionDTO:
     type: "object"
     required:
+    - "answer_required"
     - "choices"
     - "id"
     - "order"
@@ -4001,6 +4008,11 @@ definitions:
         description: "Choices that are distributed with the question"
         items:
           $ref: "#/definitions/QuestionChoiceDTO"
+      answer_required:
+        type: "boolean"
+        example: true
+        description: "Sign if the question must be answered by the participant or\
+          \ not."
       id:
         type: "integer"
         format: "int64"

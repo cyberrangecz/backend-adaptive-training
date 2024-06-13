@@ -40,6 +40,9 @@ public class Question implements Serializable {
     )
     private Set<QuestionPhaseRelation> questionPhaseRelations = new HashSet<>();
 
+    @Column(name = "answer_required")
+    private boolean answerRequired;
+
     public Long getId() {
         return id;
     }
@@ -100,6 +103,14 @@ public class Question implements Serializable {
         this.questionPhaseRelations.add(questionPhaseRelation);
     }
 
+    public boolean isAnswerRequired() {
+        return answerRequired;
+    }
+
+    public void setAnswerRequired(boolean answerRequired) {
+        this.answerRequired = answerRequired;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -107,12 +118,13 @@ public class Question implements Serializable {
         Question question = (Question) o;
         return getOrder() == question.getOrder() &&
                 getQuestionType() == question.getQuestionType() &&
-                Objects.equals(getText(), question.getText());
+                Objects.equals(getText(), question.getText()) &&
+                Objects.equals(isAnswerRequired(), question.isAnswerRequired());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getQuestionType(), getText(), getOrder());
+        return Objects.hash(getQuestionType(), getText(), getOrder(), isAnswerRequired());
     }
 
     @Override
@@ -122,6 +134,7 @@ public class Question implements Serializable {
                 ", questionType=" + this.getQuestionType() +
                 ", text='" + this.getText() + '\'' +
                 ", order=" + this.getOrder() +
+                ", answerRequired=" + this.answerRequired +
                 '}';
     }
 }

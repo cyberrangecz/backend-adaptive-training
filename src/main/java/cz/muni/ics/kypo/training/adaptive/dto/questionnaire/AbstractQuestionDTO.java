@@ -29,6 +29,9 @@ public abstract class AbstractQuestionDTO {
     @Valid
     @ApiModelProperty(value = "Choices that are distributed with the question", required = true)
     private List<QuestionChoiceDTO> choices = new ArrayList<>();
+    @ApiModelProperty(value = "Sign if the question must be answered by the participant or not.", example = "true")
+    @NotNull(message = "{question.answerRequired.NotNull.message}")
+    private boolean answerRequired;
 
     public int getOrder() {
         return order;
@@ -62,12 +65,21 @@ public abstract class AbstractQuestionDTO {
         this.choices = choices;
     }
 
+    public boolean isAnswerRequired() {
+        return answerRequired;
+    }
+
+    public void setAnswerRequired(boolean answerRequired) {
+        this.answerRequired = answerRequired;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AbstractQuestionDTO that = (AbstractQuestionDTO) o;
         return order == that.order &&
+                answerRequired == that.answerRequired &&
                 Objects.equals(text, that.text) &&
                 questionType == that.questionType &&
                 Objects.equals(choices, that.choices);
@@ -75,7 +87,7 @@ public abstract class AbstractQuestionDTO {
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, text, questionType, choices);
+        return Objects.hash(order, text, questionType, choices, answerRequired);
     }
 
     @Override

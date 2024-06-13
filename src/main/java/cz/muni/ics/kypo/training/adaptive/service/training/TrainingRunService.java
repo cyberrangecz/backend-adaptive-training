@@ -547,6 +547,13 @@ public class TrainingRunService {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", trainingInstance.getId().getClass(), trainingInstance.getId(),
                     "At first organizer must allocate sandboxes for training instance."));
         }
+        List<AbstractPhase> phases = abstractPhaseRepository.findAllByTrainingDefinitionIdOrderByOrder(trainingInstance.getTrainingDefinition().getId());
+        for (var phase: phases) {
+            if (phase instanceof TrainingPhase && ((TrainingPhase) phase).getTasks().isEmpty()) {
+                throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", trainingInstance.getId().getClass(), trainingInstance.getId(),
+                        "Training phase " + phase.getOrder() + " contains no tasks."));
+            }
+        }
         return trainingInstance;
     }
 
@@ -745,7 +752,11 @@ public class TrainingRunService {
                 trainingRunRepository.save(trainingRun);
                 auditEventsService.auditSolutionDisplayedAction(trainingRun);
             }
-            return trainingRun.getCurrentTask().getSolution();
+            String solution = trainingRun.getCurrentTask().getSolution();
+            if (solution.contains("${ANSWER}")) {
+                solution = solution.replaceAll("\\$\\{ANSWER\\}", trainingRun.getCurrentTask().getAnswer());
+            }
+            return solution;
         } else {
             throw new BadRequestException("Current phase is not training phase and does not have solution.");
         }

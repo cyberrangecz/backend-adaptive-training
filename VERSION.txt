@@ -1,3 +1,4 @@
+2.2.9 Add check to prevent reviving an expired training instance.
 2.2.8 Add check for training definition being in use when trying to add, remove and update tasks.
 2.2.7 Add more descriptive message when training phase contains no tasks. Add answer required field to Adaptive Question.
 2.2.6 Implement the ANSWER tag replacing in task solution.

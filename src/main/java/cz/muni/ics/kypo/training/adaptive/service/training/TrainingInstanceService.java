@@ -135,6 +135,7 @@ public class TrainingInstanceService {
     public String update(TrainingInstance trainingInstanceToUpdate) {
         validateStartAndEndTime(trainingInstanceToUpdate);
         TrainingInstance trainingInstance = findById(trainingInstanceToUpdate.getId());
+        checkNotRevivingAnExpiredInstance(trainingInstanceToUpdate, trainingInstance);
         //add original organizers to update
         trainingInstanceToUpdate.setOrganizers(new HashSet<>(trainingInstance.getOrganizers()));
         addLoggedInUserAsOrganizerToTrainingInstance(trainingInstanceToUpdate);
@@ -173,6 +174,14 @@ public class TrainingInstanceService {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id",
                     trainingInstance.getId().getClass(), trainingInstance.getId(),
                     "End time must be later than start time."));
+        }
+    }
+
+    private void checkNotRevivingAnExpiredInstance(TrainingInstance trainingInstanceToUpdate, TrainingInstance currentTrainingInstance) {
+        if (currentTrainingInstance.finished() && !trainingInstanceToUpdate.finished()) {
+            throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id",
+                    trainingInstanceToUpdate.getId().getClass(), trainingInstanceToUpdate.getId(),
+                    "End time of an expired instance cannot be set to the future."));
         }
     }
 

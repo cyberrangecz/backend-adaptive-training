@@ -45,15 +45,14 @@ public class UserService {
     }
 
     /**
-     * Create new user reference
+     * If user reference with given user id does not exist, it is created and returned.
+     * Otherwise, the existing one is returned.
      *
-     * @param userToCreate user reference to be created
-     * @return created {@link User}
+     * @param userRefId id of the referenced user
+     * @return user reference with given referenced id
      */
-    @TransactionalWO
-    public User createUserRef(User userToCreate) {
-        User user = userRefRepository.save(userToCreate);
-        LOG.info("User ref with user_ref_id: {} created.", user.getUserRefId());
-        return user;
+    public User createOrGetUserRef(Long userRefId) {
+        return userRefRepository.createOrGet(userRefId);
     }
+    
 }

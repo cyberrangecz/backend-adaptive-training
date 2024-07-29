@@ -214,13 +214,8 @@ public class TrainingInstanceService {
     }
 
     private void addLoggedInUserAsOrganizerToTrainingInstance(TrainingInstance trainingInstance) {
-        Optional<User> authorOfTrainingInstance = organizerRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
-        if (authorOfTrainingInstance.isPresent()) {
-            trainingInstance.addOrganizer(authorOfTrainingInstance.get());
-        } else {
-            User user = new User(userManagementServiceApi.getLoggedInUserRefId());
-            trainingInstance.addOrganizer(organizerRefRepository.save(user));
-        }
+        User userRef = organizerRefRepository.createOrGet(userManagementServiceApi.getLoggedInUserRefId());
+        trainingInstance.addOrganizer(userRef);
     }
 
     /**

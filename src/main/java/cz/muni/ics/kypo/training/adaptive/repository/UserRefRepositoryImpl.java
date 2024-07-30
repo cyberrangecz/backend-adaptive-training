@@ -25,7 +25,7 @@ public class UserRefRepositoryImpl implements UserRefRepositoryCustom {
                         "ON CONFLICT DO NOTHING")
                 .setParameter("userRefId", userRefId)
                 .executeUpdate();
-
+        
         if (rowsAffected != 0) {
             LOG.info("User with user_ref_id {} created", userRefId);
         }
@@ -33,7 +33,7 @@ public class UserRefRepositoryImpl implements UserRefRepositoryCustom {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
         Root<User> root = criteriaQuery.from(User.class);
-        criteriaBuilder.and(criteriaBuilder.equal(root.get("userRefId"), userRefId));
+        criteriaQuery.select(root).where(criteriaBuilder.equal(root.get("userRefId"), userRefId));
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }
 

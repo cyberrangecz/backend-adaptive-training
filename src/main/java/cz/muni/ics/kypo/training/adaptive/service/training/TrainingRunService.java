@@ -191,10 +191,10 @@ public class TrainingRunService {
     }
 
     /**
-     * Checks whether any trainin runs exists for particular training instance
+     * Checks whether any training runs exists for particular training instance
      *
      * @param trainingInstanceId the training instance id
-     * @return boolean boolean
+     * @return boolean
      */
     public boolean existsAnyForTrainingInstance(Long trainingInstanceId) {
         return trainingRunRepository.existsAnyForTrainingInstance(trainingInstanceId);
@@ -202,7 +202,7 @@ public class TrainingRunService {
 
 
     /**
-     * Finds all Training Runs of logged in user.
+     * Finds all Training Runs of logged-in user.
      *
      * @param pageable pageable parameter with information about pagination.
      * @return {@link TrainingRun}s of logged in user.
@@ -279,7 +279,8 @@ public class TrainingRunService {
             AdaptiveSmartAssistantInput smartAssistantInput = this.gatherInputDataForSmartAssistant(trainingRun, (TrainingPhase) nextPhase, phases);
             String accessToken = trainingRun.getTrainingInstance().getAccessToken();
             Long userId = trainingRun.getParticipantRef().getUserRefId();
-            // smart assistant returns order of the tasks counted from 1 and we need to decrease the number by 1, since Java order collections from 0
+            // smart assistant returns order of the tasks counted from 1, and we need to decrease the number by 1, 
+            // since Java order collections from 0
             int suitableTask = this.smartAssistantServiceApi.findSuitableTaskInPhase(smartAssistantInput, accessToken, userId).getSuitableTask();
             trainingRun.setCurrentTask(((TrainingPhase) nextPhase).getTasks().get(suitableTask - 1));
         } else {
@@ -465,11 +466,11 @@ public class TrainingRunService {
     }
 
     /**
-     * Finds all Training Runs of specific Training Definition of logged in user.
+     * Finds all Training Runs of specific Training Definition of logged-in user.
      *
      * @param definitionId id of Training Definition
      * @param pageable     pageable parameter with information about pagination.
-     * @return {@link TrainingRun}s of specific Training Definition of logged in user
+     * @return {@link TrainingRun}s of specific Training Definition of logged-in user
      */
     public Page<TrainingRun> findAllByTrainingDefinitionAndParticipant(Long definitionId, Pageable pageable) {
         return trainingRunRepository.findAllByTrainingDefinitionIdAndParticipantUserRefId(definitionId, userManagementServiceApi.getLoggedInUserRefId(), pageable);
@@ -589,12 +590,9 @@ public class TrainingRunService {
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setCurrentPhase(currentPhase);
 
-        Optional<User> userRefOpt = participantRefRepository.findUserByUserRefId(participantRefId);
-        if (userRefOpt.isPresent()) {
-            newTrainingRun.setParticipantRef(userRefOpt.get());
-        } else {
-            newTrainingRun.setParticipantRef(participantRefRepository.save(new User(userManagementServiceApi.getLoggedInUserRefId())));
-        }
+        User userRef = participantRefRepository.createOrGet(participantRefId);
+        newTrainingRun.setParticipantRef(userRef);
+
         newTrainingRun.setState(TRState.RUNNING);
         newTrainingRun.setTrainingInstance(trainingInstance);
         newTrainingRun.setStartTime(startTime);

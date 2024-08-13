@@ -610,7 +610,7 @@ public class TrainingRunService {
      * @throws MicroserviceApiException error calling OpenStack Sandbox Service API
      */
     public TrainingRun assignSandbox(TrainingRun trainingRun, long poolId) {
-        Pair<Integer, String> sandboxRefAndId = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId);
+        Pair<Integer, String> sandboxRefAndId = this.sandboxServiceApi.getAndLockSandboxForTrainingRun(poolId, trainingRun.getTrainingInstance().getAccessToken());
         trainingRun.setSandboxInstanceRefId(sandboxRefAndId.getRight());
         trainingRun.setSandboxInstanceAllocationId(sandboxRefAndId.getLeft());
         return trainingRunRepository.save(trainingRun);

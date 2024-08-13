@@ -37,11 +37,11 @@ public class SandboxServiceApi {
     }
 
 
-    public Pair<Integer, String> getAndLockSandboxForTrainingRun(Long poolId) {
+    public Pair<Integer, String> getAndLockSandboxForTrainingRun(Long poolId, String trainingAccessToken) {
         try {
             SandboxInfo sandboxInfo = sandboxServiceWebClient
                     .get()
-                    .uri("/pools/{poolId}/sandboxes/get-and-lock", poolId)
+                    .uri("/pools/{poolId}/sandboxes/get-and-lock/{trainingAccessToken}", poolId, trainingAccessToken)
                     .retrieve()
                     .bodyToMono(SandboxInfo.class)
                     .block();
@@ -58,14 +58,17 @@ public class SandboxServiceApi {
      * Lock pool locked pool info.
      *
      * @param poolId the pool id
+     * @param accessToken the training access token
      * @return the locked pool info
      */
-    public LockedPoolInfo lockPool(Long poolId) {
+    public LockedPoolInfo lockPool(Long poolId, String accessToken) {
         try {
+            String requestBody = String.format("{\"training_access_token\": \"%s\"}", accessToken);
+
             return sandboxServiceWebClient
                     .post()
                     .uri("/pools/{poolId}/locks", poolId)
-                    .body(Mono.just("{}"), String.class)
+                    .body(Mono.just(requestBody), String.class)
                     .retrieve()
                     .bodyToMono(LockedPoolInfo.class)
                     .block();

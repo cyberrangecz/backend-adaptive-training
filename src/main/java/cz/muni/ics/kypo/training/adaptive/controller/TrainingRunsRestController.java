@@ -314,7 +314,7 @@ public class TrainingRunsRestController {
     /**
      * Check if submitted passkey is correct.
      *
-     * @param runId             the run id
+     * @param runId              the run id
      * @param validatePasskeyDTO submitted string.
      * @return True if passkey is correct, false if passkey is wrong.
      */
@@ -333,9 +333,9 @@ public class TrainingRunsRestController {
     })
     @PostMapping(path = "/{runId}/is-correct-passkey", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Boolean> isCorrectPasskey(@ApiParam(value = "Training run ID", required = true)
-                                                              @PathVariable("runId") Long runId,
-                                                               @ApiParam(value = "Submitted passkey", required = true)
-                                                              @RequestBody @Valid ValidatePasskeyDTO validatePasskeyDTO) {
+                                                    @PathVariable("runId") Long runId,
+                                                    @ApiParam(value = "Submitted passkey", required = true)
+                                                    @RequestBody @Valid ValidatePasskeyDTO validatePasskeyDTO) {
         return ResponseEntity.ok(trainingRunFacade.isCorrectPasskey(runId, validatePasskeyDTO.getPasskey()));
     }
 
@@ -459,9 +459,9 @@ public class TrainingRunsRestController {
     /**
      * Get previous or current phase (visited) of given Training Run.
      *
-     * @param runId  of Training Run for which to get previous or current phase.
+     * @param runId   of Training Run for which to get previous or current phase.
      * @param phaseId ID of the visited phase.
-     * @param fields attributes of the object to be returned as the result.
+     * @param fields  attributes of the object to be returned as the result.
      * @return Requested phase.
      */
     @ApiOperation(httpMethod = "GET",
@@ -489,7 +489,7 @@ public class TrainingRunsRestController {
     /**
      * Get trainees submissions.
      *
-     * @param runId ID of training run for which to get submissions
+     * @param runId   ID of training run for which to get submissions
      * @param phaseId ID of the phase to specify subset of submissions
      * @return Submissions submitted during the training run of the trainee.
      */

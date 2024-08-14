@@ -107,6 +107,18 @@ public class TrainingInstanceFacade {
     }
 
     /**
+     * Get Training instance access token by pool id.
+     *
+     * @param poolId id of the assigned pool.
+     * @return Requested access token by pool id if it exists.
+     */
+    @IsOrganizerOrAdmin
+    @TransactionalRO
+    public String findInstanceAccessTokenByPoolId(Long poolId) {
+        return trainingInstanceService.findInstanceAccessTokenByPoolId(poolId);
+    }
+
+    /**
      * Find all Training Instances.
      *
      * @param predicate represents a predicate (boolean-valued function) of one argument.
@@ -145,21 +157,21 @@ public class TrainingInstanceFacade {
         Long oldPoolId = trainingInstance.getPoolId();
         String accessToken = trainingInstanceService.update(updatedTrainingInstance);
         if (isPoolIdChanged(oldPoolId, updatedTrainingInstance.getPoolId())) {
-            handlePoolIdModification(oldPoolId, updatedTrainingInstance.getPoolId());
+            handlePoolIdModification(oldPoolId, updatedTrainingInstance.getPoolId(), updatedTrainingInstance.getAccessToken());
         }
         return accessToken;
     }
 
-    private void handlePoolIdModification(Long currentPoolId, Long newPoolId) {
+    private void handlePoolIdModification(Long currentPoolId, Long newPoolId, String accessToken) {
         if (currentPoolId == null) {
-            sandboxServiceApi.lockPool(newPoolId);
+            sandboxServiceApi.lockPool(newPoolId, accessToken);
         } else if (newPoolId == null) {
             sandboxServiceApi.unlockPool(currentPoolId);
             deleteBashCommandsByPool(currentPoolId);
         } else {
             sandboxServiceApi.unlockPool(currentPoolId);
             deleteBashCommandsByPool(currentPoolId);
-            sandboxServiceApi.lockPool(newPoolId);
+            sandboxServiceApi.lockPool(newPoolId, accessToken);
         }
     }
 
@@ -182,7 +194,7 @@ public class TrainingInstanceFacade {
         trainingInstance.setId(null);
         TrainingInstance createdTrainingInstance = trainingInstanceService.create(trainingInstance);
         if (trainingInstance.getPoolId() != null) {
-            handlePoolIdModification(null, trainingInstance.getPoolId());
+            handlePoolIdModification(null, trainingInstance.getPoolId(), trainingInstance.getAccessToken());
         }
         return trainingInstanceMapper.mapToDTO(createdTrainingInstance);
     }
@@ -197,11 +209,8 @@ public class TrainingInstanceFacade {
             if (actualOrganizersIds.contains(organizer.getUserRefId())) {
                 continue;
             }
-            try {
-                trainingInstance.addOrganizer(userService.getUserByUserRefId(organizer.getUserRefId()));
-            } catch (EntityNotFoundException ex) {
-                trainingInstance.addOrganizer(userService.createUserRef(createUserRefFromDTO(organizer)));
-            }
+            User user = userService.createOrGetUserRef(organizer.getUserRefId());
+            trainingInstance.addOrganizer(user);
         }
     }
 
@@ -216,12 +225,6 @@ public class TrainingInstanceFacade {
         }
         while (page < usersPageResultResource.getPagination().getTotalPages());
         return users;
-    }
-
-    private User createUserRefFromDTO(UserRefDTO userToBeCreated) {
-        User user = new User();
-        user.setUserRefId(userToBeCreated.getUserRefId());
-        return user;
     }
 
     /**
@@ -291,7 +294,7 @@ public class TrainingInstanceFacade {
                     "Training instance already contains pool Id. Please first unassign pool id and then assign another pool again."));
         }
         // lock pool and update pool
-        sandboxServiceApi.lockPool(trainingInstanceAssignPoolIdDTO.getPoolId());
+        sandboxServiceApi.lockPool(trainingInstanceAssignPoolIdDTO.getPoolId(), trainingInstance.getAccessToken());
         trainingInstance.setPoolId(trainingInstanceAssignPoolIdDTO.getPoolId());
         return trainingInstanceMapper.mapEntityToTIBasicInfo(trainingInstanceService.auditAndSave(trainingInstance));
     }

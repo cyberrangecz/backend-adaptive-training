@@ -75,6 +75,17 @@ public class TrainingInstanceService {
     }
 
     /**
+     * Find Training instance access token by pool id if exists.
+     *
+     * @param poolId the pool id
+     * @return the access token
+     */
+    public String findInstanceAccessTokenByPoolId(Long poolId) {
+        Optional<TrainingInstance> instance = trainingInstanceRepository.findByPoolId(poolId);
+        return instance.map(TrainingInstance::getAccessToken).orElse(null);
+    }
+
+    /**
      * Find specific Training instance by id including its associated Training definition.
      *
      * @param instanceId the instance id
@@ -135,6 +146,7 @@ public class TrainingInstanceService {
     public String update(TrainingInstance trainingInstanceToUpdate) {
         validateStartAndEndTime(trainingInstanceToUpdate);
         TrainingInstance trainingInstance = findById(trainingInstanceToUpdate.getId());
+        checkNotRevivingAnExpiredInstance(trainingInstanceToUpdate, trainingInstance);
         //add original organizers to update
         trainingInstanceToUpdate.setOrganizers(new HashSet<>(trainingInstance.getOrganizers()));
         addLoggedInUserAsOrganizerToTrainingInstance(trainingInstanceToUpdate);
@@ -176,6 +188,14 @@ public class TrainingInstanceService {
         }
     }
 
+    private void checkNotRevivingAnExpiredInstance(TrainingInstance trainingInstanceToUpdate, TrainingInstance currentTrainingInstance) {
+        if (currentTrainingInstance.finished() && !trainingInstanceToUpdate.finished()) {
+            throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id",
+                    trainingInstanceToUpdate.getId().getClass(), trainingInstanceToUpdate.getId(),
+                    "End time of an expired instance cannot be set to the future."));
+        }
+    }
+
     private void checkChangedFieldsOfTrainingInstance(TrainingInstance trainingInstanceToUpdate, TrainingInstance currentTrainingInstance) {
         if (!currentTrainingInstance.getStartTime().equals(trainingInstanceToUpdate.getStartTime())) {
             throw new EntityConflictException(new EntityErrorDetail(TrainingInstance.class, "id", Long.class, trainingInstanceToUpdate.getId(),
@@ -214,13 +234,8 @@ public class TrainingInstanceService {
     }
 
     private void addLoggedInUserAsOrganizerToTrainingInstance(TrainingInstance trainingInstance) {
-        Optional<User> authorOfTrainingInstance = organizerRefRepository.findUserByUserRefId(userManagementServiceApi.getLoggedInUserRefId());
-        if (authorOfTrainingInstance.isPresent()) {
-            trainingInstance.addOrganizer(authorOfTrainingInstance.get());
-        } else {
-            User user = new User(userManagementServiceApi.getLoggedInUserRefId());
-            trainingInstance.addOrganizer(organizerRefRepository.save(user));
-        }
+        User userRef = organizerRefRepository.createOrGet(userManagementServiceApi.getLoggedInUserRefId());
+        trainingInstance.addOrganizer(userRef);
     }
 
     /**

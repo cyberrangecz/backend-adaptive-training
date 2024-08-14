@@ -219,12 +219,6 @@ public class TrainingDefinitionFacade {
         trainingDefinitionService.update(mappedTrainingDefinition);
     }
 
-    private User createUserRefFromDTO(UserRefDTO userToBeCreated) {
-        User user = new User();
-        user.setUserRefId(userToBeCreated.getUserRefId());
-        return user;
-    }
-
     /**
      * Clones Training Definition by id
      *
@@ -359,11 +353,8 @@ public class TrainingDefinitionFacade {
             if (actualAuthorsIds.contains(author.getUserRefId())) {
                 continue;
             }
-            try {
-                trainingDefinition.addAuthor(userService.getUserByUserRefId(author.getUserRefId()));
-            } catch (EntityNotFoundException ex) {
-                trainingDefinition.addAuthor(userService.createUserRef(createUserRefFromDTO(author)));
-            }
+            User user = userService.createOrGetUserRef(author.getUserRefId());
+            trainingDefinition.addAuthor(user);
         }
     }
 

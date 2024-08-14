@@ -13,7 +13,7 @@ import java.util.Set;
  * The JPA repository interface to manage {@link User} instances.
  */
 @Repository
-public interface UserRefRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User> {
+public interface UserRefRepository extends JpaRepository<User, Long>, QuerydslPredicateExecutor<User>, UserRefRepositoryCustom {
 
     /**
      * Find all users by userRefIds.

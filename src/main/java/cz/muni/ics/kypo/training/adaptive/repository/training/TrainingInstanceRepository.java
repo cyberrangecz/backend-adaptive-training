@@ -77,6 +77,14 @@ public interface TrainingInstanceRepository extends JpaRepository<TrainingInstan
     Optional<TrainingInstance> findById(Long id);
 
     /**
+     * Find training instance by pool id.
+     *
+     * @param poolId the pool id
+     * @return {@link TrainingInstance} including its associated {@link TrainingDefinition}
+     */
+    Optional<TrainingInstance> findByPoolId(@Param("poolId") Long poolId);
+
+    /**
      * Find training instance with start time in the past, end time in the future and by corresponding access token.
      *
      * @param datetime    the current time

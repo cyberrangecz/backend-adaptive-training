@@ -5,7 +5,7 @@
 
     <groupId>cz.muni.ics.kypo</groupId>
     <artifactId>kypo-adaptive-training</artifactId>
-    <version>2.2.8</version>
+    <version>2.3.0</version>
     <packaging>jar</packaging>
     <name>KYPO2 Adaptive Training</name>
     <description>KYPO2 Adaptive Training</description>

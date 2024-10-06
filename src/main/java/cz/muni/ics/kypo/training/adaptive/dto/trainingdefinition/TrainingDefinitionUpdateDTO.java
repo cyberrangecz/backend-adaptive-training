@@ -25,9 +25,6 @@ public class TrainingDefinitionUpdateDTO {
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", required = true, example = "TrainingDefinition2", position = 1)
     @NotEmpty(message = "{trainingDefinition.title.NotEmpty.message}")
     private String title;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "false", position = 2)
-    @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
-    private boolean showStepperBar;
     @ApiModelProperty(value = "Description of training definition that is visible to the participant.", example = "Unreleased training definition", position = 3)
     private String description;
     @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "[phishing]", position = 4)
@@ -146,24 +143,6 @@ public class TrainingDefinitionUpdateDTO {
         this.state = state;
     }
 
-    /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @return true if bar is shown
-     */
-    public boolean isShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Sets if stepper bar is shown while in run.
-     *
-     * @param showStepperBar true if bar is shown
-     */
-    public void setShowStepperBar(boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -189,7 +168,6 @@ public class TrainingDefinitionUpdateDTO {
                 ", prerequisites=" + Arrays.toString(prerequisites) +
                 ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
-                ", showStepperBar=" + showStepperBar +
                 '}';
     }
 }

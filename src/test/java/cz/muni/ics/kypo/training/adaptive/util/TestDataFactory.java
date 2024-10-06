@@ -65,7 +65,7 @@ public class TestDataFactory {
     public static final String ANOTHER_CORRECT_QUESTION_CHOICE = "Another correct answer";
 
     private SimpleModule simpleModule = new SimpleModule("SimpleModule").addSerializer(new LocalDateTimeUTCSerializer());
-    private ObjectMapper mapper = new ObjectMapper().registerModule( new JavaTimeModule())
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule())
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .registerModule(simpleModule)
             .setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -98,25 +98,56 @@ public class TestDataFactory {
 
     private DecisionMatrixRowDTO decisionMatrixRowDTO1 = generateDecisionMatrixRowDTO(0, 0.0, 0.0, 1.0, 0.0, 0.0);
 
-    public Task getTask11() { return clone(task11, Task.class);}
-    public Task getTask12() { return clone(task12, Task.class);}
-    public Task getTask13() { return clone(task13, Task.class);}
-    public Task getTask21() { return clone(task21, Task.class);}
-    public Task getTask22() { return clone(task22, Task.class);}
-    public Task getTask23() { return clone(task23, Task.class);}
-    public Task getTask31() { return clone(task31, Task.class);}
-    public Task getTask32() { return clone(task32, Task.class);}
-    public Task getTask33() { return clone(task33, Task.class);}
+    public Task getTask11() {
+        return clone(task11, Task.class);
+    }
 
-    public TaskUpdateDTO getTaskUpdateDTO() { return clone(taskUpdateDTO, TaskUpdateDTO.class);}
-    public TaskCopyDTO getTaskCopyDTO() { return clone(taskCopyDTO, TaskCopyDTO.class);}
+    public Task getTask12() {
+        return clone(task12, Task.class);
+    }
 
-    private InfoPhase infoPhase1 = generateInfoPhase("Info phase 1", 7,  "Information");
-    private InfoPhase infoPhase2 = generateInfoPhase("Info phase 2", 9,  "Content");
+    public Task getTask13() {
+        return clone(task13, Task.class);
+    }
+
+    public Task getTask21() {
+        return clone(task21, Task.class);
+    }
+
+    public Task getTask22() {
+        return clone(task22, Task.class);
+    }
+
+    public Task getTask23() {
+        return clone(task23, Task.class);
+    }
+
+    public Task getTask31() {
+        return clone(task31, Task.class);
+    }
+
+    public Task getTask32() {
+        return clone(task32, Task.class);
+    }
+
+    public Task getTask33() {
+        return clone(task33, Task.class);
+    }
+
+    public TaskUpdateDTO getTaskUpdateDTO() {
+        return clone(taskUpdateDTO, TaskUpdateDTO.class);
+    }
+
+    public TaskCopyDTO getTaskCopyDTO() {
+        return clone(taskCopyDTO, TaskCopyDTO.class);
+    }
+
+    private InfoPhase infoPhase1 = generateInfoPhase("Info phase 1", 7, "Information");
+    private InfoPhase infoPhase2 = generateInfoPhase("Info phase 2", 9, "Content");
 
     private InfoPhaseUpdateDTO infoPhaseUpdateDTO = generateInfoPhaseUpdateDTO("Updated info phase title", "Updated info phase content");
 
-    private AccessPhase accessPhase = generateAccessPhase("Access phase", 10,  "Cloud content.",
+    private AccessPhase accessPhase = generateAccessPhase("Access phase", 10, "Cloud content.",
             "Local content. Command: ${USER_ID} ${ACCESS_PHASE} ${CENTRAL_SYSLOG_IP}", "start-training");
 
     private BasicPhaseInfoDTO basicTrainingPhaseInfoDTO = generateBasicPhaseInfoDTO("Basic Game phase info", PhaseType.TRAINING);
@@ -132,13 +163,13 @@ public class TestDataFactory {
     private AccessToken accessToken2 = generateAccessToken("token-9999");
 
     private TrainingDefinition unreleasedDefinition = generateTrainingDefinition("Unreleased definition", "Unreleased description",
-            new String[]{"p1", "p2"}, new String[]{"o1", "o2"}, TDState.UNRELEASED, true,
+            new String[]{"p1", "p2"}, new String[]{"o1", "o2"}, TDState.UNRELEASED,
             LocalDateTime.now(Clock.systemUTC()).minusHours(1), "John Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(1));
     private TrainingDefinition releasedDefinition = generateTrainingDefinition("Released definition", "Released description",
-            new String[]{"p3", "p4"}, new String[]{"o3"}, TDState.RELEASED, true,
+            new String[]{"p3", "p4"}, new String[]{"o3"}, TDState.RELEASED,
             LocalDateTime.now(Clock.systemUTC()).minusHours(5), "John Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(5));
     private TrainingDefinition archivedDefinition = generateTrainingDefinition("Archived definition", "Archived description",
-            new String[]{"p5"}, new String[]{"o4", "o5", "o6"}, TDState.ARCHIVED, false,
+            new String[]{"p5"}, new String[]{"o4", "o5", "o6"}, TDState.ARCHIVED,
             LocalDateTime.now(Clock.systemUTC()).minusHours(10), "Jane Doe", LocalDateTime.now(Clock.systemUTC()).minusHours(10));
     private TrainingDefinitionDTO unreleasedDefinitionDTO = generateTrainingDefinitionDTO(unreleasedDefinition);
     private TrainingDefinitionDTO releasedDefinitionDTO = generateTrainingDefinitionDTO(releasedDefinition);
@@ -151,11 +182,11 @@ public class TestDataFactory {
             true);
     private TrainingDefinitionUpdateDTO trainingDefinitionUpdateDTO = generateTrainingDefinitionUpdateDTO("Training definition updaet DTO",
             "Update of definition", new String[]{"p6", "p7"}, new String[]{"o6", "o7"}, TDState.UNRELEASED,
-            false, 7L);
+            7L);
     private ImportTrainingDefinitionDTO importTrainingDefinitionDTO = generateImportTrainingDefinitionDTO("Imported definition", "Imported description",
-            new String[]{"ip1", "ip2"}, TDState.UNRELEASED, true);
-    private TrainingDefinitionByIdDTO trainingDefinitionByIdDTO = generateTrainingDefinitionByIdDTO("TDbyId", "Definition by id",  new String[]{"p8", "p9"},
-            TDState.UNRELEASED,false, false,
+            new String[]{"ip1", "ip2"}, TDState.UNRELEASED);
+    private TrainingDefinitionByIdDTO trainingDefinitionByIdDTO = generateTrainingDefinitionByIdDTO("TDbyId", "Definition by id", new String[]{"p8", "p9"},
+            TDState.UNRELEASED, false,
             20L, LocalDateTime.now(Clock.systemUTC()).minusHours(15));
 
     private TrainingInstance futureInstance = generateTrainingInstance(LocalDateTime.now(Clock.systemUTC()).plusHours(10),
@@ -184,9 +215,9 @@ public class TestDataFactory {
     private TrainingRun archivedRun = generateTrainingRun(LocalDateTime.now(Clock.systemUTC()).minusHours(20), LocalDateTime.now(Clock.systemUTC()).minusHours(10),
             TRState.ARCHIVED, 0, false, "5L", 5, false, "60L");
     private TrainingRunByIdDTO trainingRunByIdDTO = generateTrainingRunByIdDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(2), LocalDateTime.now(Clock.systemUTC()).plusHours(2),
-             TRState.RUNNING, "5L");
+            TRState.RUNNING, "5L");
     private TrainingRunDTO trainingRunDTO = generateTrainingRunDTO(LocalDateTime.now(Clock.systemUTC()).minusHours(9), LocalDateTime.now(Clock.systemUTC()).minusHours(5),
-             TRState.FINISHED, "7L", 7);
+            TRState.FINISHED, "7L", 7);
 //    private AccessedTrainingRunDTO accessedTrainingRunDTO = generateAccessedTrainingRunDTO("Accessed run", LocalDateTime.now(Clock.systemUTC()).minusHours(8), LocalDateTime.now(Clock.systemUTC()).minusHours(4), 5,
 //            6, Actions.RESUME);
 
@@ -200,16 +231,16 @@ public class TestDataFactory {
     private UserRefDTO userRefDTO3 = generateUserRefDTO(14L, "John Nevel", "Nevel", "John", "mail38@muni.cz", "https://oidc.muni.cz/oidc", null);
     private UserRefDTO userRefDTO4 = generateUserRefDTO(17L, "Ted Mosby", "Mosby", "Ted", "mail4@muni.cz", "https://oidc.muni.cz/oidc", null);
 
-    private User user1 = generateUser( 10L);
+    private User user1 = generateUser(10L);
     private User user2 = generateUser(12L);
     private User user3 = generateUser(14L);
     private User user4 = generateUser(17L);
 
-    public QuestionnairePhase getGeneral(){
+    public QuestionnairePhase getGeneral() {
         return clone(general, QuestionnairePhase.class);
     }
 
-    public QuestionnairePhase getAdaptive(){
+    public QuestionnairePhase getAdaptive() {
         return clone(adaptive, QuestionnairePhase.class);
     }
 
@@ -283,13 +314,15 @@ public class TestDataFactory {
         return clone(anotherCorrectQuestionChoiceDTO, QuestionChoiceDTO.class);
     }
 
-    public TrainingPhase getTrainingPhase1(){
+    public TrainingPhase getTrainingPhase1() {
         return clone(trainingPhase1, TrainingPhase.class);
     }
-    public TrainingPhase getTrainingPhase2(){
+
+    public TrainingPhase getTrainingPhase2() {
         return clone(trainingPhase2, TrainingPhase.class);
     }
-    public TrainingPhase getTrainingPhase3(){
+
+    public TrainingPhase getTrainingPhase3() {
         return clone(trainingPhase3, TrainingPhase.class);
     }
 
@@ -301,7 +334,7 @@ public class TestDataFactory {
         return clone(decisionMatrixRowDTO1, DecisionMatrixRowDTO.class);
     }
 
-    private Task task11 = generateTask("Task11", "Content of task11", 0, "answer11","solution11", 2, true, 20);
+    private Task task11 = generateTask("Task11", "Content of task11", 0, "answer11", "solution11", 2, true, 20);
     private Task task12 = generateTask("Task12", "Content of task12", 1, "answer12", "solution12", 5, false, 15);
     private Task task13 = generateTask("Task13", "Content of task13", 2, "answer13", "solution13", 4, true, 10);
     private Task task21 = generateTask("Task21", "Content of task21", 0, "answer21", "solution21", 2, true, 35);
@@ -311,54 +344,54 @@ public class TestDataFactory {
     private Task task32 = generateTask("Task32", "Content of task32", 1, "answer32", "solution32", 5, false, 40);
     private Task task33 = generateTask("Task33", "Content of task33", 2, "answer33", "solution33", 3, true, 20);
 
-    private TaskUpdateDTO taskUpdateDTO = generateTaskUpdateDTO("Updated task title", "Updated task content", "Updated answer","Updated solution", 10, false, 10);
-    private TaskCopyDTO taskCopyDTO = generateTaskCopyDTO("Copied task title", "Copied task content", "Copied answer","Copied solution", 5, true, 20);
+    private TaskUpdateDTO taskUpdateDTO = generateTaskUpdateDTO("Updated task title", "Updated task content", "Updated answer", "Updated solution", 10, false, 10);
+    private TaskCopyDTO taskCopyDTO = generateTaskCopyDTO("Copied task title", "Copied task content", "Copied answer", "Copied solution", 5, true, 20);
 
-    public InfoPhase getInfoPhase1(){
+    public InfoPhase getInfoPhase1() {
         return clone(infoPhase1, InfoPhase.class);
     }
 
-    public InfoPhase getInfoPhase2(){
-        return clone(infoPhase2 , InfoPhase.class);
+    public InfoPhase getInfoPhase2() {
+        return clone(infoPhase2, InfoPhase.class);
     }
 
     public InfoPhaseUpdateDTO getInfoPhaseUpdateDTO() {
         return clone(infoPhaseUpdateDTO, InfoPhaseUpdateDTO.class);
     }
 
-    public AccessPhase getAccessPhase(){
-        return clone(accessPhase , AccessPhase.class);
+    public AccessPhase getAccessPhase() {
+        return clone(accessPhase, AccessPhase.class);
     }
 
-    public MitreTechnique getMitreTechnique1(){
+    public MitreTechnique getMitreTechnique1() {
         return clone(mitreTechnique1, MitreTechnique.class);
     }
 
-    public MitreTechnique getMitreTechnique2(){
+    public MitreTechnique getMitreTechnique2() {
         return clone(mitreTechnique2, MitreTechnique.class);
     }
 
-    public MitreTechniqueDTO getMitreTechniqueDTO1(){
+    public MitreTechniqueDTO getMitreTechniqueDTO1() {
         return clone(mitreTechniqueDTO1, MitreTechniqueDTO.class);
     }
 
-    public MitreTechniqueDTO getMitreTechniqueDTO2(){
+    public MitreTechniqueDTO getMitreTechniqueDTO2() {
         return clone(mitreTechniqueDTO2, MitreTechniqueDTO.class);
     }
 
-    public AccessToken getAccessToken1(){
+    public AccessToken getAccessToken1() {
         return clone(accessToken1, AccessToken.class);
     }
 
-    public AccessToken getAccessToken2(){
+    public AccessToken getAccessToken2() {
         return clone(accessToken2, AccessToken.class);
     }
 
-    public TrainingDefinition getUnreleasedDefinition(){
+    public TrainingDefinition getUnreleasedDefinition() {
         return clone(unreleasedDefinition, TrainingDefinition.class);
     }
 
-    public TrainingDefinition getReleasedDefinition(){
+    public TrainingDefinition getReleasedDefinition() {
         return clone(releasedDefinition, TrainingDefinition.class);
     }
 
@@ -366,51 +399,51 @@ public class TestDataFactory {
         return clone(archivedDefinition, TrainingDefinition.class);
     }
 
-    public TrainingDefinitionDTO getUnreleasedDefinitionDTO(){
+    public TrainingDefinitionDTO getUnreleasedDefinitionDTO() {
         return clone(unreleasedDefinitionDTO, TrainingDefinitionDTO.class);
     }
 
-    public TrainingDefinitionDTO getReleasedDefinitionDTO(){
+    public TrainingDefinitionDTO getReleasedDefinitionDTO() {
         return clone(releasedDefinitionDTO, TrainingDefinitionDTO.class);
     }
 
-    public TrainingDefinitionDTO getArchivedDefinitionDTO(){
+    public TrainingDefinitionDTO getArchivedDefinitionDTO() {
         return clone(archivedDefinitionDTO, TrainingDefinitionDTO.class);
     }
 
-    public TrainingDefinitionInfoDTO getUnreleasedDefinitionInfoDTO(){
+    public TrainingDefinitionInfoDTO getUnreleasedDefinitionInfoDTO() {
         return clone(unreleasedDefinitionInfoDTO, TrainingDefinitionInfoDTO.class);
     }
 
-    public TrainingDefinitionInfoDTO getReleasedDefinitionInfoDTO(){
+    public TrainingDefinitionInfoDTO getReleasedDefinitionInfoDTO() {
         return clone(releasedDefinitionInfoDTO, TrainingDefinitionInfoDTO.class);
     }
 
-    public TrainingDefinitionInfoDTO getArchivedDefinitionInfoDTO(){
+    public TrainingDefinitionInfoDTO getArchivedDefinitionInfoDTO() {
         return clone(archivedDefinitionInfoDTO, TrainingDefinitionInfoDTO.class);
     }
 
-    public TrainingInstance getFutureInstance(){
+    public TrainingInstance getFutureInstance() {
         return clone(futureInstance, TrainingInstance.class);
     }
 
-    public TrainingInstance getOngoingInstance(){
+    public TrainingInstance getOngoingInstance() {
         return clone(ongoingInstance, TrainingInstance.class);
     }
 
-    public TrainingInstance getConcludedInstance(){
+    public TrainingInstance getConcludedInstance() {
         return clone(concludedInstance, TrainingInstance.class);
     }
 
-    public TrainingRun getRunningRun(){
+    public TrainingRun getRunningRun() {
         return clone(runningRun, TrainingRun.class);
     }
 
-    public TrainingRun getFinishedRun(){
+    public TrainingRun getFinishedRun() {
         return clone(finishedRun, TrainingRun.class);
     }
 
-    public TrainingRun getArchivedRun(){
+    public TrainingRun getArchivedRun() {
         return clone(archivedRun, TrainingRun.class);
     }
 
@@ -430,24 +463,24 @@ public class TestDataFactory {
         return clone(trainingInstanceUpdateDTO, TrainingInstanceUpdateDTO.class);
     }
 
-    public TrainingRunByIdDTO getTrainingRunByIdDTO(){
+    public TrainingRunByIdDTO getTrainingRunByIdDTO() {
         return clone(trainingRunByIdDTO, TrainingRunByIdDTO.class);
     }
 
 
-    public TrainingRunDTO getTrainingRunDTO(){
+    public TrainingRunDTO getTrainingRunDTO() {
         return clone(trainingRunDTO, TrainingRunDTO.class);
     }
 
-    public ImportTrainingDefinitionDTO getImportTrainingDefinitionDTO(){
+    public ImportTrainingDefinitionDTO getImportTrainingDefinitionDTO() {
         return clone(importTrainingDefinitionDTO, ImportTrainingDefinitionDTO.class);
     }
 
-    public TrainingDefinitionByIdDTO getTrainingDefinitionByIdDTO(){
+    public TrainingDefinitionByIdDTO getTrainingDefinitionByIdDTO() {
         return clone(trainingDefinitionByIdDTO, TrainingDefinitionByIdDTO.class);
     }
 
-    public TrainingInstanceDTO getTrainingInstanceDTO(){
+    public TrainingInstanceDTO getTrainingInstanceDTO() {
         return clone(trainingInstanceDTO, TrainingInstanceDTO.class);
     }
 
@@ -455,38 +488,60 @@ public class TestDataFactory {
 //        return clone(accessedTrainingRunDTO, AccessedTrainingRunDTO.class);
 //    }
 
-    public TrainingInstanceArchiveDTO getTrainingInstanceArchiveDTO(){
+    public TrainingInstanceArchiveDTO getTrainingInstanceArchiveDTO() {
         return clone(trainingInstanceArchiveDTO, TrainingInstanceArchiveDTO.class);
     }
 
-    public PoolInfoDTO getPoolInfoDTO(){
+    public PoolInfoDTO getPoolInfoDTO() {
         return clone(poolInfoDTO, PoolInfoDTO.class);
     }
 
-    public SandboxInfo getSandboxInfo(){
+    public SandboxInfo getSandboxInfo() {
         return clone(sandboxInfo, SandboxInfo.class);
     }
 
-    public SandboxPoolInfo getSandboxPoolInfo(){
+    public SandboxPoolInfo getSandboxPoolInfo() {
         return clone(sandboxPoolInfo, SandboxPoolInfo.class);
     }
 
-    public LockedPoolInfo getLockedPoolInfo(){
+    public LockedPoolInfo getLockedPoolInfo() {
         return clone(lockedPoolInfo, LockedPoolInfo.class);
     }
 
-    public UserRefDTO getUserRefDTO1() { return clone(userRefDTO1, UserRefDTO.class);}
-    public UserRefDTO getUserRefDTO2() { return clone(userRefDTO2, UserRefDTO.class);}
-    public UserRefDTO getUserRefDTO3() { return clone(userRefDTO3, UserRefDTO.class);}
-    public UserRefDTO getUserRefDTO4() { return clone(userRefDTO4, UserRefDTO.class);}
+    public UserRefDTO getUserRefDTO1() {
+        return clone(userRefDTO1, UserRefDTO.class);
+    }
+
+    public UserRefDTO getUserRefDTO2() {
+        return clone(userRefDTO2, UserRefDTO.class);
+    }
+
+    public UserRefDTO getUserRefDTO3() {
+        return clone(userRefDTO3, UserRefDTO.class);
+    }
+
+    public UserRefDTO getUserRefDTO4() {
+        return clone(userRefDTO4, UserRefDTO.class);
+    }
 
 
-    public User getUser1() { return clone(user1, User.class);}
-    public User getUser2() { return clone(user2, User.class);}
-    public User getUser3() { return clone(user3, User.class);}
-    public User getUser4() { return clone(user4, User.class);}
+    public User getUser1() {
+        return clone(user1, User.class);
+    }
 
-    private QuestionnairePhase generateQuestionnairePhase(String title, int order, QuestionnaireType questionnaireType){
+    public User getUser2() {
+        return clone(user2, User.class);
+    }
+
+    public User getUser3() {
+        return clone(user3, User.class);
+    }
+
+    public User getUser4() {
+        return clone(user4, User.class);
+    }
+
+    private QuestionnairePhase generateQuestionnairePhase(String title, int order, QuestionnaireType questionnaireType) {
         QuestionnairePhase newQuestionnairePhase = new QuestionnairePhase();
         newQuestionnairePhase.setTitle(title);
         newQuestionnairePhase.setOrder(order);
@@ -494,7 +549,7 @@ public class TestDataFactory {
         return newQuestionnairePhase;
     }
 
-    private TrainingPhase generateTrainingPhase(String title, int estimatedDuration, int order, int allowedCommands, int allowedWrongAnswers){
+    private TrainingPhase generateTrainingPhase(String title, int estimatedDuration, int order, int allowedCommands, int allowedWrongAnswers) {
         TrainingPhase newTrainingPhase = new TrainingPhase();
         newTrainingPhase.setTitle(title);
         newTrainingPhase.setEstimatedDuration(estimatedDuration);
@@ -504,7 +559,7 @@ public class TestDataFactory {
         return newTrainingPhase;
     }
 
-    private InfoPhase generateInfoPhase(String title, int order, String content){
+    private InfoPhase generateInfoPhase(String title, int order, String content) {
         InfoPhase newInfoPhase = new InfoPhase();
         newInfoPhase.setTitle(title);
         newInfoPhase.setOrder(order);
@@ -512,7 +567,7 @@ public class TestDataFactory {
         return newInfoPhase;
     }
 
-    private AccessPhase generateAccessPhase(String title, int order, String cloudContent, String localContent, String passkey){
+    private AccessPhase generateAccessPhase(String title, int order, String cloudContent, String localContent, String passkey) {
         AccessPhase newAccessPhase = new AccessPhase();
         newAccessPhase.setTitle(title);
         newAccessPhase.setOrder(order);
@@ -590,25 +645,25 @@ public class TestDataFactory {
         return questionChoiceDTO;
     }
 
-    private MitreTechnique generateMitreTechnique(String techniqueKey){
+    private MitreTechnique generateMitreTechnique(String techniqueKey) {
         MitreTechnique newMitreTechnique = new MitreTechnique();
         newMitreTechnique.setTechniqueKey(techniqueKey);
         return newMitreTechnique;
     }
 
-    private MitreTechniqueDTO generateMitreTechniqueDTO(String techniqueKey){
+    private MitreTechniqueDTO generateMitreTechniqueDTO(String techniqueKey) {
         MitreTechniqueDTO mitreTechniqueDTO = new MitreTechniqueDTO();
         mitreTechniqueDTO.setTechniqueKey(techniqueKey);
         return mitreTechniqueDTO;
     }
 
-    private AccessToken generateAccessToken(String accessToken){
+    private AccessToken generateAccessToken(String accessToken) {
         AccessToken newAccessToken = new AccessToken();
         newAccessToken.setAccessToken(accessToken);
         return newAccessToken;
     }
 
-    private Task generateTask(String title, String content, Integer order, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+    private Task generateTask(String title, String content, Integer order, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration) {
         Task newTask = new Task();
         newTask.setTitle(title);
         newTask.setContent(content);
@@ -621,7 +676,7 @@ public class TestDataFactory {
         return newTask;
     }
 
-    private TaskUpdateDTO generateTaskUpdateDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+    private TaskUpdateDTO generateTaskUpdateDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration) {
         TaskUpdateDTO taskUpdateDTO = new TaskUpdateDTO();
         taskUpdateDTO.setTitle(title);
         taskUpdateDTO.setContent(content);
@@ -633,7 +688,7 @@ public class TestDataFactory {
         return taskUpdateDTO;
     }
 
-    private TaskCopyDTO generateTaskCopyDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration){
+    private TaskCopyDTO generateTaskCopyDTO(String title, String content, String answer, String solution, int incorrectAnswerLimit, boolean modifySandbox, int sandboxChangeExpectedDuration) {
         TaskCopyDTO taskCopyDTO = new TaskCopyDTO();
         taskCopyDTO.setTitle(title);
         taskCopyDTO.setContent(content);
@@ -646,34 +701,32 @@ public class TestDataFactory {
     }
 
     private TrainingDefinition generateTrainingDefinition(String title, String description, String[] prerequisites,
-                                                          String[] outcomes, TDState state, boolean showStepperBar,
+                                                          String[] outcomes, TDState state,
                                                           LocalDateTime lastEdited, String lastEditedBy,
-                                                          LocalDateTime createdAt){
+                                                          LocalDateTime createdAt) {
         TrainingDefinition newTrainingDefinition = new TrainingDefinition();
         newTrainingDefinition.setTitle(title);
         newTrainingDefinition.setDescription(description);
         newTrainingDefinition.setOutcomes(outcomes);
         newTrainingDefinition.setState(state);
-        newTrainingDefinition.setShowStepperBar(showStepperBar);
         newTrainingDefinition.setLastEdited(lastEdited);
         newTrainingDefinition.setLastEditedBy(lastEditedBy);
         newTrainingDefinition.setCreatedAt(createdAt);
         return newTrainingDefinition;
     }
 
-    private TrainingDefinitionDTO generateTrainingDefinitionDTO(TrainingDefinition trainingDefinition){
+    private TrainingDefinitionDTO generateTrainingDefinitionDTO(TrainingDefinition trainingDefinition) {
         TrainingDefinitionDTO trainingDefinitionDTO = new TrainingDefinitionDTO();
         trainingDefinitionDTO.setTitle(trainingDefinition.getTitle());
         trainingDefinitionDTO.setDescription(trainingDefinition.getDescription());
         trainingDefinitionDTO.setOutcomes(trainingDefinition.getOutcomes());
         trainingDefinitionDTO.setState(trainingDefinition.getState());
-        trainingDefinitionDTO.setShowStepperBar(trainingDefinition.isShowStepperBar());
         trainingDefinitionDTO.setLastEdited(trainingDefinition.getLastEdited());
         trainingDefinitionDTO.setCreatedAt(trainingDefinition.getCreatedAt());
         return trainingDefinitionDTO;
     }
 
-    private TrainingDefinitionInfoDTO generateTrainingDefinitionInfoDTO(TrainingDefinition trainingDefinition){
+    private TrainingDefinitionInfoDTO generateTrainingDefinitionInfoDTO(TrainingDefinition trainingDefinition) {
         TrainingDefinitionInfoDTO trainingDefinitionInfoDTO = new TrainingDefinitionInfoDTO();
         trainingDefinitionInfoDTO.setTitle(trainingDefinition.getTitle());
         trainingDefinitionInfoDTO.setState(trainingDefinition.getState());
@@ -681,7 +734,7 @@ public class TestDataFactory {
     }
 
     private TrainingInstance generateTrainingInstance(LocalDateTime starTime, LocalDateTime endTime, String title,
-                                                      Long poolId, String accessToken, LocalDateTime lastEdited, String lastEditedBy){
+                                                      Long poolId, String accessToken, LocalDateTime lastEdited, String lastEditedBy) {
         TrainingInstance newTrainingInstance = new TrainingInstance();
         newTrainingInstance.setStartTime(starTime);
         newTrainingInstance.setEndTime(endTime);
@@ -694,7 +747,7 @@ public class TestDataFactory {
     }
 
     private TrainingRun generateTrainingRun(LocalDateTime startTime, LocalDateTime endTime, TRState state,
-                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, Integer SBIAllocId, boolean phaseAnswered, String previousSBIRefId){
+                                            int incorrectAnswerCount, boolean solutionTaken, String SBIRefId, Integer SBIAllocId, boolean phaseAnswered, String previousSBIRefId) {
         TrainingRun newTrainingRun = new TrainingRun();
         newTrainingRun.setStartTime(startTime);
         newTrainingRun.setEndTime(endTime);
@@ -709,31 +762,27 @@ public class TestDataFactory {
     }
 
     private TrainingDefinitionCreateDTO generateTrainingDefinitionCreateDTO(String title, String description, String[] prerequisites,
-                                                                            String[] outcomes, TDState state,
-                                                                            boolean showStepperBar){
+                                                                            String[] outcomes, TDState state) {
         TrainingDefinitionCreateDTO trainingDefinitionCreateDTO = new TrainingDefinitionCreateDTO();
         trainingDefinitionCreateDTO.setTitle(title);
         trainingDefinitionCreateDTO.setDescription(description);
         trainingDefinitionCreateDTO.setOutcomes(outcomes);
         trainingDefinitionCreateDTO.setState(state);
-        trainingDefinitionCreateDTO.setShowStepperBar(showStepperBar);
         return trainingDefinitionCreateDTO;
     }
 
     private TrainingDefinitionUpdateDTO generateTrainingDefinitionUpdateDTO(String title, String description, String[] prerequisites,
-                                                                            String[] outcomes, TDState state,
-                                                                            boolean showStepperBar, Long SDRefId){
+                                                                            String[] outcomes, TDState state, Long SDRefId) {
         TrainingDefinitionUpdateDTO trainingDefinitionUpdateDTO = new TrainingDefinitionUpdateDTO();
         trainingDefinitionUpdateDTO.setTitle(title);
         trainingDefinitionUpdateDTO.setDescription(description);
         trainingDefinitionUpdateDTO.setOutcomes(outcomes);
         trainingDefinitionUpdateDTO.setState(state);
-        trainingDefinitionUpdateDTO.setShowStepperBar(showStepperBar);
         return trainingDefinitionUpdateDTO;
     }
 
     private TrainingInstanceCreateDTO generateTrainingInstanceCreateDTO(LocalDateTime startTime, LocalDateTime endTime,
-                                                                        String title, String accessToken){
+                                                                        String title, String accessToken) {
         TrainingInstanceCreateDTO trainingInstanceCreateDTO = new TrainingInstanceCreateDTO();
         trainingInstanceCreateDTO.setStartTime(startTime);
         trainingInstanceCreateDTO.setEndTime(endTime);
@@ -743,7 +792,7 @@ public class TestDataFactory {
     }
 
     private TrainingInstanceUpdateDTO generateTrainingInstanceUpdateDTO(LocalDateTime startTime, LocalDateTime endTime,
-                                                                        String title, String accessToken){
+                                                                        String title, String accessToken) {
         TrainingInstanceUpdateDTO trainingInstanceUpdateDTO = new TrainingInstanceUpdateDTO();
         trainingInstanceUpdateDTO.setStartTime(startTime);
         trainingInstanceUpdateDTO.setEndTime(endTime);
@@ -753,32 +802,29 @@ public class TestDataFactory {
     }
 
 
-    private ImportTrainingDefinitionDTO generateImportTrainingDefinitionDTO(String title, String description, String[] outcomes, TDState state,
-                                                                            boolean showStepperBar){
+    private ImportTrainingDefinitionDTO generateImportTrainingDefinitionDTO(String title, String description, String[] outcomes, TDState state) {
         ImportTrainingDefinitionDTO importTrainingDefinitionDTO = new ImportTrainingDefinitionDTO();
         importTrainingDefinitionDTO.setTitle(title);
         importTrainingDefinitionDTO.setDescription(description);
         importTrainingDefinitionDTO.setOutcomes(outcomes);
         importTrainingDefinitionDTO.setState(state);
-        importTrainingDefinitionDTO.setShowStepperBar(showStepperBar);
         return importTrainingDefinitionDTO;
     }
 
     private TrainingDefinitionByIdDTO generateTrainingDefinitionByIdDTO(String title, String description, String[] outcomes, TDState state,
-                                                                        boolean showStepperBar, boolean canBeArchived, long estimatedDuration, LocalDateTime lastEdited){
+                                                                        boolean canBeArchived, long estimatedDuration, LocalDateTime lastEdited) {
         TrainingDefinitionByIdDTO trainingDefinitionByIdDTO = new TrainingDefinitionByIdDTO();
         trainingDefinitionByIdDTO.setTitle(title);
         trainingDefinitionByIdDTO.setDescription(description);
         trainingDefinitionByIdDTO.setOutcomes(outcomes);
         trainingDefinitionByIdDTO.setState(state);
-        trainingDefinitionByIdDTO.setShowStepperBar(showStepperBar);
         trainingDefinitionByIdDTO.setCanBeArchived(canBeArchived);
         trainingDefinitionByIdDTO.setEstimatedDuration(estimatedDuration);
         trainingDefinitionByIdDTO.setLastEdited(lastEdited);
         return trainingDefinitionByIdDTO;
     }
 
-    private BasicPhaseInfoDTO generateBasicPhaseInfoDTO(String title, PhaseType phaseType){
+    private BasicPhaseInfoDTO generateBasicPhaseInfoDTO(String title, PhaseType phaseType) {
         BasicPhaseInfoDTO basicPhaseInfoDTO = new BasicPhaseInfoDTO();
         basicPhaseInfoDTO.setTitle(title);
         basicPhaseInfoDTO.setPhaseType(phaseType);
@@ -786,7 +832,7 @@ public class TestDataFactory {
     }
 
     private TrainingInstanceDTO generateTrainingInstanceDTO(LocalDateTime start, LocalDateTime end, String title,
-                                                            String accessToken, Long poolId){
+                                                            String accessToken, Long poolId) {
         TrainingInstanceDTO trainingInstanceDTO = new TrainingInstanceDTO();
         trainingInstanceDTO.setStartTime(start);
         trainingInstanceDTO.setEndTime(end);
@@ -796,7 +842,7 @@ public class TestDataFactory {
         return trainingInstanceDTO;
     }
 
-    private TrainingRunByIdDTO generateTrainingRunByIdDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIId){
+    private TrainingRunByIdDTO generateTrainingRunByIdDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIId) {
         TrainingRunByIdDTO trainingRunByIdDTO = new TrainingRunByIdDTO();
         trainingRunByIdDTO.setStartTime(start);
         trainingRunByIdDTO.setEndTime(end);
@@ -805,7 +851,7 @@ public class TestDataFactory {
         return trainingRunByIdDTO;
     }
 
-    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIRefId, Integer SBIAllocId){
+    private TrainingRunDTO generateTrainingRunDTO(LocalDateTime start, LocalDateTime end, TRState state, String SBIRefId, Integer SBIAllocId) {
         TrainingRunDTO trainingRunDTO = new TrainingRunDTO();
         trainingRunDTO.setStartTime(start);
         trainingRunDTO.setEndTime(end);
@@ -827,7 +873,7 @@ public class TestDataFactory {
 //        return accessedTrainingRunDTO;
 //    }
 
-    private TrainingInstanceArchiveDTO generateTrainingInstanceArchiveDTO(LocalDateTime start, LocalDateTime end, String title, String accessToken){
+    private TrainingInstanceArchiveDTO generateTrainingInstanceArchiveDTO(LocalDateTime start, LocalDateTime end, String title, String accessToken) {
         TrainingInstanceArchiveDTO trainingInstanceArchiveDTO = new TrainingInstanceArchiveDTO();
         trainingInstanceArchiveDTO.setStartTime(start);
         trainingInstanceArchiveDTO.setEndTime(end);
@@ -836,7 +882,7 @@ public class TestDataFactory {
         return trainingInstanceArchiveDTO;
     }
 
-    private PoolInfoDTO generatePoolInfoDTO(Long id, Long definitionId, Long lockId, Long maxSize, Long size, String sha, String revSha){
+    private PoolInfoDTO generatePoolInfoDTO(Long id, Long definitionId, Long lockId, Long maxSize, Long size, String sha, String revSha) {
         PoolInfoDTO poolInfoDTO = new PoolInfoDTO();
         poolInfoDTO.setId(id);
         poolInfoDTO.setDefinitionId(definitionId);
@@ -848,7 +894,7 @@ public class TestDataFactory {
         return poolInfoDTO;
     }
 
-    private SandboxInfo generateSandboxInfo(String id, Integer lockId, Integer allocationUnit){
+    private SandboxInfo generateSandboxInfo(String id, Integer lockId, Integer allocationUnit) {
         SandboxInfo sandboxInfo = new SandboxInfo();
         sandboxInfo.setId(id);
         sandboxInfo.setAllocationUnitId(allocationUnit);
@@ -856,7 +902,7 @@ public class TestDataFactory {
         return sandboxInfo;
     }
 
-    private SandboxPoolInfo generateSandboxPoolInfo(Long id, Long definitionId, Long maxSize, Long size){
+    private SandboxPoolInfo generateSandboxPoolInfo(Long id, Long definitionId, Long maxSize, Long size) {
         SandboxPoolInfo sandboxPoolInfo = new SandboxPoolInfo();
         sandboxPoolInfo.setId(id);
         sandboxPoolInfo.setDefinitionId(definitionId);
@@ -865,7 +911,7 @@ public class TestDataFactory {
         return sandboxPoolInfo;
     }
 
-    private LockedPoolInfo generateLockedPoolInfo(Long id, Long poolId){
+    private LockedPoolInfo generateLockedPoolInfo(Long id, Long poolId) {
         LockedPoolInfo lockedPoolInfo = new LockedPoolInfo();
         lockedPoolInfo.setId(id);
         lockedPoolInfo.setPoolId(poolId);
@@ -890,7 +936,7 @@ public class TestDataFactory {
         return userRefDTO;
     }
 
-    private <T> T clone(Object object, Class<T> tClass){
+    private <T> T clone(Object object, Class<T> tClass) {
         try {
             mapper.setPropertyNamingStrategy(new PropertyNamingStrategies.SnakeCaseStrategy());
             String json = mapper.writeValueAsString(object);

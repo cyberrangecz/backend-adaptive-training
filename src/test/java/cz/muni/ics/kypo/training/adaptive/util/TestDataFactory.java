@@ -178,8 +178,7 @@ public class TestDataFactory {
     private TrainingDefinitionInfoDTO releasedDefinitionInfoDTO = generateTrainingDefinitionInfoDTO(releasedDefinition);
     private TrainingDefinitionInfoDTO archivedDefinitionInfoDTO = generateTrainingDefinitionInfoDTO(archivedDefinition);
     private TrainingDefinitionCreateDTO trainingDefinitionCreateDTO = generateTrainingDefinitionCreateDTO("Training definition create DTO",
-            "Creation of definition", new String[]{"p8", "p9"}, new String[]{"o8", "o9"}, TDState.UNRELEASED,
-            true);
+            "Creation of definition", new String[]{"p8", "p9"}, new String[]{"o8", "o9"}, TDState.UNRELEASED);
     private TrainingDefinitionUpdateDTO trainingDefinitionUpdateDTO = generateTrainingDefinitionUpdateDTO("Training definition updaet DTO",
             "Update of definition", new String[]{"p6", "p7"}, new String[]{"o6", "o7"}, TDState.UNRELEASED,
             7L);

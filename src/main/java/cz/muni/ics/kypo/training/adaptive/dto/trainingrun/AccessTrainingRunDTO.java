@@ -21,6 +21,8 @@ public class AccessTrainingRunDTO {
 
     @ApiModelProperty(value = "Main identifier of training run.", example = "1")
     private Long trainingRunID;
+    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
+    private boolean showStepperBar;
     @ApiModelProperty(value = "Main identifier of sandbox which is assigned to training run.", example = "2")
     private String sandboxInstanceRefId;
     @ApiModelProperty(value = "Current phase in the training run.")
@@ -59,6 +61,24 @@ public class AccessTrainingRunDTO {
      */
     public void setTrainingRunID(Long trainingRunID) {
         this.trainingRunID = trainingRunID;
+    }
+
+    /**
+     * Gets if stepper bar is shown while in run.
+     *
+     * @return true if bar is shown
+     */
+    public boolean isShowStepperBar() {
+        return showStepperBar;
+    }
+
+    /**
+     * Sets if stepper bar is shown while in run.
+     *
+     * @param showStepperBar true if bar is shown
+     */
+    public void setShowStepperBar(boolean showStepperBar) {
+        this.showStepperBar = showStepperBar;
     }
 
     /**
@@ -235,6 +255,7 @@ public class AccessTrainingRunDTO {
     public String toString() {
         return "AccessTrainingRunDTO{" +
                 "trainingRunID=" + trainingRunID +
+                ", showStepperBar=" + showStepperBar +
                 ", sandboxInstanceRefId=" + sandboxInstanceRefId +
                 ", abstractPhaseDTO=" + currentPhase +
                 ", instanceId=" + instanceId +

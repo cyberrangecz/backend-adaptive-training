@@ -31,8 +31,6 @@ public class ImportTrainingDefinition {
     private String description;
     @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED", position = 2)
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false", position = 3)
-    private boolean showStepperBar;
     @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5", position = 4)
     private long estimatedDuration;
     @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "", position = 5)

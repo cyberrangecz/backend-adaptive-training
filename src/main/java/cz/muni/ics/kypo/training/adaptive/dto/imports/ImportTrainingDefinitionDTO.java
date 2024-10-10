@@ -31,9 +31,6 @@ public class ImportTrainingDefinitionDTO {
     @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED", position = 2)
     @NotNull(message = "{trainingDefinition.state.NotNull.message}")
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false", position = 3)
-    @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
-    private boolean showStepperBar;
     @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5", position = 4)
     private Integer estimatedDuration;
     @ApiModelProperty(value = "List of knowledge and skills necessary to complete the training.", example = "", position = 5)
@@ -141,24 +138,6 @@ public class ImportTrainingDefinitionDTO {
     }
 
     /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @return true if bar is shown
-     */
-    public boolean isShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @param showStepperBar true if bar is shown
-     */
-    public void setShowStepperBar(boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
-    /**
      * Gets phase.
      *
      * @return the list of {@link AbstractPhaseImportDTO}
@@ -204,7 +183,6 @@ public class ImportTrainingDefinitionDTO {
                 ", prerequisites=" + Arrays.toString(prerequisites) +
                 ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
-                ", showStepperBar=" + showStepperBar +
                 ", estimatedDuration=" + estimatedDuration +
                 '}';
     }

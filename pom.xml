@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cz.muni.ics.kypo</groupId>
-    <artifactId>kypo-adaptive-training</artifactId>
-    <version>2.3.1</version>
+    <groupId>cz.cyberrange.platform</groupId>
+    <artifactId>adaptive-training</artifactId>
+    <name>CyberRangeCZ Platform Adaptive Training</name>
+    <description>Backend for adaptive trainings</description>
+    <version>0.0.1</version>
     <packaging>jar</packaging>
-    <name>KYPO2 Adaptive Training</name>
-    <description>KYPO2 Adaptive Training</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,11 +19,11 @@
 
     <properties>
         <java.version>17</java.version>
-        <proprietary-repo-id>gitlab-maven</proprietary-repo-id>
+        <proprietary-repo-id>github</proprietary-repo-id>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kypo-security-commons.version>2.0.0</kypo-security-commons.version>
-        <kypo-elasticsearch-documents.version>2.1.0-rc.1</kypo-elasticsearch-documents.version>
+        <security-commons.version>0.0.1</security-commons.version>
+        <elasticsearch-documents.version>0.0.1</elasticsearch-documents.version>
         <swagger.version>3.0.0</swagger.version>
         <swagger.directory>${basedir}/doc-files</swagger.directory>
         <swagger.skip>true</swagger.skip>
@@ -35,6 +35,7 @@
         <apache-commons.version>3.12.0</apache-commons.version>
         <!-- added to avoid log4j2 vulnerability CVE-2021-44228 -->
         <log4j2.version>2.15.0</log4j2.version>
+        <lombok.version>1.18.36</lombok.version>
     </properties>
 
     <repositories>
@@ -46,14 +47,14 @@
 
     <dependencies>
         <dependency>
-            <groupId>cz.muni.ics.kypo</groupId>
-            <artifactId>kypo-security-commons</artifactId>
-            <version>${kypo-security-commons.version}</version>
+            <groupId>cz.cyberrange.platform</groupId>
+            <artifactId>security-commons</artifactId>
+            <version>${security-commons.version}</version>
         </dependency>
         <dependency>
-            <groupId>cz.muni.ics.kypo</groupId>
-            <artifactId>kypo-elasticsearch-documents</artifactId>
-            <version>${kypo-elasticsearch-documents.version}</version>
+            <groupId>cz.cyberrange.platform</groupId>
+            <artifactId>elasticsearch-documents</artifactId>
+            <version>${elasticsearch-documents.version}</version>
         </dependency>
         <!--SPRING BOOT STARTERS-->
         <dependency>
@@ -204,13 +205,13 @@
                         <apiSource>
                             <springmvc>true</springmvc>
                             <locations>
-                                <location>cz.muni.ics.kypo.training.adaptive</location>
+                                <location>cz.cyberrange.platform.training.adaptive</location>
                             </locations>
                             <schemes>http,https</schemes>
                             <host>${swagger.host}</host>
-                            <basePath>/kypo-adaptive-training/api/v1</basePath>
+                            <basePath>/adaptive-training/api/v1</basePath>
                             <info>
-                                <title>KYPO Adaptive Training Service - API Reference</title>
+                                <title>Adaptive Training Service - API Reference</title>
                                 <version>Version: ${project.version}</version>
                             </info>
                             <securityDefinitions>
@@ -220,9 +221,9 @@
                                 </securityDefinition>
                             </securityDefinitions>
                             <swaggerDirectory>${swagger.directory}</swaggerDirectory>
-                            <swaggerFileName>kypo-adaptive-training-swagger-open-api</swaggerFileName>
+                            <swaggerFileName>swagger-docs</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
-                            <swaggerApiReader>cz.muni.ics.kypo.training.adaptive.utils.SnakeCaseSwaggerReader</swaggerApiReader>
+                            <swaggerApiReader>cz.cyberrange.platform.training.adaptive.utils.SnakeCaseSwaggerReader</swaggerApiReader>
                         </apiSource>
                     </apiSources>
                 </configuration>

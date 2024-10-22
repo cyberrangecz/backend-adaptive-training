@@ -2,21 +2,21 @@
   {
     "role_type": "ROLE_ADAPTIVE_TRAINING_ADMINISTRATOR",
     "default": false,
-    "description": "This role will allow you to do any operation in KYPO adaptive training microservice."
+    "description": "This role will allow you to do any operation in CyberRangeCZ Platform Adaptive Training."
   },
   {
     "role_type": "ROLE_ADAPTIVE_TRAINING_DESIGNER",
     "default": false,
-    "description": "This role will allow you to manage, test, import and export adaptive training definitions in KYPO adaptive training microservice."
+    "description": "This role will allow you to manage, test, import and export adaptive training definitions in CyberRangeCZ Platform Adaptive Training."
   },
   {
     "role_type": "ROLE_ADAPTIVE_TRAINING_ORGANIZER",
     "default": false,
-    "description": "This role will allow you to prepare adaptive training instances from adaptive training definitions and manage them, restart sandbox instances and view situational awareness in KYPO adaptive training microservice."
+    "description": "This role will allow you to prepare adaptive training instances from adaptive training definitions and manage them, restart sandbox instances and view situational awareness in CyberRangeCZ Platform Adaptive Training."
   },
   {
     "role_type": "ROLE_ADAPTIVE_TRAINING_TRAINEE",
     "default": true,
-    "description": "This role is default and will allow you to access adaptive training run and play a game in KYPO adaptive training microservice."
+    "description": "This role is default and will allow you to access adaptive training run and play a game in CyberRangeCZ Platform Adaptive Training."
   }
 ]

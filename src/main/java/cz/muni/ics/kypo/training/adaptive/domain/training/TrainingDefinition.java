@@ -63,8 +63,6 @@ public class TrainingDefinition implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> authors = new HashSet<>();
-    @Column(name = "show_stepper_bar", nullable = false)
-    private boolean showStepperBar;
     @Column(name = "estimated_duration", nullable = true)
     private long estimatedDuration;
     @Column(name = "last_edited", nullable = false)
@@ -225,24 +223,6 @@ public class TrainingDefinition implements Serializable {
     }
 
     /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @return true if bar is shown
-     */
-    public boolean isShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Sets if stepper bar is shown while in run.
-     *
-     * @param showStepperBar true if bar is shown
-     */
-    public void setShowStepperBar(boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
-    /**
      * Gets estimated duration in minutes that it should take to complete run based on given Training definition
      *
      * @return the estimated duration
@@ -342,7 +322,6 @@ public class TrainingDefinition implements Serializable {
                 ", prerequisites=" + Arrays.toString(this.getPrerequisites()) +
                 ", outcomes=" + Arrays.toString(this.getOutcomes()) +
                 ", state=" + this.getState() +
-                ", showStepperBar=" + this.isShowStepperBar() +
                 ", estimatedDuration=" + this.getEstimatedDuration() +
                 ", lastEdited=" + this.getLastEdited() +
                 ", createdAt=" + this.getCreatedAt() +

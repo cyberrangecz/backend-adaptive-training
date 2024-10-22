@@ -36,8 +36,6 @@ public class TrainingDefinitionByIdDTO {
     private TDState state;
     @ApiModelProperty(value = "Information about all phase in training definition.")
     private List<AbstractPhaseDTO> phases = new ArrayList<>();
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
-    private boolean showStepperBar;
     @ApiModelProperty(value = "Sign if training definition can be archived or not.", example = "true", position = 7)
     private boolean canBeArchived;
     @ApiModelProperty(value = "Estimated time it takes to finish runs created from this definition.", example = "5")
@@ -178,24 +176,6 @@ public class TrainingDefinitionByIdDTO {
     }
 
     /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @return true if bar is shown
-     */
-    public boolean isShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Sets if stepper bar is shown while in run.
-     *
-     * @param showStepperBar true if bar is shown
-     */
-    public void setShowStepperBar(boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
-    /**
      * Definition can be archived if no associated instances are active.
      *
      * @return true if definition can be archived
@@ -300,7 +280,6 @@ public class TrainingDefinitionByIdDTO {
                 ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
                 ", phases=" + phases +
-                ", showStepperBar=" + showStepperBar +
                 ", canBeArchived=" + canBeArchived +
                 ", estimatedDuration=" + estimatedDuration +
                 ", lastEdited=" + lastEdited +

@@ -27,8 +27,6 @@ public class TrainingDefinitionExportDTO {
     private String[] outcomes;
     @ApiModelProperty(value = "Current state of training definition.", example = "UNRELEASED")
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
-    private boolean showStepperBar;
     @ApiModelProperty(value = "Information about all phase in training definition.")
     private List<AbstractPhaseExportDTO> phases = new ArrayList<>();
     @ApiModelProperty(value = "Estimated time (minutes) taken by the player to finish run created from this definition.", example = "5")
@@ -125,24 +123,6 @@ public class TrainingDefinitionExportDTO {
     }
 
     /**
-     * Is show stepper bar boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Sets show stepper bar.
-     *
-     * @param showStepperBar the show stepper bar
-     */
-    public void setShowStepperBar(boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
-    /**
      * Gets phase.
      *
      * @return the list of {@link AbstractPhaseExportDTO}
@@ -184,7 +164,6 @@ public class TrainingDefinitionExportDTO {
                 "title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", state=" + state +
-                ", showStepperBar=" + showStepperBar +
                 ", estimatedDuration=" + estimatedDuration +
                 '}';
     }

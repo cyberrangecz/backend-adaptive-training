@@ -1,3 +1,5 @@
+2.4.1 Move stepper bar from training definition to training instance and remove it from access level.
+2.4.0 Implement github actions
 2.3.1 Fix adaptive-training pipeline.
 2.3.0 Add training access tokens to sandbox api calls. Add access token endpoint.
 2.2.10 Fix user ref creation failing on parallel requests.

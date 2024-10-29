@@ -8,140 +8,123 @@ on:
   pull_request:
     branches:
       - master
-      - develop
-  workflow_dispatch:
+
+env:
+  PROJECT_ARTIFACT_ID: kypo-adaptive-training
+  DEPLOYMENT_INFO_VERSION_FILE: VERSION.txt
+  MAVEN_CLI_OPTS: "-Dmaven.repo.local=$GITHUB_WORKSPACE/.m2/repository"
+  TRUSTED_HOST: gitlab.ics.muni.cz
+  GIT_CLONE_URL: "git@${{ github.server_url }}:${{ github.repository }}.git"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+      - name: Set up Maven
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
+      - name: Cache Maven packages
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven/
+            ${{ runner.os }}-maven-
 
-      - name: Build with Maven
-        run: mvn clean install -DskipTests -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+      - name: Build project
+        run: mvn clean install $MAVEN_CLI_OPTS -DskipTests -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        if: github.ref == 'refs/heads/master'
 
-  test:
+  tests:
     runs-on: ubuntu-latest
-    needs: build
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
+      - name: Set up Maven
+        uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'adopt'
+          distribution: 'temurin'
 
-      - name: Cache Maven dependencies
-        uses: actions/cache@v2
+      - name: Cache Maven packages
+        uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-maven/
+            ${{ runner.os }}-maven-
 
       - name: Run tests
-        run: mvn test -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        run: mvn test $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        if: github.ref == 'refs/heads/master'
 
   create_tag:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up SSH
+      - name: Set up git
         run: |
-          mkdir -m700 ~/.ssh/
-          echo "${{ secrets.SSH_PRIVKEY_B64 }}" | base64 -d > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Configure Git
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "$GITHUB_ACTOR"
 
       - name: Create and push tag
         run: |
-          git tag -a v$(cat VERSION.txt) -m "Release v$(cat VERSION.txt)"
-          git push origin v$(cat VERSION.txt)
+          TAG_VERSION=$(cat $DEPLOYMENT_INFO_VERSION_FILE)
+          git tag $TAG_VERSION
+          git push origin $TAG_VERSION
+        if: github.ref == 'refs/heads/master'
 
   generate_docs:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-
-      - name: Generate Swagger Docs
-        run: mvn clean package -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
-
-      - name: Commit and push Swagger docs
+      - name: Generate and Push Swagger Docs
         run: |
-          git add doc-files/kypo-adaptive-training-swagger-open-api.yaml
-          git commit -m "Updated Swagger documentation generated"
-          git push
+          mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        if: github.ref == 'refs/heads/master'
+
+      - name: Upload Docs Artifact
+        uses: upload-artifact@v3
+        with:
+          name: ${{ github.repository }}-docs
+          path: doc-files/kypo-adaptive-training-swagger-open-api.yaml
 
   docker_image_push:
     runs-on: ubuntu-latest
-    needs: [build, create_tag]
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login $CI_REGISTRY --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.CI_CUSTOM_REGISTRY_USER }}
-          password: ${{ secrets.CI_CUSTOM_REGISTRY_PASSWORD }}
-
-      - name: Build and push Docker image
+      - name: Build and Push Docker Image
         run: |
-          docker build -t ${{ secrets.CI_CUSTOM_REGISTRY_IMAGE }}:$GITHUB_REF .
-          docker push ${{ secrets.CI_CUSTOM_REGISTRY_IMAGE }}:$GITHUB_REF
+          export CI_CUSTOM_REGISTRY_IMAGE="${{ secrets.DOCKER_REGISTRY }}/$CI_CUSTOM_IMAGE_NAME"
+          docker build -t $CI_CUSTOM_REGISTRY_IMAGE:$GITHUB_REF .
+          docker push $CI_CUSTOM_REGISTRY_IMAGE:$GITHUB_REF
+        if: startsWith(github.ref, 'refs/tags/')
 
   docker_image_push_development:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/develop'
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      - name: Set up Docker Registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login $CI_REGISTRY --username ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.CI_CUSTOM_REGISTRY_USER }}
-          password: ${{ secrets.CI_CUSTOM_REGISTRY_PASSWORD }}
-
-      - name: Build and push Docker image for development
+      - name: Build and Push Docker Image for Development
         run: |
-          docker build -t ${{ secrets.CI_CUSTOM_REGISTRY_IMAGE }}:${{ github.ref_name }} .
-          docker push ${{ secrets.CI_CUSTOM_REGISTRY_IMAGE }}:${{ github.ref_name }}
+          export CI_CUSTOM_REGISTRY_IMAGE="${{ secrets.DOCKER_REGISTRY }}/$CI_CUSTOM_IMAGE_NAME"
+          docker build -t $CI_CUSTOM_REGISTRY_IMAGE:develop .
+          docker push $CI_CUSTOM_REGISTRY_IMAGE:develop
+        if: github.ref == 'refs/heads/develop'

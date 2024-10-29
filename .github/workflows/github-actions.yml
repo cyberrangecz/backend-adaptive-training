@@ -90,7 +90,7 @@ jobs:
         run: |
           mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
           ls -la
-        if: github.ref == 'refs/heads/master'
+        #if: github.ref == 'refs/heads/master'
 
       - name: Upload Docs Artifact
         uses: actions/upload-artifact@v3

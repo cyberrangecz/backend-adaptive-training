@@ -3,7 +3,8 @@ name: Adaptive training CI
 on:
   push:
     branches:
-      - '**'  # Trigger on all branches
+      - master
+      - develop
   pull_request:
     branches:
       - '**'
@@ -43,7 +44,7 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
           cache: 'maven'
-          
+
       - name: Generate and Push Swagger Docs
         run: |
           mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
@@ -53,7 +54,7 @@ jobs:
       - name: Upload Docs Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ github.repository }}-docs
+          name: ${{ github.event.repository.name }}-docs
           path: doc-files/kypo-adaptive-training-swagger-open-api.yaml
 
 # Additional stages/jobs (create_tag, generate_docs, docker_image_push, etc.) 

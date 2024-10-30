@@ -26,23 +26,24 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: mvn clean install $MAVEN_CLI_OPTS -DskipTests -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
-        env:
-          PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
-
-  test:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Run tests
-        run: mvn test $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        run: mvn clean install $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
         env:
           PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
 
   generate_docs:
     runs-on: ubuntu-latest
-    needs: [build,test]
+    needs: build
     steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+          cache: 'maven'
+          
       - name: Generate and Push Swagger Docs
         run: |
           mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}

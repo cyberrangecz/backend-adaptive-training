@@ -27,7 +27,9 @@ jobs:
           cache: 'maven'
 
       - name: Build with Maven
-        run: mvn clean install $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
+        run: |
+          echo $MAVEN_CLI_OPTS
+          mvn clean install $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
         env:
           PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
 

@@ -11,7 +11,7 @@ on:
 
 env:
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
-  VERSION: 0.0.1
+  VERSION: v0.0.1
 
 jobs:
   build_maven:

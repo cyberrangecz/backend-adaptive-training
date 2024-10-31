@@ -11,6 +11,7 @@ on:
 
 env:
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
+  VERSION: 0.0.1
 
 jobs:
   build_maven:
@@ -35,6 +36,9 @@ jobs:
   build_container:
     runs-on: ubuntu-latest
     needs: build_maven
+    strategy:
+      matrix:
+        version: [latest, $VERSION]
     steps:
       # Checkout the code
       - name: Checkout code
@@ -61,11 +65,11 @@ jobs:
           build-args: |
             PROPRIETARY_REPO_URL=${{ vars.PROPRIETARY_REPO_URL }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ env.CI_CUSTOM_IMAGE_NAME }}:latest
+          tags: ghcr.io/${{ github.repository }}/${{ env.CI_CUSTOM_IMAGE_NAME }}-develop:${{ matrix.version }}
 
   generate_docs:
     runs-on: ubuntu-latest
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: build_maven
     steps:
       - name: Check out code
@@ -81,7 +85,6 @@ jobs:
       - name: Generate and Push Swagger Docs
         run: |
           mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
-          ls -la
 
       - name: Upload Docs Artifact
         uses: actions/upload-artifact@v4

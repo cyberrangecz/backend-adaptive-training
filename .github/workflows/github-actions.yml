@@ -38,7 +38,7 @@ jobs:
     needs: build_maven
     strategy:
       matrix:
-        version: [latest, $VERSION]
+        version: [latest, ${{ env.VERSION }}]
     steps:
       # Checkout the code
       - name: Checkout code

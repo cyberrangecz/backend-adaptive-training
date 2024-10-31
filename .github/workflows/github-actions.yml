@@ -4,10 +4,10 @@ on:
   push:
     branches:
       - master
-      - develop
   pull_request:
     branches:
-      - '**'
+      - develop
+  workflow_dispatch:
 
 env:
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
@@ -33,12 +33,49 @@ jobs:
         env:
           PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
 
+  create_tag:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          # Fetch tags and sort them in descending order by version
+          git fetch --tags
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          LATEST_SEMVER_TAG=$(git tag -l | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+          echo "latest_tag=$LATEST_SEMVER_TAG" >> $GITHUB_ENV
+
+      - name: Version check
+        run: |
+          # Convert VERSION_1 and VERSION_2 to positional variables
+          new_tag=${{ env.VERSION }}
+          last_tag=${{ env.LATEST_SEMVER_TAG || '0.0.0' }}
+
+          # Compare versions
+          compare_versions() {
+            if [[ $(echo -e "$new_tag\n$last_tag" | sort -V | head -n1) == "$last_tag" ]] && [[ "$new_tag" != "$last_tag" ]]; then
+              echo "Last tag $last_tag is higher than New tag $new_tag. Please update your tag variable"
+              exit 1
+            fi
+          }
+
+      - name: Push the new tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+
   build_container:
     runs-on: ubuntu-latest
     needs: build_maven
-    strategy:
-      matrix:
-        version: [latest, ${{ env.VERSION }}]
+    #strategy:
+    #  matrix:
+    #    version: [latest, ${{ env.VERSION }}]
     steps:
       # Checkout the code
       - name: Checkout code
@@ -57,7 +94,7 @@ jobs:
       # Build and push Docker image to GitHub Container Registry
       - name: Build and push Docker image
         env:
-          CI_CUSTOM_IMAGE_NAME: kypo-adaptive-training-service
+          CI_CUSTOM_IMAGE_NAME: ${{ github.ref == 'refs/heads/main' && 'kypo-adaptive-training-service' || 'kypo-adaptive-training-service-develop' }}
         uses: docker/build-push-action@v6
         with:
           context: .  # Path to the Dockerfile
@@ -65,7 +102,7 @@ jobs:
           build-args: |
             PROPRIETARY_REPO_URL=${{ vars.PROPRIETARY_REPO_URL }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ env.CI_CUSTOM_IMAGE_NAME }}-develop:${{ matrix.version }}
+          tags: ghcr.io/${{ github.repository }}/${{ env.CI_CUSTOM_IMAGE_NAME }}:${{ env.VERSION }}
 
   generate_docs:
     runs-on: ubuntu-latest

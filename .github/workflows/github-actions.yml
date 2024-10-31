@@ -13,7 +13,7 @@ env:
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
 
 jobs:
-  build:
+  prepare_env:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -26,6 +26,10 @@ jobs:
           distribution: 'adopt'
           cache: 'maven'
 
+  build_maven:
+    runs-on: ubuntu-latest
+    needs: prepare_env
+    steps:
       - name: Build with Maven
         run: mvn clean install $MAVEN_CLI_OPTS -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}
         env:
@@ -34,18 +38,8 @@ jobs:
   generate_docs:
     runs-on: ubuntu-latest
     # if: github.ref == 'refs/heads/master'
-    needs: build
+    needs: build_maven
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'adopt'
-          cache: 'maven'
-
       - name: Generate and Push Swagger Docs
         run: |
           mvn clean package $MAVEN_CLI_OPTS -DskipTests -Dswagger.skip=false -Dproprietary-repo-url=${{ vars.PROPRIETARY_REPO_URL }}

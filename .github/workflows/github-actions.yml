@@ -35,7 +35,7 @@ jobs:
 
   create_tag:
     if: github.ref == 'refs/heads/master'
-    uses: cyberrangecz/actions_templates/.github/workflows/tag_template.yml@main
+    uses: cyberrangecz/actions-templates/.github/workflows/tag_template.yml@main
     #uses: ./.github/workflows/tag_template.yml
     with:
       VERSION: "2.3.1"

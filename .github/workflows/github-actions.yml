@@ -34,6 +34,7 @@ jobs:
           PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
 
   create_tag:
+    if: github.ref == 'refs/heads/master'
     uses: cyberrangecz/actions_templates/.github/workflows/tag_template.yml@main
     #uses: ./.github/workflows/tag_template.yml
     with:
@@ -74,8 +75,8 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/${{ env.CI_CUSTOM_IMAGE_NAME }}:${{ env.VERSION }}
 
   generate_docs:
-    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
     needs: build_maven
     steps:
       - name: Check out code

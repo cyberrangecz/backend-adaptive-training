@@ -11,9 +11,17 @@ on:
 
 env:
   MAVEN_CLI_OPTS: "-Dmaven.repo.local=${{ github.workspace }}/.m2/repository"
-  #VERSION: 2.3.1
+  VERSION: 2.3.1
 
 jobs:
+  pass-version:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION: ${{ steps.set-version.outputs.VERSION }}
+    steps:
+      - name: Set VERSION output
+        run: echo "::set-output name=VERSION::${{ env.VERSION }}"
+
   build_maven:
     runs-on: ubuntu-latest
     steps:
@@ -34,11 +42,12 @@ jobs:
           PROPRIETARY_REPO_URL: ${{ vars.PROPRIETARY_REPO_URL }}
 
   create_tag:
+    needs: pass-version
     if: github.ref == 'refs/heads/master'
     uses: cyberrangecz/actions-templates/.github/workflows/tag_template.yml@main
     #uses: ./.github/workflows/tag_template.yml
     with:
-      VERSION: "2.3.1"
+      VERSION: ${{ needs.pass-version.outputs.VERSION }}
 
   build_container:
     runs-on: ubuntu-latest

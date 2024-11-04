@@ -44,7 +44,7 @@ jobs:
   create_tag:
     needs: pass-version
     if: github.ref == 'refs/heads/master'
-    uses: cyberrangecz/actions-templates/.github/workflows/tag_template.yml@main
+    uses: cyberrangecz/actions-templates/.github/workflows/tag_template.yml@master
     #uses: ./.github/workflows/tag_template.yml
     with:
       VERSION: ${{ needs.pass-version.outputs.VERSION }}

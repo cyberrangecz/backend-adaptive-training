@@ -46,6 +46,8 @@ public class TrainingInstanceUpdateDTO {
     private Long sandboxDefinitionId;
     @ApiModelProperty(value = "Indicates if trainee can during training run move to the previous already solved phases.", example = "true")
     private boolean backwardMode;
+    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", example = "false")
+    private boolean showStepperBar;
 
     /**
      * Gets id.
@@ -227,6 +229,24 @@ public class TrainingInstanceUpdateDTO {
         this.backwardMode = backwardMode;
     }
 
+    /**
+     * Is show stepper bar boolean.
+     *
+     * @return the boolean
+     */
+    public boolean isShowStepperBar() {
+        return showStepperBar;
+    }
+
+    /**
+     * Sets show stepper bar.
+     *
+     * @param showStepperBar the show stepper bar
+     */
+    public void setShowStepperBar(boolean showStepperBar) {
+        this.showStepperBar = showStepperBar;
+    }
+
     @Override
     public String toString() {
         return "TrainingInstanceUpdateDTO{" +
@@ -240,6 +260,7 @@ public class TrainingInstanceUpdateDTO {
                 ", localEnvironment=" + localEnvironment +
                 ", sandboxDefinitionId=" + sandboxDefinitionId +
                 ", backwardMode=" + backwardMode +
+                ", showStepperBar=" + showStepperBar +
                 '}';
     }
 }

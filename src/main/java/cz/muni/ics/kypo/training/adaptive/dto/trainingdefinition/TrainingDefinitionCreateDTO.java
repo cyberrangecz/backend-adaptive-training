@@ -30,9 +30,6 @@ public class TrainingDefinitionCreateDTO {
     @ApiModelProperty(value = "Current state of training definition.", required = true, example = "UNRELEASED", position = 1)
     @NotNull(message = "{trainingDefinition.state.NotNull.message}")
     private TDState state;
-    @ApiModelProperty(value = "Sign if stepper bar should be displayed.", required = true, example = "true", position = 1)
-    @NotNull(message = "{trainingDefinition.showStepperBar.NotNull.message}")
-    private Boolean showStepperBar;
     @ApiModelProperty(value = "Sign if default phases should be created.", example = "false")
     private boolean defaultContent;
 
@@ -127,24 +124,6 @@ public class TrainingDefinitionCreateDTO {
     }
 
     /**
-     * Gets if stepper bar is shown while in run.
-     *
-     * @return true if bar is shown
-     */
-    public Boolean getShowStepperBar() {
-        return showStepperBar;
-    }
-
-    /**
-     * Sets if stepper bar is shown while in run.
-     *
-     * @param showStepperBar true if bar is shown
-     */
-    public void setShowStepperBar(Boolean showStepperBar) {
-        this.showStepperBar = showStepperBar;
-    }
-
-    /**
      * Gets if he default phases are created along with the new training definition.
      *
      * @return true if default phases are created
@@ -170,7 +149,6 @@ public class TrainingDefinitionCreateDTO {
                 ", prerequisites=" + Arrays.toString(prerequisites) +
                 ", outcomes=" + Arrays.toString(outcomes) +
                 ", state=" + state +
-                ", showStepperBar=" + showStepperBar +
                 ", defaultContent=" + defaultContent +
                 '}';
     }

@@ -116,6 +116,8 @@ public class TrainingInstance implements Serializable {
     private Long sandboxDefinitionId;
     @Column(name = "backward_mode", nullable = false)
     private boolean backwardMode;
+    @Column(name = "show_stepper_bar", nullable = false)
+    private boolean showStepperBar;
 
     /**
      * Gets unique identification number of Training instance
@@ -362,6 +364,24 @@ public class TrainingInstance implements Serializable {
     }
 
     /**
+     * Gets if stepper bar is shown while in run.
+     *
+     * @return true if bar is shown
+     */
+    public boolean isShowStepperBar() {
+        return showStepperBar;
+    }
+
+    /**
+     * Sets if stepper bar is shown while in run.
+     *
+     * @param showStepperBar true if bar is shown
+     */
+    public void setShowStepperBar(boolean showStepperBar) {
+        this.showStepperBar = showStepperBar;
+    }
+
+    /**
      * Sets if trainee can during training run move back to the previous levels.
      *
      * @param backwardMode true if backward mode is enabled.
@@ -416,6 +436,7 @@ public class TrainingInstance implements Serializable {
                 ", accessToken='" + this.getAccessToken() + '\'' +
                 ", localEnvironment='" + this.isLocalEnvironment() + '\'' +
                 ", backwardMode='" + this.isBackwardMode() + '\'' +
+                ", showStepperBar=" + this.isShowStepperBar() +
                 ", sandboxDefinitionId='" + this.getSandboxDefinitionId() + '\'' +
                 '}';
     }

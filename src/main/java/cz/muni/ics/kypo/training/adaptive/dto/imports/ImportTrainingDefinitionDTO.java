@@ -20,7 +20,7 @@ import java.util.List;
         value = "ImportTrainingDefinitionDTO",
         description = "A basic information about hint."
 )
-@JsonIgnoreProperties({"id"})
+@JsonIgnoreProperties({"id","show_stepper_bar"}) // show_stepper_bar is allowed for backwards compatibility with old training definitions
 public class ImportTrainingDefinitionDTO {
 
     @ApiModelProperty(value = "A name of the training/game (e.g., Photo Hunter) .", example = "TrainingDefinition2")

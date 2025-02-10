@@ -3,7 +3,7 @@ package cz.cyberrange.platform.training.adaptive.persistence.repository.training
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.StringPath;
-import cz.cyberrange.platform.training.adaptive.domain.training.QTrainingDefinition;
+import cz.cyberrange.platform.training.adaptive.persistence.entity.training.QTrainingDefinition;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.training.TrainingDefinition;
 import cz.cyberrange.platform.training.adaptive.persistence.enums.TDState;
 import org.springframework.data.domain.Page;

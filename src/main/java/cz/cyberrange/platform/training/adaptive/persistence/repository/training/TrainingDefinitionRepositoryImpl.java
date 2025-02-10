@@ -3,8 +3,8 @@ package cz.cyberrange.platform.training.adaptive.persistence.repository.training
 import com.querydsl.core.types.Predicate;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import cz.cyberrange.platform.training.adaptive.domain.QUser;
-import cz.cyberrange.platform.training.adaptive.domain.training.QTrainingDefinition;
+import cz.cyberrange.platform.training.adaptive.persistence.entity.QUser;
+import cz.cyberrange.platform.training.adaptive.persistence.entity.training.QTrainingDefinition;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.training.TrainingDefinition;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

@@ -16,7 +16,7 @@ import java.util.Optional;
 public interface ParticipantTaskAssignmentRepository extends
         JpaRepository<ParticipantTaskAssignment, Long>, ParticipantTaskAssignmentRepositoryCustom, QuerydslPredicateExecutor<ParticipantTaskAssignment> {
 
-    @Query("SELECT DISTINCT new cz.cyberrange.platform.training.adaptive.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, ap.id, ap.order, ap.title) FROM ParticipantTaskAssignment p " +
+    @Query("SELECT DISTINCT new cz.cyberrange.platform.training.adaptive.api.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, ap.id, ap.order, ap.title) FROM ParticipantTaskAssignment p " +
             "JOIN p.task t " +
             "JOIN p.abstractPhase ap " +
             "JOIN p.trainingRun tr " +
@@ -28,7 +28,7 @@ public interface ParticipantTaskAssignmentRepository extends
     List<ParticipantTaskAssignment> findAllByTrainingRunTrainingInstanceId(Long trainingInstanceId);
 
     Optional<ParticipantTaskAssignment> findByAbstractPhaseIdAndTrainingRunId(Long trainingPhaseId, Long trainingRunId);
-
+    
     @Modifying
     void deleteAllByTrainingRunId(Long trainingRunId);
 }

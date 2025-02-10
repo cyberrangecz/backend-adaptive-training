@@ -43,7 +43,7 @@ public interface TaskRepository extends JpaRepository<Task, Long>, QuerydslPredi
     void decreaseOrderAfterTaskWasDeleted(@Param("trainingPhaseId") Long trainingPhaseId,
                                           @Param("order") int order);
 
-    @Query("SELECT DISTINCT new cz.cyberrange.platform.training.adaptive.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, tp.id, tp.order, tp.title) FROM Task t " +
+    @Query("SELECT DISTINCT new cz.cyberrange.platform.training.adaptive.api.dto.visualizations.sankey.NodeDTO(t.id, t.order, t.title, tp.id, tp.order, tp.title) FROM Task t " +
             "JOIN t.trainingPhase tp " +
             "JOIN tp.trainingDefinition td " +
             "WHERE td.id = :trainingDefinitionId " +

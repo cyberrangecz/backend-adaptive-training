@@ -28,13 +28,13 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 @Configuration
 @ComponentScan(basePackages = {
-		"cz.cyberrange.platform.training.adaptive.mapping",
+		"cz.cyberrange.platform.training.adaptive.api.mapping",
 		"cz.cyberrange.platform.training.adaptive.facade",
 		"cz.cyberrange.platform.training.adaptive.service",
 		"cz.cyberrange.platform.training.adaptive.util"
 })
-@EntityScan(basePackages = {"cz.cyberrange.platform.training.adaptive.domain"})
-@EnableJpaRepositories(basePackages = {"cz.cyberrange.platform.training.adaptive.repository"})
+@EntityScan(basePackages = {"cz.cyberrange.platform.training.adaptive.persistence.entity"})
+@EnableJpaRepositories(basePackages = {"cz.cyberrange.platform.training.adaptive.persistence.repository"})
 @EnableTransactionManagement
 public class RestConfigTest {
 	private static final Logger LOG = LoggerFactory.getLogger(RestConfigTest.class);

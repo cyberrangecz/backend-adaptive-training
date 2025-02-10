@@ -4,7 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.StringPath;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.phase.AbstractPhase;
-import cz.cyberrange.platform.training.adaptive.domain.training.QTrainingRun;
+import cz.cyberrange.platform.training.adaptive.persistence.entity.training.QTrainingRun;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.training.TrainingDefinition;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.training.TrainingInstance;
 import cz.cyberrange.platform.training.adaptive.persistence.entity.training.TrainingRun;

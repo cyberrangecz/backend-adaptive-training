@@ -60,35 +60,6 @@ CREATE TABLE training_instance_user (
     FOREIGN KEY (user_id) REFERENCES "user"
 );
 
-CREATE TABLE training_run (
-    training_run_id                  bigserial    NOT NULL,
-    questionnaire_responses          text,
-    end_time                         timestamp    NOT NULL,
-    incorrect_answer_count           int4         NOT NULL,
-    phase_answered                   boolean,
-    solution_taken                   boolean      NOT NULL,
-    start_time                       timestamp    NOT NULL,
-    state                            varchar(128) NOT NULL,
-    current_phase_id                 int8         NOT NULL,
-    current_task_id                  int8         NULL,
-    user_id                          int8         NOT NULL,
-    sandbox_instance_ref_id          varchar(36)  NULL,
-    training_instance_id             int8         NOT NULL,
-    previous_sandbox_instance_ref_id varchar(36)  NULL,
-    sandbox_instance_allocation_id   int8,
-    PRIMARY KEY (training_run_id),
-    FOREIGN KEY (training_instance_id) REFERENCES training_instance,
-    FOREIGN KEY (user_id) REFERENCES "user",
-    FOREIGN KEY (current_task_id) REFERENCES task
-);
-
-CREATE TABLE solution_info (
-    training_run_id   bigserial NOT NULL,
-    training_phase_id bigserial NOT NULL,
-    task_id           bigserial NOT NULL,
-    solution_content  text      NOT NULL,
-    FOREIGN KEY (training_run_id) REFERENCES training_run
-);
 
 -- PHASES
 CREATE TABLE abstract_phase (
@@ -128,6 +99,51 @@ CREATE TABLE training_phase (
     FOREIGN KEY (phase_id) REFERENCES abstract_phase
 );
 
+CREATE TABLE task (
+    task_id                          bigserial     NOT NULL,
+    title                            varchar(255)  NOT NULL,
+    content                          text          NOT NULL,
+    answer                           varchar(255)  NOT NULL,
+    solution                         varchar(1048) NOT NULL,
+    incorrect_answer_limit           int4,
+    modify_sandbox                   boolean       NOT NULL,
+    sandbox_change_expected_duration int4          NOT NULL,
+    order_in_training_phase          int4          NOT NULL,
+    training_phase_id                int8          NOT NULL,
+    PRIMARY KEY (task_id),
+    FOREIGN KEY (training_phase_id) REFERENCES training_phase
+);
+
+CREATE TABLE training_run (
+    training_run_id                  bigserial    NOT NULL,
+    questionnaire_responses          text,
+    end_time                         timestamp    NOT NULL,
+    incorrect_answer_count           int4         NOT NULL,
+    phase_answered                   boolean,
+    solution_taken                   boolean      NOT NULL,
+    start_time                       timestamp    NOT NULL,
+    state                            varchar(128) NOT NULL,
+    current_phase_id                 int8         NOT NULL,
+    current_task_id                  int8         NULL,
+    user_id                          int8         NOT NULL,
+    sandbox_instance_ref_id          varchar(36)  NULL,
+    training_instance_id             int8         NOT NULL,
+    previous_sandbox_instance_ref_id varchar(36)  NULL,
+    sandbox_instance_allocation_id   int8,
+    PRIMARY KEY (training_run_id),
+    FOREIGN KEY (training_instance_id) REFERENCES training_instance,
+    FOREIGN KEY (user_id) REFERENCES "user",
+    FOREIGN KEY (current_task_id) REFERENCES task
+);
+
+CREATE TABLE solution_info (
+    training_run_id   bigserial NOT NULL,
+    training_phase_id bigserial NOT NULL,
+    task_id           bigserial NOT NULL,
+    solution_content  text      NOT NULL,
+    FOREIGN KEY (training_run_id) REFERENCES training_run
+);
+
 CREATE TABLE training_phase_mitre_technique (
     training_phase_id  int8 NOT NULL,
     mitre_technique_id int8 NOT NULL,
@@ -146,20 +162,7 @@ CREATE TABLE expected_commands (
 CREATE INDEX training_phase_mitre_technique_index
     ON expected_commands (training_phase_id);
 
-CREATE TABLE task (
-    task_id                          bigserial     NOT NULL,
-    title                            varchar(255)  NOT NULL,
-    content                          text          NOT NULL,
-    answer                           varchar(255)  NOT NULL,
-    solution                         varchar(1048) NOT NULL,
-    incorrect_answer_limit           int4,
-    modify_sandbox                   boolean       NOT NULL,
-    sandbox_change_expected_duration int4          NOT NULL,
-    order_in_training_phase          int4          NOT NULL,
-    training_phase_id                int8          NOT NULL,
-    PRIMARY KEY (task_id),
-    FOREIGN KEY (training_phase_id) REFERENCES training_phase
-);
+
 
 CREATE TABLE decision_matrix_row (
     decision_matrix_row_id  bigserial        NOT NULL,

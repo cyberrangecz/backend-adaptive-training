@@ -22,7 +22,7 @@ public class ParticipantTaskAssignment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "participantTaskAssignmentGenerator")
-    @SequenceGenerator(name = "participantTaskAssignmentGenerator")
+    @SequenceGenerator(name = "participantTaskAssignmentGenerator", sequenceName = "participant_task_assignment_seq")
     @Column(name = "participant_task_assignment_id", nullable = false, unique = true)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -314,20 +314,20 @@ CREATE INDEX training_definition_state_index
 CREATE INDEX training_run_start_time_and_end_time_index
     ON training_run (start_time, end_time DESC);
 
-CREATE SEQUENCE phase_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE task_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE question_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE question_choice_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE question_phase_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE decision_matrix_row_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE adaptive_questions_fulfillment_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE questions_phase_relation_result_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE training_definition_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE training_instance_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE training_run_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE access_token_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE tr_acquisition_lock_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE user_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE participant_task_assignment_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE submission_generator AS bigint INCREMENT 50 MINVALUE 1;
-CREATE SEQUENCE mitre_technique_generator AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE phase_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE task_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE question_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE question_choice_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE question_phase_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE decision_matrix_row_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE adaptive_questions_fulfillment_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE questions_phase_relation_result_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE training_definition_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE training_instance_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE training_run_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE access_token_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE tr_acquisition_lock_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE user_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE participant_task_assignment_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE submission_seq AS bigint INCREMENT 50 MINVALUE 1;
+CREATE SEQUENCE mitre_technique_seq AS bigint INCREMENT 50 MINVALUE 1;

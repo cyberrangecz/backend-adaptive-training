@@ -7,7 +7,7 @@
     <artifactId>adaptive-training</artifactId>
     <name>CyberRangeCZ Platform Adaptive Training</name>
     <description>Backend for adaptive trainings</description>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -23,7 +23,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <security-commons.version>0.0.1</security-commons.version>
-        <elasticsearch-documents.version>0.0.1</elasticsearch-documents.version>
+        <elasticsearch-documents.version>0.0.2</elasticsearch-documents.version>
         <swagger.version>3.0.0</swagger.version>
         <swagger.directory>${basedir}/doc-files</swagger.directory>
         <swagger.skip>true</swagger.skip>

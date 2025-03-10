@@ -58,7 +58,7 @@ public class TrainingDefinition implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingDefinitionGenerator")
-    @SequenceGenerator(name = "trainingDefinitionGenerator")
+    @SequenceGenerator(name = "trainingDefinitionGenerator", sequenceName = "training_definition_seq")
     @Column(name = "training_definition_id", nullable = false, unique = true)
     private Long id;
     @Column(name = "title", nullable = false)
@@ -297,6 +297,7 @@ public class TrainingDefinition implements Serializable {
 
     /**
      * Gets the time the Training Definition was created at
+     *
      * @return the time of Training Definition creation
      */
     public LocalDateTime getCreatedAt() {
@@ -305,6 +306,7 @@ public class TrainingDefinition implements Serializable {
 
     /**
      * Sets the creation time of the Training Definition
+     *
      * @param createdAt time of Training Definition creation
      */
     public void setCreatedAt(LocalDateTime createdAt) {

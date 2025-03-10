@@ -117,7 +117,7 @@ public class TrainingRun implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingRunGenerator")
-    @SequenceGenerator(name = "trainingRunGenerator")
+    @SequenceGenerator(name = "trainingRunGenerator", sequenceName = "training_run_seq")
     @Column(name = "training_run_id", nullable = false, unique = true)
     private Long id;
     @Column(name = "start_time", nullable = false)
@@ -311,6 +311,7 @@ public class TrainingRun implements Serializable {
 
     /**
      * Sets sandbox instance allocation id associated with Training run
+     *
      * @param sandboxInstanceAllocationId the sandbox instance allocation id
      */
     public void setSandboxInstanceAllocationId(Integer sandboxInstanceAllocationId) {

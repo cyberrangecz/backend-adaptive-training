@@ -25,7 +25,7 @@ public class Submission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "submissionGenerator")
-    @SequenceGenerator(name = "submissionGenerator")
+    @SequenceGenerator(name = "submissionGenerator", sequenceName = "submission_seq")
     @Column(name = "submission_id")
     private Long id;
     @Column(name = "provided", nullable = false)

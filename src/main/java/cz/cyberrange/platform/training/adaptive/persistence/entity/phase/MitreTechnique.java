@@ -29,7 +29,7 @@ public class MitreTechnique {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "mitreTechniqueGenerator")
-    @SequenceGenerator(name = "mitreTechniqueGenerator")
+    @SequenceGenerator(name = "mitreTechniqueGenerator", sequenceName = "mitre_technique_seq")
     @Column(name = "mitre_technique_id", nullable = false, unique = true)
     private Long id;
     @ManyToMany(mappedBy = "mitreTechniques")
@@ -46,7 +46,7 @@ public class MitreTechnique {
     /**
      * Instantiates a new Mitre Technique
      *
-     * @param id          unique identification number of mitre technique
+     * @param id           unique identification number of mitre technique
      * @param techniqueKey string representing unique key of the technique
      */
     public MitreTechnique(Long id, String techniqueKey) {

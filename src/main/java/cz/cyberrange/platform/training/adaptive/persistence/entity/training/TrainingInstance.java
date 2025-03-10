@@ -98,7 +98,7 @@ public class TrainingInstance implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trainingInstanceGenerator")
-    @SequenceGenerator(name = "trainingInstanceGenerator")
+    @SequenceGenerator(name = "trainingInstanceGenerator", sequenceName = "training_instance_seq")
     @Column(name = "training_instance_id", nullable = false, unique = true)
     private Long id;
     @Column(name = "start_time", nullable = false)

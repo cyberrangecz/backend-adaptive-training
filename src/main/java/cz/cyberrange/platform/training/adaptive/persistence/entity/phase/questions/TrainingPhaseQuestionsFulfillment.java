@@ -22,7 +22,7 @@ public class TrainingPhaseQuestionsFulfillment implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "adaptiveQuestionsFulfillmentGenerator")
-    @SequenceGenerator(name = "adaptiveQuestionsFulfillmentGenerator")
+    @SequenceGenerator(name = "adaptiveQuestionsFulfillmentGenerator", sequenceName = "adaptive_questions_fulfillment_seq")
     @Column(name = "adaptive_questions_fulfillment_id", nullable = false, unique = true)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)

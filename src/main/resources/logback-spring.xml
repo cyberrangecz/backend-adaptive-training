@@ -29,7 +29,7 @@
     <appender name="AUDIT_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
-            <pattern>${crczp.audit.messages.format:-adaptive-training --- CRCZP_PORTAL_EVENTS_AUDIT [%thread] %logger{5} ---
+            <pattern>${crczp.audit.messages.format:-backend-adaptive-training --- CRCZP_PORTAL_EVENTS_AUDIT [%thread] %logger{5} ---
                 %msg%n}
             </pattern>
         </encoder>
@@ -39,7 +39,7 @@
         <syslogHost>${crczp.audit.syslog.host:-localhost}</syslogHost>
         <port>${crczp.audit.syslog.port:-514}</port>
         <facility>AUDIT</facility>
-        <suffixPattern>${crczp.audit.messages.format:-adaptive-training --- CRCZP_PORTAL_EVENTS_AUDIT [%thread] %logger{5} ---
+        <suffixPattern>${crczp.audit.messages.format:-backend-adaptive-training --- CRCZP_PORTAL_EVENTS_AUDIT [%thread] %logger{5} ---
             %msg%n}
         </suffixPattern>
     </appender>

@@ -7,7 +7,7 @@
     <artifactId>adaptive-training</artifactId>
     <name>CyberRangeCZ Platform Adaptive Training</name>
     <description>Backend for adaptive trainings</description>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <licenses>
@@ -228,7 +228,7 @@
                                 </securityDefinition>
                             </securityDefinitions>
                             <swaggerDirectory>${swagger.directory}</swaggerDirectory>
-                            <swaggerFileName>swagger-docs</swaggerFileName>
+                            <swaggerFileName>${project.artifactId}-swagger-docs</swaggerFileName>
                             <outputFormats>yaml</outputFormats>
                             <swaggerApiReader>cz.cyberrange.platform.training.adaptive.utils.SnakeCaseSwaggerReader</swaggerApiReader>
                         </apiSource>

@@ -1,4 +1,7 @@
 # CyberRangeCZ Platform Adaptive Training
+
+> **Archived.** This repository is archived and no longer maintained. Adaptive training has been decommissioned from the CyberRangeCZ Platform. The code below is kept for historical reference only.
+
 This project represents back-end for managing adaptive training in CyberRangeCZ Platform.
 
 # Repository Structure
